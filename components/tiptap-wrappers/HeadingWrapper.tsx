@@ -9,23 +9,32 @@ import { MdDragIndicator } from "react-icons/md";
 export default function HeadingWrapper(props: NodeViewRendererProps) {
   return (
     <NodeViewWrapper>
-      <div className="w-full h-full flex justify-center p-4 border flex-row">
+      <div className="mb-4 flex h-full flex-row justify-center">
         <div
-          data-drag-handle
           contentEditable={false}
-          className={clsx(
-            // props.node.attrs.level === 1 && "h-10",
-            // props.node.attrs.level === 2 && "h-8",
-            "w-5 h-7 flex items-start flex-shrink mr-2"
-          )}
+          className="mr-2 flex h-full w-5 flex-shrink items-start"
         >
-          <MdDragIndicator className="w-5 h-7" />
+          <MdDragIndicator
+            data-drag-handle
+            // Set the height of the drag handle based on the heading level
+            // so that it's always vertically centered to the first line of text
+            // The height of the drag handle is 1.25 times the font size
+            // 1.25 and the rem values comes from the line-height of the tailwind prose
+            // https://tailwindcss.com/docs/prose#tailwindcss-typography-plugin
+            // This is a bit of a hack, but it works
+            className={clsx(
+              props.node.attrs.level === 1 && "h-[calc(2.25rem*1.25)] w-5",
+              props.node.attrs.level === 2 && "h-[calc(1.5rem*1.25)] w-5",
+              props.node.attrs.level === 3 && "h-[calc(1.25rem*1.25)] w-5"
+            )}
+          />
         </div>
 
-        <NodeViewContent
-          as={`h${props.node.attrs.level}` as React.ElementType}
-          className="flex-grow my-0"
-        />
+        <div className="prose-sm h-full w-full max-w-full flex-grow break-words md:prose-base prose-headings:m-0 prose-headings:text-start prose-headings:font-semibold prose-headings:leading-tight">
+          <NodeViewContent
+            as={`h${props.node.attrs.level}` as React.ElementType}
+          />
+        </div>
       </div>
     </NodeViewWrapper>
   );

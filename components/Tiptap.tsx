@@ -14,17 +14,17 @@ import clsx from "clsx";
 
 export default function Tiptap() {
   const content = `
-  <test><h1>Heading</h1></test>
-  <test><p>This is a boring paragraph.</p></test>
-  <test><p>Let’s finish with a boring paragraph.</p></test>`;
+  <h1>Heading 1</h1>
+  <h2>Heading 2</h2>
+  <h3>Heading 3</h3>
+  <p>This is a boring paragraph.</p>
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vestibulum dapibus ante nec hendrerit. Nam in nisi maximus, auctor purus at, imperdiet metus. Nam quam sem, iaculis et sagittis vel, egestas consequat ante.</p>`;
 
   const editor = useEditor({
-    extensions: [StarterKit, Document, Text, CustomHeading, CustomParagraph],
+    extensions: [StarterKit, CustomHeading, CustomParagraph],
     editorProps: {
       attributes: {
-        // TODO: Implement customizations to the tailwind prose in the tailwind config file
-        class:
-          "w-full h-full max-w-2xl p-2 outline-none prose prose-headings:font-medium prose-h1:text-xl prose-h2:text-lg prose-h3:text-base",
+        class: "w-full max-w-xl h-full p-2 outline-none",
       },
     },
     injectCSS: false,
@@ -60,7 +60,7 @@ export default function Tiptap() {
       )}
 
       <EditorContent
-        className="w-full h-full flex justify-center"
+        className="flex h-full w-full justify-center"
         editor={editor}
       />
     </>
