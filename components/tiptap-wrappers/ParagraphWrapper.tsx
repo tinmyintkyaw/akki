@@ -1,32 +1,41 @@
 import {
   NodeViewWrapper,
   NodeViewContent,
-  NodeViewRendererProps,
+  NodeViewProps,
+  findParentNodeClosestToPos,
 } from "@tiptap/react";
+
 import { MdDragIndicator } from "react-icons/md";
 
-export default function ParagraphWrapper(props: NodeViewRendererProps) {
+function NestedParagraphNodeView(props: NodeViewProps) {
   return (
     <NodeViewWrapper>
-      <div className="mb-2 flex h-full w-full flex-row justify-center">
-        <div
-          contentEditable={false}
-          className="mr-2 flex h-full w-5 flex-shrink items-start"
-          // onClick={() => {
-          //   props.editor.commands.setContent("<h1>Hello!</h1>");
-          //   console.log(props.node.textContent);
-          // }}
-        >
-          <MdDragIndicator
-            data-drag-handle
-            className="h-[calc(1rem*1.5)] w-5"
-          />
-        </div>
-
-        <div className="w-xl prose-sm h-full flex-grow break-words md:prose-base prose-p:m-0 prose-p:max-w-lg prose-p:text-justify prose-p:leading-normal">
-          <NodeViewContent as="p" className="flex-grow break-words" />
-        </div>
+      <div className="">
+        <NodeViewContent as={"p"} />
       </div>
     </NodeViewWrapper>
   );
+}
+
+function ParagraphNodeView(props: NodeViewProps) {
+  return (
+    <NodeViewWrapper>
+      <div className="">
+        <NodeViewContent as={"p"} />
+      </div>
+    </NodeViewWrapper>
+  );
+}
+
+export default function ParagraphWrapper(props: NodeViewProps) {
+  const parent = findParentNodeClosestToPos(
+    props.editor.state.doc.resolve(props.getPos()!),
+    (node) => node.type.name === "blockquote" || node.type.name === "listItem"
+  );
+
+  if (parent?.node) {
+    return <NestedParagraphNodeView {...props} />;
+  } else {
+    return <ParagraphNodeView {...props} />;
+  }
 }

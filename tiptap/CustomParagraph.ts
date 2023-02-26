@@ -1,12 +1,12 @@
 import Paragraph from "@tiptap/extension-paragraph";
-import { ReactNodeViewRenderer } from "@tiptap/react";
+import { mergeAttributes, ReactNodeViewRenderer } from "@tiptap/react";
 
-import BlockContainer from "@/components/tiptap-wrappers/ParagraphWrapper";
+import ParagraphWrapper from "@/components/tiptap-wrappers/ParagraphWrapper";
 
 const CustomParagraph = Paragraph.extend({
-  draggable: true,
+  priority: 2000,
   addNodeView() {
-    return ReactNodeViewRenderer(BlockContainer);
+    return ReactNodeViewRenderer(ParagraphWrapper);
   },
 });
 
