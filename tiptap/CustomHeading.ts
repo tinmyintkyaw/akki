@@ -4,6 +4,7 @@ import { ReactNodeViewRenderer } from "@tiptap/react";
 import HeadingWrapper from "@/components/tiptap-wrappers/HeadingWrapper";
 
 const CustomHeading = Heading.extend({
+  marks: "",
   addNodeView() {
     return ReactNodeViewRenderer(HeadingWrapper);
   },
