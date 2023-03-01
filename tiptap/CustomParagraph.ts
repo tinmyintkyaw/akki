@@ -1,5 +1,5 @@
 import Paragraph from "@tiptap/extension-paragraph";
-import { mergeAttributes, ReactNodeViewRenderer } from "@tiptap/react";
+import { ReactNodeViewRenderer } from "@tiptap/react";
 
 import ParagraphWrapper from "@/components/tiptap-wrappers/ParagraphWrapper";
 

@@ -12,7 +12,7 @@ import React from "react";
 
 function BlockquoteParagraph(props: NodeViewProps) {
   return (
-    <NodeViewWrapper className="group relative before:absolute before:top-0 before:bottom-0 before:right-full before:w-full">
+    <NodeViewWrapper className="not-prose group relative before:absolute before:top-0 before:bottom-0 before:right-full before:w-full">
       <button
         contentEditable={false}
         className="absolute -left-10 opacity-0 group-hover:opacity-100"
@@ -22,7 +22,7 @@ function BlockquoteParagraph(props: NodeViewProps) {
 
       <NodeViewContent
         as={"p"}
-        className="before:content-none after:content-none"
+        className="not-prose before:content-none after:content-none"
       />
     </NodeViewWrapper>
   );
@@ -30,28 +30,28 @@ function BlockquoteParagraph(props: NodeViewProps) {
 
 function ListParagraph(props: NodeViewProps) {
   return (
-    <NodeViewWrapper className="group relative before:absolute before:top-0 before:bottom-0 before:right-full before:w-full">
+    <NodeViewWrapper className="not-prose group relative before:absolute before:top-0 before:bottom-0 before:right-full before:w-full">
       <button
         contentEditable={false}
         className="absolute -left-10 hidden select-none group-hover:block"
       >
         <MdDragIndicator className="h-7 w-5" />
       </button>
-      <NodeViewContent as={"p"} />
+      <NodeViewContent as={"p"} className="" />
     </NodeViewWrapper>
   );
 }
 
 function TaskItemParagraph(props: NodeViewProps) {
   return (
-    <NodeViewWrapper className="group relative before:absolute before:top-0 before:bottom-0 before:right-full before:w-full">
+    <NodeViewWrapper className="not-prose group relative before:absolute before:top-0 before:bottom-0 before:right-full before:w-full">
       <button
         contentEditable={false}
         className="absolute -left-10 select-none opacity-0 group-hover:opacity-100"
       >
         <MdDragIndicator className="h-7 w-5" />
       </button>
-      <NodeViewContent as={"p"} />
+      <NodeViewContent as={"p"} className="" />
     </NodeViewWrapper>
   );
 }
