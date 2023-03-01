@@ -16,6 +16,7 @@ import CustomHeading from "@/tiptap/CustomHeading";
 import CustomParagraph from "@/tiptap/CustomParagraph";
 import CustomBlockquote from "@/tiptap/CustomBlockquote";
 import CustomTaskItem from "@/tiptap/CustomTaskItem";
+import SelectMenu from "./BubbleMenu";
 
 export default function Tiptap() {
   const content = `
@@ -56,13 +57,7 @@ export default function Tiptap() {
 
   return (
     <>
-      {editor && (
-        <BubbleMenu editor={editor} className="">
-          <button onClick={() => editor?.chain().focus().toggleBold().run()}>
-            Bold
-          </button>
-        </BubbleMenu>
-      )}
+      {editor && <SelectMenu editor={editor} />}
 
       {/* {editor && (
         <FloatingMenu editor={editor}>
