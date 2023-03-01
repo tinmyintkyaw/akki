@@ -45,7 +45,7 @@ export default function Tiptap() {
     },
     injectCSS: false,
     content: content,
-    // autofocus: true,
+    autofocus: true,
     onUpdate: ({ editor }) => {
       console.log(editor.getJSON());
       console.log(editor.getHTML());
@@ -77,15 +77,19 @@ export default function Tiptap() {
       <EditorContent
         className={clsx(
           "prose mx-auto w-full break-words p-4 text-black",
-          "max-w-3xl", // controls the width of the editor
+          "max-w-2xl", // controls the width of the editor
           "prose-base", // controls the overall editor font size
           "prose-headings:mb-2 prose-headings:w-full prose-headings:font-semibold prose-h1:mt-8 prose-h2:mt-6 prose-h3:mt-4",
-          "prose-p:mb-4 prose-p:mt-0 prose-p:w-full prose-p:text-justify",
+          "prose-p:mb-4 prose-p:mt-0 prose-p:w-full",
           "prose-ul:my-1 prose-ul:w-full prose-ul:list-disc prose-ul:pl-5",
           "prose-ol:mt-1 prose-ol:mb-0 prose-ol:w-full prose-ol:list-decimal prose-ol:pl-5",
           "prose-li:my-0 prose-li:w-full prose-li:px-0"
         )}
         editor={editor}
+        onKeyDown={(event) => {
+          if (event.key !== "Tab") return;
+          event.preventDefault();
+        }}
       />
     </>
   );
