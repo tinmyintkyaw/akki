@@ -5,6 +5,9 @@ import {
   FloatingMenu,
 } from "@tiptap/react";
 
+import * as Y from "yjs";
+import { HocuspocusProvider } from "@hocuspocus/provider";
+
 import clsx from "clsx";
 import Document from "@tiptap/extension-document";
 import Text from "@tiptap/extension-text";
@@ -17,6 +20,9 @@ import CustomParagraph from "@/tiptap/CustomParagraph";
 import CustomBlockquote from "@/tiptap/CustomBlockquote";
 import CustomTaskItem from "@/tiptap/CustomTaskItem";
 import SelectMenu from "./BubbleMenu";
+import Collaboration from "@tiptap/extension-collaboration";
+import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
+import { useEffect, useMemo } from "react";
 
 export default function Tiptap() {
   const content = `
@@ -26,14 +32,30 @@ export default function Tiptap() {
   <blockquote><p>This is a boring paragraph.</p></blockquote>
   <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vestibulum dapibus ante nec hendrerit. Nam in nisi maximus, auctor purus at, imperdiet metus. Nam quam sem, iaculis et sagittis vel, egestas consequat ante.</p>`;
 
+  const ydoc = useMemo(() => new Y.Doc(), []);
+
+  const provider = useMemo(
+    () =>
+      new HocuspocusProvider({
+        url: "ws://127.0.0.1:3001",
+        name: "test2",
+        document: ydoc,
+        WebSocketPolyfill: null,
+      }),
+    [ydoc]
+  );
+
   const editor = useEditor({
     extensions: [
-      StarterKit,
-      Document,
-      Text,
+      StarterKit.configure({ history: false }),
       CustomHeading,
       CustomParagraph,
       CustomBlockquote,
+      Collaboration.configure({ document: ydoc }),
+      CollaborationCursor.configure({
+        provider,
+        // user: { name: crypto.randomUUID() },
+      }),
       // TODO: Finish TaskItem toggle logic
       // TaskList,
       // CustomTaskItem.configure({ nested: true }),
@@ -46,12 +68,14 @@ export default function Tiptap() {
     injectCSS: false,
     content: content,
     autofocus: true,
-    onUpdate: ({ editor }) => {
-      console.log(editor.getJSON());
-      console.log(editor.getHTML());
-    },
+    // onUpdate: ({ editor, transaction }) => {
+    //   console.log(editor.getJSON());
+    //   console.log(editor.getHTML());
+    //   console.log(transaction);
+    // },
     // onTransaction: ({ editor, transaction }) => {
-    //   console.log(editor.state.selection.$anchor.parent);
+    //   // console.log(editor.state.selection.$anchor.parent);
+    //   // console.log(transaction);
     // },
   });
 
