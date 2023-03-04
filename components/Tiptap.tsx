@@ -2,6 +2,7 @@ import { useEffect, useMemo } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 
 import * as Y from "yjs";
+import { IndexeddbPersistence } from "y-indexeddb";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 
 import clsx from "clsx";
@@ -27,6 +28,11 @@ export default function Tiptap() {
   }, [token]);
 
   const ydoc = useMemo(() => new Y.Doc(), []);
+
+  const persistence = useMemo(
+    () => new IndexeddbPersistence("test", ydoc),
+    [ydoc]
+  );
 
   const provider = useMemo(
     () =>
