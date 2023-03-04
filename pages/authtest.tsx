@@ -5,7 +5,8 @@ export default function AuthTest() {
   const session = useSession();
 
   useEffect(() => {
-    getSession().then((session) => console.log(session));
+    // getSession().then((session) => console.log(session));
+    console.log(session);
   }, [session]);
 
   return (

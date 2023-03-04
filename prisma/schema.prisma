@@ -66,5 +66,5 @@ model Document {
   owner        Account  @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId      String   @map("accountId")
 
-  @@unique([ownerId])
+  @@unique([ownerId, documentName])
 }

@@ -38,9 +38,8 @@ export default function Tiptap() {
     () =>
       new HocuspocusProvider({
         url: "ws://127.0.0.1:3001",
-        name: "test2",
+        name: "test",
         document: ydoc,
-        WebSocketPolyfill: null,
       }),
     [ydoc]
   );
@@ -66,7 +65,7 @@ export default function Tiptap() {
       },
     },
     injectCSS: false,
-    content: content,
+    // content: content,
     autofocus: true,
     // onUpdate: ({ editor, transaction }) => {
     //   console.log(editor.getJSON());

@@ -10,6 +10,8 @@
     "collab:dev": "ts-node --project tsconfig.collab.json collab/collab-server.ts"
   },
   "dependencies": {
+    "@hocuspocus/extension-database": "^1.1.1",
+    "@hocuspocus/extension-sqlite": "^1.1.1",
     "@hocuspocus/provider": "^1.1.1",
     "@hocuspocus/server": "^1.1.1",
     "@hocuspocus/transformer": "^1.1.1",
@@ -40,6 +42,7 @@
     "eslint-config-next": "13.1.6",
     "next": "13.1.6",
     "next-auth": "^4.20.1",
+    "nodemon": "^2.0.21",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.8.0",
@@ -54,6 +57,7 @@
     "postcss": "^8.4.21",
     "prettier": "^2.8.4",
     "prettier-plugin-tailwindcss": "^0.2.4",
+    "prisma": "^4.11.0",
     "tailwindcss": "^3.2.7"
   }
 }
