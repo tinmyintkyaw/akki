@@ -1,5 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// This schema is based on the recommended schema from the NextAuth.js docs
+// https://next-auth.js.org/adapters/prisma
 
 generator client {
   provider = "prisma-client-js"
@@ -25,6 +25,8 @@ model Account {
   session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  Document Document[]
 
   @@unique([provider, providerAccountId])
 }
@@ -53,4 +55,16 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Document {
+  id           String   @id @default(cuid())
+  documentName String   @unique
+  ydoc         Bytes
+  createdAt    DateTime @default(now())
+  modifiedAt   DateTime @default(now())
+  owner        Account  @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId      String   @map("accountId")
+
+  @@unique([ownerId])
 }
