@@ -1,13 +1,13 @@
-import { useSession, signIn, signOut, getSession } from "next-auth/react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import { useEffect } from "react";
 
 export default function AuthTest() {
   const session = useSession();
 
-  useEffect(() => {
-    // getSession().then((session) => console.log(session));
-    console.log(session);
-  }, [session]);
+  // useEffect(() => {
+  //   // getSession().then((session) => console.log(session));
+  //   console.log(session);
+  // }, [session]);
 
   return (
     <>

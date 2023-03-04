@@ -26,8 +26,6 @@ model Account {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  Document Document[]
-
   @@unique([provider, providerAccountId])
 }
 
@@ -40,13 +38,14 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String     @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?    @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
+  documents     Document[]
 }
 
 model VerificationToken {
@@ -63,8 +62,8 @@ model Document {
   ydoc         Bytes
   createdAt    DateTime @default(now())
   modifiedAt   DateTime @default(now())
-  owner        Account  @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId      String   @map("accountId")
+  User         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
 
-  @@unique([ownerId, documentName])
+  @@unique([documentName, userId])
 }
