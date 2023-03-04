@@ -76,7 +76,7 @@ const server = Server.configure({
         console.log("Storing document");
 
         try {
-          prisma.document.upsert({
+          await prisma.document.upsert({
             where: {
               documentName_userId: {
                 documentName: data.documentName,
@@ -90,6 +90,7 @@ const server = Server.configure({
             },
             update: {
               ydoc: data.state,
+              modifiedAt: new Date(),
             },
           });
         } catch (err) {
