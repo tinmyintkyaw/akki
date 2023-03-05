@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "concurrently 'next dev' 'npm run collab:dev'",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -41,6 +41,7 @@
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
     "clsx": "^1.2.1",
+    "concurrently": "^7.6.0",
     "dotenv": "^16.0.3",
     "dotenv-cli": "^7.0.0",
     "eslint": "8.34.0",
@@ -54,6 +55,7 @@
     "react-icons": "^4.8.0",
     "ts-node": "^10.9.1",
     "typescript": "4.9.5",
+    "y-indexeddb": "^9.0.9",
     "y-prosemirror": "^1.0.20",
     "yjs": "^13.5.48"
   },
