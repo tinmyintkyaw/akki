@@ -10,7 +10,7 @@ export default function SelectMenu(props: { editor: Editor }) {
         >
           {/* Placeholder for block convert feature */}
           <button
-            onClick={() => props.editor.chain().focus().toggleBold().run()}
+            // onClick={() => props.editor.chain().focus().toggleBold().run()}
             className="h-8 px-3 hover:bg-slate-200"
           >
             Paragraph

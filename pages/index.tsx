@@ -1,11 +1,19 @@
 import Head from "next/head";
 import Image from "next/image";
-import { Inter } from "@next/font/google";
-
-import Tiptap from "@/components/Tiptap";
 import clsx from "clsx";
+import dynamic from "next/dynamic";
+import NoSSR from "react-no-ssr";
+
+import { Inter } from "@next/font/google";
+import Tiptap from "../components/Tiptap";
 
 const inter = Inter({ subsets: ["latin"] });
+
+const NoSSRTiptap = dynamic(() => import("../components/Tiptap"), {
+  ssr: false,
+});
+
+const isServer = () => typeof window === "undefined";
 
 export default function Home() {
   return (
@@ -17,7 +25,10 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={clsx(inter.className, "h-full w-full")}>
-        <Tiptap />
+        <NoSSRTiptap />
+        {/* <NoSSR>
+          <Tiptap />
+        </NoSSR> */}
       </main>
     </>
   );

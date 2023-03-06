@@ -1,39 +1,64 @@
-import {
-  useEditor,
-  EditorContent,
-  BubbleMenu,
-  FloatingMenu,
-} from "@tiptap/react";
+import { useEffect, useMemo, useState } from "react";
+import { useEditor, EditorContent } from "@tiptap/react";
+
+import * as Y from "yjs";
+import { IndexeddbPersistence } from "y-indexeddb";
+import { HocuspocusProvider } from "@hocuspocus/provider";
 
 import clsx from "clsx";
-import Document from "@tiptap/extension-document";
-import Text from "@tiptap/extension-text";
+import { getSession, useSession } from "next-auth/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import BulletList from "@tiptap/extension-bullet-list";
 import TaskList from "@tiptap/extension-task-list";
+import Collaboration from "@tiptap/extension-collaboration";
+import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 
 import CustomHeading from "@/tiptap/CustomHeading";
 import CustomParagraph from "@/tiptap/CustomParagraph";
 import CustomBlockquote from "@/tiptap/CustomBlockquote";
 import CustomTaskItem from "@/tiptap/CustomTaskItem";
+
 import SelectMenu from "./BubbleMenu";
 
 export default function Tiptap() {
-  const content = `
-  <h1>Heading 1</h1>
-  <h2>Heading 2</h2>
-  <h3>Heading 3</h3>
-  <blockquote><p>This is a boring paragraph.</p></blockquote>
-  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vestibulum dapibus ante nec hendrerit. Nam in nisi maximus, auctor purus at, imperdiet metus. Nam quam sem, iaculis et sagittis vel, egestas consequat ante.</p>`;
+  const ydoc = useMemo(() => new Y.Doc(), []);
+
+  // const persistence = useMemo(
+  //   () => new IndexeddbPersistence("test", ydoc),
+  //   [ydoc]
+  // );
+
+  const session = useSession();
+  useEffect(() => {
+    console.log(session);
+
+    // fetch("api/socket")
+    //   .then((res) => res.json())
+    //   .then((data) => setSocketToken(data.socketToken));
+  }, []);
+
+  const provider = useMemo(
+    () =>
+      new HocuspocusProvider({
+        url: "ws://localhost:8080/collaboration/",
+        name: "test",
+        document: ydoc,
+        token: "test",
+      }),
+    [ydoc]
+  );
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
-      Document,
-      Text,
+      StarterKit.configure({ history: false }),
       CustomHeading,
       CustomParagraph,
       CustomBlockquote,
+      Collaboration.configure({ document: ydoc }),
+      CollaborationCursor.configure({
+        provider,
+        // user: { name: crypto.randomUUID() },
+      }),
       // TODO: Finish TaskItem toggle logic
       // TaskList,
       // CustomTaskItem.configure({ nested: true }),
@@ -44,35 +69,12 @@ export default function Tiptap() {
       },
     },
     injectCSS: false,
-    content: content,
     autofocus: true,
-    onUpdate: ({ editor }) => {
-      console.log(editor.getJSON());
-      console.log(editor.getHTML());
-    },
-    // onTransaction: ({ editor, transaction }) => {
-    //   console.log(editor.state.selection.$anchor.parent);
-    // },
   });
 
   return (
     <>
       {editor && <SelectMenu editor={editor} />}
-
-      {/* {editor && (
-        <FloatingMenu editor={editor}>
-          <button
-            onClick={() =>
-              editor?.chain().focus().toggleHeading({ level: 1 }).run()
-            }
-            className={clsx(
-              editor.isActive("heading", { level: 1 }) && "bg-teal-500"
-            )}
-          >
-            H1
-          </button>
-        </FloatingMenu>
-      )} */}
 
       <EditorContent
         className={clsx(
