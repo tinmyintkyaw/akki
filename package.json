@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently 'next dev' 'npm run collab:dev'",
+    "dev": "concurrently 'next dev' 'dotenv -e .env.local -- npm run server'",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "server": "ts-node --project tsconfig.server.json server/index.ts",
     "migrate:dev": "dotenv -e .env.local -- npx prisma migrate dev",
-    "studio:dev": "dotenv -e .env.local -- npx prisma studio",
-    "collab:dev": "dotenv -e .env.local -- ts-node --project tsconfig.collab.json collab/collab-server.ts"
+    "studio": "dotenv -e .env.local -- npx prisma studio"
   },
   "dependencies": {
     "@hocuspocus/extension-database": "^1.1.1",
@@ -36,6 +36,7 @@
     "@tiptap/pm": "^2.0.0-beta.220",
     "@tiptap/react": "2.0.0-beta.218",
     "@tiptap/starter-kit": "^2.0.0-beta.218",
+    "@types/express-ws": "^3.0.1",
     "@types/jsonwebtoken": "^9.0.1",
     "@types/node": "18.14.0",
     "@types/react": "18.0.28",
@@ -46,6 +47,9 @@
     "dotenv-cli": "^7.0.0",
     "eslint": "8.34.0",
     "eslint-config-next": "13.1.6",
+    "express-ws": "^5.0.2",
+    "http-proxy": "^1.18.1",
+    "http-proxy-middleware": "^2.0.6",
     "jsonwebtoken": "^9.0.0",
     "next": "13.1.6",
     "next-auth": "^4.20.1",
@@ -54,18 +58,21 @@
     "react-dom": "18.2.0",
     "react-icons": "^4.8.0",
     "ts-node": "^10.9.1",
-    "typescript": "4.9.5",
     "y-indexeddb": "^9.0.9",
     "y-prosemirror": "^1.0.20",
     "yjs": "^13.5.48"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.9",
+    "@types/express": "^4.17.17",
+    "@types/http-proxy": "^1.17.10",
+    "@types/ws": "^8.5.4",
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.21",
     "prettier": "^2.8.4",
     "prettier-plugin-tailwindcss": "^0.2.4",
     "prisma": "^4.11.0",
-    "tailwindcss": "^3.2.7"
+    "tailwindcss": "^3.2.7",
+    "typescript": "^4.9.5"
   }
 }

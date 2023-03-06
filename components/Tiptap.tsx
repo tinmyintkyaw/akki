@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 
 import * as Y from "yjs";
@@ -6,7 +6,7 @@ import { IndexeddbPersistence } from "y-indexeddb";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 
 import clsx from "clsx";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import BulletList from "@tiptap/extension-bullet-list";
 import TaskList from "@tiptap/extension-task-list";
@@ -21,28 +21,31 @@ import CustomTaskItem from "@/tiptap/CustomTaskItem";
 import SelectMenu from "./BubbleMenu";
 
 export default function Tiptap() {
-  const token = useSession();
-
-  useEffect(() => {
-    console.log(token);
-  }, [token]);
-
   const ydoc = useMemo(() => new Y.Doc(), []);
 
-  const persistence = useMemo(
-    () => new IndexeddbPersistence("test", ydoc),
-    [ydoc]
-  );
+  // const persistence = useMemo(
+  //   () => new IndexeddbPersistence("test", ydoc),
+  //   [ydoc]
+  // );
+
+  const session = useSession();
+  useEffect(() => {
+    console.log(session);
+
+    // fetch("api/socket")
+    //   .then((res) => res.json())
+    //   .then((data) => setSocketToken(data.socketToken));
+  }, []);
 
   const provider = useMemo(
     () =>
       new HocuspocusProvider({
-        url: "ws://127.0.0.1:3001",
+        url: "ws://localhost:8080/collaboration/",
         name: "test",
         document: ydoc,
-        token: token.data?.socketJWT,
+        token: "test",
       }),
-    [ydoc, token]
+    [ydoc]
   );
 
   const editor = useEditor({

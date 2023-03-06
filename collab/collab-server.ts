@@ -1,3 +1,5 @@
+// Deprecated, use the new server.ts instead
+// Kept for reference
 import { Server } from "@hocuspocus/server";
 import { Database } from "@hocuspocus/extension-database";
 import { TiptapTransformer } from "@hocuspocus/transformer";
@@ -6,99 +8,97 @@ import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-import socketJWTContent from "@/types/socket-jwt";
-
-function isSocketJWTContent(arg: any): arg is socketJWTContent {
-  return arg.id !== undefined;
-}
+import { getServerSession } from "next-auth";
 
 const server = Server.configure({
-  port: 3001, // TODO: Make this configurable via env var
+  port: 4000, // TODO: Make this configurable via env var
 
-  async onAuthenticate({ token }) {
-    const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET;
+  // async onAuthenticate({ token }) {
+  //   console.log("Authenticating");
 
-    if (!NEXTAUTH_SECRET) {
-      throw new Error("NEXTAUTH_SECRET is not defined");
-    }
+  //   if (!token) {
+  //     throw new Error("No token provided");
+  //   }
 
-    try {
-      const decoded = jwt.verify(token, NEXTAUTH_SECRET);
+  //   try {
+  //     const result = await prisma.socketSession.findUniqueOrThrow({
+  //       where: { socketToken: token },
+  //     });
 
-      if (!isSocketJWTContent(decoded)) {
-        throw new Error("Invalid token");
-      }
+  //     console.log(result);
 
-      // TODO: Add proper logger
-      console.log(`${decoded.name} authenticated`);
+  //     if (result.expires < new Date()) {
+  //       throw new Error("Token expired");
+  //     }
 
-      // hocuspocus will pass the object returned here as the context
-      // the context is available in the hooks that follow
-      // like onLoadDocument, onStoreDocument, etc.
-      return { id: decoded.id };
-    } catch (err) {
-      // auth will fail if an error is thrown
-      throw new Error("Invalid token");
-    }
-  },
+  //     console.log("authenticated");
+
+  //     await prisma.socketSession.delete({ where: { socketToken: token } });
+  //     console.log("deleted");
+
+  //     return { userId: result.userId };
+  //   } catch (err) {
+  //     throw new Error("Invalid token");
+  //   }
+  // },
 
   async onConnect(data) {
     console.log(`${data.request.socket.remoteAddress} connected`);
   },
 
-  extensions: [
-    new Database({
-      async fetch(data) {
-        return new Promise(async (resolve, reject) => {
-          console.log("Fetching document");
+  // extensions: [
+  //   new Database({
+  //     async fetch(data) {
+  //       return new Promise(async (resolve, reject) => {
+  //         console.log("Fetching document");
 
-          try {
-            const document = await prisma.document.findUniqueOrThrow({
-              where: {
-                documentName_userId: {
-                  documentName: data.documentName,
-                  userId: data.context.id,
-                },
-              },
-            });
+  //         try {
+  //           const document = await prisma.document.findUniqueOrThrow({
+  //             where: {
+  //               documentName_userId: {
+  //                 documentName: data.documentName,
+  //                 userId: data.context.userId,
+  //               },
+  //             },
+  //           });
 
-            resolve(document.ydoc);
-          } catch (err) {
-            // we don't need initialze a new Y.js document
-            // just reject the prosimise and
-            // hocuspocus will do that for us in onStoreDocument hook
-            reject("Document not found");
-          }
-        });
-      },
+  //           resolve(document.ydoc);
+  //         } catch (err) {
+  //           // we don't need initialze a new Y.js document
+  //           // just reject the prosimise and
+  //           // hocuspocus will do that for us in onStoreDocument hook
+  //           reject("Document not found");
+  //         }
+  //       });
+  //     },
 
-      async store(data) {
-        console.log("Storing document");
+  //     async store(data) {
+  //       console.log("Storing document");
 
-        try {
-          await prisma.document.upsert({
-            where: {
-              documentName_userId: {
-                documentName: data.documentName,
-                userId: data.context.id,
-              },
-            },
-            create: {
-              documentName: data.documentName,
-              ydoc: data.state,
-              userId: data.context.id,
-            },
-            update: {
-              ydoc: data.state,
-              modifiedAt: new Date(),
-            },
-          });
-        } catch (err) {
-          console.error(err);
-        }
-      },
-    }),
-  ],
+  //       try {
+  //         await prisma.document.upsert({
+  //           where: {
+  //             documentName_userId: {
+  //               documentName: data.documentName,
+  //               userId: data.context.userId,
+  //             },
+  //           },
+  //           create: {
+  //             documentName: data.documentName,
+  //             ydoc: data.state,
+  //             userId: data.context.userId,
+  //           },
+  //           update: {
+  //             ydoc: data.state,
+  //             modifiedAt: new Date(),
+  //           },
+  //         });
+  //       } catch (err) {
+  //         console.error(err);
+  //       }
+  //     },
+  //   }),
+  // ],
 });
 
 server.listen();
