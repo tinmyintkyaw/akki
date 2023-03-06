@@ -2,10 +2,11 @@ import NextAuth, { AuthOptions } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import DiscordProvider from "next-auth/providers/discord";
 import jwt from "jsonwebtoken";
+import * as crypto from "crypto";
 
 import prisma from "../../../lib/prismadb";
 
-import socketJWTContent from "../../../types/socket-jwt";
+import socketTicket from "../../../types/socket-ticket";
 
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -15,24 +16,8 @@ export const authOptions: AuthOptions = {
   },
 
   callbacks: {
-    async session({ session, user }) {
-      // pass a JWT token to the client that can be used to authenticate
-      // with the websocket server
-      const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET as string;
-
-      const jwtPayload: socketJWTContent = {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        image: user.image,
-      };
-
-      const socketJWT = jwt.sign(jwtPayload, NEXTAUTH_SECRET, {
-        expiresIn: "30d",
-      });
-
-      session.socketJWT = socketJWT;
-
+    async session({ session, user, token }) {
+      session.accountId = user.id;
       return session;
     },
   },
