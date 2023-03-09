@@ -40,10 +40,6 @@ const server = Server.configure({
     return { userId: session.userId };
   },
 
-  async onChange(data) {
-    console.log("Document changed");
-  },
-
   extensions: [
     new Database({
       async fetch(data) {

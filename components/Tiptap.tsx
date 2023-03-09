@@ -6,7 +6,7 @@ import { IndexeddbPersistence } from "y-indexeddb";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 
 import clsx from "clsx";
-import { getSession, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import BulletList from "@tiptap/extension-bullet-list";
 import TaskList from "@tiptap/extension-task-list";
@@ -23,10 +23,10 @@ import SelectMenu from "./BubbleMenu";
 export default function Tiptap() {
   const ydoc = useMemo(() => new Y.Doc(), []);
 
-  // const persistence = useMemo(
-  //   () => new IndexeddbPersistence("test", ydoc),
-  //   [ydoc]
-  // );
+  const persistence = useMemo(
+    () => new IndexeddbPersistence("test", ydoc),
+    [ydoc]
+  );
 
   const session = useSession();
   useEffect(() => {
@@ -78,7 +78,7 @@ export default function Tiptap() {
 
       <EditorContent
         className={clsx(
-          "prose mx-auto w-full break-words p-4 text-black",
+          "prose prose-slate mx-auto h-full w-full break-words py-4 text-black",
           "max-w-2xl", // controls the width of the editor
           "prose-base", // controls the overall editor font size
           "prose-headings:mb-2 prose-headings:w-full prose-headings:font-semibold prose-h1:mt-8 prose-h2:mt-6 prose-h3:mt-4",

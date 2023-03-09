@@ -2,12 +2,12 @@ import Head from "next/head";
 import Image from "next/image";
 import clsx from "clsx";
 import dynamic from "next/dynamic";
-import NoSSR from "react-no-ssr";
+import * as ScrollArea from "@radix-ui/react-scroll-area";
 
 import { Inter } from "@next/font/google";
-import Tiptap from "../components/Tiptap";
+import Sidebar from "@/components/Sidebar";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], weight: "variable" });
 
 const NoSSRTiptap = dynamic(() => import("../components/Tiptap"), {
   ssr: false,
@@ -24,11 +24,31 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={clsx(inter.className, "h-full w-full")}>
-        <NoSSRTiptap />
-        {/* <NoSSR>
-          <Tiptap />
-        </NoSSR> */}
+      <main
+        // className="flex h-screen w-screen]"
+        className={clsx(inter.className, "flex h-screen w-screen")}
+      >
+        <Sidebar />
+
+        <div id="editor-pane" className="h-screen flex-grow">
+          <div
+            id="editor-toolbar"
+            className="sticky top-0 h-8 w-full bg-slate-50"
+          ></div>
+
+          <ScrollArea.Root type="auto" className="overflow-hidden">
+            <ScrollArea.Viewport className="h-[calc(100vh-2rem)] w-full bg-slate-50">
+              <NoSSRTiptap />
+            </ScrollArea.Viewport>
+
+            <ScrollArea.Scrollbar
+              orientation="vertical"
+              className="select-none"
+            >
+              <ScrollArea.Thumb className="min-w-[0.5rem] bg-stone-400" />
+            </ScrollArea.Scrollbar>
+          </ScrollArea.Root>
+        </div>
       </main>
     </>
   );
