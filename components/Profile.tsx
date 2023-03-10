@@ -1,4 +1,4 @@
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import * as Avatar from "@radix-ui/react-avatar";
 import { HiOutlineArrowRightOnRectangle } from "react-icons/hi2";
 
@@ -20,7 +20,11 @@ export default function Profile() {
 
           <p className="flex-grow font-medium">{session.data?.user?.name}</p>
 
-          <button className="rounded-full p-2 hover:bg-stone-200">
+          <button
+            // TODO: Add a confirmation dialog
+            onClick={() => signOut()}
+            className="rounded-full p-2 hover:bg-stone-200"
+          >
             <HiOutlineArrowRightOnRectangle className="h-4 w-4" />
           </button>
         </>

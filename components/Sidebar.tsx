@@ -2,7 +2,6 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 
 import {
-  HiOutlineDocumentText,
   HiOutlineMagnifyingGlass,
   HiOutlineCog6Tooth,
   HiOutlineDocumentPlus,
