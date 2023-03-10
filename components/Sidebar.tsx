@@ -8,7 +8,7 @@ import {
   HiOutlineDocumentPlus,
 } from "react-icons/hi2";
 
-import SidebarMenuItem from "./SidebarMenuItem";
+import { SidebarMenuButton } from "./SidebarMenuItem";
 import PageList from "./PageList";
 import Profile from "./Profile";
 
@@ -25,9 +25,23 @@ export default function Sidebar() {
       </a>
 
       <div className="border-b-2 py-2">
-        <SidebarMenuItem text="Search" icon={HiOutlineMagnifyingGlass} />
-        <SidebarMenuItem text="New Document" icon={HiOutlineDocumentPlus} />
-        <SidebarMenuItem text="Settings" icon={HiOutlineCog6Tooth} />
+        <SidebarMenuButton
+          text="Search"
+          icon={HiOutlineMagnifyingGlass}
+          onclick={() => {}}
+        />
+
+        <SidebarMenuButton
+          text="New Document"
+          icon={HiOutlineDocumentPlus}
+          onclick={() => {}}
+        />
+
+        <SidebarMenuButton
+          text="Settings"
+          icon={HiOutlineCog6Tooth}
+          onclick={() => {}}
+        />
       </div>
 
       <PageList />

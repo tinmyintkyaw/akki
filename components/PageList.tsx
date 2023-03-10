@@ -1,7 +1,7 @@
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 import { HiOutlineDocumentText } from "react-icons/hi2";
 
-import SidebarMenuItem from "./SidebarMenuItem";
+import { SidebarMenuLink } from "./SidebarMenuItem";
 
 // Only for testing purposes, will be removed later
 const sampleDocuments = [
@@ -41,10 +41,11 @@ export default function PageList() {
       >
         <h2 className="px-4 py-2 text-xs font-semibold">Documents</h2>
         {sampleDocuments.map((document) => (
-          <SidebarMenuItem
+          <SidebarMenuLink
             key={document}
             text={document}
             icon={HiOutlineDocumentText}
+            href="#"
           />
         ))}
       </ScrollArea.Viewport>
