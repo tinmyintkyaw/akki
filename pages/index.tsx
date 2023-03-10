@@ -4,10 +4,12 @@ import clsx from "clsx";
 import dynamic from "next/dynamic";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 
-import { Inter } from "@next/font/google";
+import { Roboto_Flex } from "@next/font/google";
 import Sidebar from "@/components/Sidebar";
 
-const inter = Inter({ subsets: ["latin"], weight: "variable" });
+const roboto = Roboto_Flex({
+  subsets: ["latin"],
+});
 
 const NoSSRTiptap = dynamic(() => import("../components/Tiptap"), {
   ssr: false,
@@ -24,17 +26,16 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main
-        // className="flex h-screen w-screen]"
-        className={clsx(inter.className, "flex h-screen w-screen")}
-      >
+      <main className={clsx(roboto.className, "flex h-screen w-screen")}>
         <Sidebar />
 
         <div id="editor-pane" className="h-screen flex-grow">
           <div
             id="editor-toolbar"
-            className="sticky top-0 h-8 w-full bg-slate-50"
-          ></div>
+            className="sticky top-0 flex h-8 w-full select-none items-center border-b-2 bg-slate-50 px-2"
+          >
+            <p>Test</p>
+          </div>
 
           <ScrollArea.Root type="auto" className="overflow-hidden">
             <ScrollArea.Viewport className="h-[calc(100vh-2rem)] w-full bg-slate-50">

@@ -78,7 +78,7 @@ export default function Tiptap() {
 
       <EditorContent
         className={clsx(
-          "prose prose-slate mx-auto h-full w-full break-words py-4 text-black",
+          "prose prose-slate mx-auto h-full w-full break-words py-4 px-8 text-black",
           "max-w-2xl", // controls the width of the editor
           "prose-base", // controls the overall editor font size
           "prose-headings:mb-2 prose-headings:w-full prose-headings:font-semibold prose-h1:mt-8 prose-h2:mt-6 prose-h3:mt-4",
