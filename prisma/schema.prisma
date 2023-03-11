@@ -38,14 +38,14 @@ model Session {
 }
 
 model User {
-  id            String     @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String?
-  email         String?    @unique
+  email         String?   @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
-  documents     Document[]
+  pages         Page[]
 }
 
 model VerificationToken {
@@ -56,14 +56,17 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Document {
+model Page {
   id           String   @id @default(cuid())
-  documentName String   @unique
+  pageName     String   @unique
   ydoc         Bytes
   createdAt    DateTime @default(now())
   modifiedAt   DateTime @default(now())
   User         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String
+  parentPage   Page?    @relation("ChildPages", fields: [parentPageId], references: [id])
+  parentPageId String?
+  childPages   Page[]   @relation("ChildPages")
 
-  @@unique([documentName, userId])
+  @@unique([pageName, userId])
 }

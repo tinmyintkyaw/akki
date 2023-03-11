@@ -35,7 +35,7 @@ export default function Tiptap() {
     // fetch("api/socket")
     //   .then((res) => res.json())
     //   .then((data) => setSocketToken(data.socketToken));
-  }, []);
+  }, [session]);
 
   const provider = useMemo(
     () =>

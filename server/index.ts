@@ -43,34 +43,34 @@ const server = Server.configure({
   extensions: [
     new Database({
       async fetch(data) {
-        console.log("Fetching document");
+        console.log("Fetching page");
 
-        const document = await prisma.document.findUnique({
+        const page = await prisma.page.findUnique({
           where: {
-            documentName_userId: {
-              documentName: data.documentName,
+            pageName_userId: {
+              pageName: data.documentName,
               userId: data.context.userId,
             },
           },
         });
 
-        if (!document) return null;
+        if (!page) return null;
 
-        return document.ydoc;
+        return page.ydoc;
       },
 
       async store(data) {
-        console.log("Storing document");
+        console.log("Storing page");
 
-        await prisma.document.upsert({
+        await prisma.page.upsert({
           where: {
-            documentName_userId: {
-              documentName: data.documentName,
+            pageName_userId: {
+              pageName: data.documentName,
               userId: data.context.userId,
             },
           },
           create: {
-            documentName: data.documentName,
+            pageName: data.documentName,
             ydoc: data.state,
             userId: data.context.userId,
           },
