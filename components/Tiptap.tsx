@@ -6,7 +6,7 @@ import { IndexeddbPersistence } from "y-indexeddb";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 
 import clsx from "clsx";
-import { useSession } from "next-auth/react";
+import { useSession, getSession } from "next-auth/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import BulletList from "@tiptap/extension-bullet-list";
 import TaskList from "@tiptap/extension-task-list";
@@ -21,32 +21,28 @@ import CustomTaskItem from "@/tiptap/CustomTaskItem";
 import SelectMenu from "./BubbleMenu";
 
 export default function Tiptap() {
+  const session = useSession();
+
   const ydoc = useMemo(() => new Y.Doc(), []);
 
-  const persistence = useMemo(
-    () => new IndexeddbPersistence("test", ydoc),
-    [ydoc]
-  );
+  // const persistence = useMemo(
+  //   () => new IndexeddbPersistence("test", ydoc),
+  //   [ydoc]
+  // );
 
-  const session = useSession();
-  useEffect(() => {
-    console.log(session);
-
-    // fetch("api/socket")
-    //   .then((res) => res.json())
-    //   .then((data) => setSocketToken(data.socketToken));
-  }, [session]);
-
-  const provider = useMemo(
-    () =>
-      new HocuspocusProvider({
-        url: "ws://localhost:8080/collaboration/",
-        name: "test",
-        document: ydoc,
-        token: "test",
-      }),
-    [ydoc]
-  );
+  const provider = useMemo(() => {
+    return new HocuspocusProvider({
+      url: "ws://localhost:8080/collaboration/",
+      name: "test",
+      document: ydoc,
+      // Not using token auth, but onAuthenticate hook on server won't fire with a empty string
+      token: "test",
+      onAwarenessChange(data) {
+        console.log(data.states);
+      },
+      parameters: { pageName: "test", pageId: "test" },
+    });
+  }, [ydoc]);
 
   const editor = useEditor({
     extensions: [
@@ -57,7 +53,10 @@ export default function Tiptap() {
       Collaboration.configure({ document: ydoc }),
       CollaborationCursor.configure({
         provider,
-        // user: { name: crypto.randomUUID() },
+        user: {
+          name: session.data?.user?.name,
+          // color: "#000000",
+        },
       }),
       // TODO: Finish TaskItem toggle logic
       // TaskList,
@@ -68,7 +67,6 @@ export default function Tiptap() {
         class: "outline-none",
       },
     },
-    injectCSS: false,
     autofocus: true,
   });
 

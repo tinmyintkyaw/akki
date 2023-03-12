@@ -15,8 +15,6 @@ const NoSSRTiptap = dynamic(() => import("../components/Tiptap"), {
   ssr: false,
 });
 
-const isServer = () => typeof window === "undefined";
-
 export default function Home() {
   return (
     <>
@@ -26,6 +24,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
       <main className={clsx(roboto.className, "flex h-screen w-screen")}>
         <Sidebar />
 

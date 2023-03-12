@@ -44,6 +44,10 @@ const server = Server.configure({
     new Database({
       async fetch(data) {
         console.log("Fetching page");
+        console.log({
+          pageName: data.requestParameters.get("pageName"),
+          pageId: data.requestParameters.get("pageId"),
+        });
 
         const page = await prisma.page.findUnique({
           where: {

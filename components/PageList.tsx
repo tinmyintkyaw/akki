@@ -39,7 +39,7 @@ export default function PageList() {
         className="h-[calc(100dvh-12.5rem)] w-full"
         // className="h-screen w-full"
       >
-        <h2 className="px-4 py-2 text-xs font-semibold">Documents</h2>
+        <h2 className="px-4 py-2 text-xs font-semibold">Pages</h2>
         {sampleDocuments.map((document) => (
           <SidebarMenuLink
             key={document}
@@ -49,6 +49,7 @@ export default function PageList() {
           />
         ))}
       </ScrollArea.Viewport>
+
       <ScrollArea.Scrollbar orientation="vertical">
         <ScrollArea.Thumb className="min-w-[0.5rem] bg-stone-300" />
       </ScrollArea.Scrollbar>
