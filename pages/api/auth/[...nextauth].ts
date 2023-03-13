@@ -1,12 +1,8 @@
 import NextAuth, { AuthOptions } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import DiscordProvider from "next-auth/providers/discord";
-import jwt from "jsonwebtoken";
-import * as crypto from "crypto";
 
 import prisma from "../../../lib/prismadb";
-
-import socketTicket from "../../../types/socket-ticket";
 
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
