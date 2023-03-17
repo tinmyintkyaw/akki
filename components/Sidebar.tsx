@@ -1,48 +1,23 @@
-import Image from "next/image";
-import { useSession } from "next-auth/react";
+import { ReactNode } from "react";
 
-import {
-  HiOutlineMagnifyingGlass,
-  HiOutlineCog6Tooth,
-  HiOutlineDocumentPlus,
-} from "react-icons/hi2";
+import { HiPlus } from "react-icons/hi2";
 
-import { SidebarMenuButton } from "./SidebarMenuItem";
-import PageList from "./PageList";
-import Profile from "./Profile";
+type SidebarProps = {
+  pageListComponent: ReactNode;
+};
 
-export default function Sidebar() {
+export default function Sidebar(props: SidebarProps) {
   return (
     <div
       id="sidebar"
-      className="sticky top-0 hidden h-screen w-72 select-none border-r-2 bg-stone-50 text-sm text-slate-700 md:flex md:flex-col"
+      className="hidden h-screen w-72 select-none border-r-2 bg-stone-200 pt-12 text-sm text-slate-700 md:flex md:flex-col"
     >
-      <a className="flex h-12 w-full items-center gap-2 border-b-2 px-4">
-        <h1 className="text-lg font-medium">Editor</h1>
-      </a>
+      {props.pageListComponent}
 
-      <div className="border-b-2 py-2">
-        <SidebarMenuButton
-          text="Search"
-          icon={HiOutlineMagnifyingGlass}
-          onclick={() => {}}
-        />
-
-        <SidebarMenuButton
-          text="New Page"
-          icon={HiOutlineDocumentPlus}
-          onclick={() => {}}
-        />
-
-        <SidebarMenuButton
-          text="Settings"
-          icon={HiOutlineCog6Tooth}
-          onclick={() => {}}
-        />
-      </div>
-
-      <PageList />
-      <Profile />
+      <button className="flex h-12 w-full items-center gap-2 border-t-2 border-stone-300 px-4 hover:bg-stone-300">
+        <HiPlus className="h-4 w-4" />
+        <p className="line-clamp-1">Add Page</p>
+      </button>
     </div>
   );
 }

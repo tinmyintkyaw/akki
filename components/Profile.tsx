@@ -6,7 +6,7 @@ export default function Profile() {
   const session = useSession();
 
   return (
-    <div className="flex h-12 w-full items-center gap-2 border-t-2 px-4">
+    <a href="#" className="flex h-12 w-full items-center gap-2 border-t-2 px-4">
       {session.data && (
         <>
           <Avatar.Root>
@@ -29,6 +29,6 @@ export default function Profile() {
           </button>
         </>
       )}
-    </div>
+    </a>
   );
 }

@@ -3,49 +3,62 @@ import { HiOutlineDocumentText } from "react-icons/hi2";
 
 import { SidebarMenuLink } from "./SidebarMenuItem";
 
-// Only for testing purposes, will be removed later
-const sampleDocuments = [
-  "Meeting Notes",
+type PageListProps = {
+  pageList: [any]; // TODO: Add type for page & page list
+};
+
+const documentNames = [
+  "Resume",
+  "Cover Letter",
   "Project Proposal",
-  "Conference Agenda",
-  "Budget Spreadsheet",
-  "Marketing Plan",
-  "Research Report",
-  "Training Manual",
-  "Client Contract",
-  "Product Specs",
+  "Budget Plan",
+  "Marketing Strategy",
   "Employee Handbook",
-  "Executive Summary",
-  "Business Plan",
-  "SWOT Analysis",
-  "Case Study",
-  "White Paper",
-  "Press Release",
+  "Product Specifications",
   "Sales Report",
-  "Invoices",
-  "Receipts",
-  "Purchase Order",
-  "Memos",
   "Meeting Minutes",
-  "Agendas",
-  "Performance Reviews",
-  "Job Descriptions",
+  "Training Manual",
+  "Contract Agreement",
+  "Research Findings",
+  "Financial Statement",
+  "Inventory List",
+  "Customer Survey Results",
+  "User Manual",
+  "Job Description",
+  "Project Plan",
+  "Policy Manual",
+  "Press Release",
+  "Annual Report",
+  "Incident Report",
+  "Performance Review Form",
+  "Company Profile",
+  "Marketing Plan",
+  "Business Plan",
+  "Business Proposal",
+  "Business Letter",
 ];
 
-export default function PageList() {
+export default function PageList(props: PageListProps) {
   return (
     <ScrollArea.Root type="hover">
-      <ScrollArea.Viewport
-        className="h-[calc(100dvh-12.5rem)] w-full"
-        // className="h-screen w-full"
-      >
+      <ScrollArea.Viewport className="h-[calc(100vh-6rem)] w-full border-t-2 border-stone-300 pl-2 pr-4">
         <h2 className="px-4 py-2 text-xs font-semibold">Pages</h2>
-        {sampleDocuments.map((document) => (
+
+        {/* {props.pageList.map((page) => (
           <SidebarMenuLink
-            key={document}
-            text={document}
+            key={page.id}
+            text={page.pageName}
             icon={HiOutlineDocumentText}
-            href="#"
+            href={`/${page.id}`}
+          />
+        ))} */}
+
+        {documentNames.map((name) => (
+          <SidebarMenuLink
+            key={name}
+            text={name}
+            href={`/${name}`}
+            icon={HiOutlineDocumentText}
           />
         ))}
       </ScrollArea.Viewport>
