@@ -12,8 +12,8 @@
     "studio": "dotenv -e .env.local -- npx prisma studio"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.13",
     "@hocuspocus/extension-database": "^1.1.1",
-    "@hocuspocus/extension-sqlite": "^1.1.1",
     "@hocuspocus/provider": "^1.1.1",
     "@hocuspocus/server": "^1.1.1",
     "@hocuspocus/transformer": "^1.1.1",
@@ -58,7 +58,6 @@
     "express-ws": "^5.0.2",
     "http-proxy": "^1.18.1",
     "http-proxy-middleware": "^2.0.6",
-    "jsonwebtoken": "^9.0.0",
     "next": "13.1.6",
     "next-auth": "^4.20.1",
     "nodemon": "^2.0.21",

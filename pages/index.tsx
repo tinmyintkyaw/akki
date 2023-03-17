@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Head from "next/head";
 import clsx from "clsx";
 import dynamic from "next/dynamic";
@@ -17,6 +17,9 @@ import Profile from "@/components/Profile";
 import EditorPane from "@/components/EditorPane";
 import EditorToolbar from "@/components/EditorToolbar";
 import { MdMenu } from "react-icons/md";
+import ToolbarButton from "@/components/ToolbarButton";
+import { HiChevronDoubleLeft } from "react-icons/hi2";
+import { RxHamburgerMenu } from "react-icons/rx";
 
 const NoSSRTiptap = dynamic(() => import("../components/Tiptap"), {
   ssr: false,
@@ -49,6 +52,8 @@ export default function Home() {
     },
   });
 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
   return (
     <>
       <Head>
@@ -58,33 +63,20 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Collapsible.Root asChild>
-        <main className={clsx(roboto.className, "relative h-screen w-screen")}>
-          {pageListQuery.data && (
-            <>
-              <EditorToolbar
-                sidebarTrigger={
-                  <Collapsible.CollapsibleTrigger className="hover:bg-stone-300">
-                    <MdMenu className="h-6 w-5" />
-                  </Collapsible.CollapsibleTrigger>
-                }
-              />
+      <main className={clsx(roboto.className, "relative h-screen w-screen")}>
+        <EditorToolbar setIsOpen={() => setIsSidebarOpen((old) => !old)} />
 
-              <div className="flex h-screen">
-                <Collapsible.CollapsibleContent asChild>
-                  <Sidebar
-                    pageListComponent={
-                      <PageList pageList={pageListQuery.data} />
-                    }
-                  />
-                </Collapsible.CollapsibleContent>
+        {pageListQuery.data && (
+          <div className="flex h-screen">
+            <Sidebar
+              isOpen={isSidebarOpen}
+              pageListComponent={<PageList pageList={pageListQuery.data} />}
+            />
 
-                <EditorPane editorComponent={<NoSSRTiptap />} />
-              </div>
-            </>
-          )}
-        </main>
-      </Collapsible.Root>
+            <EditorPane editorComponent={<NoSSRTiptap />} />
+          </div>
+        )}
+      </main>
 
       <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
     </>
