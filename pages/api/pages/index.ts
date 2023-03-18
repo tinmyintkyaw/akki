@@ -3,8 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth/next";
 import createPageTree from "@/utils/createPageTree";
-
-const prisma = new PrismaClient();
+import prisma from "@/lib/prismadb";
 
 export default async function pagesHandler(
   req: NextApiRequest,

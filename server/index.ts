@@ -2,10 +2,9 @@ import express from "express";
 import expressWebsockets from "express-ws";
 import { Server } from "@hocuspocus/server";
 import { createProxyMiddleware } from "http-proxy-middleware";
-
-import { PrismaClient } from "@prisma/client";
 import { Database } from "@hocuspocus/extension-database";
-const prisma = new PrismaClient();
+
+import prisma from "../lib/prismadb";
 
 // Configure hocuspocus
 const server = Server.configure({

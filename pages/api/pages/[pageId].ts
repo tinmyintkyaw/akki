@@ -2,8 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { PrismaClient } from "@prisma/client";
 import { authOptions } from "../auth/[...nextauth]";
-
-const prisma = new PrismaClient();
+import prisma from "@/lib/prismadb";
 
 export default async function pageHandler(
   req: NextApiRequest,
@@ -20,6 +19,7 @@ export default async function pageHandler(
 
   if (req.method === "PUT") {
     const { pageName, parentPageId } = req.body;
+    // TODO: Addd ability to change parent page & child pages
 
     try {
       const data = await prisma.page.update({
