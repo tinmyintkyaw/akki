@@ -4,6 +4,7 @@ import { getServerSession, Session } from "next-auth";
 import Head from "next/head";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
+import clsx from "clsx";
 
 import Tiptap from "@/components/Tiptap";
 import Sidebar from "@/components/Sidebar";
@@ -14,6 +15,7 @@ import EditorToolbar from "@/components/EditorToolbar";
 import { authOptions } from "../api/auth/[...nextauth]";
 
 import { usePageQuery } from "@/hooks/queryHooks";
+import { sourceSans } from "@/pages/_app";
 
 const NoSSRTiptap = dynamic(() => import("@/components/Tiptap"), {
   ssr: false,
@@ -36,7 +38,9 @@ export default function App() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="relative h-screen w-screen">
+      <main
+        className={clsx(sourceSans.className, "relative h-screen w-screen")}
+      >
         <EditorToolbar setIsOpen={() => setIsSidebarOpen((old) => !old)} />
 
         <div className="flex h-screen">

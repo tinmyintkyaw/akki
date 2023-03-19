@@ -1,10 +1,15 @@
+import { useState } from "react";
 import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { Source_Sans_3 } from "@next/font/google";
 
 import "@/styles/globals.css";
-import { useState } from "react";
+
+export const sourceSans = Source_Sans_3({
+  subsets: ["latin"],
+});
 
 export default function App({
   Component,

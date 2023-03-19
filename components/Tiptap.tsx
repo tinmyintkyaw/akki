@@ -49,9 +49,9 @@ export default function Tiptap(props: TiptapProps) {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({ history: false }),
-      // CustomHeading,
-      // CustomParagraph,
-      // CustomBlockquote,
+      CustomHeading,
+      CustomParagraph,
+      CustomBlockquote,
       Collaboration.configure({ document: ydoc }),
       CollaborationCursor.configure({
         provider: provider,
