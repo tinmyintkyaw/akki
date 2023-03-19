@@ -44,15 +44,11 @@ const server = Server.configure({
       async fetch(data) {
         console.log("Fetching page");
 
-        const pageId = data.requestParameters.get("pageId");
-
-        if (!pageId) return null;
-
         const page = await prisma.page.findUnique({
           where: {
             id_userId: {
               userId: data.context.userId,
-              id: pageId,
+              id: data.documentName,
             },
           },
         });
@@ -65,23 +61,15 @@ const server = Server.configure({
       async store(data) {
         console.log("Storing page");
 
-        const pageId = data.requestParameters.get("pageId");
-
-        if (!pageId) return null;
-
-        await prisma.page.upsert({
+        await prisma.page.update({
           where: {
             id_userId: {
               userId: data.context.userId,
-              id: pageId,
+              id: data.documentName,
             },
           },
-          create: {
-            pageName: data.documentName,
-            ydoc: data.state,
-            userId: data.context.userId,
-          },
-          update: {
+
+          data: {
             ydoc: data.state,
             modifiedAt: new Date(),
           },
