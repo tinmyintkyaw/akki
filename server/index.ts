@@ -44,60 +44,58 @@ const server = Server.configure({
       async fetch(data) {
         console.log("Fetching page");
 
-        const page = await prisma.page.findUnique({
-          where: {
-            id_userId: {
-              userId: data.context.userId,
-              id: data.documentName,
+        try {
+          const page = await prisma.page.findUnique({
+            where: {
+              id_userId: {
+                userId: data.context.userId,
+                id: data.documentName,
+              },
             },
-          },
-        });
+          });
+          if (!page) return null;
 
-        if (!page) return null;
-
-        return page.ydoc;
+          return page.ydoc;
+        } catch (err) {
+          console.log(err);
+        }
+        return null;
       },
 
       async store(data) {
         console.log("Storing page");
 
-        await prisma.page.update({
-          where: {
-            id_userId: {
-              userId: data.context.userId,
-              id: data.documentName,
+        try {
+          await prisma.page.update({
+            where: {
+              id_userId: {
+                userId: data.context.userId,
+                id: data.documentName,
+              },
             },
-          },
 
-          data: {
-            ydoc: data.state,
-            modifiedAt: new Date(),
-          },
-        });
+            data: {
+              ydoc: data.state,
+              modifiedAt: new Date(),
+            },
+          });
+        } catch (err) {
+          console.log(err);
+        }
       },
     }),
   ],
 });
 
-// Setup your express instance using the express-ws extension
+// Setup express instance using the express-ws extension
 const { app } = expressWebsockets(express());
 
 // Add a websocket route for hocuspocus
-// Note: make sure to include a parameter for the document name.
-// You can set any contextual data like in the onConnect hook
-// and pass it to the handleConnection method.
 app.ws("/collaboration/:document", (websocket, request) => {
-  const context = {
-    user: {
-      id: 1234,
-      name: "Jane",
-    },
-  };
-  // console.log("New connection for document", request.params.document);
-
-  server.handleConnection(websocket, request, request.params.document, context);
+  server.handleConnection(websocket, request, request.params.document);
 });
 
+// Add a proxy route for the nextjs server
 app.use(
   "/",
   createProxyMiddleware({
