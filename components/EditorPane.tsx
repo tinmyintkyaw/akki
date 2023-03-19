@@ -17,7 +17,7 @@ export default function EditorPane(props: EditorPaneProps) {
         </ScrollArea.Viewport>
 
         <ScrollArea.Scrollbar orientation="vertical" className="select-none">
-          <ScrollArea.Thumb className="min-w-[0.5rem] bg-stone-400" />
+          <ScrollArea.Thumb className="min-w-[0.5rem] bg-stone-400 hover:bg-stone-500" />
         </ScrollArea.Scrollbar>
       </ScrollArea.Root>
     </div>

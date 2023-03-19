@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 
 import * as Y from "yjs";
@@ -21,10 +21,14 @@ import CustomTaskItem from "@/tiptap/CustomTaskItem";
 
 import SelectMenu from "./BubbleMenu";
 
-export default function Tiptap() {
+type TiptapProps = {
+  pageId: string;
+};
+
+export default function Tiptap(props: TiptapProps) {
   const session = useSession();
 
-  const ydoc = useMemo(() => new Y.Doc(), []);
+  let ydoc = useMemo(() => new Y.Doc(), []);
 
   // const persistence = useMemo(
   //   () => new IndexeddbPersistence("test", ydoc),
@@ -34,28 +38,23 @@ export default function Tiptap() {
   const provider = useMemo(() => {
     return new HocuspocusProvider({
       url: "ws://localhost:8080/collaboration/",
-      name: "test",
+      name: props.pageId,
       document: ydoc,
       // Not using token auth, but onAuthenticate hook on server won't fire with a empty string
       token: "test",
-      onAwarenessChange(data) {
-        console.log(data.states);
-      },
-      parameters: {
-        pageId: "clf3bqw8c0001xd53wk865adb",
-      },
+      connect: false,
     });
-  }, [ydoc]);
+  }, [ydoc, props.pageId]);
 
   const editor = useEditor({
     extensions: [
       StarterKit.configure({ history: false }),
-      CustomHeading,
-      CustomParagraph,
-      CustomBlockquote,
+      // CustomHeading,
+      // CustomParagraph,
+      // CustomBlockquote,
       Collaboration.configure({ document: ydoc }),
       CollaborationCursor.configure({
-        provider,
+        provider: provider,
         user: {
           name: session.data?.user?.name,
         },
@@ -71,6 +70,17 @@ export default function Tiptap() {
     },
     autofocus: true,
   });
+
+  useEffect(() => {
+    provider.connect();
+
+    // On unmount, sync and disconnect
+    return () => {
+      !provider.hasUnsyncedChanges && provider.forceSync();
+      provider.disconnect();
+      provider.destroy();
+    };
+  }, [provider]);
 
   return (
     <>
