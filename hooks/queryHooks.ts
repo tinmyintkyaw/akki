@@ -7,10 +7,12 @@ const getPageList = async () => {
 };
 
 const createPage = async (pageName: string, parentPageId: string | null) => {
-  const hasParentPage = parentPageId !== null;
   const response = await fetch("/api/pages", {
     method: "POST",
-    body: JSON.stringify({ pageName, hasParentPage, parentPageId }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ pageName, parentPageId }),
   });
   if (!response.ok) throw new Error("Failed to create page");
   return response.json();
@@ -23,6 +25,9 @@ const updatePage = async (
 ) => {
   const response = await fetch(`/api/pages/${id}`, {
     method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({ pageName, parentPageId }),
   });
   if (!response.ok) throw new Error("Failed to update page");
@@ -38,7 +43,7 @@ const getPage = async (id: string) => {
 const deletePage = async (id: string) => {
   const response = await fetch(`/api/pages/${id}`, { method: "DELETE" });
   if (!response.ok) throw new Error("Failed to delete page");
-  return response.json();
+  return response;
 };
 
 export const usePageListQuery = () => {
@@ -83,6 +88,9 @@ export const useUpdatePageMutation = (
 export const useDeletePageMutation = (id: string, queryClient: QueryClient) => {
   return useMutation({
     mutationFn: () => deletePage(id),
+    onMutate: () => {
+      queryClient.removeQueries({ queryKey: ["page", id] });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pageList"] });
     },
