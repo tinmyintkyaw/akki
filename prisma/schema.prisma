@@ -58,7 +58,7 @@ model VerificationToken {
 
 model Page {
   id           String   @id @default(cuid())
-  pageName     String   @unique
+  pageName     String
   ydoc         Bytes?
   createdAt    DateTime @default(now())
   modifiedAt   DateTime @default(now())
