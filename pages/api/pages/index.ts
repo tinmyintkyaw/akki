@@ -1,3 +1,4 @@
+import * as Y from "yjs";
 import { PrismaClient } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
@@ -16,11 +17,13 @@ export default async function pagesHandler(
   if (req.method === "POST") {
     const { pageName, parentPageId } = req.body;
 
+    console.log(typeof pageName);
+
     if (!pageName || typeof pageName !== "string")
       return res.status(400).json({ message: "Bad Request" });
 
-    if (!parentPageId || typeof parentPageId !== "string")
-      return res.status(400).json({ message: "Bad Request" });
+    if (parentPageId && typeof parentPageId !== "string")
+      return res.status(400).json({ message: "Error" });
 
     try {
       const data = await prisma.page.create({
@@ -28,31 +31,45 @@ export default async function pagesHandler(
           userId: session.accountId,
           pageName: pageName,
           parentPageId: parentPageId,
+          ydoc: Buffer.from(Y.encodeStateAsUpdate(new Y.Doc())),
+        },
+        select: {
+          id: true,
+          pageName: true,
+          parentPageId: true,
+          createdAt: true,
+          modifiedAt: true,
         },
       });
 
-      res.status(201).json(data);
+      return res.status(201).json(data);
     } catch (err) {
-      res.status(500).json({ message: "Internal Server Error" });
+      return res.status(500).json({ message: err });
     }
   }
 
-  try {
-    const data = await prisma.page.findMany({
-      where: {
-        userId: session.accountId,
-      },
-      select: {
-        id: true,
-        pageName: true,
-        parentPageId: true,
-      },
-    });
+  if (req.method === "GET") {
+    try {
+      const data = await prisma.page.findMany({
+        where: {
+          userId: session.accountId,
+        },
+        select: {
+          id: true,
+          pageName: true,
+          parentPageId: true,
+          createdAt: true,
+          modifiedAt: true,
+        },
+      });
 
-    const pageTree = createPageTree(data, null);
+      const pageTree = createPageTree(data, null);
 
-    res.status(200).json(pageTree);
-  } catch (err) {
-    res.status(500).json({ message: "Internal Server Error" });
+      return res.status(200).json(data);
+    } catch (err) {
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
   }
+
+  return res.status(405).json({ message: "Method Not Allowed" });
 }

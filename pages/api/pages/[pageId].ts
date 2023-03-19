@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
-import { PrismaClient } from "@prisma/client";
 import { authOptions } from "../auth/[...nextauth]";
 import prisma from "@/lib/prismadb";
 
@@ -19,7 +18,12 @@ export default async function pageHandler(
 
   if (req.method === "PUT") {
     const { pageName, parentPageId } = req.body;
-    // TODO: Addd ability to change parent page & child pages
+
+    if (!pageName || typeof pageName !== "string")
+      return res.status(400).json({ message: "Bad Request" });
+
+    if (parentPageId && typeof parentPageId !== "string")
+      return res.status(400).json({ message: "Bad Request" });
 
     try {
       const data = await prisma.page.update({
@@ -32,12 +36,20 @@ export default async function pageHandler(
         data: {
           pageName: pageName,
           parentPageId: parentPageId,
+          modifiedAt: new Date(),
+        },
+        select: {
+          id: true,
+          pageName: true,
+          parentPageId: true,
+          createdAt: true,
+          modifiedAt: true,
         },
       });
 
-      res.status(200).json(data);
+      return res.status(200).json(data);
     } catch (err) {
-      res.status(500).json({ message: "Internal Server Error" });
+      return res.status(500).json({ message: "Internal Server Error" });
     }
   }
 
@@ -50,28 +62,46 @@ export default async function pageHandler(
             id: pageId,
           },
         },
+        select: {
+          id: true,
+          pageName: true,
+          parentPageId: true,
+          createdAt: true,
+          modifiedAt: true,
+        },
       });
 
-      res.status(204).json(data);
+      return res.status(204).end();
     } catch (err) {
-      res.status(500).json({ message: "Internal Server Error" });
+      return res.status(500).json({ message: "Internal Server Error" });
     }
   }
 
-  try {
-    const data = await prisma.page.findUnique({
-      where: {
-        id_userId: {
-          userId: session.accountId,
-          id: pageId,
+  if (req.method === "GET") {
+    try {
+      const data = await prisma.page.findUnique({
+        where: {
+          id_userId: {
+            userId: session.accountId,
+            id: pageId,
+          },
         },
-      },
-    });
+        select: {
+          id: true,
+          pageName: true,
+          parentPageId: true,
+          createdAt: true,
+          modifiedAt: true,
+        },
+      });
 
-    if (!data) return res.status(404).json({ message: "Not Found" });
+      if (!data) return res.status(404).json({ message: "Not Found" });
 
-    res.status(200).json(data);
-  } catch (err) {
-    res.status(500).json({ message: "Internal Server Error" });
+      return res.status(200).json(data);
+    } catch (err) {
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
   }
+
+  return res.status(405).json({ message: "Method Not Allowed" });
 }
