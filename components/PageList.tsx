@@ -3,6 +3,7 @@ import * as ScrollArea from "@radix-ui/react-scroll-area";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { HiOutlineDocumentText } from "react-icons/hi2";
+import SidebarItemContextMenu from "./SidebarItemContextMenu";
 
 import SidebarMenuLink from "./SidebarMenuLink";
 
