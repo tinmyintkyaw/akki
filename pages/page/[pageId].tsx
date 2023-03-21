@@ -51,7 +51,7 @@ export default function App() {
 
           {pageQuery.data && (
             <EditorPane
-              key={pageId as string}
+              key={pageQuery.data.id}
               editorComponent={<NoSSRTiptap pageId={pageQuery.data.id} />}
             />
           )}

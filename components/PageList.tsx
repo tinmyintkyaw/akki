@@ -24,7 +24,7 @@ export default function PageList(props: PageListProps) {
         {pageListQuery.isError && <p>Error</p>}
 
         {pageListQuery.data &&
-          pageListQuery.data.map((page) => (
+          pageListQuery.data.map((page: any) => (
             <SidebarMenuLink
               key={page.id}
               pageId={page.id}

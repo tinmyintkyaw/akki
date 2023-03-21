@@ -26,8 +26,8 @@ const SidebarMenuLink = (props: SidebarMenuLinkProps) => {
   const queryClient = useQueryClient();
 
   const createPageMutation = useCreatePageMutation(
-    "Untitled Page",
-    props.parentPageId,
+    "Untitled",
+    props.pageId,
     queryClient
   );
 
@@ -39,14 +39,17 @@ const SidebarMenuLink = (props: SidebarMenuLinkProps) => {
         <div className="group flex h-8 items-center gap-2 rounded-sm pl-2 hover:bg-stone-200">
           <Link
             href={`/page/${props.pageId}`}
-            className="flex flex-grow items-center gap-2"
+            className="flex h-full flex-grow items-center gap-2"
           >
             {props.icon && <props.icon className="h-4 w-4 min-w-[1rem]" />}
 
             <p className="flex-grow line-clamp-1">{props.text}</p>
           </Link>
 
-          <button className="h-full rounded-sm px-2 opacity-0 hover:bg-stone-300 focus:outline-none group-hover:opacity-100">
+          <button
+            onClick={() => createPageMutation.mutate()}
+            className="h-full rounded-sm px-2 opacity-0 hover:bg-stone-300 focus:outline-none group-hover:opacity-100"
+          >
             <HiPlus className="h-4 w-4" />
           </button>
         </div>
@@ -61,32 +64,33 @@ const SidebarMenuLink = (props: SidebarMenuLinkProps) => {
         >
           <RadixContextMenu.Item asChild>
             <MenuButton
+              icon={RxFilePlus}
+              text="New Page"
+              onClick={() => createPageMutation.mutate()}
+            />
+          </RadixContextMenu.Item>
+
+          <RadixContextMenu.Separator className="my-1 h-[1px] bg-stone-300" />
+
+          <RadixContextMenu.Item asChild>
+            <MenuButton
               icon={RxStar}
               text="Add To Favourites"
               onClick={() => {}}
-              key={"toggleFavourite"}
             />
           </RadixContextMenu.Item>
 
           <RadixContextMenu.Item asChild>
-            <MenuButton
-              icon={RxFilePlus}
-              text="Rename"
-              onClick={() => {}}
-              key={"rename"}
-            />
+            <MenuButton icon={RxFilePlus} text="Rename" onClick={() => {}} />
           </RadixContextMenu.Item>
 
           <RadixContextMenu.Item asChild>
             <MenuButton
               icon={RxTrash}
               text="Delete Page"
-              onClick={() => {}}
-              key={"deletePage"}
+              onClick={() => deletePageMutation.mutate()}
             />
           </RadixContextMenu.Item>
-
-          {/* <RadixDropdown.Separator className="my-1 h-[1px] bg-stone-300" /> */}
         </RadixContextMenu.Content>
       </RadixContextMenu.Portal>
     </RadixContextMenu.Root>

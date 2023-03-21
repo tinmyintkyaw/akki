@@ -35,8 +35,6 @@ type TiptapProps = {
 export default function Tiptap(props: TiptapProps) {
   const session = useSession();
 
-  const router = useRouter();
-
   let ydoc = useMemo(() => new Y.Doc(), []);
 
   // const persistence = useMemo(
@@ -57,7 +55,7 @@ export default function Tiptap(props: TiptapProps) {
 
   const editor = useEditor({
     extensions: [
-      // StarterKit.configure({ history: false }),
+      StarterKit.configure({ history: false }),
       Text,
       CustomDocument,
       Title,

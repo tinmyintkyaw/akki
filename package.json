@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "concurrently 'next dev' 'dotenv -e .env.local -- npm run server'",
     "build": "next build",
-    "start": "next start",
+    "start": "concurrently 'next start' 'dotenv -e .env.local -- npm run server'",
     "lint": "next lint",
     "server": "ts-node --project tsconfig.server.json server/index.ts",
     "migrate:dev": "dotenv -e .env.local -- npx prisma migrate dev",
@@ -44,7 +44,7 @@
     "@tiptap/extension-task-list": "2.0.0-beta.218",
     "@tiptap/extension-text": "2.0.0-beta.218",
     "@tiptap/pm": "^2.0.0-beta.220",
-    "@tiptap/react": "2.0.0-beta.218",
+    "@tiptap/react": "^2.0.0-beta.218",
     "@tiptap/starter-kit": "^2.0.0-beta.218",
     "@types/express-ws": "^3.0.1",
     "@types/jsonwebtoken": "^9.0.1",
