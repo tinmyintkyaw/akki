@@ -5,6 +5,7 @@ import { createProxyMiddleware } from "http-proxy-middleware";
 import { Database } from "@hocuspocus/extension-database";
 
 import prisma from "../lib/prismadb";
+import { TiptapTransformer } from "@hocuspocus/transformer";
 
 // Configure hocuspocus
 const server = Server.configure({
@@ -66,6 +67,19 @@ const server = Server.configure({
         console.log("Storing page");
 
         try {
+          // // Convert Ydoc into prosemirror JSON format for accessing the text
+          // // content of the title node later on
+          // const prosemirrorJSON = TiptapTransformer.fromYdoc(data.document);
+
+          // // A not very clean way to access the text of the very first node
+          // // in the doc, which is title node in the schema
+          // const editorTitleNode = prosemirrorJSON.default.content[0];
+
+          // const dbPageName =
+          //   editorTitleNode.content.length > 0
+          //     ? editorTitleNode.content[0].text
+          //     : "Untitled";
+
           await prisma.page.update({
             where: {
               id_userId: {
@@ -75,6 +89,8 @@ const server = Server.configure({
             },
 
             data: {
+              // We want the text of the title node to be in sync with pageName stored in the DB
+              // pageName: dbPageName,
               ydoc: data.state,
               modifiedAt: new Date(),
             },

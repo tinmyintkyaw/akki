@@ -80,7 +80,8 @@ export const useUpdatePageMutation = (
   return useMutation({
     mutationFn: () => updatePage(id, pageName, parentPageId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["pageList", ["page", id]] });
+      queryClient.invalidateQueries({ queryKey: ["pageList"] });
+      queryClient.invalidateQueries({ queryKey: ["page", id] });
     },
   });
 };
