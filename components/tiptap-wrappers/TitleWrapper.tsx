@@ -32,7 +32,7 @@ export default function BlockquoteWrapper(props: NodeViewProps) {
   }, [props.node.textContent, pageQuery, queryClient, updatePageMutation]);
 
   return (
-    <NodeViewWrapper>
+    <NodeViewWrapper className="not-prose mt-4 mb-6 text-4xl font-medium">
       <NodeViewContent as="h1" />
     </NodeViewWrapper>
   );

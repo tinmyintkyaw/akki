@@ -23,10 +23,10 @@ import CustomTaskItem from "@/tiptap/CustomTaskItem";
 
 import SelectMenu from "./BubbleMenu";
 
-import { usePageListQuery, usePageQuery } from "@/hooks/queryHooks";
 import Text from "@tiptap/extension-text";
 import { Title } from "@/tiptap/Title";
 import Heading from "@tiptap/extension-heading";
+import Placeholder from "@tiptap/extension-placeholder";
 
 type TiptapProps = {
   pageId: string;
@@ -35,12 +35,7 @@ type TiptapProps = {
 export default function Tiptap(props: TiptapProps) {
   const session = useSession();
 
-  const [pageTitle, setPageTitle] = useState("");
-
   const router = useRouter();
-  const queryClient = useQueryClient();
-  const pageListQuery = usePageListQuery();
-  const pageQuery = usePageQuery(router.query.pageId as string);
 
   let ydoc = useMemo(() => new Y.Doc(), []);
 
@@ -66,8 +61,16 @@ export default function Tiptap(props: TiptapProps) {
       Text,
       CustomDocument,
       Title,
-      Heading.configure({ levels: [1, 2, 3] }),
-      // CustomHeading.configure({ levels: [1, 2, 3] }),
+      Placeholder.configure({
+        placeholder(PlaceholderProps) {
+          if (PlaceholderProps.node.type.name === "title") {
+            return "Untitled";
+          }
+          return "placeholder";
+        },
+      }),
+      // Heading.configure({ levels: [1, 2, 3] }),
+      CustomHeading.configure({ levels: [1, 2, 3] }),
       CustomParagraph,
       CustomBlockquote,
       Collaboration.configure({ document: ydoc }),
