@@ -39,7 +39,10 @@ export default function App() {
       </Head>
 
       <main
-        className={clsx(sourceSans.className, "relative h-screen w-screen")}
+        className={clsx(
+          // sourceSans.className,
+          "relative h-screen w-screen"
+        )}
       >
         <EditorToolbar setIsOpen={() => setIsSidebarOpen((old) => !old)} />
 

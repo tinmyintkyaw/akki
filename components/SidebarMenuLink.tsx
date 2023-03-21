@@ -6,17 +6,23 @@ import {
 } from "@/hooks/queryHooks";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
 import { IconType } from "react-icons";
-import { HiPlus } from "react-icons/hi2";
+import * as RadixContextMenu from "@radix-ui/react-context-menu";
+import MenuButton from "@/components/MenuButton";
+import clsx from "clsx";
+import { RxFilePlus, RxStar, RxTrash } from "react-icons/rx";
+import { HiEllipsisHorizontal, HiPlus } from "react-icons/hi2";
 
-export default function SidebarMenuLink(props: {
+import SidebarItemDropdown from "@/components/SidebarItemDropdown";
+
+type SidebarMenuLinkProps = {
   pageId: string;
   parentPageId: string | null;
   text: string;
   icon: IconType;
-}) {
+};
+
+const SidebarMenuLink = (props: SidebarMenuLinkProps) => {
   const queryClient = useQueryClient();
 
   const createPageMutation = useCreatePageMutation(
@@ -28,25 +34,63 @@ export default function SidebarMenuLink(props: {
   const deletePageMutation = useDeletePageMutation(props.pageId, queryClient);
 
   return (
-    <div className="group flex h-8 items-center gap-2 rounded-sm hover:bg-stone-200">
-      <Link
-        href={`/page/${props.pageId}`}
-        className="flex flex-grow items-center p-2"
-      >
-        {props.icon && <props.icon className="h-4 w-4" />}
-        <p className="flex-grow line-clamp-1">{props.text}</p>
-      </Link>
-      <button
-        onClick={() => {
-          // deletePageMutation.mutate();
-          // if (router.query.pageId !== props.pageId) return;
-          // // TODO: redirect to the last opened page
-          // router.push(`/page/clf3bqw8c0001xd53wk865adb`);
-        }}
-        className="rounded-sm p-[2px] opacity-0 hover:bg-stone-300 group-hover:opacity-100"
-      >
-        <HiPlus className="h-4 w-4" />
-      </button>
-    </div>
+    <RadixContextMenu.Root>
+      <RadixContextMenu.Trigger asChild>
+        <div className="group flex h-8 items-center gap-2 rounded-sm pl-2 hover:bg-stone-200">
+          <Link
+            href={`/page/${props.pageId}`}
+            className="flex flex-grow items-center gap-2"
+          >
+            {props.icon && <props.icon className="h-4 w-4 min-w-[1rem]" />}
+
+            <p className="flex-grow line-clamp-1">{props.text}</p>
+          </Link>
+
+          <button className="h-full rounded-sm px-2 opacity-0 hover:bg-stone-300 focus:outline-none group-hover:opacity-100">
+            <HiPlus className="h-4 w-4" />
+          </button>
+        </div>
+      </RadixContextMenu.Trigger>
+
+      <RadixContextMenu.Portal>
+        <RadixContextMenu.Content
+          className={clsx(
+            // sourceSans.className,
+            "z-50 flex w-60 flex-col rounded border border-stone-200 bg-stone-50 p-1 text-sm shadow-[0_3px_10px_rgb(0,0,0,0.2)]"
+          )}
+        >
+          <RadixContextMenu.Item asChild>
+            <MenuButton
+              icon={RxStar}
+              text="Add To Favourites"
+              onClick={() => {}}
+              key={"toggleFavourite"}
+            />
+          </RadixContextMenu.Item>
+
+          <RadixContextMenu.Item asChild>
+            <MenuButton
+              icon={RxFilePlus}
+              text="Rename"
+              onClick={() => {}}
+              key={"rename"}
+            />
+          </RadixContextMenu.Item>
+
+          <RadixContextMenu.Item asChild>
+            <MenuButton
+              icon={RxTrash}
+              text="Delete Page"
+              onClick={() => {}}
+              key={"deletePage"}
+            />
+          </RadixContextMenu.Item>
+
+          {/* <RadixDropdown.Separator className="my-1 h-[1px] bg-stone-300" /> */}
+        </RadixContextMenu.Content>
+      </RadixContextMenu.Portal>
+    </RadixContextMenu.Root>
   );
-}
+};
+
+export default SidebarMenuLink;

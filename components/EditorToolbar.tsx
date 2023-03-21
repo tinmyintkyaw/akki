@@ -1,9 +1,18 @@
+import { usePageQuery } from "@/hooks/queryHooks";
+import { useRouter } from "next/router";
+import * as RadixDropdown from "@radix-ui/react-dropdown-menu";
+import clsx from "clsx";
+
 import {
   RxMagnifyingGlass,
   RxDotsHorizontal,
   RxHamburgerMenu,
 } from "react-icons/rx";
-import ToolbarButton from "./ToolbarButton";
+
+import ToolbarButton from "@/components/ToolbarButton";
+import ToolbarDropdown from "@/components/ToolbarDropdown";
+import MenuButton from "@/components/MenuButton";
+import { sourceSans } from "@/pages/_app";
 
 type EditorToolbarProps = {
   setIsOpen: () => void;
@@ -17,8 +26,10 @@ export default function EditorToolbar(props: EditorToolbarProps) {
     >
       <ToolbarButton icon={RxHamburgerMenu} onClick={props.setIsOpen} />
       <ToolbarButton icon={RxMagnifyingGlass} onClick={() => {}} />
+
       <div className="flex-grow" />
-      <ToolbarButton icon={RxDotsHorizontal} onClick={() => {}} />
+
+      <ToolbarDropdown trigger={<ToolbarButton icon={RxDotsHorizontal} />} />
     </div>
   );
 }

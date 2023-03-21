@@ -61,6 +61,9 @@ export default async function pagesHandler(
           createdAt: true,
           modifiedAt: true,
         },
+        orderBy: {
+          createdAt: "asc",
+        },
       });
 
       const pageTree = createPageTree(data, null);
