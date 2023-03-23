@@ -24,7 +24,7 @@ export default function Sidebar(props: SidebarProps) {
     <Transition
       show={props.isOpen}
       id="sidebar"
-      className="fixed z-10 flex h-screen w-screen select-none flex-col border-r-2 bg-stone-100 pt-12 text-sm text-slate-700 shadow-lg md:static md:w-80"
+      className="fixed z-10 flex h-screen w-screen select-none flex-col border-r-2 bg-stone-100 pt-12 text-sm text-slate-700 shadow-lg md:static md:w-72"
       enter="transition ease-in-out duration-300"
       enterFrom="transform -translate-x-full"
       enterTo="transform translate-x-0"

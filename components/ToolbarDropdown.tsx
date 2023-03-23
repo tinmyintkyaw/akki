@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import * as RadixDropdown from "@radix-ui/react-dropdown-menu";
 
-import { sourceSans } from "@/pages/_app";
+import { sourceSans, inter } from "@/pages/_app";
 import MenuButton from "@/components/MenuButton";
 import { RxFilePlus, RxStar, RxTrash } from "react-icons/rx";
 import { useQueryClient } from "@tanstack/react-query";
@@ -30,7 +30,7 @@ export default function ToolbarDropdown(props: ToolbarDropdownProps) {
           align="end"
           alignOffset={10}
           className={clsx(
-            // sourceSans.className,
+            inter.className,
             "flex w-60 flex-col rounded border border-stone-200 bg-stone-50 p-1 text-sm shadow-[0_3px_10px_rgb(0,0,0,0.2)]"
           )}
         >

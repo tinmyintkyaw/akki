@@ -13,7 +13,7 @@ const MenuButton = forwardRef<HTMLButtonElement, MenuButtonProps>(
       <button
         {...props}
         ref={ref}
-        className="group flex h-8 w-full items-center gap-2 rounded-sm px-2 hover:bg-stone-200 focus:bg-stone-200 focus:outline-none"
+        className="group flex h-8 w-full items-center gap-2 rounded-sm px-2 text-sm hover:bg-stone-200 focus:bg-stone-200 focus:outline-none"
       >
         {props.icon && <props.icon className="h-4 w-4" />}
         <p className="flex-grow text-start line-clamp-1">{props.text}</p>

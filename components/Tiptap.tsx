@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
-import { useRouter } from "next/router";
 
 import * as Y from "yjs";
 import { IndexeddbPersistence } from "y-indexeddb";
@@ -8,7 +7,6 @@ import { HocuspocusProvider } from "@hocuspocus/provider";
 
 import clsx from "clsx";
 import { useSession, getSession } from "next-auth/react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { StarterKit } from "@tiptap/starter-kit";
 import BulletList from "@tiptap/extension-bullet-list";
 import TaskList from "@tiptap/extension-task-list";
@@ -25,7 +23,6 @@ import SelectMenu from "./BubbleMenu";
 
 import Text from "@tiptap/extension-text";
 import { Title } from "@/tiptap/Title";
-import Heading from "@tiptap/extension-heading";
 import Placeholder from "@tiptap/extension-placeholder";
 
 type TiptapProps = {
@@ -47,8 +44,7 @@ export default function Tiptap(props: TiptapProps) {
       url: "ws://localhost:8080/collaboration/",
       name: props.pageId,
       document: ydoc,
-      // Not using token auth, but onAuthenticate hook on server won't fire with a empty string
-      token: "test",
+      token: "test", // Not using token auth, but onAuthenticate hook on server won't fire with a empty string
       connect: false,
     });
   }, [props.pageId, ydoc]);
@@ -67,7 +63,6 @@ export default function Tiptap(props: TiptapProps) {
           return "placeholder";
         },
       }),
-      // Heading.configure({ levels: [1, 2, 3] }),
       CustomHeading.configure({ levels: [1, 2, 3] }),
       CustomParagraph,
       CustomBlockquote,
@@ -87,7 +82,6 @@ export default function Tiptap(props: TiptapProps) {
         class: "outline-none",
       },
     },
-    autofocus: true,
   });
 
   useEffect(() => {
@@ -99,7 +93,7 @@ export default function Tiptap(props: TiptapProps) {
       provider.disconnect();
       provider.destroy();
     };
-  }, [provider]);
+  }, [provider, editor]);
 
   return (
     <>
@@ -107,7 +101,7 @@ export default function Tiptap(props: TiptapProps) {
 
       <EditorContent
         className={clsx(
-          "prose prose-slate mx-auto h-full w-full break-words py-4 px-8 text-black",
+          "prose prose-slate mx-auto h-full w-full break-words py-4 px-8 text-stone-900",
           "max-w-3xl", // controls the width of the editor
           "prose-base", // controls the overall editor font size
           "prose-headings:mb-4 prose-headings:w-full prose-headings:font-semibold prose-h1:mt-8 prose-h1:text-3xl prose-h2:mt-6 prose-h3:mt-4",
