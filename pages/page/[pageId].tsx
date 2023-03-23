@@ -15,7 +15,7 @@ import EditorToolbar from "@/components/EditorToolbar";
 import { authOptions } from "../api/auth/[...nextauth]";
 
 import { usePageQuery } from "@/hooks/queryHooks";
-import { sourceSans, inter } from "@/pages/_app";
+import { inter } from "@/pages/_app";
 
 const NoSSRTiptap = dynamic(() => import("@/components/Tiptap"), {
   ssr: false,

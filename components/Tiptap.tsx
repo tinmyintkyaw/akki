@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 
 import * as Y from "yjs";
@@ -24,6 +24,8 @@ import SelectMenu from "./BubbleMenu";
 import Text from "@tiptap/extension-text";
 import { Title } from "@/tiptap/Title";
 import Placeholder from "@tiptap/extension-placeholder";
+import CustomListItem from "@/tiptap/CustomListItem";
+import TaskItem from "@tiptap/extension-task-item";
 
 type TiptapProps = {
   pageId: string;
@@ -51,10 +53,20 @@ export default function Tiptap(props: TiptapProps) {
 
   const editor = useEditor({
     extensions: [
-      StarterKit.configure({ history: false }),
+      StarterKit.configure({ history: false, heading: { levels: [1, 2, 3] } }),
       Text,
       CustomDocument,
       Title,
+      // CustomHeading.configure({ levels: [1, 2, 3] }),
+      // CustomParagraph,
+      // CustomBlockquote,
+      Collaboration.configure({ document: ydoc }),
+      CollaborationCursor.configure({
+        provider: provider,
+        user: {
+          name: session.data?.user?.name,
+        },
+      }),
       Placeholder.configure({
         placeholder(PlaceholderProps) {
           if (PlaceholderProps.node.type.name === "title") {
@@ -63,18 +75,7 @@ export default function Tiptap(props: TiptapProps) {
           return "placeholder";
         },
       }),
-      CustomHeading.configure({ levels: [1, 2, 3] }),
-      CustomParagraph,
-      CustomBlockquote,
-      Collaboration.configure({ document: ydoc }),
-      CollaborationCursor.configure({
-        provider: provider,
-        user: {
-          name: session.data?.user?.name,
-        },
-      }),
       // TODO: Finish TaskItem toggle logic
-      // TaskList,
       // CustomTaskItem.configure({ nested: true }),
     ],
     editorProps: {

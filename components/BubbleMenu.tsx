@@ -6,7 +6,7 @@ export default function SelectMenu(props: { editor: Editor }) {
       {props.editor && (
         <BubbleMenu
           editor={props.editor}
-          className="rounded border bg-white shadow-lg drop-shadow-lg"
+          className="rounded border bg-white text-sm shadow-lg drop-shadow-lg"
         >
           {/* Placeholder for block convert feature */}
           <button
