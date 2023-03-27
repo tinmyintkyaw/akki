@@ -26,6 +26,8 @@ import { Title } from "@/tiptap/Title";
 import Placeholder from "@tiptap/extension-placeholder";
 import CustomListItem from "@/tiptap/CustomListItem";
 import TaskItem from "@tiptap/extension-task-item";
+import Image from "@tiptap/extension-image";
+import CustomImage from "@/tiptap/CustomImage";
 
 type TiptapProps = {
   pageId: string;
@@ -60,6 +62,7 @@ export default function Tiptap(props: TiptapProps) {
       // CustomHeading.configure({ levels: [1, 2, 3] }),
       // CustomParagraph,
       // CustomBlockquote,
+      CustomImage.configure({ allowBase64: true }),
       Collaboration.configure({ document: ydoc }),
       CollaborationCursor.configure({
         provider: provider,
@@ -74,6 +77,7 @@ export default function Tiptap(props: TiptapProps) {
           }
           return "placeholder";
         },
+        showOnlyCurrent: false,
       }),
       // TODO: Finish TaskItem toggle logic
       // CustomTaskItem.configure({ nested: true }),
