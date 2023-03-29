@@ -5,8 +5,7 @@ export default function createPageTree(pages: any, parentPageId: any) {
 
   return childPages.map((childPage: any) => ({
     // TODO: Add types
-    id: childPage.id,
-    pageName: childPage.pageName,
+    ...childPage,
     childPages: createPageTree(pages, childPage.id),
   }));
 }
