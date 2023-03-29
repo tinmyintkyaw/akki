@@ -44,6 +44,7 @@ export default async function pageHandler(
           parentPageId: true,
           createdAt: true,
           modifiedAt: true,
+          isFavorite: true,
         },
       });
 

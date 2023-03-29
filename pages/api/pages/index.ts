@@ -60,6 +60,7 @@ export default async function pagesHandler(
           parentPageId: true,
           createdAt: true,
           modifiedAt: true,
+          isFavorite: true,
         },
         orderBy: {
           createdAt: "asc",

@@ -104,10 +104,11 @@ export default function Tiptap(props: TiptapProps) {
       {editor && <SelectMenu editor={editor} />}
 
       <EditorContent
+        spellCheck={false}
         className={clsx(
-          "prose prose-slate mx-auto h-full w-full break-words py-4 px-8 text-stone-900",
+          "prose prose-slate mx-auto h-full w-full break-words py-4 px-8",
           "max-w-3xl", // controls the width of the editor
-          "prose-base", // controls the overall editor font size
+          "prose-base prose-stone", // controls the overall editor font size
           "prose-headings:mb-4 prose-headings:w-full prose-headings:font-semibold prose-h1:mt-8 prose-h1:text-3xl prose-h2:mt-6 prose-h3:mt-4",
           "prose-p:mb-4 prose-p:mt-0 prose-p:w-full",
           "prose-ul:my-1 prose-ul:w-full prose-ul:list-disc prose-ul:pl-5",

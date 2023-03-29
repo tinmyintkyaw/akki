@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import * as RadixContextMenu from "@radix-ui/react-context-menu";
 
-import { sourceSans } from "@/pages/_app";
+import { lato } from "@/pages/_app";
 import MenuButton from "@/components/MenuButton";
 import { RxFilePlus, RxStar, RxTrash } from "react-icons/rx";
 import { HiEllipsisHorizontal } from "react-icons/hi2";
@@ -21,7 +21,6 @@ export default function SidebarItemContextMenu(
       <RadixContextMenu.Portal>
         <RadixContextMenu.Content
           className={clsx(
-            // sourceSans.className,
             "z-50 flex w-60 flex-col rounded border border-stone-200 bg-stone-50 p-1 text-sm shadow-[0_3px_10px_rgb(0,0,0,0.2)]"
           )}
         >

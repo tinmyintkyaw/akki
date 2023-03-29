@@ -18,7 +18,7 @@ import {
   HiPlus,
 } from "react-icons/hi2";
 
-import { inter } from "@/pages/_app";
+import { lato } from "@/pages/_app";
 
 import SidebarItemDropdown from "@/components/SidebarItemDropdown";
 
@@ -84,7 +84,6 @@ const SidebarMenuLink = (props: SidebarMenuLinkProps) => {
       <RadixContextMenu.Portal>
         <RadixContextMenu.Content
           className={clsx(
-            inter.className,
             "z-50 flex w-60 flex-col rounded border border-stone-200 bg-stone-50 p-1 text-sm shadow-[0_3px_10px_rgb(0,0,0,0.2)]"
           )}
         >
