@@ -11,7 +11,12 @@ import * as RadixContextMenu from "@radix-ui/react-context-menu";
 import MenuButton from "@/components/MenuButton";
 import clsx from "clsx";
 import { RxFilePlus, RxStar, RxTrash } from "react-icons/rx";
-import { HiEllipsisHorizontal, HiPlus } from "react-icons/hi2";
+import {
+  HiChevronDown,
+  HiChevronUp,
+  HiEllipsisHorizontal,
+  HiPlus,
+} from "react-icons/hi2";
 
 import { inter } from "@/pages/_app";
 
@@ -23,6 +28,8 @@ type SidebarMenuLinkProps = {
   text: string;
   icon: IconType;
   isOpen: boolean;
+  isCollapsed: boolean;
+  setIsCollasped: () => void;
 };
 
 const SidebarMenuLink = (props: SidebarMenuLinkProps) => {
@@ -42,9 +49,20 @@ const SidebarMenuLink = (props: SidebarMenuLinkProps) => {
         <div
           className={clsx(
             props.isOpen && "bg-stone-200",
-            "group flex h-8 items-center rounded-sm pl-3 pr-2 hover:bg-stone-300"
+            "group flex h-7 items-center gap-1 rounded-sm px-1 hover:bg-stone-300"
           )}
         >
+          <button
+            className="rounded p-1 text-stone-500 hover:bg-stone-400"
+            onClick={props.setIsCollasped}
+          >
+            {props.isCollapsed ? (
+              <HiChevronDown className="h-3 w-3" />
+            ) : (
+              <HiChevronUp className="h-3 w-3" />
+            )}
+          </button>
+
           <Link
             href={`/page/${props.pageId}`}
             className="flex h-full flex-grow items-center gap-2"
@@ -56,7 +74,7 @@ const SidebarMenuLink = (props: SidebarMenuLinkProps) => {
 
           <button
             onClick={() => createPageMutation.mutate()}
-            className="rounded-sm p-1 opacity-0 hover:bg-stone-200 focus:outline-none group-hover:opacity-100"
+            className="rounded p-1 opacity-0 hover:bg-stone-400 focus:outline-none group-hover:opacity-100"
           >
             <HiPlus className="h-4 w-4" />
           </button>

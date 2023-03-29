@@ -12,6 +12,7 @@
     "studio": "dotenv -e .env.local -- npx prisma studio"
   },
   "dependencies": {
+    "@formkit/auto-animate": "^1.0.0-beta.6",
     "@headlessui/react": "^1.7.13",
     "@hocuspocus/extension-database": "^1.1.1",
     "@hocuspocus/provider": "^1.1.1",

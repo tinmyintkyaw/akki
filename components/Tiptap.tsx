@@ -26,7 +26,6 @@ import { Title } from "@/tiptap/Title";
 import Placeholder from "@tiptap/extension-placeholder";
 import CustomListItem from "@/tiptap/CustomListItem";
 import TaskItem from "@tiptap/extension-task-item";
-import Image from "@tiptap/extension-image";
 import CustomImage from "@/tiptap/CustomImage";
 
 type TiptapProps = {
