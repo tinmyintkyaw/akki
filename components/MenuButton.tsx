@@ -1,4 +1,4 @@
-import { inter, lato } from "@/pages/_app";
+import { inter } from "@/pages/_app";
 import clsx from "clsx";
 import { forwardRef } from "react";
 import { IconType } from "react-icons";

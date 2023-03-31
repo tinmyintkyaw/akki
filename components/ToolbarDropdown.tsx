@@ -1,12 +1,13 @@
 import clsx from "clsx";
 import * as RadixDropdown from "@radix-ui/react-dropdown-menu";
 
-import { lato, inter } from "@/pages/_app";
+import { inter } from "@/pages/_app";
 import MenuButton from "@/components/MenuButton";
-import { RxFilePlus, RxStar, RxTrash } from "react-icons/rx";
+import { RxExit, RxFilePlus, RxStar, RxTrash } from "react-icons/rx";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDeletePageMutation, usePageQuery } from "@/hooks/queryHooks";
 import { useRouter } from "next/router";
+import { signOut, useSession } from "next-auth/react";
 
 type ToolbarDropdownProps = {
   trigger: React.ReactNode;
@@ -15,6 +16,7 @@ type ToolbarDropdownProps = {
 export default function ToolbarDropdown(props: ToolbarDropdownProps) {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const session = useSession();
 
   const deletePageMutation = useDeletePageMutation(
     router.query.pageId as string,
@@ -38,7 +40,6 @@ export default function ToolbarDropdown(props: ToolbarDropdownProps) {
               icon={RxStar}
               text="Add To Favourites"
               onClick={() => {}}
-              key={"toggleFavourite"}
             />
           </RadixDropdown.Item>
 
@@ -52,19 +53,13 @@ export default function ToolbarDropdown(props: ToolbarDropdownProps) {
                 deletePageMutation.isSuccess &&
                   router.push("/page/clf3bqw8c0001xd53wk865adb");
               }}
-              key={"deletePage"}
             />
           </RadixDropdown.Item>
 
           <RadixDropdown.Separator className="my-1 h-[1px] bg-stone-300" />
 
           <RadixDropdown.Item asChild>
-            <MenuButton
-              icon={RxFilePlus}
-              text="Export Page"
-              onClick={() => {}}
-              key={"exportPage"}
-            />
+            <MenuButton icon={RxExit} text="Logout" onClick={() => signOut()} />
           </RadixDropdown.Item>
         </RadixDropdown.Content>
       </RadixDropdown.Portal>

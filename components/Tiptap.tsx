@@ -27,6 +27,7 @@ import Placeholder from "@tiptap/extension-placeholder";
 import CustomListItem from "@/tiptap/CustomListItem";
 import TaskItem from "@tiptap/extension-task-item";
 import CustomImage from "@/tiptap/CustomImage";
+import Link from "@tiptap/extension-link";
 
 type TiptapProps = {
   pageId: string;
@@ -49,18 +50,26 @@ export default function Tiptap(props: TiptapProps) {
       document: ydoc,
       token: "test", // Not using token auth, but onAuthenticate hook on server won't fire with a empty string
       connect: false,
+      onConnect() {
+        console.log("Connected to server");
+      },
     });
   }, [props.pageId, ydoc]);
 
   const editor = useEditor({
     extensions: [
-      StarterKit.configure({ history: false, heading: { levels: [1, 2, 3] } }),
+      StarterKit.configure({
+        text: false,
+        history: false,
+        heading: false,
+      }),
       Text,
       CustomDocument,
       Title,
-      // CustomHeading.configure({ levels: [1, 2, 3] }),
+      CustomHeading.configure({ levels: [1, 2, 3] }),
       // CustomParagraph,
       // CustomBlockquote,
+      Link,
       CustomImage.configure({ allowBase64: true }),
       Collaboration.configure({ document: ydoc }),
       CollaborationCursor.configure({
@@ -90,6 +99,7 @@ export default function Tiptap(props: TiptapProps) {
 
   useEffect(() => {
     provider.connect();
+    provider.on("", () => console.log("synced"));
 
     // On unmount, sync and disconnect
     return () => {
@@ -101,14 +111,14 @@ export default function Tiptap(props: TiptapProps) {
 
   return (
     <>
-      {editor && <SelectMenu editor={editor} />}
+      {/* {editor && <SelectMenu editor={editor} />} */}
 
       <EditorContent
         spellCheck={false}
         className={clsx(
-          "prose prose-slate mx-auto h-full w-full break-words py-4 px-8",
+          "prose mx-auto h-full w-full break-words py-4 px-8 font-normal text-black",
           "max-w-3xl", // controls the width of the editor
-          "prose-base prose-stone", // controls the overall editor font size
+          "prose-base", // controls the overall editor font size
           "prose-headings:mb-4 prose-headings:w-full prose-headings:font-semibold prose-h1:mt-8 prose-h1:text-3xl prose-h2:mt-6 prose-h3:mt-4",
           "prose-p:mb-4 prose-p:mt-0 prose-p:w-full",
           "prose-ul:my-1 prose-ul:w-full prose-ul:list-disc prose-ul:pl-5",
