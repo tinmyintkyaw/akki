@@ -1,13 +1,13 @@
-import Heading from "@tiptap/extension-heading";
 import { ReactNodeViewRenderer } from "@tiptap/react";
 
 import HeadingWrapper from "@/components/tiptap-wrappers/HeadingWrapper";
+import CustomHeadingBackend from "@/tiptap/CustomHeadingBackend";
 
-const CustomHeading = Heading.extend({
+const CustomHeadingFrondend = CustomHeadingBackend.extend({
   marks: "",
   addNodeView() {
     return ReactNodeViewRenderer(HeadingWrapper);
   },
 });
 
-export default CustomHeading;
+export default CustomHeadingFrondend;

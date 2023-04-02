@@ -6,6 +6,21 @@ import { Database } from "@hocuspocus/extension-database";
 
 import prisma from "../lib/prismadb";
 import { TiptapTransformer } from "@hocuspocus/transformer";
+import { generateText } from "@tiptap/core";
+
+import StarterKit from "@tiptap/starter-kit";
+import Link from "@tiptap/extension-link";
+import BackendTitle from "../tiptap/BackendTitle";
+import CustomDocument from "../tiptap/CustomDocument";
+import CustomImage from "../tiptap/CustomImage";
+import CustomHeadingBackend from "../tiptap/CustomHeadingBackend";
+import Placeholder from "@tiptap/extension-placeholder";
+
+import serverTypesenseClient, {
+  typesenseCollectionSchema,
+  typesensePageDocument,
+} from "../typesense/typesense-client";
+import { DocumentSchema } from "typesense/lib/Typesense/Documents";
 
 // Configure hocuspocus
 const server = Server.configure({
@@ -80,7 +95,22 @@ const server = Server.configure({
           //     ? editorTitleNode.content[0].text
           //     : "Untitled";
 
-          await prisma.page.update({
+          const json = await TiptapTransformer.fromYdoc(data.document);
+
+          const textContent = generateText(json.default, [
+            StarterKit.configure({
+              history: false,
+              document: false,
+              heading: false,
+            }),
+            CustomDocument,
+            CustomHeadingBackend.configure({ levels: [1, 2, 3] }),
+            Link,
+            CustomImage.configure({ allowBase64: true }),
+            BackendTitle,
+          ]);
+
+          const dbPage = await prisma.page.update({
             where: {
               id_userId: {
                 userId: data.context.userId,
@@ -89,12 +119,27 @@ const server = Server.configure({
             },
 
             data: {
-              // We want the text of the title node to be in sync with pageName stored in the DB
-              // pageName: dbPageName,
               ydoc: data.state,
               modifiedAt: new Date(),
+              textContent: textContent,
             },
           });
+
+          // Update typesense index
+          const typesensePage: typesensePageDocument = {
+            id: dbPage.id,
+            userId: dbPage.userId,
+            pageName: dbPage.pageName,
+            pageTextContent: dbPage.textContent,
+            pageCreatedAt: dbPage.createdAt.getTime(),
+            pageModifiedAt: dbPage.modifiedAt.getTime(),
+            isFavorite: dbPage.isFavorite,
+          };
+
+          await serverTypesenseClient
+            .collections("pages")
+            .documents()
+            .upsert(typesensePage);
         } catch (err) {
           console.log(err);
         }
@@ -120,5 +165,29 @@ app.use(
   })
 );
 
+const checkFirstStart = async () => {
+  const isFirstStart = await prisma.globalSetting.findUnique({
+    where: { key: "isFirstStart" },
+  });
+
+  if (!isFirstStart || isFirstStart.value === "true") {
+    console.log("Creating new typesense collection...");
+    const collection = await serverTypesenseClient
+      .collections()
+      .create(typesenseCollectionSchema);
+    console.log("Created collection");
+
+    // TODO: add update logic for existing collection on version upgrade
+    await prisma.globalSetting.upsert({
+      where: { key: "isFirstStart" },
+      update: { value: "false" },
+      create: { key: "isFirstStart", value: "false" },
+    });
+  } else {
+    console.log("Using existing typesense collection");
+  }
+};
+
 // Start the server
 app.listen(8080, () => console.log("Listening on http://127.0.0.1:8080"));
+checkFirstStart();

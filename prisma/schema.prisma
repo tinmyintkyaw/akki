@@ -68,6 +68,13 @@ model Page {
   parentPageId String?
   childPages   Page[]   @relation("ChildPages")
   isFavorite   Boolean  @default(false)
+  textContent  String?
 
   @@unique([id, userId])
+}
+
+model GlobalSetting {
+  id    Int    @id @default(autoincrement())
+  key   String @unique
+  value String
 }
