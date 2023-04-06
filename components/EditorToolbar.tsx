@@ -12,20 +12,29 @@ import {
 import ToolbarButton from "@/components/ToolbarButton";
 import ToolbarDropdown from "@/components/ToolbarDropdown";
 import MenuButton from "@/components/MenuButton";
-import { sourceSans } from "@/pages/_app";
+import SearchComboBox from "./SearchComboBox";
+import { useState } from "react";
 
 type EditorToolbarProps = {
   setIsOpen: () => void;
 };
 
 export default function EditorToolbar(props: EditorToolbarProps) {
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   return (
     <div
       id="editor-toolbar"
       className="absolute z-40 flex h-12 w-full select-none items-center gap-1 bg-transparent px-2 text-stone-700"
     >
       <ToolbarButton icon={RxHamburgerMenu} onClick={props.setIsOpen} />
-      <ToolbarButton icon={RxMagnifyingGlass} onClick={() => {}} />
+
+      <ToolbarButton
+        icon={RxMagnifyingGlass}
+        onClick={() => {
+          setIsSearchOpen(true);
+        }}
+      />
+      <SearchComboBox isOpen={isSearchOpen} onOpenChange={setIsSearchOpen} />
 
       <div className="flex-grow" />
 

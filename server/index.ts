@@ -20,7 +20,6 @@ import serverTypesenseClient, {
   typesenseCollectionSchema,
   typesensePageDocument,
 } from "../typesense/typesense-client";
-import { DocumentSchema } from "typesense/lib/Typesense/Documents";
 
 // Configure hocuspocus
 const server = Server.configure({

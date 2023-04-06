@@ -15,7 +15,11 @@ export default async function handler(
   const test = await serverTypesenseClient
     .collections("pages")
     .documents()
-    .search({ q: "go", query_by: "pageName" });
+    .search({
+      q: "go",
+      query_by: "pageName",
+      filter_by: `pageCreatedAt:<1680083274939`,
+    });
   res.status(200).json({ message: test });
 
   // await typesense
