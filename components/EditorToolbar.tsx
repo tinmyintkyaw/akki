@@ -13,7 +13,7 @@ import ToolbarButton from "@/components/ToolbarButton";
 import ToolbarDropdown from "@/components/ToolbarDropdown";
 import MenuButton from "@/components/MenuButton";
 import SearchComboBox from "./SearchComboBox";
-import { useState } from "react";
+import { KeyboardEvent, useEffect, useState } from "react";
 
 type EditorToolbarProps = {
   setIsOpen: () => void;
@@ -21,6 +21,18 @@ type EditorToolbarProps = {
 
 export default function EditorToolbar(props: EditorToolbarProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  useEffect(() => {
+    function handleKeyDown(event) {
+      if ((event.ctrlKey || event.metaKey) && event.key === "p") {
+        event.preventDefault();
+        setIsSearchOpen((prev) => !prev);
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isSearchOpen]);
+
   return (
     <div
       id="editor-toolbar"

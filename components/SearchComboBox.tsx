@@ -1,12 +1,13 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import { Combobox } from "@headlessui/react";
-import { Dispatch, Fragment, SetStateAction, useEffect } from "react";
+import { Combobox, Transition } from "@headlessui/react";
+import { Fragment, useEffect } from "react";
 import {
   Highlight,
   Hits,
   SearchBox,
   Snippet,
   useHits,
+  useInstantSearch,
   useSearchBox,
 } from "react-instantsearch-hooks-web";
 import {
@@ -24,12 +25,13 @@ type SearchComboBoxProps = {
 
 export default function SearchComboBox(props: SearchComboBoxProps) {
   const router = useRouter();
+  const instantSearch = useInstantSearch();
   const { query, refine, clear } = useSearchBox();
   const { hits } = useHits();
 
   useEffect(() => {
-    console.log({ hits });
-  }, [hits]);
+    console.log({ hits, instantSearch });
+  }, [hits, instantSearch]);
 
   return (
     <Dialog.Root open={props.isOpen} onOpenChange={props.onOpenChange}>
@@ -38,7 +40,14 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
           <Dialog.Content
             className={`${inter.className} mx-auto mt-[10vh] max-h-[80vh] max-w-[90vw] rounded bg-stone-100 focus:outline-none md:max-w-2xl`}
           >
-            <Combobox onChange={(event) => router.push(`/page/${event.id}`)}>
+            <Combobox
+              as="div"
+              onChange={(event) => {
+                router.push(`/page/${event.id}`);
+                clear();
+                props.onOpenChange(false);
+              }}
+            >
               <div className="flex items-center border-b-2 py-4 px-3">
                 <HiOutlineMagnifyingGlass className="h-6 w-6 text-gray-500" />
 
@@ -48,6 +57,12 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
                   displayValue={() => query}
                   onChange={(event) => {
                     refine(event.target.value);
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === "Escape") {
+                      clear();
+                      props.onOpenChange(false);
+                    }
                   }}
                   className={`h-full w-full border-0 bg-transparent px-2 text-lg focus:outline-none`}
                 />
@@ -76,12 +91,19 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
                               active ? "bg-slate-300" : "bg-transparent"
                             }`}
                           >
-                            <h2 className="font-medium">{hit.pageName}</h2>
                             <Snippet
-                              attribute="pageTextContent"
+                              attribute="pageName"
                               hit={hit}
-                              className="text-sm"
+                              className="font-medium"
                             />
+
+                            {instantSearch.indexUiState.query && (
+                              <Snippet
+                                attribute="pageTextContent"
+                                hit={hit}
+                                className="mt-1 text-sm"
+                              />
+                            )}
                           </div>
                         );
                       }}
