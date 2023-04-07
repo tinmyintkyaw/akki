@@ -28,10 +28,6 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
   const { query, refine, clear } = useSearchBox();
   const { hits } = useHits();
 
-  useEffect(() => {
-    console.log({ hits, instantSearch });
-  }, [hits, instantSearch]);
-
   return (
     <Dialog.Root open={props.isOpen} onOpenChange={props.onOpenChange}>
       <Dialog.Portal>
@@ -40,7 +36,7 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
             className={`${inter.className} mx-auto mt-[10vh] max-h-[80vh] max-w-[90vw] rounded bg-stone-100 focus:outline-none md:max-w-2xl`}
           >
             <Combobox
-              as="div"
+              as={Fragment}
               onChange={(event) => {
                 router.push(`/page/${event.id}`);
                 clear();
@@ -66,9 +62,11 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
                   className={`h-full w-full border-0 bg-transparent px-2 text-lg focus:outline-none`}
                 />
 
-                <button onClick={clear}>
-                  <HiXCircle className="h-5 w-5 text-gray-400 hover:text-gray-500" />
-                </button>
+                {instantSearch.indexUiState.query && (
+                  <button onClick={clear}>
+                    <HiXCircle className="h-5 w-5 text-gray-400 hover:text-gray-500" />
+                  </button>
+                )}
               </div>
 
               <Combobox.Options
@@ -112,7 +110,8 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
               </Combobox.Options>
             </Combobox>
 
-            <div className="flex h-8 items-center gap-2 border-t-2 px-2">
+            {/* Keyboard Hints */}
+            <div className="flex h-8 items-center gap-4 border-t-2 px-3">
               <li className="flex h-full flex-row items-center gap-1">
                 <HiArrowsUpDown className="h-3 w-3" />
                 <p className="text-xs text-gray-800">Select</p>
