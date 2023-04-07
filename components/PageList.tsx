@@ -31,6 +31,10 @@ const PageItem = (props: { page: any; router: any }) => {
         props.page.childPages.map((page: any) => (
           <PageItem key={page.id} page={page} router={props.router} />
         ))}
+
+      {!isCollapsed && props.page.childPages.length <= 0 && (
+        <div className="my-1 ml-8 text-gray-500">No Pages</div>
+      )}
     </div>
   );
 };
