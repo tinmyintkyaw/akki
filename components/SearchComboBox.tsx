@@ -16,6 +16,7 @@ import {
 import { MdKeyboardReturn } from "react-icons/md";
 
 import { inter } from "@/pages/_app";
+import { roboto } from "@/pages/_app";
 
 type SearchComboBoxProps = {
   isOpen: boolean;
@@ -33,7 +34,7 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/50">
           <Dialog.Content
-            className={`${inter.className} mx-auto mt-[10vh] max-h-[80vh] max-w-[90vw] rounded bg-stone-100 focus:outline-none md:max-w-2xl`}
+            className={`${roboto.className} mx-auto mt-[10vh] max-h-[80vh] max-w-[90vw] rounded bg-gray-100 focus:outline-none md:max-w-2xl`}
           >
             <Combobox
               as={Fragment}
@@ -43,7 +44,7 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
                 props.onOpenChange(false);
               }}
             >
-              <div className="flex items-center border-b-2 py-4 px-3">
+              <div className="flex h-14 items-center border-b-2 px-3">
                 <HiOutlineMagnifyingGlass className="h-6 w-6 text-gray-500" />
 
                 <Combobox.Input
@@ -72,7 +73,7 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
               <Combobox.Options
                 static
                 as="div"
-                className="h-full max-h-[calc(80vh-5rem)] overflow-y-auto bg-transparent px-1 py-1 scrollbar-thin scrollbar-thumb-gray-400"
+                className="h-full max-h-[calc(80vh-5.5rem)] overflow-y-auto bg-transparent px-1 py-1 scrollbar-thin scrollbar-thumb-gray-400"
               >
                 {hits.map((hit) => {
                   return (
@@ -84,8 +85,8 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
                       {({ active }) => {
                         return (
                           <div
-                            className={`flex flex-col justify-center rounded py-2 px-2 text-gray-600 ${
-                              active ? "bg-slate-300" : "bg-transparent"
+                            className={`flex flex-col justify-center rounded py-2 px-2 text-gray-900 ${
+                              active ? "bg-gray-300" : "bg-transparent"
                             }`}
                           >
                             <Snippet
@@ -98,7 +99,7 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
                               <Snippet
                                 attribute="pageTextContent"
                                 hit={hit}
-                                className="mt-1 text-sm"
+                                className="mt-1 text-sm text-gray-600"
                               />
                             )}
                           </div>

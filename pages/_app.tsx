@@ -3,11 +3,12 @@ import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { Inter } from "@next/font/google";
+import { Inter, Roboto_Flex } from "@next/font/google";
 
 import "@/styles/globals.css";
 
 export const inter = Inter({ subsets: ["latin"] });
+export const roboto = Roboto_Flex({ subsets: ["latin"] });
 
 export default function App({
   Component,

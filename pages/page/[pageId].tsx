@@ -18,6 +18,7 @@ import { authOptions } from "../api/auth/[...nextauth]";
 
 import { usePageQuery } from "@/hooks/queryHooks";
 import { inter } from "@/pages/_app";
+import { roboto } from "@/pages/_app";
 
 const NoSSRTiptap = dynamic(() => import("@/components/Tiptap"), {
   ssr: false,
@@ -62,7 +63,7 @@ export default function App() {
       </Head>
 
       <InstantSearch searchClient={searchClient} indexName="pages">
-        <main className={clsx(inter.className, "relative h-screen w-screen")}>
+        <main className={`${roboto.className} relative h-screen w-screen`}>
           <EditorToolbar setIsOpen={() => setIsSidebarOpen((old) => !old)} />
 
           <div className="flex h-screen">

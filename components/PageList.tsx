@@ -50,7 +50,7 @@ export default function PageList(props: PageListProps) {
   return (
     <ScrollArea.Root type="auto">
       <ScrollArea.Viewport className="h-[calc(100vh-6rem)] border-stone-300 pr-2 text-sm">
-        <h2 className="px-2 py-2 text-xs font-semibold">Pages</h2>
+        <h2 className="px-4 py-2 text-xs font-semibold">Pages</h2>
 
         {pageListQuery.data &&
           pageListQuery.data.map((page: any) => {
