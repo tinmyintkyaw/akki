@@ -1,22 +1,21 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import { Combobox, Transition } from "@headlessui/react";
+import { Combobox } from "@headlessui/react";
 import { Fragment, useEffect } from "react";
 import {
-  Highlight,
-  Hits,
-  SearchBox,
   Snippet,
   useHits,
   useInstantSearch,
   useSearchBox,
 } from "react-instantsearch-hooks-web";
+import { useRouter } from "next/router";
 import {
+  HiArrowsUpDown,
   HiOutlineMagnifyingGlass,
-  HiOutlineXCircle,
   HiXCircle,
 } from "react-icons/hi2";
+import { MdKeyboardReturn } from "react-icons/md";
+
 import { inter } from "@/pages/_app";
-import { useRouter } from "next/router";
 
 type SearchComboBoxProps = {
   isOpen: boolean;
@@ -112,7 +111,21 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
                 })}
               </Combobox.Options>
             </Combobox>
-            <div className="h-6 w-full border-t-2"></div>
+
+            <div className="flex h-8 items-center gap-2 border-t-2 px-2">
+              <li className="flex h-full flex-row items-center gap-1">
+                <HiArrowsUpDown className="h-3 w-3" />
+                <p className="text-xs text-gray-800">Select</p>
+              </li>
+              <li className="flex h-full flex-row items-center gap-1">
+                <MdKeyboardReturn className="h-3 w-3" />
+                <p className="text-xs text-gray-800">Open</p>
+              </li>
+              <li className="flex h-full flex-row items-center gap-1">
+                <p className="text-xs font-medium">Esc</p>
+                <p className="text-xs text-gray-800">Dismiss</p>
+              </li>
+            </div>
           </Dialog.Content>
         </Dialog.Overlay>
       </Dialog.Portal>
