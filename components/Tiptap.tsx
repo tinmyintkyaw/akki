@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { useEditor, EditorContent } from "@tiptap/react";
+import { useEditor, EditorContent, generateText } from "@tiptap/react";
 
 import * as Y from "yjs";
 import { IndexeddbPersistence } from "y-indexeddb";
@@ -14,7 +14,6 @@ import Collaboration from "@tiptap/extension-collaboration";
 import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 
 import CustomDocument from "@/tiptap/CustomDocument";
-import CustomHeading from "@/tiptap/CustomHeading";
 import CustomParagraph from "@/tiptap/CustomParagraph";
 import CustomBlockquote from "@/tiptap/CustomBlockquote";
 import CustomTaskItem from "@/tiptap/CustomTaskItem";
@@ -22,12 +21,13 @@ import CustomTaskItem from "@/tiptap/CustomTaskItem";
 import SelectMenu from "./BubbleMenu";
 
 import Text from "@tiptap/extension-text";
-import { Title } from "@/tiptap/Title";
+import FrontendTitle from "@/tiptap/FrontendTitle";
 import Placeholder from "@tiptap/extension-placeholder";
 import CustomListItem from "@/tiptap/CustomListItem";
 import TaskItem from "@tiptap/extension-task-item";
 import CustomImage from "@/tiptap/CustomImage";
 import Link from "@tiptap/extension-link";
+import CustomHeadingFrondend from "@/tiptap/CustomHeadingFrontend";
 
 type TiptapProps = {
   pageId: string;
@@ -59,14 +59,13 @@ export default function Tiptap(props: TiptapProps) {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
-        text: false,
         history: false,
         heading: false,
+        document: false,
       }),
-      Text,
       CustomDocument,
-      Title,
-      CustomHeading.configure({ levels: [1, 2, 3] }),
+      FrontendTitle,
+      CustomHeadingFrondend.configure({ levels: [1, 2, 3] }),
       // CustomParagraph,
       // CustomBlockquote,
       Link,

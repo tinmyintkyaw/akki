@@ -32,6 +32,7 @@ export default async function pagesHandler(
           pageName: pageName,
           parentPageId: parentPageId,
           ydoc: Buffer.from(Y.encodeStateAsUpdate(new Y.Doc())),
+          textContent: "",
         },
         select: {
           id: true,

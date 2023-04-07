@@ -1,7 +1,6 @@
 import clsx from "clsx";
 import * as RadixContextMenu from "@radix-ui/react-context-menu";
 
-import { lato } from "@/pages/_app";
 import MenuButton from "@/components/MenuButton";
 import { RxFilePlus, RxStar, RxTrash } from "react-icons/rx";
 import { HiEllipsisHorizontal } from "react-icons/hi2";
