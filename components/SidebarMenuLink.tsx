@@ -18,8 +18,6 @@ import {
   HiPlus,
 } from "react-icons/hi2";
 
-import { lato } from "@/pages/_app";
-
 import SidebarItemDropdown from "@/components/SidebarItemDropdown";
 
 type SidebarMenuLinkProps = {

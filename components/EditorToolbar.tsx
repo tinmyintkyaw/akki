@@ -23,7 +23,7 @@ export default function EditorToolbar(props: EditorToolbarProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   useEffect(() => {
-    function handleKeyDown(event) {
+    function handleKeyDown(event: any) {
       if ((event.ctrlKey || event.metaKey) && event.key === "p") {
         event.preventDefault();
         setIsSearchOpen((prev) => !prev);

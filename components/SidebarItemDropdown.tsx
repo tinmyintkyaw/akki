@@ -1,7 +1,6 @@
 import clsx from "clsx";
 import * as RadixDropdown from "@radix-ui/react-dropdown-menu";
 
-import { sourceSans } from "@/pages/_app";
 import MenuButton from "@/components/MenuButton";
 import { RxFilePlus, RxStar, RxTrash } from "react-icons/rx";
 import { HiEllipsisHorizontal } from "react-icons/hi2";
@@ -16,7 +15,7 @@ export default function SidebarItemDropdown(props: SidebarItemDropdownProps) {
       {/* <RadixDropdown.Trigger>{props.trigger}</RadixDropdown.Trigger> */}
 
       <RadixDropdown.Trigger asChild>
-        <button className="rounded-sm p-[2px] opacity-0 hover:bg-stone-300 focus:outline-none group-hover:opacity-100">
+        <button className="rounded-sm p-[2px] opacity-0 focus:outline-none group-hover:opacity-100 hover:bg-stone-300">
           <HiEllipsisHorizontal className="h-4 w-4" />
         </button>
       </RadixDropdown.Trigger>
