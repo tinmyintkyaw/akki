@@ -85,21 +85,21 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
                       {({ active }) => {
                         return (
                           <div
-                            className={`flex flex-col justify-center rounded py-2 px-2 text-gray-900 ${
+                            className={`flex flex-col justify-center rounded px-2 py-2 text-gray-900 ${
                               active ? "bg-gray-300" : "bg-transparent"
                             }`}
                           >
                             <Snippet
                               attribute="pageName"
                               hit={hit}
-                              className="font-medium"
+                              className="font-medium line-clamp-2"
                             />
 
                             {instantSearch.indexUiState.query && (
                               <Snippet
                                 attribute="pageTextContent"
                                 hit={hit}
-                                className="mt-1 text-sm text-gray-600"
+                                className="mt-1 text-sm text-gray-600 line-clamp-3"
                               />
                             )}
                           </div>
