@@ -156,13 +156,13 @@ app.ws("/collaboration/:document", (websocket, request) => {
 });
 
 // Add a proxy route for the nextjs server
-app.use(
-  "/",
-  createProxyMiddleware({
-    target: "http://localhost:3000",
-    // changeOrigin: true,
-  })
-);
+// app.use(
+//   "/",
+//   createProxyMiddleware({
+//     target: "http://localhost:3000",
+//     // changeOrigin: true,
+//   })
+// );
 
 const checkFirstStart = async () => {
   const isFirstStart = await prisma.globalSetting.findUnique({
