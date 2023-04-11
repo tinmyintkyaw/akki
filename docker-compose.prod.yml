@@ -1,5 +1,5 @@
 version: "3"
-
+# TODO: scope env vars to each service
 services:
   web:
     container_name: web
@@ -9,8 +9,68 @@ services:
     restart: unless-stopped
     ports:
       - "3000:3000"
+    env_file:
+      - .env
     networks:
       - app-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  socket:
+    container_name: socket
+    build:
+      context: .
+      dockerfile: socket.prod.Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    # environment:
+    # - DATABASE_URL=${DATABASE_URL}
+    # - TYPESENSE_API_KEY="${TYPESENSE_API_KEY}"
+    networks:
+      - app-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    container_name: postgres
+    image: postgres:15
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./dev-data/postgres-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  typesense:
+    container_name: typesense
+    image: typesense/typesense:0.24.0
+    restart: unless-stopped
+    ports:
+      - "8108:8108"
+    environment:
+      TYPESENSE_DATA_DIR: "/data"
+      TYPESENSE_ENABLE_CORS: "true"
+    volumes:
+      - ./dev-data/typesense-data:/data
+    networks:
+      - app-network
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 networks:
   app-network:

@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently 'next dev' 'npm run server'",
+    "dev": "concurrently 'next dev' 'npm run server:dev'",
     "build": "next build && npm run build:server",
-    "build:server": "esbuild ./server/index.ts --bundle --minify --platform=node --target=node18 --tsconfig=tsconfig.server.json --outfile=./dist/index.js",
-    "start": "concurrently 'next start' 'dotenv -e .env.local -- npm run server'",
+    "build:server": "esbuild ./server/index.ts --bundle --platform=node --target=node18 --tsconfig=tsconfig.server.json --outfile=./dist/index.js",
+    "start": "concurrently 'next start' 'npm run server'",
     "lint": "next lint",
     "server": "dotenv -e .env.local -- node dist/index.js",
     "server:dev": "ts-node --project tsconfig.server.json server/index.ts",
