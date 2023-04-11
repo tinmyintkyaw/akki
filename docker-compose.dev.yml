@@ -1,7 +1,7 @@
 version: "3.4"
 services:
   postgres:
-    container_name: postgres
+    container_name: postgres-dev
     image: postgres:15
     restart: unless-stopped
     ports:
@@ -22,11 +22,11 @@ services:
       retries: 5
 
   typesense:
-    container_name: typesense
+    container_name: typesense-dev
     image: typesense/typesense:0.24.0
     restart: unless-stopped
     ports:
-      - "8108:8108"
+      - 8108:8108
     env_file:
       - .env.local
     environment:
@@ -37,7 +37,7 @@ services:
     networks:
       - app-network
     depends_on:
-      postgres: 
+      postgres:
         condition: service_healthy
 
 networks:
