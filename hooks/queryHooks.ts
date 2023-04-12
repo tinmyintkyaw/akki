@@ -6,6 +6,12 @@ const getPageList = async () => {
   return response.json();
 };
 
+const getRecentPages = async () => {
+  const response = await fetch("/api/pages/recent");
+  if (!response.ok) throw new Error("Failed to fetch recent pages");
+  return response.json();
+};
+
 const createPage = async (pageName: string, parentPageId: string | null) => {
   const response = await fetch("/api/pages", {
     method: "POST",
@@ -48,6 +54,13 @@ const deletePage = async (id: string) => {
 
 export const usePageListQuery = () => {
   return useQuery({ queryKey: ["pageList"], queryFn: getPageList });
+};
+
+export const useRecentPagesQuery = () => {
+  return useQuery({
+    queryKey: ["recentPages"],
+    queryFn: () => getRecentPages(),
+  });
 };
 
 export const usePageQuery = (id: string) => {

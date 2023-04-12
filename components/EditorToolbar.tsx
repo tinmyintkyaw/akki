@@ -1,7 +1,5 @@
-import { usePageQuery } from "@/hooks/queryHooks";
-import { useRouter } from "next/router";
-import * as RadixDropdown from "@radix-ui/react-dropdown-menu";
-import clsx from "clsx";
+import { useEffect, useState } from "react";
+import { useInstantSearch } from "react-instantsearch-hooks-web";
 
 import {
   RxMagnifyingGlass,
@@ -11,11 +9,7 @@ import {
 
 import ToolbarButton from "@/components/ToolbarButton";
 import ToolbarDropdown from "@/components/ToolbarDropdown";
-import MenuButton from "@/components/MenuButton";
-import SearchComboBox from "./SearchComboBox";
-import { KeyboardEvent, useEffect, useState } from "react";
-import { useInstantSearch } from "react-instantsearch-hooks-web";
-import { useQuery } from "@tanstack/react-query";
+import SearchComboBox from "@/components/SearchComboBox";
 import useSearchAPIKey from "@/hooks/useSearchAPIKey";
 
 type EditorToolbarProps = {
@@ -39,15 +33,12 @@ export default function EditorToolbar(props: EditorToolbarProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isSearchOpen]);
 
+  // If the search API key is not available or expired, refetch it
   useEffect(() => {
     if (status !== "error") return;
     if (!(error instanceof Error) || error.name !== "RequestUnauthorized")
       return;
-
-    console.log(error.name);
-    console.info("Refreshing search API key");
     searchAPIKey.refetch();
-    console.log({ searchAPIKey });
   }, [status, error, searchAPIKey]);
 
   return (

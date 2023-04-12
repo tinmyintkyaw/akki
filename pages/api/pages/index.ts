@@ -1,13 +1,13 @@
 import * as Y from "yjs";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
+import serverTypesenseClient, {
+  typesensePageDocument,
+} from "@/typesense/typesense-client";
 
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import createPageTree from "@/utils/createPageTree";
 import prisma from "@/lib/prismadb";
-import serverTypesenseClient, {
-  typesensePageDocument,
-} from "@/typesense/typesense-client";
 
 export default async function pagesHandler(
   req: NextApiRequest,
@@ -19,8 +19,6 @@ export default async function pagesHandler(
 
   if (req.method === "POST") {
     const { pageName, parentPageId } = req.body;
-
-    console.log(typeof pageName);
 
     if (!pageName || typeof pageName !== "string")
       return res.status(400).json({ message: "Bad Request" });

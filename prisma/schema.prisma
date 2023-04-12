@@ -62,6 +62,7 @@ model Page {
   ydoc         Bytes?
   createdAt    DateTime @default(now())
   modifiedAt   DateTime @default(now())
+  accessedAt   DateTime @default(now())
   User         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String
   parentPage   Page?    @relation("ChildPages", fields: [parentPageId], references: [id])
