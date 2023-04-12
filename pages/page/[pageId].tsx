@@ -1,23 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { GetServerSideProps } from "next";
-import { getServerSession, Session } from "next-auth";
 import Head from "next/head";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import clsx from "clsx";
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter";
 import { InstantSearch } from "react-instantsearch-hooks-web";
 
-import Tiptap from "@/components/Tiptap";
 import Sidebar from "@/components/Sidebar";
 import PageList from "@/components/PageList";
-import Profile from "@/components/Profile";
 import EditorPane from "@/components/EditorPane";
 import EditorToolbar from "@/components/EditorToolbar";
-import { authOptions } from "../api/auth/[...nextauth]";
 
 import { usePageQuery } from "@/hooks/queryHooks";
-import { inter } from "@/pages/_app";
 import { roboto } from "@/pages/_app";
 import useSearchAPIKey from "@/hooks/useSearchAPIKey";
 
@@ -25,7 +19,7 @@ const NoSSRTiptap = dynamic(() => import("@/components/Tiptap"), {
   ssr: false,
 });
 
-export default function App() {
+export default function App(props) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const router = useRouter();
@@ -39,8 +33,8 @@ export default function App() {
       apiKey: searchAPIKey.data ? searchAPIKey.data.key : "",
       nodes: [
         {
-          host: "localhost",
-          port: 8108,
+          host: props.TYPESENSE_HOST,
+          port: props.TYPESENSE_PORT,
           protocol: "http",
         },
       ],
@@ -69,6 +63,12 @@ export default function App() {
           <div className="flex h-screen">
             <Sidebar isOpen={isSidebarOpen} pageListComponent={<PageList />} />
 
+            {!pageQuery.data && (
+              <div className="flex h-full w-full select-none items-center justify-center">
+                <p>Page Not Found!</p>
+              </div>
+            )}
+
             {pageQuery.data && (
               <EditorPane
                 key={pageQuery.data.id}
@@ -82,15 +82,17 @@ export default function App() {
   );
 }
 
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-//   const session = await getServerSession(context.req, context.res, authOptions);
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  // TODO: client's typesense should be different in production
+  const TYPESENSE_HOST = process.env.TYPESENSE_HOST || "localhost";
+  const TYPESENSE_PORT = process.env.TYPESENSE_PORT
+    ? parseInt(process.env.TYPESENSE_PORT)
+    : 8108;
 
-//   if (!session)
-//     return { redirect: { destination: "/api/auth/signin", permanent: false } };
-
-//   return {
-//     props: {
-//       session: session,
-//     },
-//   };
-// };
+  return {
+    props: {
+      TYPESENSE_HOST,
+      TYPESENSE_PORT,
+    },
+  };
+};
