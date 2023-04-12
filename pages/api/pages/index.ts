@@ -1,10 +1,13 @@
 import * as Y from "yjs";
-import { PrismaClient } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
-import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getServerSession } from "next-auth/next";
+
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import createPageTree from "@/utils/createPageTree";
 import prisma from "@/lib/prismadb";
+import serverTypesenseClient, {
+  typesensePageDocument,
+} from "@/typesense/typesense-client";
 
 export default async function pagesHandler(
   req: NextApiRequest,
@@ -40,10 +43,30 @@ export default async function pagesHandler(
           parentPageId: true,
           createdAt: true,
           modifiedAt: true,
+          isFavorite: true,
+          userId: true,
+          textContent: true,
         },
       });
 
-      return res.status(201).json(data);
+      const typesensePage: typesensePageDocument = {
+        id: data.id,
+        userId: data.userId,
+        pageName: data.pageName,
+        pageTextContent: data.textContent,
+        pageCreatedAt: data.createdAt.getTime(),
+        pageModifiedAt: data.modifiedAt.getTime(),
+        isFavorite: data.isFavorite,
+      };
+
+      await serverTypesenseClient
+        .collections("pages")
+        .documents()
+        .create(typesensePage);
+
+      const { textContent, ...responseData } = data;
+
+      return res.status(201).json(responseData);
     } catch (err) {
       return res.status(500).json({ message: err });
     }
@@ -62,6 +85,7 @@ export default async function pagesHandler(
           createdAt: true,
           modifiedAt: true,
           isFavorite: true,
+          userId: true,
         },
         orderBy: {
           createdAt: "asc",

@@ -2,6 +2,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import prisma from "@/lib/prismadb";
+import serverTypesenseClient, {
+  typesensePageDocument,
+} from "@/typesense/typesense-client";
 
 export default async function pageHandler(
   req: NextApiRequest,
@@ -45,10 +48,29 @@ export default async function pageHandler(
           createdAt: true,
           modifiedAt: true,
           isFavorite: true,
+          userId: true,
+          textContent: true,
         },
       });
 
-      return res.status(200).json(data);
+      const typesensePage: typesensePageDocument = {
+        id: data.id,
+        userId: data.userId,
+        pageName: data.pageName,
+        pageTextContent: data.textContent,
+        pageCreatedAt: data.createdAt.getTime(),
+        pageModifiedAt: data.modifiedAt.getTime(),
+        isFavorite: data.isFavorite,
+      };
+
+      await serverTypesenseClient
+        .collections("pages")
+        .documents()
+        .upsert(typesensePage);
+
+      const { textContent, ...responseData } = data;
+
+      return res.status(200).json(responseData);
     } catch (err) {
       return res.status(500).json({ message: "Internal Server Error" });
     }
@@ -72,6 +94,11 @@ export default async function pageHandler(
         },
       });
 
+      await serverTypesenseClient
+        .collections("pages")
+        .documents(data.id)
+        .delete();
+
       return res.status(204).end();
     } catch (err) {
       return res.status(500).json({ message: "Internal Server Error" });
@@ -93,6 +120,8 @@ export default async function pageHandler(
           parentPageId: true,
           createdAt: true,
           modifiedAt: true,
+          isFavorite: true,
+          userId: true,
         },
       });
 
