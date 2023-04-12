@@ -1,8 +1,5 @@
-import dynamic from "next/dynamic";
 import * as ScrollArea from "@radix-ui/react-scroll-area";
 import { ReactNode } from "react";
-
-import EditorToolbar from "./EditorToolbar";
 
 type EditorPaneProps = {
   editorComponent: ReactNode;

@@ -34,7 +34,7 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/50">
           <Dialog.Content
-            className={`${roboto.className} mx-auto mt-[10vh] max-h-[80vh] max-w-[90vw] rounded bg-gray-100 focus:outline-none md:max-w-2xl`}
+            className={`${inter.className} mx-auto mt-[10vh] max-h-[80vh] max-w-[90vw] rounded bg-gray-100 focus:outline-none md:max-w-2xl`}
           >
             <Combobox
               as={Fragment}
@@ -73,7 +73,7 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
               <Combobox.Options
                 static
                 as="div"
-                className="h-full max-h-[calc(80vh-5.5rem)] overflow-y-auto bg-transparent px-1 py-1 scrollbar-thin scrollbar-thumb-gray-400"
+                className="h-full max-h-[calc(80vh-5.5rem)] select-none overflow-y-auto bg-transparent px-1 py-1 scrollbar-thin scrollbar-thumb-gray-400"
               >
                 {hits.map((hit) => {
                   return (
@@ -112,7 +112,7 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
             </Combobox>
 
             {/* Keyboard Hints */}
-            <div className="flex h-8 items-center gap-4 border-t-2 px-3">
+            <div className="flex h-8 select-none items-center gap-4 border-t-2 px-3">
               <li className="flex h-full flex-row items-center gap-1">
                 <HiArrowsUpDown className="h-3 w-3" />
                 <p className="text-xs text-gray-800">Select</p>

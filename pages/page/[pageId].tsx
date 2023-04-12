@@ -13,7 +13,7 @@ import EditorPane from "@/components/EditorPane";
 import EditorToolbar from "@/components/EditorToolbar";
 
 import { usePageQuery } from "@/hooks/queryHooks";
-import { roboto } from "@/pages/_app";
+import { inter, roboto } from "@/pages/_app";
 import useSearchAPIKey from "@/hooks/useSearchAPIKey";
 import { authOptions } from "../api/auth/[...nextauth]";
 
@@ -65,7 +65,7 @@ export default function App(props: AppProps) {
       </Head>
 
       <InstantSearch searchClient={searchClient} indexName="pages">
-        <main className={`${roboto.className} relative h-screen w-screen`}>
+        <main className={`${inter.className} relative h-screen w-screen`}>
           <EditorToolbar setIsOpen={() => setIsSidebarOpen((old) => !old)} />
 
           <div className="flex h-screen">
