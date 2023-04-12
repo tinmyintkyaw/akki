@@ -4,6 +4,7 @@ import Head from "next/head";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter";
+import { Session, getServerSession } from "next-auth";
 import { InstantSearch } from "react-instantsearch-hooks-web";
 
 import Sidebar from "@/components/Sidebar";
@@ -14,12 +15,19 @@ import EditorToolbar from "@/components/EditorToolbar";
 import { usePageQuery } from "@/hooks/queryHooks";
 import { roboto } from "@/pages/_app";
 import useSearchAPIKey from "@/hooks/useSearchAPIKey";
+import { authOptions } from "../api/auth/[...nextauth]";
 
 const NoSSRTiptap = dynamic(() => import("@/components/Tiptap"), {
   ssr: false,
 });
 
-export default function App(props) {
+type AppProps = {
+  TYPESENSE_HOST: string;
+  TYPESENSE_PORT: number;
+  session: Session;
+};
+
+export default function App(props: AppProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const router = useRouter();
@@ -89,10 +97,16 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     ? parseInt(process.env.TYPESENSE_PORT)
     : 8108;
 
+  const session = await getServerSession(context.req, context.res, authOptions);
+
+  if (!session)
+    return { redirect: { destination: "/api/auth/signin", permanent: false } };
+
   return {
     props: {
       TYPESENSE_HOST,
       TYPESENSE_PORT,
+      session: session,
     },
   };
 };
