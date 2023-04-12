@@ -92,14 +92,14 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
                             <Snippet
                               attribute="pageName"
                               hit={hit}
-                              className="font-medium line-clamp-2"
+                              className="font-medium line-clamp-1"
                             />
 
                             {instantSearch.indexUiState.query && (
                               <Snippet
                                 attribute="pageTextContent"
                                 hit={hit}
-                                className="mt-1 text-sm text-gray-600 line-clamp-3"
+                                className="mt-1 text-sm text-gray-600 line-clamp-2"
                               />
                             )}
                           </div>
