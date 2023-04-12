@@ -19,6 +19,7 @@ import { authOptions } from "../api/auth/[...nextauth]";
 import { usePageQuery } from "@/hooks/queryHooks";
 import { inter } from "@/pages/_app";
 import { roboto } from "@/pages/_app";
+import useSearchAPIKey from "@/hooks/useSearchAPIKey";
 
 const NoSSRTiptap = dynamic(() => import("@/components/Tiptap"), {
   ssr: false,
@@ -31,12 +32,11 @@ export default function App() {
   const { pageId } = router.query;
 
   const pageQuery = usePageQuery(pageId as string);
+  const searchAPIKey = useSearchAPIKey();
 
   const typesenseInstantSearchAdaptor = new TypesenseInstantSearchAdapter({
     server: {
-      apiKey:
-        // TODO: Dynamically generate this from api endpoint
-        "MTB0ZW1wWEVpazBndkY3RzBaczEwVVFSWkdBM3JQa3lwMjdUQlpCQnBNdz1uaTlweyJmaWx0ZXJfYnkiOiJ1c2VySWQ6Y2xmbnZsOHpqMDAwMHhkdW1majJ5Nml5YSJ9",
+      apiKey: searchAPIKey.data ? searchAPIKey.data.key : "",
       nodes: [
         {
           host: "localhost",
@@ -82,15 +82,15 @@ export default function App() {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getServerSession(context.req, context.res, authOptions);
+// export const getServerSideProps: GetServerSideProps = async (context) => {
+//   const session = await getServerSession(context.req, context.res, authOptions);
 
-  if (!session)
-    return { redirect: { destination: "/api/auth/signin", permanent: false } };
+//   if (!session)
+//     return { redirect: { destination: "/api/auth/signin", permanent: false } };
 
-  return {
-    props: {
-      session: session,
-    },
-  };
-};
+//   return {
+//     props: {
+//       session: session,
+//     },
+//   };
+// };

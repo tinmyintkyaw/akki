@@ -14,6 +14,9 @@ import ToolbarDropdown from "@/components/ToolbarDropdown";
 import MenuButton from "@/components/MenuButton";
 import SearchComboBox from "./SearchComboBox";
 import { KeyboardEvent, useEffect, useState } from "react";
+import { useInstantSearch } from "react-instantsearch-hooks-web";
+import { useQuery } from "@tanstack/react-query";
+import useSearchAPIKey from "@/hooks/useSearchAPIKey";
 
 type EditorToolbarProps = {
   setIsOpen: () => void;
@@ -21,6 +24,9 @@ type EditorToolbarProps = {
 
 export default function EditorToolbar(props: EditorToolbarProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const { status, error } = useInstantSearch({ catchError: true });
+
+  const searchAPIKey = useSearchAPIKey();
 
   useEffect(() => {
     function handleKeyDown(event: any) {
@@ -32,6 +38,17 @@ export default function EditorToolbar(props: EditorToolbarProps) {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isSearchOpen]);
+
+  useEffect(() => {
+    if (status !== "error") return;
+    if (!(error instanceof Error) || error.name !== "RequestUnauthorized")
+      return;
+
+    console.log(error.name);
+    console.info("Refreshing search API key");
+    searchAPIKey.refetch();
+    console.log({ searchAPIKey });
+  }, [status, error, searchAPIKey]);
 
   return (
     <div
@@ -46,6 +63,7 @@ export default function EditorToolbar(props: EditorToolbarProps) {
           setIsSearchOpen(true);
         }}
       />
+
       <SearchComboBox isOpen={isSearchOpen} onOpenChange={setIsSearchOpen} />
 
       <div className="flex-grow" />
