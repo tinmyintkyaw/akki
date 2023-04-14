@@ -173,7 +173,12 @@ const checkFirstStart = async () => {
     try {
       console.log("Creating new typesense collection...");
 
-      await serverTypesenseClient.collections("pages").delete();
+      const isTypesenseDBExists = await serverTypesenseClient
+        .collections("pages")
+        .exists();
+
+      if (isTypesenseDBExists)
+        await serverTypesenseClient.collections("pages").delete();
 
       await serverTypesenseClient
         .collections()
