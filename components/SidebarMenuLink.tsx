@@ -46,8 +46,9 @@ const SidebarMenuLink = (props: SidebarMenuLinkProps) => {
       <RadixContextMenu.Trigger asChild>
         <div
           className={clsx(
-            props.isOpen && "bg-zinc-200",
-            "group flex h-7 items-center gap-1 rounded-sm px-1 text-zinc-700 hover:bg-zinc-200 hover:text-black"
+            props.isOpen && "bg-sky-100 text-blue-900",
+            props.isOpen ? "hover:bg-sky-100" : "hover:bg-slate-200",
+            "group my-[0.125rem] flex h-8 items-center gap-1 rounded-sm px-1 text-sm font-medium"
           )}
         >
           <button
@@ -72,7 +73,7 @@ const SidebarMenuLink = (props: SidebarMenuLinkProps) => {
 
           <button
             onClick={() => createPageMutation.mutate()}
-            className="rounded p-[0.125rem] text-stone-500 opacity-0 focus:outline-none group-hover:opacity-100 hover:bg-stone-300"
+            className="rounded p-1 text-stone-500 opacity-0 focus:outline-none group-hover:opacity-100 hover:bg-stone-300"
           >
             <HiPlus className="h-4 w-4" />
           </button>
