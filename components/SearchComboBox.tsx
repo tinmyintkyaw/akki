@@ -39,7 +39,7 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
             <Combobox
               as={Fragment}
               onChange={(event: any) => {
-                router.push(`/page/${event.id}`);
+                router.push(`/${event.id}`);
                 clear();
                 props.onOpenChange(false);
               }}

@@ -63,7 +63,7 @@ const SidebarMenuLink = (props: SidebarMenuLinkProps) => {
           </button>
 
           <Link
-            href={`/page/${props.pageId}`}
+            href={`/${props.pageId}`}
             className="flex h-full flex-grow items-center gap-2"
           >
             {props.icon && <props.icon className="h-4 w-4 min-w-[1rem]" />}

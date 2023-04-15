@@ -15,7 +15,7 @@ import EditorToolbar from "@/components/EditorToolbar";
 import { usePageQuery } from "@/hooks/queryHooks";
 import { inter, roboto } from "@/pages/_app";
 import useSearchAPIKey from "@/hooks/useSearchAPIKey";
-import { authOptions } from "../api/auth/[...nextauth]";
+import { authOptions } from "./api/auth/[...nextauth]";
 
 const NoSSRTiptap = dynamic(() => import("@/components/Tiptap"), {
   ssr: false,
@@ -30,8 +30,7 @@ type AppProps = {
 export default function App(props: AppProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  const router = useRouter();
-  const { pageId } = router.query;
+  const { pageId } = useRouter().query;
 
   const pageQuery = usePageQuery(pageId as string);
   const searchAPIKey = useSearchAPIKey();
