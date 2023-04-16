@@ -1,10 +1,7 @@
 import { ReactNode, useState } from "react";
 import { Transition } from "@headlessui/react";
-
-import { HiPlus } from "react-icons/hi2";
-
-import { useCreatePageMutation } from "@/hooks/queryHooks";
-import { useQueryClient } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
+import ProfileDropdown from "./ProfileDropdown";
 
 type SidebarProps = {
   pageListComponent: ReactNode;
@@ -14,13 +11,7 @@ type SidebarProps = {
 export default function Sidebar(props: SidebarProps) {
   const [width, setWidth] = useState(72);
 
-  const queryClient = useQueryClient();
-
-  const createPageMutation = useCreatePageMutation(
-    "Untitled",
-    null,
-    queryClient
-  );
+  const session = useSession();
 
   return (
     <>
@@ -37,13 +28,7 @@ export default function Sidebar(props: SidebarProps) {
       >
         {props.pageListComponent}
 
-        <button
-          onClick={() => createPageMutation.mutate()}
-          className="flex h-12 w-full items-center gap-2 border-t border-stone-300 px-4 hover:bg-stone-300"
-        >
-          <HiPlus className="h-4 w-4" />
-          <p className="line-clamp-1">Add Page</p>
-        </button>
+        <ProfileDropdown />
       </Transition>
     </>
   );

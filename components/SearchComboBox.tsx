@@ -49,6 +49,7 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
 
                 <Combobox.Input
                   autoFocus
+                  autoComplete="off"
                   placeholder="Search..."
                   displayValue={() => query}
                   onChange={(event) => {
