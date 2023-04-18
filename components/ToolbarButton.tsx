@@ -13,9 +13,9 @@ const ToolbarButton = forwardRef<HTMLButtonElement, ToolbarButtonProps>(
         {...rest}
         onClick={rest.onClick}
         ref={ref}
-        className="rounded p-1 hover:bg-stone-300 focus:outline-none"
+        className="rounded p-1 focus:outline-none hover:bg-stone-300"
       >
-        {icon({ className: "h-5 w-5 stroke-[0.25]" })}
+        {icon({ className: "h-5 w-5" })}
       </button>
     );
   }

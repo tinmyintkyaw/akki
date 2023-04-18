@@ -2,6 +2,7 @@ import {
   useCreatePageMutation,
   useDeletePageMutation,
   usePageQuery,
+  useRecentPagesQuery,
   useUpdatePageMutation,
 } from "@/hooks/queryHooks";
 import { useQueryClient } from "@tanstack/react-query";
@@ -10,15 +11,16 @@ import { IconType } from "react-icons";
 import * as RadixContextMenu from "@radix-ui/react-context-menu";
 import MenuButton from "@/components/MenuButton";
 import clsx from "clsx";
-import { RxFilePlus, RxStar, RxTrash } from "react-icons/rx";
-import {
-  HiChevronDown,
-  HiChevronUp,
-  HiEllipsisHorizontal,
-  HiPlus,
-} from "react-icons/hi2";
 
-import SidebarItemDropdown from "@/components/SidebarItemDropdown";
+import {
+  MdAdd,
+  MdDeleteOutline,
+  MdExpandLess,
+  MdExpandMore,
+  MdOutlineMode,
+  MdStar,
+  MdStarOutline,
+} from "react-icons/md";
 
 type SidebarMenuLinkProps = {
   pageId: string;
@@ -47,7 +49,7 @@ const SidebarMenuLink = (props: SidebarMenuLinkProps) => {
         <div
           className={clsx(
             props.isOpen ? "bg-stone-200 text-stone-950" : "text-stone-700",
-            "group my-[0.125rem] flex h-8 items-center gap-1 rounded-sm px-1 text-sm font-medium hover:bg-stone-200"
+            "group my-[0.125rem] flex h-8 items-center gap-1 rounded-sm px-1 text-sm hover:bg-stone-200"
           )}
         >
           <button
@@ -55,9 +57,9 @@ const SidebarMenuLink = (props: SidebarMenuLinkProps) => {
             onClick={props.setIsCollasped}
           >
             {props.isCollapsed ? (
-              <HiChevronDown className="h-3 w-3" />
+              <MdExpandMore className="h-4 w-4" />
             ) : (
-              <HiChevronUp className="h-3 w-3" />
+              <MdExpandLess className="h-4 w-4" />
             )}
           </button>
 
@@ -72,9 +74,9 @@ const SidebarMenuLink = (props: SidebarMenuLinkProps) => {
 
           <button
             onClick={() => createPageMutation.mutate()}
-            className="rounded p-1 text-stone-800 opacity-0 focus:outline-none group-hover:opacity-100 hover:bg-stone-300"
+            className="rounded p-1 text-stone-700 opacity-0 focus:outline-none group-hover:opacity-100 hover:bg-stone-300"
           >
-            <HiPlus className="h-4 w-4" />
+            <MdAdd className="h-4 w-4" />
           </button>
         </div>
       </RadixContextMenu.Trigger>
@@ -82,37 +84,41 @@ const SidebarMenuLink = (props: SidebarMenuLinkProps) => {
       <RadixContextMenu.Portal>
         <RadixContextMenu.Content
           className={clsx(
-            "z-50 flex w-60 flex-col rounded border border-stone-200 bg-stone-50 p-1 text-sm shadow-[0_3px_10px_rgb(0,0,0,0.2)]"
+            "z-50 flex w-56 flex-col rounded border border-stone-200 bg-stone-50 p-1 text-sm shadow-md"
           )}
         >
           <RadixContextMenu.Item asChild>
             <MenuButton
-              icon={RxFilePlus}
-              text="Add Child Page"
+              text="Add Nested Page"
               onClick={() => createPageMutation.mutate()}
-            />
+            >
+              <MdAdd className="h-4 w-4" />
+            </MenuButton>
           </RadixContextMenu.Item>
 
           <RadixContextMenu.Separator className="my-1 h-[1px] bg-stone-300" />
 
           <RadixContextMenu.Item asChild>
-            <MenuButton
-              icon={RxStar}
-              text="Add To Favourites"
-              onClick={() => {}}
-            />
+            <MenuButton text="Add To Favourites" onClick={() => {}}>
+              <MdStarOutline className="h-4 w-4" />
+            </MenuButton>
           </RadixContextMenu.Item>
 
           <RadixContextMenu.Item asChild>
-            <MenuButton icon={RxFilePlus} text="Rename" onClick={() => {}} />
+            <MenuButton text="Rename" onClick={() => {}}>
+              <MdOutlineMode className="h-4 w-4" />
+            </MenuButton>
           </RadixContextMenu.Item>
 
           <RadixContextMenu.Item asChild>
             <MenuButton
-              icon={RxTrash}
               text="Delete Page"
-              onClick={() => deletePageMutation.mutate()}
-            />
+              onClick={() => {
+                deletePageMutation.mutate();
+              }}
+            >
+              <MdDeleteOutline className="h-4 w-4" />
+            </MenuButton>
           </RadixContextMenu.Item>
         </RadixContextMenu.Content>
       </RadixContextMenu.Portal>

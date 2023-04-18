@@ -3,7 +3,7 @@ import * as ScrollArea from "@radix-ui/react-scroll-area";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { HiOutlineDocumentText, HiPlus, HiPlusCircle } from "react-icons/hi2";
+import { MdAdd, MdOutlineDescription } from "react-icons/md";
 
 import SidebarMenuLink from "./SidebarMenuLink";
 
@@ -20,7 +20,7 @@ const PageItem = (props: { page: any; router: any }) => {
         pageId={props.page.id}
         parentPageId={props.page.parentPageId}
         text={props.page.pageName}
-        icon={HiOutlineDocumentText}
+        icon={MdOutlineDescription}
         isOpen={props.page.id === props.router.query.pageId}
         isCollapsed={isCollapsed}
         setIsCollasped={toggleCollapsed}
@@ -65,9 +65,9 @@ export default function PageList(props: PageListProps) {
         {/* Add Button */}
         <button
           onClick={() => createPageMutation.mutate()}
-          className="ml-2 flex h-8 w-[calc(100%-0.5rem)] items-center gap-2 rounded-sm px-2 text-sm font-medium text-stone-700 hover:bg-stone-300"
+          className="ml-2 flex h-8 w-[calc(100%-0.5rem)] items-center gap-2 rounded-sm px-2 text-sm text-stone-700 hover:bg-stone-300"
         >
-          <HiPlus className="h-4 w-4" />
+          <MdAdd className="h-4 w-4" />
           <p className="line-clamp-1">Add Page</p>
         </button>
       </ScrollArea.Viewport>

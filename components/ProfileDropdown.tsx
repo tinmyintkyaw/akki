@@ -2,11 +2,13 @@ import * as RadixDropdown from "@radix-ui/react-dropdown-menu";
 import * as Avatar from "@radix-ui/react-avatar";
 import { signOut, useSession } from "next-auth/react";
 import {
-  HiArrowRightOnRectangle,
-  HiCog8Tooth,
-  HiSun,
-  HiUser,
-} from "react-icons/hi2";
+  MdCheck,
+  MdLogout,
+  MdOutlineAccountCircle,
+  MdOutlineLightMode,
+  MdOutlineSettings,
+} from "react-icons/md";
+
 import MenuButton from "@/components/MenuButton";
 
 type ProfileDropdownProps = {};
@@ -41,32 +43,68 @@ export default function ProfileDropdown(props: ProfileDropdownProps) {
         <RadixDropdown.Content
           side="top"
           align="end"
-          className="z-50 flex w-56 flex-col rounded border border-stone-200 bg-stone-50 p-1 text-sm shadow"
+          className="z-50 flex w-56 flex-col rounded border border-stone-200 bg-stone-50 p-1 text-sm shadow-md"
         >
+          <RadixDropdown.Sub>
+            <RadixDropdown.SubTrigger asChild>
+              <MenuButton text="Change Theme">
+                <MdOutlineLightMode className="h-4 w-4" />
+              </MenuButton>
+            </RadixDropdown.SubTrigger>
+
+            <RadixDropdown.Portal>
+              <RadixDropdown.SubContent
+                alignOffset={-7}
+                sideOffset={5}
+                className="z-50 flex w-56 flex-col rounded border border-stone-200 bg-stone-50 p-1 text-sm shadow-md"
+              >
+                <RadixDropdown.RadioGroup value="light">
+                  <RadixDropdown.RadioItem value={"light"} asChild>
+                    <MenuButton text="Light">
+                      <RadixDropdown.ItemIndicator asChild>
+                        <MdCheck className="h-4 w-4" />
+                      </RadixDropdown.ItemIndicator>
+                    </MenuButton>
+                  </RadixDropdown.RadioItem>
+
+                  <RadixDropdown.RadioItem value={"dark"} asChild>
+                    <MenuButton text="Dark">
+                      <RadixDropdown.ItemIndicator asChild>
+                        <MdCheck className="h-4 w-4" />
+                      </RadixDropdown.ItemIndicator>
+                    </MenuButton>
+                  </RadixDropdown.RadioItem>
+
+                  <RadixDropdown.RadioItem value={"system"} asChild>
+                    <MenuButton text="System">
+                      <RadixDropdown.ItemIndicator asChild>
+                        <MdCheck className="h-4 w-4" />
+                      </RadixDropdown.ItemIndicator>
+                    </MenuButton>
+                  </RadixDropdown.RadioItem>
+                </RadixDropdown.RadioGroup>
+              </RadixDropdown.SubContent>
+            </RadixDropdown.Portal>
+          </RadixDropdown.Sub>
+
           <RadixDropdown.Item asChild>
-            <MenuButton icon={HiSun} text="Change Theme" onClick={() => {}} />
+            <MenuButton text="Profile" onClick={() => {}}>
+              <MdOutlineAccountCircle className="h-4 w-4" />
+            </MenuButton>
           </RadixDropdown.Item>
 
           <RadixDropdown.Item asChild>
-            <MenuButton icon={HiUser} text="Profile" onClick={() => {}} />
-          </RadixDropdown.Item>
-
-          <RadixDropdown.Item asChild>
-            <MenuButton
-              icon={HiCog8Tooth}
-              text="Preferences"
-              onClick={() => {}}
-            />
+            <MenuButton text="Preferences" onClick={() => {}}>
+              <MdOutlineSettings className="h-4 w-4" />
+            </MenuButton>
           </RadixDropdown.Item>
 
           <RadixDropdown.Separator className="my-1 h-[1px] bg-stone-300" />
 
           <RadixDropdown.Item asChild>
-            <MenuButton
-              icon={HiArrowRightOnRectangle}
-              text="Sign Out"
-              onClick={signOut}
-            />
+            <MenuButton text="Sign Out" onClick={signOut}>
+              <MdLogout className="h-4 w-4" />
+            </MenuButton>
           </RadixDropdown.Item>
         </RadixDropdown.Content>
       </RadixDropdown.Portal>
