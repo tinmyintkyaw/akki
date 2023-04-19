@@ -99,14 +99,14 @@ const server = Server.configure({
           const textContent = generateText(json.default, [
             StarterKit.configure({
               history: false,
-              document: false,
+              // document: false,
               heading: false,
             }),
-            CustomDocument,
+            // CustomDocument,
             CustomHeadingBackend.configure({ levels: [1, 2, 3] }),
             Link,
             CustomImage.configure({ allowBase64: true }),
-            BackendTitle,
+            // BackendTitle,
           ]);
 
           const dbPage = await prisma.page.update({
