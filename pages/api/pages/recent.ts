@@ -30,7 +30,7 @@ export default async function recentPagesHandler(
         parentPageId: true,
         createdAt: true,
         modifiedAt: true,
-        isFavorite: true,
+        isFavourite: true,
         userId: true,
       },
     });

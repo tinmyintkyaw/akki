@@ -41,7 +41,7 @@ export default async function pagesHandler(
           parentPageId: true,
           createdAt: true,
           modifiedAt: true,
-          isFavorite: true,
+          isFavourite: true,
           userId: true,
           textContent: true,
         },
@@ -54,7 +54,7 @@ export default async function pagesHandler(
         pageTextContent: data.textContent,
         pageCreatedAt: data.createdAt.getTime(),
         pageModifiedAt: data.modifiedAt.getTime(),
-        isFavorite: data.isFavorite,
+        isFavourite: data.isFavourite,
       };
 
       await serverTypesenseClient
@@ -82,7 +82,7 @@ export default async function pagesHandler(
           parentPageId: true,
           createdAt: true,
           modifiedAt: true,
-          isFavorite: true,
+          isFavourite: true,
           userId: true,
         },
         orderBy: {

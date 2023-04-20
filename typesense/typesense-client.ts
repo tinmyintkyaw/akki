@@ -29,7 +29,7 @@ export interface typesensePageDocument {
   pageTextContent: string;
   pageCreatedAt: number;
   pageModifiedAt: number;
-  isFavorite: boolean;
+  isFavourite: boolean;
   userId: string;
 }
 
@@ -57,7 +57,7 @@ export const typesenseCollectionSchema: CollectionCreateSchema = {
       facet: true,
     },
     {
-      name: "isFavorite",
+      name: "isFavourite",
       type: "bool",
       facet: true,
     },

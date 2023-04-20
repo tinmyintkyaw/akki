@@ -132,7 +132,7 @@ const server = Server.configure({
             pageTextContent: dbPage.textContent,
             pageCreatedAt: dbPage.createdAt.getTime(),
             pageModifiedAt: dbPage.modifiedAt.getTime(),
-            isFavorite: dbPage.isFavorite,
+            isFavourite: dbPage.isFavourite,
           };
 
           await serverTypesenseClient

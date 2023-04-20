@@ -68,7 +68,7 @@ model Page {
   parentPage   Page?    @relation("ChildPages", fields: [parentPageId], references: [id])
   parentPageId String?
   childPages   Page[]   @relation("ChildPages")
-  isFavorite   Boolean  @default(false)
+  isFavourite  Boolean  @default(false)
   textContent  String
 
   @@unique([id, userId])

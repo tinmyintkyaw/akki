@@ -34,7 +34,7 @@ export default async function handler(
   //     id: true,
   //     createdAt: true,
   //     modifiedAt: true,
-  //     isFavorite: true,
+  //     isFavourite: true,
   //     textContent: true,
   //   },
   // });
@@ -44,7 +44,7 @@ export default async function handler(
   //     id: page.id,
   //     pageName: page.pageName,
   //     pageTextContent: page.textContent as string,
-  //     isFavorite: page.isFavorite,
+  //     isFavourite: page.isFavourite,
   //     pageCreatedAt: page.createdAt.getTime(),
   //     pageModifiedAt: page.modifiedAt.getTime(),
   //     userId: session?.accountId as string,

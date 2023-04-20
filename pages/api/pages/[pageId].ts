@@ -20,15 +20,12 @@ export default async function pageHandler(
     return res.status(400).json({ message: "Bad Request" });
 
   if (req.method === "PATCH") {
-    const { pageName, parentPageId, isFavorite } = req.body;
+    const { pageName, parentPageId, isFavourite } = req.body;
 
-    if (!pageName || typeof pageName !== "string")
+    if (pageName && typeof pageName !== "string")
       return res.status(400).json({ message: "Bad Request" });
 
     if (parentPageId && typeof parentPageId !== "string")
-      return res.status(400).json({ message: "Bad Request" });
-
-    if (isFavorite && typeof isFavorite !== "boolean")
       return res.status(400).json({ message: "Bad Request" });
 
     try {
@@ -50,7 +47,7 @@ export default async function pageHandler(
           parentPageId: true,
           createdAt: true,
           modifiedAt: true,
-          isFavorite: true,
+          isFavourite: true,
           userId: true,
           textContent: true,
         },
@@ -63,7 +60,7 @@ export default async function pageHandler(
         pageTextContent: data.textContent,
         pageCreatedAt: data.createdAt.getTime(),
         pageModifiedAt: data.modifiedAt.getTime(),
-        isFavorite: data.isFavorite,
+        isFavourite: data.isFavourite,
       };
 
       await serverTypesenseClient
@@ -123,7 +120,7 @@ export default async function pageHandler(
           parentPageId: true,
           createdAt: true,
           modifiedAt: true,
-          isFavorite: true,
+          isFavourite: true,
           userId: true,
         },
       });
