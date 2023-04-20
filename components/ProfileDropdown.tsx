@@ -30,9 +30,13 @@ export default function ProfileDropdown(props: ProfileDropdownProps) {
                   alt={session.data.user.name}
                   className="h-6 w-6 rounded-full"
                 />
+
+                <Avatar.Fallback asChild>
+                  <MdOutlineAccountCircle className="h-6 w-6 rounded-full" />
+                </Avatar.Fallback>
               </Avatar.Root>
 
-              <p className="font-medium line-clamp-1">
+              <p className="line-clamp-1 font-medium">
                 {session.data.user?.name}
               </p>
             </>
