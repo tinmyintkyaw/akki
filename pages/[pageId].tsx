@@ -70,7 +70,7 @@ export default function App(props: AppProps) {
           <div className="flex h-screen">
             <Sidebar isOpen={isSidebarOpen} pageListComponent={<PageList />} />
 
-            {!pageQuery.data && (
+            {!pageQuery.data && !pageQuery.isLoading && (
               <div className="flex h-full w-full select-none items-center justify-center">
                 <p>Page Not Found!</p>
               </div>

@@ -19,13 +19,16 @@ export default async function pageHandler(
   if (!pageId || typeof pageId !== "string")
     return res.status(400).json({ message: "Bad Request" });
 
-  if (req.method === "PUT") {
-    const { pageName, parentPageId } = req.body;
+  if (req.method === "PATCH") {
+    const { pageName, parentPageId, isFavorite } = req.body;
 
     if (!pageName || typeof pageName !== "string")
       return res.status(400).json({ message: "Bad Request" });
 
     if (parentPageId && typeof parentPageId !== "string")
+      return res.status(400).json({ message: "Bad Request" });
+
+    if (isFavorite && typeof isFavorite !== "boolean")
       return res.status(400).json({ message: "Bad Request" });
 
     try {

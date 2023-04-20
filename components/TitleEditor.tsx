@@ -11,12 +11,11 @@ export default function TitleEditor() {
 
   const [pageName, setPageName] = useState(pageQuery.data.pageName);
 
-  const updatePageMutation = useUpdatePageMutation(
-    pageQuery.data.id as string,
+  const updatePageMutation = useUpdatePageMutation({
+    id: pageQuery.data.id as string,
     pageName,
-    pageQuery.data.parentPageId,
-    queryClient
-  );
+    queryClient,
+  });
 
   useEffect(() => {
     if (pageName === pageQuery.data.pageName) return;
