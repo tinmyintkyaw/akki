@@ -25,6 +25,7 @@ import {
 type SidebarMenuLinkProps = {
   pageId: string;
   parentPageId: string | null;
+  isFavourite: boolean;
   text: string;
   icon: IconType;
   isOpen: boolean;
@@ -41,6 +42,11 @@ const SidebarMenuLink = (props: SidebarMenuLinkProps) => {
     queryClient
   );
 
+  const toggleFavouriteMutation = useUpdatePageMutation({
+    id: props.pageId,
+    isFavourite: !props.isFavourite,
+    queryClient,
+  });
   const deletePageMutation = useDeletePageMutation(props.pageId, queryClient);
 
   return (
@@ -69,7 +75,7 @@ const SidebarMenuLink = (props: SidebarMenuLinkProps) => {
           >
             {props.icon && <props.icon className="h-4 w-4 min-w-[1rem]" />}
 
-            <p className="flex-grow line-clamp-1">{props.text}</p>
+            <p className="line-clamp-1 flex-grow">{props.text}</p>
           </Link>
 
           <button
@@ -99,8 +105,19 @@ const SidebarMenuLink = (props: SidebarMenuLinkProps) => {
           <RadixContextMenu.Separator className="my-1 h-[1px] bg-stone-300" />
 
           <RadixContextMenu.Item asChild>
-            <MenuButton text="Add To Favourites" onClick={() => {}}>
-              <MdStarOutline className="h-4 w-4" />
+            <MenuButton
+              text={
+                props.isFavourite
+                  ? "Remove from favourites"
+                  : "Add to favourites"
+              }
+              onClick={() => toggleFavouriteMutation.mutate()}
+            >
+              {props.isFavourite ? (
+                <MdStarOutline className="h-4 w-4" />
+              ) : (
+                <MdStar className="h-4 w-4" />
+              )}
             </MenuButton>
           </RadixContextMenu.Item>
 

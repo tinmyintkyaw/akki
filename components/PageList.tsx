@@ -19,6 +19,7 @@ const PageItem = (props: { page: any; router: any }) => {
       <SidebarMenuLink
         pageId={props.page.id}
         parentPageId={props.page.parentPageId}
+        isFavourite={props.page.isFavourite}
         text={props.page.pageName}
         icon={MdOutlineDescription}
         isOpen={props.page.id === props.router.query.pageId}

@@ -28,6 +28,9 @@ export default async function pageHandler(
     if (parentPageId && typeof parentPageId !== "string")
       return res.status(400).json({ message: "Bad Request" });
 
+    if (typeof isFavourite !== "undefined" && typeof isFavourite !== "boolean")
+      return res.status(400).json({ message: "Bad Request" });
+
     try {
       const data = await prisma.page.update({
         where: {
@@ -40,6 +43,7 @@ export default async function pageHandler(
           pageName: pageName,
           parentPageId: parentPageId,
           modifiedAt: new Date(),
+          isFavourite: isFavourite,
         },
         select: {
           id: true,

@@ -62,13 +62,8 @@ export default function Tiptap(props: TiptapProps) {
       StarterKit.configure({
         history: false,
         heading: false,
-        // document: false,
       }),
-      // CustomDocument,
-      // FrontendTitle,
       CustomHeadingFrondend.configure({ levels: [1, 2, 3] }),
-      // CustomParagraph,
-      // CustomBlockquote,
       Link,
       CustomImage.configure({ allowBase64: true }),
       Collaboration.configure({ document: ydoc }),
