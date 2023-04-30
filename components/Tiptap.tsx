@@ -2,7 +2,6 @@ import { useEffect, useMemo } from "react";
 import { useEditor, EditorContent, generateText } from "@tiptap/react";
 
 import * as Y from "yjs";
-import { IndexeddbPersistence } from "y-indexeddb";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 
 import clsx from "clsx";
@@ -13,15 +12,12 @@ import TaskList from "@tiptap/extension-task-list";
 import Collaboration from "@tiptap/extension-collaboration";
 import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 
-import CustomDocument from "@/tiptap/CustomDocument";
 import CustomParagraph from "@/tiptap/CustomParagraph";
 import CustomBlockquote from "@/tiptap/CustomBlockquote";
 import CustomTaskItem from "@/tiptap/CustomTaskItem";
 
 import SelectMenu from "./BubbleMenu";
 
-import Text from "@tiptap/extension-text";
-import FrontendTitle from "@/tiptap/FrontendTitle";
 import Placeholder from "@tiptap/extension-placeholder";
 import CustomListItem from "@/tiptap/CustomListItem";
 import TaskItem from "@tiptap/extension-task-item";
@@ -39,11 +35,6 @@ export default function Tiptap(props: TiptapProps) {
 
   let ydoc = useMemo(() => new Y.Doc(), []);
 
-  // const persistence = useMemo(
-  //   () => new IndexeddbPersistence("test", ydoc),
-  //   [ydoc]
-  // );
-
   const provider = useMemo(() => {
     return new HocuspocusProvider({
       url: "ws://localhost:8080/collaboration/",
@@ -51,9 +42,6 @@ export default function Tiptap(props: TiptapProps) {
       document: ydoc,
       token: "test", // Not using token auth, but onAuthenticate hook on server won't fire with a empty string
       connect: false,
-      onConnect() {
-        console.log("Connected to server");
-      },
     });
   }, [props.pageId, ydoc]);
 
@@ -74,13 +62,8 @@ export default function Tiptap(props: TiptapProps) {
         },
       }),
       Placeholder.configure({
-        placeholder(PlaceholderProps) {
-          if (PlaceholderProps.node.type.name === "title") {
-            return "Untitled";
-          }
-          return "placeholder";
-        },
-        showOnlyCurrent: false,
+        placeholder: "Start typing...",
+        showOnlyWhenEditable: true,
       }),
       // TODO: Finish TaskItem toggle logic
       // CustomTaskItem.configure({ nested: true }),
@@ -93,8 +76,8 @@ export default function Tiptap(props: TiptapProps) {
   });
 
   useEffect(() => {
-    provider.connect();
-    provider.on("", () => console.log("synced"));
+    editor?.setEditable(false);
+    provider.connect().then(() => editor?.setEditable(true));
 
     // On unmount, sync and disconnect
     return () => {

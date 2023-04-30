@@ -1,7 +1,6 @@
 import express from "express";
 import expressWebsockets from "express-ws";
 import { Server } from "@hocuspocus/server";
-import { createProxyMiddleware } from "http-proxy-middleware";
 import { Database } from "@hocuspocus/extension-database";
 
 import prisma from "../lib/prismadb";
@@ -10,11 +9,8 @@ import { generateText } from "@tiptap/core";
 
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
-import BackendTitle from "../tiptap/BackendTitle";
-import CustomDocument from "../tiptap/CustomDocument";
 import CustomImage from "../tiptap/CustomImage";
 import CustomHeadingBackend from "../tiptap/CustomHeadingBackend";
-import Placeholder from "@tiptap/extension-placeholder";
 
 import serverTypesenseClient, {
   typesenseCollectionSchema,
@@ -81,32 +77,16 @@ const server = Server.configure({
         console.log("Storing page");
 
         try {
-          // // Convert Ydoc into prosemirror JSON format for accessing the text
-          // // content of the title node later on
-          // const prosemirrorJSON = TiptapTransformer.fromYdoc(data.document);
-
-          // // A not very clean way to access the text of the very first node
-          // // in the doc, which is title node in the schema
-          // const editorTitleNode = prosemirrorJSON.default.content[0];
-
-          // const dbPageName =
-          //   editorTitleNode.content.length > 0
-          //     ? editorTitleNode.content[0].text
-          //     : "Untitled";
-
           const json = await TiptapTransformer.fromYdoc(data.document);
 
           const textContent = generateText(json.default, [
             StarterKit.configure({
               history: false,
-              // document: false,
               heading: false,
             }),
-            // CustomDocument,
             CustomHeadingBackend.configure({ levels: [1, 2, 3] }),
             Link,
             CustomImage.configure({ allowBase64: true }),
-            // BackendTitle,
           ]);
 
           const dbPage = await prisma.page.update({

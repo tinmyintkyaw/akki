@@ -29,7 +29,7 @@
   white-space: nowrap;
 }
 
-.node-title.is-empty::before {
+.is-empty::before {
   content: attr(data-placeholder);
-  @apply pointer-events-none float-left h-0 text-3xl font-medium text-stone-400;
+  @apply pointer-events-none float-left h-0 text-stone-400;
 }
