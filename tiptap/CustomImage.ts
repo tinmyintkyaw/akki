@@ -16,7 +16,6 @@ const CustomImage = Image.extend({
               title: node.getAttribute("title"),
             };
           }
-          console.log("string");
           return {};
         },
       },

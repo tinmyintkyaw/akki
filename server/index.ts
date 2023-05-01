@@ -16,6 +16,8 @@ import serverTypesenseClient, {
   typesenseCollectionSchema,
   typesensePageDocument,
 } from "../typesense/typesense-client";
+import TaskList from "@tiptap/extension-task-list";
+import TaskItem from "@tiptap/extension-task-item";
 
 // Configure hocuspocus
 const server = Server.configure({
@@ -87,6 +89,8 @@ const server = Server.configure({
             CustomHeadingBackend.configure({ levels: [1, 2, 3] }),
             Link,
             CustomImage.configure({ allowBase64: true }),
+            TaskList,
+            TaskItem.configure({ nested: true }),
           ]);
 
           const dbPage = await prisma.page.update({

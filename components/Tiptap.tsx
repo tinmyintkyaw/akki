@@ -50,8 +50,10 @@ export default function Tiptap(props: TiptapProps) {
       StarterKit.configure({
         history: false,
         heading: false,
+        paragraph: false,
       }),
       CustomHeadingFrondend.configure({ levels: [1, 2, 3] }),
+      CustomParagraph,
       Link,
       CustomImage.configure({ allowBase64: true }),
       Collaboration.configure({ document: ydoc }),
@@ -63,10 +65,9 @@ export default function Tiptap(props: TiptapProps) {
       }),
       Placeholder.configure({
         placeholder: "Start typing...",
-        showOnlyWhenEditable: true,
       }),
-      // TODO: Finish TaskItem toggle logic
-      // CustomTaskItem.configure({ nested: true }),
+      TaskList,
+      CustomTaskItem.configure({ nested: true }),
     ],
     editorProps: {
       attributes: {
@@ -94,14 +95,14 @@ export default function Tiptap(props: TiptapProps) {
       <EditorContent
         spellCheck={false}
         className={clsx(
-          "prose mx-auto h-full w-full break-words px-8 py-4 font-normal text-slate-900 selection:bg-sky-200",
-          "max-w-3xl", // controls the width of the editor
-          "prose-base", // controls the overall editor font size
-          "prose-headings:mb-4 prose-headings:w-full prose-headings:font-semibold prose-h1:mt-8 prose-h1:text-3xl prose-h2:mt-6 prose-h3:mt-4",
-          "prose-p:mb-4 prose-p:mt-0 prose-p:w-full",
-          "prose-ul:my-1 prose-ul:w-full prose-ul:list-disc prose-ul:pl-5",
-          "prose-ol:mb-0 prose-ol:mt-1 prose-ol:w-full prose-ol:list-decimal prose-ol:pl-5",
-          "prose-li:my-0 prose-li:w-full prose-li:px-0"
+          "mx-auto h-full w-full break-words px-8 py-4 font-normal text-gray-900 selection:bg-sky-200",
+          "max-w-3xl" // controls the width of the editor
+          // "prose prose-base", // controls the overall editor font size
+          // "prose-headings:mb-4 prose-headings:mt-6 prose-headings:w-full prose-headings:font-semibold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl",
+          // "prose-p:mb-0 prose-p:mt-0 prose-p:w-full",
+          // "prose-ul:my-1 prose-ul:w-full prose-ul:list-disc prose-ul:pl-5",
+          // "prose-ol:mb-0 prose-ol:mt-1 prose-ol:w-full prose-ol:list-decimal prose-ol:pl-5",
+          // "prose-li:my-0 prose-li:w-full prose-li:px-0"
         )}
         editor={editor}
         onKeyDown={(event) => {
