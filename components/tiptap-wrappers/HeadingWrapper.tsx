@@ -12,7 +12,7 @@ export default function HeadingWrapper(props: NodeViewRendererProps) {
       <NodeViewWrapper
         className={clsx(
           "group relative before:absolute before:bottom-0 before:right-full before:top-0 before:w-full",
-          "mb-4 mt-6 font-semibold",
+          "mb-2 mt-6 font-semibold",
           props.node.attrs.level === 1 && "text-3xl",
           props.node.attrs.level === 2 && "text-2xl",
           props.node.attrs.level === 3 && "text-xl"

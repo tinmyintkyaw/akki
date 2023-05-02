@@ -51,6 +51,7 @@ export default function Tiptap(props: TiptapProps) {
         history: false,
         heading: false,
         paragraph: false,
+        listItem: false,
       }),
       CustomHeadingFrondend.configure({ levels: [1, 2, 3] }),
       CustomParagraph,
@@ -66,6 +67,7 @@ export default function Tiptap(props: TiptapProps) {
       Placeholder.configure({
         placeholder: "Start typing...",
       }),
+      CustomListItem,
       TaskList,
       CustomTaskItem.configure({ nested: true }),
     ],

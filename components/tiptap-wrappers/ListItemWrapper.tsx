@@ -1,14 +1,17 @@
 import { NodeViewWrapper, NodeViewContent, NodeViewProps } from "@tiptap/react";
-import { MdDragIndicator } from "react-icons/md";
+import { useState } from "react";
+import BlockWrapper from "./BlockWrapper";
 
 export default function ListItemWrapper(props: NodeViewProps) {
+  const [showhandle, setShowHandle] = useState(false);
+
   return (
     <NodeViewWrapper>
-      <div className="flex flex-row">
-        <div className="h-7 w-5 flex-shrink-0 bg-red-100"></div>
-        <div className="flex-shrink-0 pr-2 before:content-['▪'] [&li]:before:content-['-']"></div>
-        <NodeViewContent key={crypto.randomUUID()} as={"li"} />
-      </div>
+      <BlockWrapper>
+        <div className="h-7 w-5 select-none" />
+
+        <NodeViewContent as={"li"} className="w-full" />
+      </BlockWrapper>
     </NodeViewWrapper>
   );
 }

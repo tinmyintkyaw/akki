@@ -4,8 +4,9 @@ import { mergeAttributes, ReactNodeViewRenderer } from "@tiptap/react";
 import ListItemWrapper from "@/components/tiptap-wrappers/ListItemWrapper";
 
 const CustomListItem = ListItem.extend({
+  draggable: true,
   addNodeView() {
-    return ReactNodeViewRenderer(ListItemWrapper);
+    return ReactNodeViewRenderer(ListItemWrapper, {});
   },
 });
 

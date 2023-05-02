@@ -29,7 +29,15 @@
   white-space: nowrap;
 }
 
-.is-empty::before {
+.is-editor-empty::before {
   content: attr(data-placeholder);
-  @apply pointer-events-none float-left h-0 text-stone-400;
+  @apply pointer-events-none float-left h-0 leading-7 text-stone-400;
+}
+
+ul :not([data-type="taskList"]) {
+  @apply list-disc;
+}
+
+ol :not([data-type="taskList"]) {
+  @apply list-decimal;
 }

@@ -4,6 +4,7 @@ import TaskItem from "@tiptap/extension-task-item";
 import TaskItemWrapper from "@/components/tiptap-wrappers/TaskItemWrapper";
 
 const CustomTaskItem = TaskItem.extend({
+  draggable: true,
   addNodeView() {
     return ReactNodeViewRenderer(TaskItemWrapper);
   },
