@@ -11,25 +11,7 @@ import { MdDragIndicator } from "react-icons/md";
 import React, { useState } from "react";
 import BlockWrapper from "./BlockWrapper";
 
-function BlockquoteParagraph(props: NodeViewProps) {
-  return (
-    <NodeViewWrapper className="not-prose group relative before:absolute before:bottom-0 before:right-full before:top-0 before:w-full">
-      <button
-        contentEditable={false}
-        className="absolute -left-10 opacity-0 group-hover:opacity-100"
-      >
-        <MdDragIndicator className="h-7 w-5" />
-      </button>
-
-      <NodeViewContent
-        as={"p"}
-        className="not-prose before:content-none after:content-none"
-      />
-    </NodeViewWrapper>
-  );
-}
-
-function ListItemParagraph(props: NodeViewProps) {
+function ChildParagraph(props: NodeViewProps) {
   return (
     <NodeViewWrapper>
       <NodeViewContent as={"p"} className="my-1 leading-7" />
@@ -38,8 +20,6 @@ function ListItemParagraph(props: NodeViewProps) {
 }
 
 function RootLevelParagraph(props: NodeViewProps) {
-  const [showhandle, setShowHandle] = useState(false);
-
   return (
     <NodeViewWrapper>
       <BlockWrapper>
@@ -64,14 +44,12 @@ export default function ParagraphWrapper(props: NodeViewProps) {
     return true;
   }
 
-  if (checkParentNodeNameEquals(props.editor, props.getPos(), "blockquote"))
-    return <BlockquoteParagraph {...props} />;
-
   if (
     checkParentNodeNameEquals(props.editor, props.getPos(), "listItem") ||
-    checkParentNodeNameEquals(props.editor, props.getPos(), "taskItem")
+    checkParentNodeNameEquals(props.editor, props.getPos(), "taskItem") ||
+    checkParentNodeNameEquals(props.editor, props.getPos(), "blockquote")
   )
-    return <ListItemParagraph {...props} />;
+    return <ChildParagraph {...props} />;
 
   return <RootLevelParagraph {...props} />;
 }
