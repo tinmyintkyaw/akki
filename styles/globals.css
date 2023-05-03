@@ -34,6 +34,10 @@
   @apply pointer-events-none float-left h-0 leading-7 text-stone-400;
 }
 
+.ProseMirror a {
+  @apply cursor-pointer text-blue-700 underline hover:text-blue-600;
+}
+
 ul :not([data-type="taskList"]) {
   @apply list-disc;
 }

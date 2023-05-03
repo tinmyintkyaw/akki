@@ -12,19 +12,16 @@ import TaskList from "@tiptap/extension-task-list";
 import Collaboration from "@tiptap/extension-collaboration";
 import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 
+import Link from "@tiptap/extension-link";
+import Placeholder from "@tiptap/extension-placeholder";
 import CustomParagraph from "@/tiptap/CustomParagraph";
 import CustomBlockquote from "@/tiptap/CustomBlockquote";
 import CustomTaskItem from "@/tiptap/CustomTaskItem";
-
-import SelectMenu from "./BubbleMenu";
-
-import Placeholder from "@tiptap/extension-placeholder";
 import CustomListItem from "@/tiptap/CustomListItem";
-import TaskItem from "@tiptap/extension-task-item";
 import CustomImage from "@/tiptap/CustomImage";
-import Link from "@tiptap/extension-link";
 import CustomHeadingFrondend from "@/tiptap/CustomHeadingFrontend";
-import TitleEditor from "./TitleEditor";
+import SelectMenu from "@/components/BubbleMenu";
+import TitleEditor from "@/components/TitleEditor";
 
 type TiptapProps = {
   pageId: string;
@@ -52,11 +49,19 @@ export default function Tiptap(props: TiptapProps) {
         heading: false,
         paragraph: false,
         listItem: false,
+        blockquote: false,
       }),
+      Link,
+      TaskList,
       CustomHeadingFrondend.configure({ levels: [1, 2, 3] }),
       CustomParagraph,
-      Link,
+      CustomBlockquote,
       CustomImage.configure({ allowBase64: true }),
+      Placeholder.configure({
+        placeholder: "Start typing...",
+      }),
+      CustomListItem,
+      CustomTaskItem.configure({ nested: true }),
       Collaboration.configure({ document: ydoc }),
       CollaborationCursor.configure({
         provider: provider,
@@ -64,12 +69,6 @@ export default function Tiptap(props: TiptapProps) {
           name: session.data?.user?.name,
         },
       }),
-      Placeholder.configure({
-        placeholder: "Start typing...",
-      }),
-      CustomListItem,
-      TaskList,
-      CustomTaskItem.configure({ nested: true }),
     ],
     editorProps: {
       attributes: {
@@ -99,12 +98,6 @@ export default function Tiptap(props: TiptapProps) {
         className={clsx(
           "mx-auto h-full w-full break-words px-8 py-4 font-normal text-gray-900 selection:bg-sky-200",
           "max-w-3xl" // controls the width of the editor
-          // "prose prose-base", // controls the overall editor font size
-          // "prose-headings:mb-4 prose-headings:mt-6 prose-headings:w-full prose-headings:font-semibold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl",
-          // "prose-p:mb-0 prose-p:mt-0 prose-p:w-full",
-          // "prose-ul:my-1 prose-ul:w-full prose-ul:list-disc prose-ul:pl-5",
-          // "prose-ol:mb-0 prose-ol:mt-1 prose-ol:w-full prose-ol:list-decimal prose-ol:pl-5",
-          // "prose-li:my-0 prose-li:w-full prose-li:px-0"
         )}
         editor={editor}
         onKeyDown={(event) => {
