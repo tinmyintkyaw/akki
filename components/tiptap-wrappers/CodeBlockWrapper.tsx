@@ -1,13 +1,15 @@
 import { NodeViewWrapper, NodeViewContent, NodeViewProps } from "@tiptap/react";
+
 import BlockWrapper from "./BlockWrapper";
 
-export default function ListItemWrapper(props: NodeViewProps) {
+export default function CodeBlockWrapper(props: NodeViewProps) {
   return (
     <NodeViewWrapper>
       <BlockWrapper>
-        <div className="h-7 w-5 select-none" />
-
-        <NodeViewContent as={"li"} className="w-full" />
+        <NodeViewContent
+          as="pre"
+          className="my-1 w-full rounded bg-slate-200 px-2 py-2"
+        />
       </BlockWrapper>
     </NodeViewWrapper>
   );

@@ -6,14 +6,14 @@ import { HocuspocusProvider } from "@hocuspocus/provider";
 
 import clsx from "clsx";
 import { useSession, getSession } from "next-auth/react";
+import { lowlight } from "lowlight/lib/all";
 import { StarterKit } from "@tiptap/starter-kit";
-import BulletList from "@tiptap/extension-bullet-list";
 import TaskList from "@tiptap/extension-task-list";
 import Collaboration from "@tiptap/extension-collaboration";
 import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
-
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
+
 import CustomParagraph from "@/tiptap/CustomParagraph";
 import CustomBlockquote from "@/tiptap/CustomBlockquote";
 import CustomTaskItem from "@/tiptap/CustomTaskItem";
@@ -22,6 +22,9 @@ import CustomImage from "@/tiptap/CustomImage";
 import CustomHeadingFrondend from "@/tiptap/CustomHeadingFrontend";
 import SelectMenu from "@/components/BubbleMenu";
 import TitleEditor from "@/components/TitleEditor";
+import CustomCodeBlock from "@/tiptap/CustomCodeBlock";
+
+import "highlight.js/styles/atom-one-light.css";
 
 type TiptapProps = {
   pageId: string;
@@ -50,6 +53,7 @@ export default function Tiptap(props: TiptapProps) {
         paragraph: false,
         listItem: false,
         blockquote: false,
+        codeBlock: false,
       }),
       Link,
       TaskList,
@@ -62,6 +66,8 @@ export default function Tiptap(props: TiptapProps) {
       }),
       CustomListItem,
       CustomTaskItem.configure({ nested: true }),
+      CustomCodeBlock.configure({ lowlight }),
+      // CodeBlockLowlight.configure({ lowlight }),
       Collaboration.configure({ document: ydoc }),
       CollaborationCursor.configure({
         provider: provider,
@@ -74,6 +80,9 @@ export default function Tiptap(props: TiptapProps) {
       attributes: {
         class: "outline-none",
       },
+    },
+    onUpdate(props) {
+      console.log(props.editor.getJSON());
     },
   });
 
