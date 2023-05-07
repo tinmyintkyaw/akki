@@ -20,8 +20,15 @@ export default function HeadingWrapper(props: NodeViewRendererProps) {
       <NodeViewWrapper>
         <BlockWrapper blockType={blockType}>
           <NodeViewContent
+            as={
+              props.node.attrs.level === 1
+                ? "h1"
+                : props.node.attrs.level === 2
+                ? "h2"
+                : "h3"
+            }
             className={clsx(
-              "mb-2 mt-6 font-semibold",
+              "w-full font-semibold",
               props.node.attrs.level === 1 && "text-3xl",
               props.node.attrs.level === 2 && "text-2xl",
               props.node.attrs.level === 3 && "text-xl"
