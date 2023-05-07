@@ -1,3 +1,4 @@
+import React from "react";
 import {
   NodeViewWrapper,
   NodeViewContent,
@@ -7,8 +8,6 @@ import {
 
 import { Editor } from "@tiptap/core";
 
-import { MdDragIndicator } from "react-icons/md";
-import React, { useState } from "react";
 import BlockWrapper from "./BlockWrapper";
 
 function ChildParagraph(props: NodeViewProps) {

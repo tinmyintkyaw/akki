@@ -28,9 +28,9 @@ export default function BlockWrapper(
             "absolute -left-6 cursor-grab rounded text-slate-500 hover:bg-slate-200",
             !props.blockType && "mt-1",
             props.blockType === "blockquote" && "mt-2",
-            props.blockType === "h1" && "mt-[28px]",
-            props.blockType === "h2" && "mt-[26px]",
-            props.blockType === "h3" && "mt-[24px]"
+            props.blockType === "h1" && "mt-[8px]",
+            props.blockType === "h2" && "mt-[2px]",
+            props.blockType === "h3" && "mt-[0px]"
           )}
         >
           <MdDragIndicator className="h-7 w-5" />
