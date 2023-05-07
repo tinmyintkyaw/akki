@@ -6,7 +6,7 @@ import { HocuspocusProvider } from "@hocuspocus/provider";
 
 import clsx from "clsx";
 import { useSession, getSession } from "next-auth/react";
-import { lowlight } from "lowlight/lib/all";
+import { lowlight } from "lowlight/lib/common";
 import { StarterKit } from "@tiptap/starter-kit";
 import TaskList from "@tiptap/extension-task-list";
 import Collaboration from "@tiptap/extension-collaboration";
@@ -18,13 +18,15 @@ import CustomParagraph from "@/tiptap/CustomParagraph";
 import CustomBlockquote from "@/tiptap/CustomBlockquote";
 import CustomTaskItem from "@/tiptap/CustomTaskItem";
 import CustomListItem from "@/tiptap/CustomListItem";
-import CustomImage from "@/tiptap/CustomImage";
+import CustomImageFrontend from "@/tiptap/CustomImageFrontend";
 import CustomHeadingFrondend from "@/tiptap/CustomHeadingFrontend";
 import SelectMenu from "@/components/BubbleMenu";
 import TitleEditor from "@/components/TitleEditor";
 import CustomCodeBlock from "@/tiptap/CustomCodeBlock";
 
 import "highlight.js/styles/atom-one-light.css";
+import CustomDocument from "@/tiptap/CustomDocument";
+import FrontendTitle from "@/tiptap/FrontendTitle";
 
 type TiptapProps = {
   pageId: string;
@@ -48,6 +50,7 @@ export default function Tiptap(props: TiptapProps) {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
+        document: false,
         history: false,
         heading: false,
         paragraph: false,
@@ -55,19 +58,28 @@ export default function Tiptap(props: TiptapProps) {
         blockquote: false,
         codeBlock: false,
       }),
+      CustomDocument,
+      FrontendTitle,
       Link,
       TaskList,
       CustomHeadingFrondend.configure({ levels: [1, 2, 3] }),
       CustomParagraph,
       CustomBlockquote,
-      CustomImage.configure({ allowBase64: true }),
-      Placeholder.configure({
-        placeholder: "Start typing...",
-      }),
+      CustomImageFrontend.configure({ allowBase64: true }),
+      // Placeholder.configure({
+      //   placeholder({ editor, node }) {
+      //     if (node.type.name === "title") {
+      //       return "Untitled";
+      //     }
+      //     if (node.type.name === "heading") {
+      //       return `Heading ${node.attrs.level}`;
+      //     }
+      //     return "Start typing...";
+      //   },
+      // }),
       CustomListItem,
       CustomTaskItem.configure({ nested: true }),
-      CustomCodeBlock.configure({ lowlight }),
-      // CodeBlockLowlight.configure({ lowlight }),
+      CustomCodeBlock.configure({ lowlight: lowlight, defaultLanguage: "js" }),
       Collaboration.configure({ document: ydoc }),
       CollaborationCursor.configure({
         provider: provider,
@@ -81,9 +93,9 @@ export default function Tiptap(props: TiptapProps) {
         class: "outline-none",
       },
     },
-    onUpdate(props) {
-      console.log(props.editor.getJSON());
-    },
+    // onUpdate(props) {
+    //   console.log(props.editor.getJSON());
+    // },
   });
 
   useEffect(() => {
@@ -113,9 +125,7 @@ export default function Tiptap(props: TiptapProps) {
           if (event.key !== "Tab") return;
           event.preventDefault();
         }}
-      >
-        <TitleEditor />
-      </EditorContent>
+      />
     </>
   );
 }

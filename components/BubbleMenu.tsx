@@ -7,6 +7,7 @@ import {
 } from "react-icons/md";
 
 export default function SelectMenu(props: { editor: Editor }) {
+  // TODO: Do not show this bubble menu on the title node
   return (
     <>
       {props.editor && (

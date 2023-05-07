@@ -30,18 +30,31 @@ export default function TitleEditor() {
   }, [pageName, pageQuery.data.pageName, updatePageMutation]);
 
   return (
-    <div>
+    <>
       {pageQuery.data && (
-        <input
+        // <h1
+        //   contentEditable={true}
+        //   onBlur={(e) => {
+        //     e.currentTarget.innerText
+        //       ? setPageName(e.currentTarget.innerText)
+        //       : setPageName("Untitled");
+        //   }}
+        //   className="mb-6 mt-4 w-full text-4xl font-medium outline-none"
+        // >
+        //   {pageName === "Untitled" ? "" : pageName}
+        // </h1>
+
+        <textarea
           value={pageName !== "Untitled" ? pageName : ""}
           placeholder="Untitled"
           onChange={(event) => {
             if (event.target.value === "") return setPageName("Untitled");
             setPageName(event.target.value);
           }}
-          className="not-prose mb-6 mt-4 text-4xl font-medium outline-none"
+          className="mb-6 mt-4 box-border w-full text-4xl font-medium outline-none"
+          style={{ wordWrap: "break-word", wordBreak: "break-word" }}
         />
       )}
-    </div>
+    </>
   );
 }
