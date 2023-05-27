@@ -36,8 +36,8 @@
 
 .is-empty:not(.node-title, .node-heading)::before {
   content: attr(data-placeholder);
-  @apply pointer-events-none float-left h-0 text-base leading-9 text-stone-400; */
-}
+  @apply pointer-events-none float-left h-0 text-base leading-9 text-stone-400; 
+}*/
 
 .ProseMirror a {
   @apply cursor-pointer text-blue-700 underline hover:text-blue-600;

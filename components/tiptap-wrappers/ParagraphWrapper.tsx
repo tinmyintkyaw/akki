@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  NodeViewWrapper,
-  NodeViewContent,
-  NodeViewProps,
-  findParentNodeClosestToPos,
-} from "@tiptap/react";
-
-import { Editor } from "@tiptap/core";
+import { NodeViewWrapper, NodeViewContent, NodeViewProps } from "@tiptap/react";
 
 import BlockWrapper from "./BlockWrapper";
 
@@ -29,24 +22,16 @@ function RootLevelParagraph(props: NodeViewProps) {
 }
 
 export default function ParagraphWrapper(props: NodeViewProps) {
-  function checkParentNodeNameEquals(
-    editor: Editor,
-    nodePos: number,
-    parentNodeName: string
-  ): boolean {
-    const result = findParentNodeClosestToPos(
-      editor.state.doc.resolve(nodePos),
-      (node) => node.type.name === parentNodeName
-    );
-
-    if (!result) return false;
-    return true;
-  }
+  const parentNode = props.editor.view.state.doc.resolve(props.getPos()).parent;
 
   if (
-    checkParentNodeNameEquals(props.editor, props.getPos(), "listItem") ||
-    checkParentNodeNameEquals(props.editor, props.getPos(), "taskItem") ||
-    checkParentNodeNameEquals(props.editor, props.getPos(), "blockquote")
+    (parentNode.type.name === "listItem" &&
+      parentNode.firstChild &&
+      props.node.eq(parentNode.firstChild)) ||
+    (parentNode.type.name === "taskItem" &&
+      parentNode.firstChild &&
+      props.node.eq(parentNode.firstChild)) ||
+    parentNode.type.name === "blockquote"
   )
     return <ChildParagraph {...props} />;
 
