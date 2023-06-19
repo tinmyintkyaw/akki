@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { Fragment, useEffect, useRef, useState } from "react";
 import { NodeViewWrapper, NodeViewContent, NodeViewProps } from "@tiptap/react";
-import {  ResizableBox } from "react-resizable";
+// import {  ResizableBox } from "react-resizable";
 
 import BlockWrapper from "./BlockWrapper";
 
@@ -18,7 +18,7 @@ export default function ImageWrapper(props: NodeViewProps) {
     <NodeViewWrapper ref={nodeViewRef}>
       <BlockWrapper>
         <NodeViewContent as={Fragment}>
-          <ResizableBox
+          {/* <ResizableBox
             axis="x"
             width={width}
             resizeHandles={["e"]}
@@ -31,13 +31,13 @@ export default function ImageWrapper(props: NodeViewProps) {
               nodeViewRef.current ? nodeViewRef.current.offsetHeight : 700,
             ]}
             className="mx-auto"
-          >
+          > */}
             <img
               src={props.node.attrs.src}
               alt={props.node.attrs.alt}
               title={props.node.attrs.title}
             />
-          </ResizableBox>
+          {/* </ResizableBox> */}
         </NodeViewContent>
       </BlockWrapper>
     </NodeViewWrapper>
