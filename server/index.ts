@@ -9,13 +9,17 @@ import { generateText } from "@tiptap/core";
 
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
-import CustomImage from "../tiptap/CustomImage";
+import CustomImage from "../tiptap/CustomImageBackend";
 import CustomHeadingBackend from "../tiptap/CustomHeadingBackend";
 
 import serverTypesenseClient, {
   typesenseCollectionSchema,
   typesensePageDocument,
 } from "../typesense/typesense-client";
+import TaskList from "@tiptap/extension-task-list";
+import TaskItem from "@tiptap/extension-task-item";
+import CustomDocument from "../tiptap/CustomDocument";
+import BackendTitle from "../tiptap/BackendTitle";
 
 // Configure hocuspocus
 const server = Server.configure({
@@ -81,12 +85,17 @@ const server = Server.configure({
 
           const textContent = generateText(json.default, [
             StarterKit.configure({
+              document: false,
               history: false,
               heading: false,
             }),
+            CustomDocument,
+            BackendTitle,
             CustomHeadingBackend.configure({ levels: [1, 2, 3] }),
             Link,
             CustomImage.configure({ allowBase64: true }),
+            TaskList,
+            TaskItem.configure({ nested: true }),
           ]);
 
           const dbPage = await prisma.page.update({

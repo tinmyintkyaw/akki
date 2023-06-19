@@ -6,25 +6,27 @@ import { HocuspocusProvider } from "@hocuspocus/provider";
 
 import clsx from "clsx";
 import { useSession, getSession } from "next-auth/react";
+import { lowlight } from "lowlight/lib/common";
 import { StarterKit } from "@tiptap/starter-kit";
-import BulletList from "@tiptap/extension-bullet-list";
 import TaskList from "@tiptap/extension-task-list";
 import Collaboration from "@tiptap/extension-collaboration";
 import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
+import Link from "@tiptap/extension-link";
+import Placeholder from "@tiptap/extension-placeholder";
 
 import CustomParagraph from "@/tiptap/CustomParagraph";
 import CustomBlockquote from "@/tiptap/CustomBlockquote";
 import CustomTaskItem from "@/tiptap/CustomTaskItem";
-
-import SelectMenu from "./BubbleMenu";
-
-import Placeholder from "@tiptap/extension-placeholder";
 import CustomListItem from "@/tiptap/CustomListItem";
-import TaskItem from "@tiptap/extension-task-item";
-import CustomImage from "@/tiptap/CustomImage";
-import Link from "@tiptap/extension-link";
+import CustomImageFrontend from "@/tiptap/CustomImageFrontend";
 import CustomHeadingFrondend from "@/tiptap/CustomHeadingFrontend";
-import TitleEditor from "./TitleEditor";
+import SelectMenu from "@/components/BubbleMenu";
+import TitleEditor from "@/components/TitleEditor";
+import CustomCodeBlock from "@/tiptap/CustomCodeBlock";
+
+import "highlight.js/styles/atom-one-light.css";
+import CustomDocument from "@/tiptap/CustomDocument";
+import FrontendTitle from "@/tiptap/FrontendTitle";
 
 type TiptapProps = {
   pageId: string;
@@ -48,12 +50,36 @@ export default function Tiptap(props: TiptapProps) {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
+        document: false,
         history: false,
         heading: false,
+        paragraph: false,
+        listItem: false,
+        blockquote: false,
+        codeBlock: false,
       }),
-      CustomHeadingFrondend.configure({ levels: [1, 2, 3] }),
+      CustomDocument,
+      FrontendTitle,
       Link,
-      CustomImage.configure({ allowBase64: true }),
+      TaskList,
+      CustomHeadingFrondend.configure({ levels: [1, 2, 3] }),
+      CustomParagraph,
+      CustomBlockquote,
+      CustomImageFrontend.configure({ allowBase64: true }),
+      // Placeholder.configure({
+      //   placeholder({ editor, node }) {
+      //     if (node.type.name === "title") {
+      //       return "Untitled";
+      //     }
+      //     if (node.type.name === "heading") {
+      //       return `Heading ${node.attrs.level}`;
+      //     }
+      //     return "Start typing...";
+      //   },
+      // }),
+      CustomListItem,
+      CustomTaskItem.configure({ nested: true }),
+      CustomCodeBlock.configure({ lowlight: lowlight, defaultLanguage: "js" }),
       Collaboration.configure({ document: ydoc }),
       CollaborationCursor.configure({
         provider: provider,
@@ -61,18 +87,15 @@ export default function Tiptap(props: TiptapProps) {
           name: session.data?.user?.name,
         },
       }),
-      Placeholder.configure({
-        placeholder: "Start typing...",
-        showOnlyWhenEditable: true,
-      }),
-      // TODO: Finish TaskItem toggle logic
-      // CustomTaskItem.configure({ nested: true }),
     ],
     editorProps: {
       attributes: {
         class: "outline-none",
       },
     },
+    // onUpdate(props) {
+    //   console.log(props.editor.getJSON());
+    // },
   });
 
   useEffect(() => {
@@ -94,23 +117,15 @@ export default function Tiptap(props: TiptapProps) {
       <EditorContent
         spellCheck={false}
         className={clsx(
-          "prose mx-auto h-full w-full break-words px-8 py-4 font-normal text-slate-900 selection:bg-sky-200",
-          "max-w-3xl", // controls the width of the editor
-          "prose-base", // controls the overall editor font size
-          "prose-headings:mb-4 prose-headings:w-full prose-headings:font-semibold prose-h1:mt-8 prose-h1:text-3xl prose-h2:mt-6 prose-h3:mt-4",
-          "prose-p:mb-4 prose-p:mt-0 prose-p:w-full",
-          "prose-ul:my-1 prose-ul:w-full prose-ul:list-disc prose-ul:pl-5",
-          "prose-ol:mb-0 prose-ol:mt-1 prose-ol:w-full prose-ol:list-decimal prose-ol:pl-5",
-          "prose-li:my-0 prose-li:w-full prose-li:px-0"
+          "mx-auto h-full w-full break-words px-8 py-4 font-normal text-gray-900 selection:bg-sky-200",
+          "max-w-3xl" // controls the width of the editor
         )}
         editor={editor}
         onKeyDown={(event) => {
           if (event.key !== "Tab") return;
           event.preventDefault();
         }}
-      >
-        <TitleEditor />
-      </EditorContent>
+      />
     </>
   );
 }

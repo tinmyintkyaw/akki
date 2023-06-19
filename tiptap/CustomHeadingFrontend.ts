@@ -4,9 +4,10 @@ import HeadingWrapper from "@/components/tiptap-wrappers/HeadingWrapper";
 import CustomHeadingBackend from "@/tiptap/CustomHeadingBackend";
 
 const CustomHeadingFrondend = CustomHeadingBackend.extend({
-  marks: "",
   addNodeView() {
-    return ReactNodeViewRenderer(HeadingWrapper);
+    return ReactNodeViewRenderer(HeadingWrapper, {
+      className: "mb-2 mt-6",
+    });
   },
 });
 

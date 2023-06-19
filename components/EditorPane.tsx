@@ -7,7 +7,7 @@ type EditorPaneProps = {
 
 export default function EditorPane(props: EditorPaneProps) {
   return (
-    <div id="editor-pane" className="flex-grow pt-12">
+    <div id="editor-pane" className="w-full pt-12">
       <ScrollArea.Root type="auto">
         <ScrollArea.Viewport className="h-[calc(100vh-3rem)] w-full bg-slate-50 outline-none">
           {props.editorComponent}
