@@ -16,9 +16,8 @@ export default function ImageWrapper(props: NodeViewProps) {
 
   return (
     <NodeViewWrapper ref={nodeViewRef}>
-      <BlockWrapper>
-        <NodeViewContent as={Fragment}>
-          {/* <ResizableBox
+      <NodeViewContent as={Fragment}>
+        {/* <ResizableBox
             axis="x"
             width={width}
             resizeHandles={["e"]}
@@ -32,14 +31,13 @@ export default function ImageWrapper(props: NodeViewProps) {
             ]}
             className="mx-auto"
           > */}
-            <img
-              src={props.node.attrs.src}
-              alt={props.node.attrs.alt}
-              title={props.node.attrs.title}
-            />
-          {/* </ResizableBox> */}
-        </NodeViewContent>
-      </BlockWrapper>
+        <img
+          src={props.node.attrs.src}
+          alt={props.node.attrs.alt}
+          title={props.node.attrs.title}
+        />
+        {/* </ResizableBox> */}
+      </NodeViewContent>
     </NodeViewWrapper>
   );
 }

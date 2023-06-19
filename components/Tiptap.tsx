@@ -14,19 +14,15 @@ import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 
-import CustomParagraph from "@/tiptap/CustomParagraph";
-import CustomBlockquote from "@/tiptap/CustomBlockquote";
-import CustomTaskItem from "@/tiptap/CustomTaskItem";
-import CustomListItem from "@/tiptap/CustomListItem";
 import CustomImageFrontend from "@/tiptap/CustomImageFrontend";
-import CustomHeadingFrondend from "@/tiptap/CustomHeadingFrontend";
 import SelectMenu from "@/components/BubbleMenu";
-import TitleEditor from "@/components/TitleEditor";
 import CustomCodeBlock from "@/tiptap/CustomCodeBlock";
 
 import "highlight.js/styles/atom-one-light.css";
 import CustomDocument from "@/tiptap/CustomDocument";
 import FrontendTitle from "@/tiptap/FrontendTitle";
+import TaskItem from "@tiptap/extension-task-item";
+import Heading from "@tiptap/extension-heading";
 
 type TiptapProps = {
   pageId: string;
@@ -53,33 +49,22 @@ export default function Tiptap(props: TiptapProps) {
         document: false,
         history: false,
         heading: false,
-        paragraph: false,
-        listItem: false,
-        blockquote: false,
         codeBlock: false,
       }),
       CustomDocument,
       FrontendTitle,
       Link,
       TaskList,
-      CustomHeadingFrondend.configure({ levels: [1, 2, 3] }),
-      CustomParagraph,
-      CustomBlockquote,
+      TaskItem.configure({ nested: true }),
+      Heading.configure({ levels: [1, 2, 3] }),
+      // CustomHeadingFrondend.configure({ levels: [1, 2, 3] }),
       CustomImageFrontend.configure({ allowBase64: true }),
-      // Placeholder.configure({
-      //   placeholder({ editor, node }) {
-      //     if (node.type.name === "title") {
-      //       return "Untitled";
-      //     }
-      //     if (node.type.name === "heading") {
-      //       return `Heading ${node.attrs.level}`;
-      //     }
-      //     return "Start typing...";
-      //   },
-      // }),
-      CustomListItem,
-      CustomTaskItem.configure({ nested: true }),
       CustomCodeBlock.configure({ lowlight: lowlight, defaultLanguage: "js" }),
+      Placeholder.configure({
+        placeholder({ editor, node }) {
+          return "Start typing...";
+        },
+      }),
       Collaboration.configure({ document: ydoc }),
       CollaborationCursor.configure({
         provider: provider,
@@ -117,7 +102,7 @@ export default function Tiptap(props: TiptapProps) {
       <EditorContent
         spellCheck={false}
         className={clsx(
-          "mx-auto h-full w-full break-words px-8 py-4 font-normal text-gray-900 selection:bg-sky-200",
+          "prose mx-auto h-full w-full break-words px-8 py-4 font-normal text-gray-900 selection:bg-sky-200",
           "max-w-3xl" // controls the width of the editor
         )}
         editor={editor}
