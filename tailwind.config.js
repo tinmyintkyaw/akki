@@ -21,6 +21,9 @@ module.exports = {
             h3: {
               fontWeight: "600",
             },
+            a: {
+              cursor: "pointer"
+            },
             blockquote: {
               fontWeight: "400",
               fontStyle: "normal",

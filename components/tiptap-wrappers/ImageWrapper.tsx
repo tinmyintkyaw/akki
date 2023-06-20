@@ -3,8 +3,6 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { NodeViewWrapper, NodeViewContent, NodeViewProps } from "@tiptap/react";
 // import {  ResizableBox } from "react-resizable";
 
-import BlockWrapper from "./BlockWrapper";
-
 // import "react-resizable/css/styles.css";
 
 export default function ImageWrapper(props: NodeViewProps) {
@@ -16,7 +14,7 @@ export default function ImageWrapper(props: NodeViewProps) {
 
   return (
     <NodeViewWrapper ref={nodeViewRef}>
-      <NodeViewContent as={Fragment}>
+      <NodeViewContent>
         {/* <ResizableBox
             axis="x"
             width={width}
