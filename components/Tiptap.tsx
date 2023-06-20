@@ -5,7 +5,7 @@ import * as Y from "yjs";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 
 import clsx from "clsx";
-import { useSession, getSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { lowlight } from "lowlight/lib/common";
 import { StarterKit } from "@tiptap/starter-kit";
 import TaskList from "@tiptap/extension-task-list";
@@ -14,16 +14,16 @@ import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 
-import CustomImageFrontend from "@/tiptap/CustomImageFrontend";
-import SelectMenu from "@/components/BubbleMenu";
 import CustomCodeBlock from "@/tiptap/CustomCodeBlock";
+import CustomDocument from "@/tiptap/CustomDocument";
+import CustomHeading from "@/tiptap/CustomHeading";
+import CustomImageFrontend from "@/tiptap/CustomImageFrontend";
+import FrontendTitle from "@/tiptap/FrontendTitle";
+import CustomTaskItem from "@/tiptap/CustomTaskItem";
+
+import SelectMenu from "@/components/BubbleMenu";
 
 import "highlight.js/styles/atom-one-light.css";
-import CustomDocument from "@/tiptap/CustomDocument";
-import FrontendTitle from "@/tiptap/FrontendTitle";
-import TaskItem from "@tiptap/extension-task-item";
-import Heading from "@tiptap/extension-heading";
-import CustomTaskItem from "@/tiptap/CustomTaskItem";
 
 type TiptapProps = {
   pageId: string;
@@ -60,8 +60,7 @@ export default function Tiptap(props: TiptapProps) {
         nested: true,
         HTMLAttributes: {},
       }),
-      Heading.configure({ levels: [1, 2, 3] }),
-      // CustomHeadingFrondend.configure({ levels: [1, 2, 3] }),
+      CustomHeading.configure({ levels: [1, 2, 3] }),
       CustomImageFrontend.configure({ allowBase64: true }),
       CustomCodeBlock.configure({ lowlight: lowlight, defaultLanguage: "js" }),
       Placeholder.configure({

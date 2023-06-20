@@ -19,7 +19,7 @@ import TaskList from "@tiptap/extension-task-list";
 import TaskItem from "@tiptap/extension-task-item";
 import CustomDocument from "../tiptap/CustomDocument";
 import BackendTitle from "../tiptap/BackendTitle";
-import Heading from "@tiptap/extension-heading";
+import CustomHeading from "../tiptap/CustomHeading";
 
 // Configure hocuspocus
 const server = Server.configure({
@@ -91,11 +91,10 @@ const server = Server.configure({
             }),
             CustomDocument,
             BackendTitle,
-            Heading.configure({ levels: [1, 2, 3] }),
+            CustomHeading.configure({ levels: [1, 2, 3] }),
             Link,
             TaskList,
             TaskItem.configure({ nested: true }),
-            // CustomHeadingBackend.configure({ levels: [1, 2, 3] }),
             CustomImage.configure({ allowBase64: true }),
           ]);
 
