@@ -29,24 +29,9 @@
   white-space: nowrap;
 }
 
-/* .node-heading.is-empty:not(.node-title)::before {
+/* Placeholder text when editor is empty */
+/* TODO: also placeholder regardless of the title */
+.is-empty:not(.node-title)::before {
   content: attr(data-placeholder);
-  @apply pointer-events-none float-left h-0 text-3xl text-stone-400;
-}
-
-.is-empty:not(.node-title, .node-heading)::before {
-  content: attr(data-placeholder);
-  @apply pointer-events-none float-left h-0 text-base leading-9 text-stone-400; 
-}*/
-
-.ProseMirror a {
-  @apply cursor-pointer text-blue-700 underline hover:text-blue-600;
-}
-
-ul :not([data-type="taskList"]) {
-  @apply list-disc;
-}
-
-ol :not([data-type="taskList"]) {
-  @apply list-decimal;
+  @apply pointer-events-none float-left h-0 text-stone-400;
 }

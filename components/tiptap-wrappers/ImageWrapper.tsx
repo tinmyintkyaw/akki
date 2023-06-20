@@ -3,8 +3,6 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { NodeViewWrapper, NodeViewContent, NodeViewProps } from "@tiptap/react";
 // import {  ResizableBox } from "react-resizable";
 
-import BlockWrapper from "./BlockWrapper";
-
 // import "react-resizable/css/styles.css";
 
 export default function ImageWrapper(props: NodeViewProps) {
@@ -16,9 +14,8 @@ export default function ImageWrapper(props: NodeViewProps) {
 
   return (
     <NodeViewWrapper ref={nodeViewRef}>
-      <BlockWrapper>
-        <NodeViewContent as={Fragment}>
-          {/* <ResizableBox
+      <NodeViewContent>
+        {/* <ResizableBox
             axis="x"
             width={width}
             resizeHandles={["e"]}
@@ -32,14 +29,13 @@ export default function ImageWrapper(props: NodeViewProps) {
             ]}
             className="mx-auto"
           > */}
-            <img
-              src={props.node.attrs.src}
-              alt={props.node.attrs.alt}
-              title={props.node.attrs.title}
-            />
-          {/* </ResizableBox> */}
-        </NodeViewContent>
-      </BlockWrapper>
+        <img
+          src={props.node.attrs.src}
+          alt={props.node.attrs.alt}
+          title={props.node.attrs.title}
+        />
+        {/* </ResizableBox> */}
+      </NodeViewContent>
     </NodeViewWrapper>
   );
 }
