@@ -23,6 +23,7 @@ import CustomDocument from "@/tiptap/CustomDocument";
 import FrontendTitle from "@/tiptap/FrontendTitle";
 import TaskItem from "@tiptap/extension-task-item";
 import Heading from "@tiptap/extension-heading";
+import CustomTaskItem from "@/tiptap/CustomTaskItem";
 
 type TiptapProps = {
   pageId: string;
@@ -55,7 +56,10 @@ export default function Tiptap(props: TiptapProps) {
       FrontendTitle,
       Link,
       TaskList,
-      TaskItem.configure({ nested: true }),
+      CustomTaskItem.configure({
+        nested: true,
+        HTMLAttributes: {},
+      }),
       Heading.configure({ levels: [1, 2, 3] }),
       // CustomHeadingFrondend.configure({ levels: [1, 2, 3] }),
       CustomImageFrontend.configure({ allowBase64: true }),
@@ -104,6 +108,7 @@ export default function Tiptap(props: TiptapProps) {
         className={clsx(
           "prose mx-auto h-full w-full break-words px-8 py-4 font-normal text-gray-900 selection:bg-sky-200",
           "max-w-3xl" // controls the width of the editor
+          // "prose-li:my-0"
         )}
         editor={editor}
         onKeyDown={(event) => {

@@ -33,7 +33,7 @@ export default function BlockquoteWrapper(props: NodeViewProps) {
   return (
     <NodeViewWrapper
       className={clsx(
-        "mb-6 mt-4 box-border w-full text-4xl font-medium",
+        "not-prose mb-8 mt-4 box-border w-full text-4xl font-bold",
         !props.node.textContent &&
           "before:pointer-events-none before:float-left before:h-0 before:text-4xl before:text-stone-400 before:content-['Untitled']"
       )}

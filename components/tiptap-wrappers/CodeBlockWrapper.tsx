@@ -5,8 +5,6 @@ import { NodeViewWrapper, NodeViewContent, NodeViewProps } from "@tiptap/react";
 // import { lowlight } from "lowlight/lib/core";
 // import hljs, { Language } from "highlight.js";
 
-import BlockWrapper from "./BlockWrapper";
-
 export default function CodeBlockWrapper(props: NodeViewProps) {
   // const [language, setLanguage] = useState(() => {
   //   if (!props.node.attrs.language) return hljs.getLanguage("js") as Language;
@@ -24,8 +22,8 @@ export default function CodeBlockWrapper(props: NodeViewProps) {
   //   .filter((lang): lang is Language => !!lang);
 
   return (
-    <NodeViewWrapper>
-      <div className="my-1 w-full rounded bg-gray-200 px-3 py-2">
+    <NodeViewWrapper className="my-2">
+      <div className="not-prose my-1 w-full rounded bg-gray-200 px-3 py-2">
         <NodeViewContent as="pre" className="w-full px-1" />
       </div>
     </NodeViewWrapper>
