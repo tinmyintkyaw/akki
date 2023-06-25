@@ -1,7 +1,7 @@
 import { ReactNode, useState } from "react";
 import { Transition } from "@headlessui/react";
 import { useSession } from "next-auth/react";
-import ProfileDropdown from "./ProfileDropdown";
+import ProfileDropdown from "../ProfileDropdown";
 
 type SidebarProps = {
   pageListComponent: ReactNode;

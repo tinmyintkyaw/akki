@@ -18,7 +18,7 @@ const MenuButton = forwardRef<
       className={`${inter.className} group my-[0.125rem] flex h-7 w-full items-center gap-2 rounded-sm px-2 text-sm text-stone-700 focus:bg-stone-200 focus:outline-none hover:bg-stone-200`}
     >
       <div className="h-4 w-4">{props.children}</div>
-      <p className="flex-grow text-start line-clamp-1">{props.text}</p>
+      <p className="line-clamp-1 flex-grow text-start">{props.text}</p>
     </button>
   );
 });

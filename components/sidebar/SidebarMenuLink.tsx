@@ -21,6 +21,7 @@ import {
   MdStar,
   MdStarOutline,
 } from "react-icons/md";
+import ConfirmationDialog from "../ConfirmationDialog";
 
 type SidebarMenuLinkProps = {
   pageId: string;
@@ -50,7 +51,7 @@ const SidebarMenuLink = (props: SidebarMenuLinkProps) => {
   const deletePageMutation = useDeletePageMutation(props.pageId, queryClient);
 
   return (
-    <RadixContextMenu.Root>
+    <RadixContextMenu.Root modal={false}>
       <RadixContextMenu.Trigger asChild>
         <div
           className={clsx(
@@ -88,11 +89,7 @@ const SidebarMenuLink = (props: SidebarMenuLinkProps) => {
       </RadixContextMenu.Trigger>
 
       <RadixContextMenu.Portal>
-        <RadixContextMenu.Content
-          className={clsx(
-            "z-50 flex w-56 flex-col rounded border border-stone-200 bg-stone-50 p-1 text-sm shadow-md"
-          )}
-        >
+        <RadixContextMenu.Content className="z-50 flex w-56 flex-col rounded border border-stone-200 bg-stone-50 p-1 text-sm shadow-md">
           <RadixContextMenu.Item asChild>
             <MenuButton
               text="Add Nested Page"
@@ -121,11 +118,13 @@ const SidebarMenuLink = (props: SidebarMenuLinkProps) => {
             </MenuButton>
           </RadixContextMenu.Item>
 
-          <RadixContextMenu.Item asChild>
-            <MenuButton text="Rename" onClick={() => {}}>
-              <MdOutlineMode className="h-4 w-4" />
-            </MenuButton>
-          </RadixContextMenu.Item>
+          {/* <RadixContextMenu.Item asChild>
+            <ConfirmationDialog>
+              <MenuButton text="Rename">
+                <MdOutlineMode className="h-4 w-4" />
+              </MenuButton>
+            </ConfirmationDialog>
+          </RadixContextMenu.Item> */}
 
           <RadixContextMenu.Item asChild>
             <MenuButton

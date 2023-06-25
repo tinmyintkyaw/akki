@@ -7,8 +7,8 @@ import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter";
 import { Session, getServerSession } from "next-auth";
 import { InstantSearch } from "react-instantsearch-hooks-web";
 
-import Sidebar from "@/components/Sidebar";
-import PageList from "@/components/PageList";
+import Sidebar from "@/components/sidebar/Sidebar";
+import PageList from "@/components/sidebar/PageList";
 import EditorPane from "@/components/EditorPane";
 import EditorToolbar from "@/components/EditorToolbar";
 
