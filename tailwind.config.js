@@ -22,7 +22,7 @@ module.exports = {
               fontWeight: "600",
             },
             a: {
-              cursor: "pointer"
+              cursor: "pointer",
             },
             blockquote: {
               fontWeight: "400",
@@ -35,6 +35,24 @@ module.exports = {
               content: "",
             },
             "li > *": {
+              marginTop: "0",
+              marginBottom: "0",
+            },
+            "ul[data-type='taskList']": {
+              listStyleType: "none",
+            },
+            "ul[data-type='taskList'] > li": {
+              position: "relative",
+            },
+            "ul[data-type='taskList'] > li > label": {
+              position: "absolute",
+              left: "-1.25rem",
+            },
+            "ul[data-type='taskList'] > li > label > input": {
+              width: "1rem",
+              height: "1.75rem",
+            },
+            "ul[data-type='taskList'] > li > div > *": {
               marginTop: "0",
               marginBottom: "0",
             },
