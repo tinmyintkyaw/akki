@@ -1,16 +1,12 @@
 import { useEffect, useState } from "react";
 import { useInstantSearch } from "react-instantsearch-hooks-web";
 
-import {
-  RxMagnifyingGlass,
-  RxDotsHorizontal,
-  RxHamburgerMenu,
-} from "react-icons/rx";
-
 import ToolbarButton from "@/components/ToolbarButton";
 import ToolbarDropdown from "@/components/ToolbarDropdown";
 import SearchComboBox from "@/components/SearchComboBox";
 import useSearchAPIKey from "@/hooks/useSearchAPIKey";
+import { MdMenu, MdMoreHoriz, MdSearch } from "react-icons/md";
+import ProfileDropdown from "./ProfileDropdown";
 
 type EditorToolbarProps = {
   setIsOpen: () => void;
@@ -46,10 +42,10 @@ export default function EditorToolbar(props: EditorToolbarProps) {
       id="editor-toolbar"
       className="absolute z-40 flex h-12 w-full select-none items-center gap-1 bg-transparent px-2 text-stone-700"
     >
-      <ToolbarButton icon={RxHamburgerMenu} onClick={props.setIsOpen} />
+      <ToolbarButton icon={MdMenu} onClick={props.setIsOpen} />
 
       <ToolbarButton
-        icon={RxMagnifyingGlass}
+        icon={MdSearch}
         onClick={() => {
           setIsSearchOpen(true);
         }}
@@ -59,7 +55,9 @@ export default function EditorToolbar(props: EditorToolbarProps) {
 
       <div className="flex-grow" />
 
-      <ToolbarDropdown trigger={<ToolbarButton icon={RxDotsHorizontal} />} />
+      <ToolbarDropdown>
+        <ToolbarButton icon={MdMoreHoriz} />
+      </ToolbarDropdown>
     </div>
   );
 }

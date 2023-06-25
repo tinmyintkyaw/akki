@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { useEditor, EditorContent, generateText } from "@tiptap/react";
+import { useEditor, EditorContent } from "@tiptap/react";
 
 import * as Y from "yjs";
 import { HocuspocusProvider } from "@hocuspocus/provider";
@@ -19,11 +19,11 @@ import CustomDocument from "@/tiptap/CustomDocument";
 import CustomHeading from "@/tiptap/CustomHeading";
 import CustomImageFrontend from "@/tiptap/CustomImageFrontend";
 import FrontendTitle from "@/tiptap/FrontendTitle";
-import CustomTaskItem from "@/tiptap/CustomTaskItem";
 
 import SelectMenu from "@/components/BubbleMenu";
 
 import "highlight.js/styles/atom-one-light.css";
+import TaskItem from "@tiptap/extension-task-item";
 
 type TiptapProps = {
   pageId: string;
@@ -56,10 +56,7 @@ export default function Tiptap(props: TiptapProps) {
       FrontendTitle,
       Link,
       TaskList,
-      CustomTaskItem.configure({
-        nested: true,
-        HTMLAttributes: {},
-      }),
+      TaskItem.configure({ nested: true }),
       CustomHeading.configure({ levels: [1, 2, 3] }),
       CustomImageFrontend.configure({ allowBase64: true }),
       CustomCodeBlock.configure({ lowlight: lowlight, defaultLanguage: "js" }),
@@ -81,9 +78,6 @@ export default function Tiptap(props: TiptapProps) {
         class: "outline-none",
       },
     },
-    // onUpdate(props) {
-    //   console.log(props.editor.getJSON());
-    // },
   });
 
   useEffect(() => {
@@ -107,7 +101,6 @@ export default function Tiptap(props: TiptapProps) {
         className={clsx(
           "prose mx-auto h-full w-full break-words px-8 py-4 font-normal text-gray-900 selection:bg-sky-200",
           "max-w-3xl" // controls the width of the editor
-          // "prose-li:my-0"
         )}
         editor={editor}
         onKeyDown={(event) => {

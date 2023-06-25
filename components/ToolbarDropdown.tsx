@@ -17,7 +17,7 @@ import {
 } from "@/hooks/queryHooks";
 
 type ToolbarDropdownProps = {
-  trigger: React.ReactNode;
+  children: React.ReactNode;
 };
 
 export default function ToolbarDropdown(props: ToolbarDropdownProps) {
@@ -38,13 +38,15 @@ export default function ToolbarDropdown(props: ToolbarDropdownProps) {
 
   return (
     <RadixDropdown.Root>
-      <RadixDropdown.Trigger asChild>{props.trigger}</RadixDropdown.Trigger>
+      <RadixDropdown.Trigger asChild>{props.children}</RadixDropdown.Trigger>
 
       <RadixDropdown.Portal>
         {!pageQuery.isError && pageQuery.data && (
           <RadixDropdown.Content
             align="end"
-            alignOffset={10}
+            alignOffset={5}
+            side="bottom"
+            sideOffset={5}
             className="flex w-60 flex-col rounded border border-stone-200 bg-stone-50 p-1 shadow-md"
           >
             <RadixDropdown.Item asChild>
@@ -78,13 +80,13 @@ export default function ToolbarDropdown(props: ToolbarDropdownProps) {
               </MenuButton>
             </RadixDropdown.Item>
 
-            <RadixDropdown.Separator className="my-1 h-[1px] bg-stone-300" />
+            {/* <RadixDropdown.Separator className="my-1 h-[1px] bg-stone-300" />
 
             <RadixDropdown.Item asChild>
-              <MenuButton text="Logout" onClick={() => signOut()}>
+              <MenuButton text="Sign Out" onClick={() => signOut()}>
                 <MdLogout className="h-4 w-4" />
               </MenuButton>
-            </RadixDropdown.Item>
+            </RadixDropdown.Item> */}
           </RadixDropdown.Content>
         )}
       </RadixDropdown.Portal>
