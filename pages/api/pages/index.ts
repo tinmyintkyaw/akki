@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth/next";
 
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import createPageTree from "@/utils/createPageTree";
-import prisma from "@/lib/prismadb";
+import { prisma } from "@/lib/prismadb";
 import serverTypesenseClient, {
   typesensePageDocument,
 } from "@/typesense/typesense-client";

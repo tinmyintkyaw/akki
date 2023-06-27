@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import serverTypesenseClient, {
   typesensePageDocument,
 } from "@/typesense/typesense-client";
-import prisma from "@/lib/prismadb";
+import { prisma } from "@/lib/prismadb";
 import { authOptions } from "./auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 

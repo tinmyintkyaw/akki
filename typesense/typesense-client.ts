@@ -1,4 +1,4 @@
-import prisma from "@/lib/prismadb";
+import { prisma } from "@/lib/prismadb";
 import Typesense from "typesense";
 import { CollectionCreateSchema } from "typesense/lib/Typesense/Collections";
 import { Document } from "typesense/lib/Typesense/Document";

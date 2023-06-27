@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
-import prisma from "@/lib/prismadb";
+import { prisma } from "@/lib/prismadb";
 import serverTypesenseClient, {
   typesensePageDocument,
 } from "@/typesense/typesense-client";
@@ -130,18 +130,6 @@ export default async function pageHandler(
       });
 
       if (!data) return res.status(404).json({ message: "Not Found" });
-
-      const updatedPage = await prisma.page.update({
-        where: {
-          id_userId: {
-            userId: session.accountId,
-            id: pageId,
-          },
-        },
-        data: {
-          accessedAt: new Date(),
-        },
-      });
 
       return res.status(200).json(data);
     } catch (err) {

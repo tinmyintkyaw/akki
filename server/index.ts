@@ -3,7 +3,7 @@ import expressWebsockets from "express-ws";
 import { Server } from "@hocuspocus/server";
 import { Database } from "@hocuspocus/extension-database";
 
-import prisma from "../lib/prismadb";
+import { prisma } from "../lib/prismadb";
 import { TiptapTransformer } from "@hocuspocus/transformer";
 import { generateText } from "@tiptap/core";
 
