@@ -1,4 +1,4 @@
-import { BubbleMenu, Editor } from "@tiptap/react";
+import { BubbleMenu, Editor, isTextSelection } from "@tiptap/react";
 import {
   MdCode,
   MdFormatItalic,
@@ -7,12 +7,29 @@ import {
 } from "react-icons/md";
 
 export default function SelectMenu(props: { editor: Editor }) {
-  // TODO: Do not show this bubble menu on the title node
   return (
     <>
       {props.editor && (
         <BubbleMenu
           editor={props.editor}
+          shouldShow={({ editor, state, from, to }) => {
+            const { doc, selection } = state;
+            const { empty } = selection;
+
+            const isEmptyTextBlock =
+              !doc.textBetween(from, to).length &&
+              isTextSelection(state.selection);
+
+            if (
+              empty ||
+              isEmptyTextBlock ||
+              !editor.isEditable ||
+              editor.isActive("title")
+            ) {
+              return false;
+            }
+            return true;
+          }}
           className="flex rounded border bg-white text-sm text-gray-700 shadow-lg drop-shadow-lg"
         >
           {/* TODO: Implement block convert feature */}
