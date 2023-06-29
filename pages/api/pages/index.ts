@@ -75,6 +75,7 @@ export default async function pagesHandler(
       const data = await prisma.page.findMany({
         where: {
           userId: session.accountId,
+          isDeleted: false,
         },
         select: {
           id: true,

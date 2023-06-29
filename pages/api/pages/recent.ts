@@ -19,6 +19,7 @@ export default async function recentPagesHandler(
     const data = await prisma.page.findMany({
       where: {
         userId: session.accountId,
+        isDeleted: false,
       },
       orderBy: {
         accessedAt: "desc",

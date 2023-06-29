@@ -57,18 +57,20 @@ model VerificationToken {
 }
 
 model Page {
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   pageName     String
   ydoc         Bytes?
-  createdAt    DateTime @default(now())
-  modifiedAt   DateTime @default(now())
-  accessedAt   DateTime @default(now())
-  User         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime  @default(now())
+  modifiedAt   DateTime  @default(now())
+  accessedAt   DateTime  @default(now())
+  User         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String
-  parentPage   Page?    @relation("ChildPages", fields: [parentPageId], references: [id])
+  parentPage   Page?     @relation("ChildPages", fields: [parentPageId], references: [id])
   parentPageId String?
-  childPages   Page[]   @relation("ChildPages")
-  isFavourite  Boolean  @default(false)
+  childPages   Page[]    @relation("ChildPages")
+  isFavourite  Boolean   @default(false)
+  isDeleted    Boolean   @default(false)
+  deletedAt    DateTime?
   textContent  String
 
   @@unique([id, userId])
