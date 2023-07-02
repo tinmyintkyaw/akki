@@ -1,13 +1,13 @@
 import * as RadixDropdown from "@radix-ui/react-dropdown-menu";
-import MenuButton from "@/components/MenuButton";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import { signOut, useSession } from "next-auth/react";
 import {
-  MdLogout,
   MdStarOutline,
   MdDeleteOutline,
   MdStar,
+  MdHistory,
+  MdOutlineFileUpload,
+  MdOutlineFileDownload,
 } from "react-icons/md";
 
 import {
@@ -15,6 +15,8 @@ import {
   usePageQuery,
   useUpdatePageMutation,
 } from "@/hooks/queryHooks";
+
+import MenuButton from "@/components/MenuButton";
 
 type ToolbarDropdownProps = {
   children: React.ReactNode;
@@ -66,6 +68,28 @@ export default function ToolbarDropdown(props: ToolbarDropdownProps) {
               </MenuButton>
             </RadixDropdown.Item>
 
+            {/* <RadixDropdown.Item asChild>
+              <MenuButton text="Page History" onClick={() => {}}>
+                <MdHistory className="h-4 w-4" />
+              </MenuButton>
+            </RadixDropdown.Item>
+
+            <RadixDropdown.Separator className="my-1 h-[1px] bg-stone-300" />
+
+            <RadixDropdown.Item asChild>
+              <MenuButton text="Import" onClick={() => {}}>
+                <MdOutlineFileUpload className="h-4 w-4" />
+              </MenuButton>
+            </RadixDropdown.Item>
+
+            <RadixDropdown.Item asChild>
+              <MenuButton text="Export" onClick={() => {}}>
+                <MdOutlineFileDownload className="h-4 w-4" />
+              </MenuButton>
+            </RadixDropdown.Item> */}
+
+            <RadixDropdown.Separator className="my-1 h-[1px] bg-stone-300" />
+
             <RadixDropdown.Item asChild>
               <MenuButton
                 text="Delete Page"
@@ -79,14 +103,6 @@ export default function ToolbarDropdown(props: ToolbarDropdownProps) {
                 <MdDeleteOutline className="h-4 w-4" />
               </MenuButton>
             </RadixDropdown.Item>
-
-            {/* <RadixDropdown.Separator className="my-1 h-[1px] bg-stone-300" />
-
-            <RadixDropdown.Item asChild>
-              <MenuButton text="Sign Out" onClick={() => signOut()}>
-                <MdLogout className="h-4 w-4" />
-              </MenuButton>
-            </RadixDropdown.Item> */}
           </RadixDropdown.Content>
         )}
       </RadixDropdown.Portal>

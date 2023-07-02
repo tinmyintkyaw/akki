@@ -1,6 +1,6 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { Combobox } from "@headlessui/react";
-import { Fragment, useEffect } from "react";
+import { Fragment, ReactNode, useEffect, useState } from "react";
 import {
   Snippet,
   useHits,
@@ -8,19 +8,13 @@ import {
   useSearchBox,
 } from "react-instantsearch-hooks-web";
 import { useRouter } from "next/router";
-import {
-  HiArrowsUpDown,
-  HiOutlineMagnifyingGlass,
-  HiXCircle,
-} from "react-icons/hi2";
-import { MdKeyboardReturn } from "react-icons/md";
+import { HiArrowsUpDown, HiXCircle } from "react-icons/hi2";
+import { MdKeyboardReturn, MdSearch } from "react-icons/md";
 
 import { inter } from "@/pages/_app";
-import { roboto } from "@/pages/_app";
 
 type SearchComboBoxProps = {
-  isOpen: boolean;
-  onOpenChange: (isOpen: boolean) => void;
+  children: ReactNode;
 };
 
 export default function SearchComboBox(props: SearchComboBoxProps) {
@@ -29,11 +23,28 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
   const { query, refine, clear } = useSearchBox();
   const { hits } = useHits();
 
+  const [isOpen, setIsOpen] = useState(false);
+
+  // Open the search combox with keyboard shortcut
+  useEffect(() => {
+    function handleKeyDown(event: any) {
+      if ((event.ctrlKey || event.metaKey) && event.key === "p") {
+        event.preventDefault();
+        setIsOpen((prev) => !prev);
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   return (
-    <Dialog.Root open={props.isOpen} onOpenChange={props.onOpenChange}>
+    <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
+      <Dialog.Trigger asChild>{props.children}</Dialog.Trigger>
+
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/50">
           <Dialog.Content
+            onCloseAutoFocus={(event) => event.preventDefault()}
             className={`${inter.className} mx-auto mt-[10vh] max-h-[80vh] max-w-[90vw] rounded bg-gray-100 focus:outline-none md:max-w-2xl`}
           >
             <Combobox
@@ -41,11 +52,10 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
               onChange={(event: any) => {
                 router.push(`/${event.id}`);
                 clear();
-                props.onOpenChange(false);
               }}
             >
               <div className="flex h-14 items-center border-b-2 px-3">
-                <HiOutlineMagnifyingGlass className="h-6 w-6 text-gray-500" />
+                <MdSearch className="h-6 w-6 text-gray-500" />
 
                 <Combobox.Input
                   autoFocus
@@ -58,7 +68,6 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
                   onKeyDown={(event) => {
                     if (event.key === "Escape") {
                       clear();
-                      props.onOpenChange(false);
                     }
                   }}
                   className={`h-full w-full border-0 bg-transparent px-2 text-lg focus:outline-none`}
@@ -93,14 +102,14 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
                             <Snippet
                               attribute="pageName"
                               hit={hit}
-                              className="font-medium line-clamp-1"
+                              className="line-clamp-1 font-medium"
                             />
 
                             {instantSearch.indexUiState.query && (
                               <Snippet
                                 attribute="pageTextContent"
                                 hit={hit}
-                                className="mt-1 text-sm text-gray-600 line-clamp-2"
+                                className="mt-1 line-clamp-2 text-sm text-gray-600"
                               />
                             )}
                           </div>
@@ -118,10 +127,12 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
                 <HiArrowsUpDown className="h-3 w-3" />
                 <p className="text-xs text-gray-800">Select</p>
               </li>
+
               <li className="flex h-full flex-row items-center gap-1">
                 <MdKeyboardReturn className="h-3 w-3" />
                 <p className="text-xs text-gray-800">Open</p>
               </li>
+
               <li className="flex h-full flex-row items-center gap-1">
                 <p className="text-xs font-medium">Esc</p>
                 <p className="text-xs text-gray-800">Dismiss</p>

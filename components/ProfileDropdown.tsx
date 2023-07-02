@@ -10,6 +10,8 @@ import {
 } from "react-icons/md";
 
 import MenuButton from "@/components/MenuButton";
+import clsx from "clsx";
+import { inter } from "@/pages/_app";
 
 type ProfileDropdownProps = {};
 
@@ -18,7 +20,7 @@ export default function ProfileDropdown(props: ProfileDropdownProps) {
 
   return (
     <RadixDropdown.Root>
-      <RadixDropdown.Trigger className="mx-2 flex h-10 select-none flex-row items-center gap-2 rounded px-2 text-sm focus:outline-none hover:bg-stone-300">
+      <RadixDropdown.Trigger className="flex select-none flex-row items-center gap-2 rounded-full p-1 text-sm focus:outline-none hover:bg-stone-300">
         {session.data &&
           session.data.user?.name &&
           session.data.user?.email &&
@@ -35,20 +37,49 @@ export default function ProfileDropdown(props: ProfileDropdownProps) {
                   <MdOutlineAccountCircle className="h-6 w-6 rounded-full" />
                 </Avatar.Fallback>
               </Avatar.Root>
-
-              <p className="line-clamp-1 font-medium">
-                {session.data.user?.name}
-              </p>
             </>
           )}
       </RadixDropdown.Trigger>
 
       <RadixDropdown.Portal>
         <RadixDropdown.Content
-          side="top"
+          side="bottom"
+          sideOffset={5}
           align="end"
           className="z-50 flex w-56 flex-col rounded border border-stone-200 bg-stone-50 p-1 text-sm shadow-md"
         >
+          <div
+            className={clsx(
+              inter.className,
+              "flex select-none flex-row items-center gap-2 rounded px-2 py-3 focus:outline-none"
+            )}
+          >
+            {session.data &&
+              session.data.user?.name &&
+              session.data.user?.email &&
+              session.data.user?.image && (
+                <>
+                  <Avatar.Root>
+                    <Avatar.Image
+                      src={session.data.user.image}
+                      alt={session.data.user.name}
+                      className="h-6 w-6 rounded-full"
+                    />
+
+                    <Avatar.Fallback asChild>
+                      <MdOutlineAccountCircle className="h-6 w-6 rounded-full" />
+                    </Avatar.Fallback>
+                  </Avatar.Root>
+
+                  <p className="line-clamp-1 font-medium">
+                    {session.data.user?.name}
+                  </p>
+                </>
+              )}
+          </div>
+
+          <RadixDropdown.Separator className="my-1 h-[1px] bg-stone-300" />
+
           <RadixDropdown.Sub>
             <RadixDropdown.SubTrigger asChild>
               <MenuButton text="Change Theme">
@@ -90,12 +121,6 @@ export default function ProfileDropdown(props: ProfileDropdownProps) {
               </RadixDropdown.SubContent>
             </RadixDropdown.Portal>
           </RadixDropdown.Sub>
-
-          <RadixDropdown.Item asChild>
-            <MenuButton text="Profile" onClick={() => {}}>
-              <MdOutlineAccountCircle className="h-4 w-4" />
-            </MenuButton>
-          </RadixDropdown.Item>
 
           <RadixDropdown.Item asChild>
             <MenuButton text="Preferences" onClick={() => {}}>

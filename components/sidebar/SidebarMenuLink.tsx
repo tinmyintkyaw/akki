@@ -51,7 +51,7 @@ const SidebarMenuLink = (props: SidebarMenuLinkProps) => {
   const deletePageMutation = useDeletePageMutation(props.pageId, queryClient);
 
   return (
-    <RadixContextMenu.Root modal={false}>
+    <RadixContextMenu.Root>
       <RadixContextMenu.Trigger asChild>
         <div
           className={clsx(

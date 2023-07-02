@@ -28,7 +28,7 @@ export default function Sidebar(props: SidebarProps) {
       >
         {props.pageListComponent}
 
-        <ProfileDropdown />
+        {/* <ProfileDropdown /> */}
       </Transition>
     </>
   );
