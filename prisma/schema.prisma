@@ -57,23 +57,33 @@ model VerificationToken {
 }
 
 model Page {
-  id           String    @id @default(cuid())
+  id           String         @id @default(cuid())
   pageName     String
   ydoc         Bytes?
-  createdAt    DateTime  @default(now())
-  modifiedAt   DateTime  @default(now())
-  accessedAt   DateTime  @default(now())
-  User         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId       String
-  parentPage   Page?     @relation("ChildPages", fields: [parentPageId], references: [id])
-  parentPageId String?
-  childPages   Page[]    @relation("ChildPages")
-  isFavourite  Boolean   @default(false)
-  isDeleted    Boolean   @default(false)
-  deletedAt    DateTime?
+  serverYdoc   Bytes? // Non garbage-collected Ydoc for snapshots
   textContent  String
+  createdAt    DateTime       @default(now())
+  modifiedAt   DateTime       @default(now())
+  accessedAt   DateTime       @default(now())
+  parentPage   Page?          @relation("ChildPages", fields: [parentPageId], references: [id])
+  parentPageId String?
+  childPages   Page[]         @relation("ChildPages")
+  isFavourite  Boolean        @default(false)
+  isDeleted    Boolean        @default(false)
+  deletedAt    DateTime?
+  PageSnapshot PageSnapshot[]
+  User         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
 
   @@unique([id, userId])
+}
+
+model PageSnapshot {
+  id        String   @id @default(cuid())
+  snapshot  Bytes
+  createdAt DateTime @default(now())
+  Page      Page     @relation(fields: [pageId], references: [id])
+  pageId    String
 }
 
 model GlobalSetting {

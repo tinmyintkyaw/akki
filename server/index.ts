@@ -2,14 +2,17 @@ import express from "express";
 import expressWebsockets from "express-ws";
 import { Server } from "@hocuspocus/server";
 import { Database } from "@hocuspocus/extension-database";
-
-import { prisma } from "../lib/prismadb";
 import { TiptapTransformer } from "@hocuspocus/transformer";
 import { generateText } from "@tiptap/core";
+import debounce from "debounce";
+import { clearInterval } from "timers";
+
+import { prisma } from "../lib/prismadb";
 
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import CustomImage from "../tiptap/CustomImageBackend";
+import createSnapshot from "./createSnapshot";
 
 import serverTypesenseClient, {
   typesenseCollectionSchema,
@@ -21,7 +24,16 @@ import CustomDocument from "../tiptap/CustomDocument";
 import BackendTitle from "../tiptap/BackendTitle";
 import CustomHeading from "../tiptap/CustomHeading";
 
-// Configure hocuspocus
+let debouncePool: {
+  [id: string]: (() => void) & {
+    clear(): void;
+  } & {
+    flush(): void;
+  };
+} = {};
+
+let timerPool: { [id: string]: NodeJS.Timer | undefined } = {};
+
 const server = Server.configure({
   async onConnect(data) {
     console.log("New connection");
@@ -52,6 +64,44 @@ const server = Server.configure({
     if (session.expires < new Date()) return null;
 
     return { userId: session.userId };
+  },
+
+  /* Snapshot creation strategy:
+  If the document is being actively edited, create a snapshot every 10 mins
+  When editing has stopped for 2 mins, create snapshot and 
+  cancel the snapshot task that runs every 10 mins */
+
+  async onChange(data) {
+    const createSnapshotInterval = () => {
+      createSnapshot(data);
+    };
+
+    const createSnapshotDebounced = () => {
+      if (timerPool[data.documentName]) {
+        // Cancel the snapshot function that runs every 10 mins
+        clearInterval(timerPool[data.documentName]);
+        timerPool[data.documentName] = undefined;
+      }
+      createSnapshot(data);
+    };
+
+    // create snapshot after 2 mins of no edits
+    if (debouncePool[data.documentName])
+      debouncePool[data.documentName].clear();
+
+    debouncePool[data.documentName] = debounce(
+      createSnapshotDebounced,
+      2 * 60 * 1000
+    );
+    debouncePool[data.documentName]();
+
+    // create snapshot in 10 min intervals
+    if (!timerPool[data.documentName]) {
+      timerPool[data.documentName] = setInterval(
+        createSnapshotInterval,
+        10 * 60 * 1000
+      );
+    }
   },
 
   extensions: [
@@ -141,7 +191,8 @@ const { app } = expressWebsockets(express());
 
 // Add a websocket route for hocuspocus
 app.ws("/collaboration/:document", (websocket, request) => {
-  server.handleConnection(websocket, request, request.params.document);
+  // server.handleConnection(websocket, request, request.params.document);
+  server.handleConnection(websocket, request);
 });
 
 // Add a proxy route for the nextjs server
