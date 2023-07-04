@@ -36,11 +36,10 @@ export default function Tiptap(props: TiptapProps) {
 
   const provider = useMemo(() => {
     return new HocuspocusProvider({
-      url: "ws://localhost:8080/collaboration/",
+      url: `ws://localhost:8080/collaboration/${props.pageId}`,
       name: props.pageId,
       document: ydoc,
       token: "test", // Not using token auth, but onAuthenticate hook on server won't fire with a empty string
-      connect: false,
     });
   }, [props.pageId, ydoc]);
 
@@ -79,18 +78,6 @@ export default function Tiptap(props: TiptapProps) {
       },
     },
   });
-
-  useEffect(() => {
-    editor?.setEditable(false);
-    provider.connect().then(() => editor?.setEditable(true));
-
-    // On unmount, sync and disconnect
-    return () => {
-      !provider.hasUnsyncedChanges && provider.forceSync();
-      provider.disconnect();
-      provider.destroy();
-    };
-  }, [provider, editor]);
 
   return (
     <>
