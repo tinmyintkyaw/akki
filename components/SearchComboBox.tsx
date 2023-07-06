@@ -11,6 +11,8 @@ import { useRouter } from "next/router";
 import { HiArrowsUpDown, HiXCircle } from "react-icons/hi2";
 import { MdKeyboardReturn, MdSearch } from "react-icons/md";
 
+import useSearchAPIKey from "@/hooks/useSearchAPIKey";
+
 import { inter } from "@/pages/_app";
 
 type SearchComboBoxProps = {
@@ -19,9 +21,23 @@ type SearchComboBoxProps = {
 
 export default function SearchComboBox(props: SearchComboBoxProps) {
   const router = useRouter();
-  const instantSearch = useInstantSearch();
+  const instantSearch = useInstantSearch({ catchError: true });
   const { query, refine, clear } = useSearchBox();
   const { hits } = useHits();
+
+  const searchAPIKeyQuery = useSearchAPIKey();
+
+  // If the search API key is not available or expired, refetch it
+  useEffect(() => {
+    if (instantSearch.status !== "error") return;
+    // if (
+    //   !(instantSearch.error instanceof Error) ||
+    //   instantSearch.error.name !== "RequestUnauthorized"
+    // )
+    //   return;
+
+    searchAPIKeyQuery.refetch();
+  }, [instantSearch.status, instantSearch.error, searchAPIKeyQuery]);
 
   const [isOpen, setIsOpen] = useState(false);
 

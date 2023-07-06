@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import dynamic from "next/dynamic";
@@ -13,19 +13,39 @@ import EditorPane from "@/components/EditorPane";
 import EditorToolbar from "@/components/EditorToolbar";
 
 import { usePageQuery } from "@/hooks/queryHooks";
-import { inter, roboto } from "@/pages/_app";
-import useSearchAPIKey from "@/hooks/useSearchAPIKey";
-import { authOptions } from "./api/auth/[...nextauth]";
+import { inter } from "@/pages/_app";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
 
 const NoSSRTiptap = dynamic(() => import("@/components/Tiptap"), {
   ssr: false,
 });
 
 type AppProps = {
-  TYPESENSE_HOST: string;
-  TYPESENSE_PORT: number;
   session: Session;
 };
+
+const TYPESENSE_HOST = process.env.TYPESENSE_HOST || "localhost";
+const TYPESENSE_PORT = process.env.TYPESENSE_PORT
+  ? parseInt(process.env.TYPESENSE_PORT)
+  : 8108;
+
+export const typesenseInstantSearchAdaptor = new TypesenseInstantSearchAdapter({
+  server: {
+    apiKey: "",
+    nodes: [
+      {
+        host: TYPESENSE_HOST,
+        port: TYPESENSE_PORT,
+        protocol: "http",
+      },
+    ],
+  },
+  additionalSearchParameters: {
+    query_by: "pageName,pageTextContent",
+  },
+});
+
+const searchClient = typesenseInstantSearchAdaptor.searchClient;
 
 export default function App(props: AppProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -33,25 +53,6 @@ export default function App(props: AppProps) {
   const { pageId } = useRouter().query;
 
   const pageQuery = usePageQuery(pageId as string);
-  const searchAPIKey = useSearchAPIKey();
-
-  const typesenseInstantSearchAdaptor = new TypesenseInstantSearchAdapter({
-    server: {
-      apiKey: searchAPIKey.data ? searchAPIKey.data.key : "",
-      nodes: [
-        {
-          host: props.TYPESENSE_HOST,
-          port: props.TYPESENSE_PORT,
-          protocol: "http",
-        },
-      ],
-    },
-    additionalSearchParameters: {
-      query_by: "pageName,pageTextContent",
-    },
-  });
-
-  const searchClient = typesenseInstantSearchAdaptor.searchClient;
 
   return (
     <>
@@ -90,12 +91,6 @@ export default function App(props: AppProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  // TODO: client's typesense should be different in production
-  const TYPESENSE_HOST = process.env.TYPESENSE_HOST || "localhost";
-  const TYPESENSE_PORT = process.env.TYPESENSE_PORT
-    ? parseInt(process.env.TYPESENSE_PORT)
-    : 8108;
-
   const session = await getServerSession(context.req, context.res, authOptions);
 
   if (!session)
@@ -103,8 +98,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   return {
     props: {
-      TYPESENSE_HOST,
-      TYPESENSE_PORT,
       session: session,
     },
   };
