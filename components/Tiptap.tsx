@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 
 import * as Y from "yjs";
@@ -52,8 +52,9 @@ const Editor = (props: EditorProps) => {
       CustomImageFrontend.configure({ allowBase64: true }),
       CustomCodeBlock.configure({ lowlight: lowlight, defaultLanguage: "js" }),
       Placeholder.configure({
-        placeholder() {
-          return "Start typing...";
+        placeholder({ node }) {
+          if (node.type.name !== "codeBloack") return "Start typing...";
+          return "";
         },
       }),
       Collaboration.configure({ document: props.ydoc }),
@@ -75,27 +76,27 @@ const Editor = (props: EditorProps) => {
     <>
       {editor && <SelectMenu editor={editor} />}
 
-      {props.provider && props.ydoc && (
-        <EditorContent
-          spellCheck={false}
-          className={clsx(
-            "prose mx-auto h-full w-full break-words px-8 py-4 font-normal text-gray-900 selection:bg-sky-200",
-            "max-w-3xl" // controls the width of the editor
-          )}
-          editor={editor}
-          onKeyDown={(event) => {
-            if (event.key !== "Tab") return;
-            event.preventDefault();
-          }}
-        />
-      )}
+      <EditorContent
+        spellCheck={false}
+        className={clsx(
+          "prose mx-auto h-full w-full break-words px-8 py-4 font-normal text-gray-900 selection:bg-sky-200",
+          "max-w-3xl" // controls the width of the editor
+        )}
+        editor={editor}
+        onKeyDown={(event) => {
+          if (event.key !== "Tab") return;
+          event.preventDefault();
+        }}
+      />
     </>
   );
 };
 
 const Tiptap = (props: TiptapProps) => {
   const [ydoc, setYdoc] = useState<Y.Doc>(new Y.Doc());
-  const [provider, setProvider] = useState<HocuspocusProvider | null>(null);
+  const [webSocketProvider, setWebSocketProvider] =
+    useState<HocuspocusProvider | null>(null);
+  const [showEditor, setShowEditor] = useState(false);
 
   // Prevent React Strict Mode from opening multiple connections
   useLayoutEffect(() => {
@@ -111,15 +112,22 @@ const Tiptap = (props: TiptapProps) => {
       },
     });
 
-    setProvider(provider);
+    setWebSocketProvider(provider);
 
     return () => {
       provider.destroy();
-      setProvider(null);
+      setWebSocketProvider(null);
     };
   }, [ydoc, props.pageId]);
 
-  return <>{provider && <Editor ydoc={ydoc} provider={provider} />}</>;
+  useEffect(() => {
+    if (!webSocketProvider) return;
+    setShowEditor(true);
+  }, [webSocketProvider]);
+
+  return (
+    <>{showEditor && <Editor ydoc={ydoc} provider={webSocketProvider} />}</>
+  );
 };
 
 export default Tiptap;
