@@ -30,28 +30,30 @@ const server = Server.configure({
   async onAuthenticate(data) {
     console.log("Authenticating");
 
-    const cookieString = data.requestHeaders.cookie;
-
-    if (!cookieString) return null;
-
-    const cookieObject: { [key: string]: string } = {};
-
-    const cookieArray = cookieString.split(";");
-    cookieArray.forEach(async (cookie) => {
-      const [key, value] = cookie.split("=");
-      cookieObject[key.trim()] = value;
+    const socketSession = await prisma.socketSession.findUniqueOrThrow({
+      where: {
+        sessionToken: data.token,
+      },
     });
 
-    if (!cookieObject["next-auth.session-token"]) return null;
+    if (socketSession.isUsed) throw new Error("Invalid token");
 
-    const session = await prisma.session.findUnique({
-      where: { sessionToken: cookieObject["next-auth.session-token"] },
+    if (Date.now() - socketSession.createdAt.getTime() > 10 * 1000)
+      throw new Error("Token expired");
+
+    /* TODO: use a task scheduler for periodically purging
+    used websocket tokens from db */
+
+    await prisma.page.findUniqueOrThrow({
+      where: {
+        id_userId: {
+          id: data.documentName,
+          userId: socketSession.userId,
+        },
+      },
     });
 
-    if (!session) return null;
-    if (session.expires < new Date()) return null;
-
-    return { userId: session.userId };
+    return { userId: socketSession.userId };
   },
 
   extensions: [
@@ -153,6 +155,7 @@ app.ws("/collaboration/:document", (websocket, request) => {
 //   })
 // );
 
+// TODO: Tidy up server init
 const checkFirstStart = async () => {
   const isFirstStart = await prisma.globalSetting.findUnique({
     where: { key: "isFirstStart" },

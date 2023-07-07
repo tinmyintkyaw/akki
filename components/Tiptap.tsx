@@ -1,9 +1,8 @@
-import { useEffect, useMemo } from "react";
+import { useLayoutEffect, useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 
 import * as Y from "yjs";
 import { HocuspocusProvider } from "@hocuspocus/provider";
-
 import clsx from "clsx";
 import { useSession } from "next-auth/react";
 import { lowlight } from "lowlight/lib/common";
@@ -13,6 +12,7 @@ import Collaboration from "@tiptap/extension-collaboration";
 import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
+import TaskItem from "@tiptap/extension-task-item";
 
 import CustomCodeBlock from "@/tiptap/CustomCodeBlock";
 import CustomDocument from "@/tiptap/CustomDocument";
@@ -23,26 +23,18 @@ import FrontendTitle from "@/tiptap/FrontendTitle";
 import SelectMenu from "@/components/BubbleMenu";
 
 import "highlight.js/styles/atom-one-light.css";
-import TaskItem from "@tiptap/extension-task-item";
 
-type TiptapProps = {
+interface TiptapProps {
   pageId: string;
-};
+}
 
-export default function Tiptap(props: TiptapProps) {
+interface EditorProps {
+  ydoc: Y.Doc;
+  provider: HocuspocusProvider | null;
+}
+
+const Editor = (props: EditorProps) => {
   const session = useSession();
-
-  let ydoc = useMemo(() => new Y.Doc(), []);
-
-  const provider = useMemo(() => {
-    return new HocuspocusProvider({
-      url: `ws://localhost:8080/collaboration/${props.pageId}`,
-      name: props.pageId,
-      document: ydoc,
-      token: "test", // Not using token auth, but onAuthenticate hook on server won't fire with a empty string
-    });
-  }, [props.pageId, ydoc]);
-
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -60,13 +52,13 @@ export default function Tiptap(props: TiptapProps) {
       CustomImageFrontend.configure({ allowBase64: true }),
       CustomCodeBlock.configure({ lowlight: lowlight, defaultLanguage: "js" }),
       Placeholder.configure({
-        placeholder({ editor, node }) {
+        placeholder() {
           return "Start typing...";
         },
       }),
-      Collaboration.configure({ document: ydoc }),
+      Collaboration.configure({ document: props.ydoc }),
       CollaborationCursor.configure({
-        provider: provider,
+        provider: props.provider,
         user: {
           name: session.data?.user?.name,
         },
@@ -83,18 +75,51 @@ export default function Tiptap(props: TiptapProps) {
     <>
       {editor && <SelectMenu editor={editor} />}
 
-      <EditorContent
-        spellCheck={false}
-        className={clsx(
-          "prose mx-auto h-full w-full break-words px-8 py-4 font-normal text-gray-900 selection:bg-sky-200",
-          "max-w-3xl" // controls the width of the editor
-        )}
-        editor={editor}
-        onKeyDown={(event) => {
-          if (event.key !== "Tab") return;
-          event.preventDefault();
-        }}
-      />
+      {props.provider && props.ydoc && (
+        <EditorContent
+          spellCheck={false}
+          className={clsx(
+            "prose mx-auto h-full w-full break-words px-8 py-4 font-normal text-gray-900 selection:bg-sky-200",
+            "max-w-3xl" // controls the width of the editor
+          )}
+          editor={editor}
+          onKeyDown={(event) => {
+            if (event.key !== "Tab") return;
+            event.preventDefault();
+          }}
+        />
+      )}
     </>
   );
-}
+};
+
+const Tiptap = (props: TiptapProps) => {
+  const [ydoc, setYdoc] = useState<Y.Doc>(new Y.Doc());
+  const [provider, setProvider] = useState<HocuspocusProvider | null>(null);
+
+  // Prevent React Strict Mode from opening multiple connections
+  useLayoutEffect(() => {
+    const provider = new HocuspocusProvider({
+      url: `ws://localhost:8080/collaboration/${props.pageId}`,
+      name: props.pageId,
+      document: ydoc,
+      token: async () => {
+        const response = await fetch("/api/collab/token");
+        if (!response.ok) return "";
+        const { collabToken } = await response.json();
+        return collabToken as string;
+      },
+    });
+
+    setProvider(provider);
+
+    return () => {
+      provider.destroy();
+      setProvider(null);
+    };
+  }, [ydoc, props.pageId]);
+
+  return <>{provider && <Editor ydoc={ydoc} provider={provider} />}</>;
+};
+
+export default Tiptap;
