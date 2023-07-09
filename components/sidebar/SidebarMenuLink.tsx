@@ -1,6 +1,6 @@
 import {
   useCreatePageMutation,
-  useDeletePageMutation,
+  useUndoDeletePageMutation,
   usePageQuery,
   useRecentPagesQuery,
   useUpdatePageMutation,
@@ -48,7 +48,7 @@ const SidebarMenuLink = (props: SidebarMenuLinkProps) => {
     isFavourite: !props.isFavourite,
     queryClient,
   });
-  const deletePageMutation = useDeletePageMutation(props.pageId, queryClient);
+  const deletePageMutation = useUndoDeletePageMutation(props.pageId, queryClient);
 
   return (
     <RadixContextMenu.Root>

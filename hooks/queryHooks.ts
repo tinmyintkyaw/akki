@@ -101,10 +101,37 @@ export const useDeletePageMutation = (id: string, queryClient: QueryClient) => {
       return response;
     },
     onMutate: () => {
-      queryClient.removeQueries({ queryKey: ["page", id] });
+      // queryClient.removeQueries({ queryKey: ["page", id] });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pageList"] });
+      queryClient.invalidateQueries({ queryKey: ["page", id] });
+    },
+  });
+};
+
+export const useUndoDeletePageMutation = (
+  id: string,
+  queryClient: QueryClient
+) => {
+  return useMutation({
+    mutationFn: async () => {
+      const response = await fetch(`/api/pages/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ isDeleted: false }),
+      });
+      if (!response.ok) throw new Error("Failed to revert delete page");
+      return response;
+    },
+    onMutate: () => {
+      queryClient.fetchQuery({ queryKey: ["page", id] });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["pageList"] });
+      queryClient.invalidateQueries({ queryKey: ["page", id] });
     },
   });
 };

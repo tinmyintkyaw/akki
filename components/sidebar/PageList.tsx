@@ -7,8 +7,10 @@ import { MdAdd, MdOutlineDescription } from "react-icons/md";
 
 import SidebarMenuLink from "./SidebarMenuLink";
 
-const PageItem = (props: { page: any; router: any }) => {
+const PageItem = (props: { page: any }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
+
+  const router = useRouter();
 
   function toggleCollapsed() {
     setIsCollapsed(!isCollapsed);
@@ -22,7 +24,7 @@ const PageItem = (props: { page: any; router: any }) => {
         isFavourite={props.page.isFavourite}
         text={props.page.pageName}
         icon={MdOutlineDescription}
-        isOpen={props.page.id === props.router.query.pageId}
+        isOpen={props.page.id === router.query.pageId}
         isCollapsed={isCollapsed}
         setIsCollasped={toggleCollapsed}
       />
@@ -30,7 +32,7 @@ const PageItem = (props: { page: any; router: any }) => {
       {!isCollapsed &&
         props.page.childPages &&
         props.page.childPages.map((page: any) => (
-          <PageItem key={page.id} page={page} router={props.router} />
+          <PageItem key={page.id} page={page} />
         ))}
 
       {!isCollapsed && props.page.childPages.length <= 0 && (
@@ -43,7 +45,6 @@ const PageItem = (props: { page: any; router: any }) => {
 type PageListProps = {};
 
 export default function PageList(props: PageListProps) {
-  const router = useRouter();
   const queryClient = useQueryClient();
   const pageListQuery = usePageListQuery();
 
@@ -60,7 +61,7 @@ export default function PageList(props: PageListProps) {
 
         {pageListQuery.data &&
           pageListQuery.data.map((page: any) => {
-            return <PageItem key={page.id} page={page} router={router} />;
+            return <PageItem key={page.id} page={page} />;
           })}
 
         {/* Add Button */}

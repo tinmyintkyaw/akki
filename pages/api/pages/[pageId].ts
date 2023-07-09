@@ -1,10 +1,12 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]";
-import { prisma } from "@/lib/prismadb";
+
 import serverTypesenseClient, {
   typesensePageDocument,
 } from "@/typesense/typesense-client";
+import { authOptions } from "../auth/[...nextauth]";
+import { prisma } from "@/lib/prismadb";
+import { isDeleted } from "yjs";
 
 export default async function pageHandler(
   req: NextApiRequest,
@@ -20,7 +22,7 @@ export default async function pageHandler(
     return res.status(400).json({ message: "Bad Request" });
 
   if (req.method === "PATCH") {
-    const { pageName, parentPageId, isFavourite } = req.body;
+    const { pageName, parentPageId, isFavourite, isDeleted } = req.body;
 
     if (pageName && typeof pageName !== "string")
       return res.status(400).json({ message: "Bad Request" });
@@ -29,6 +31,9 @@ export default async function pageHandler(
       return res.status(400).json({ message: "Bad Request" });
 
     if (typeof isFavourite !== "undefined" && typeof isFavourite !== "boolean")
+      return res.status(400).json({ message: "Bad Request" });
+
+    if (typeof isDeleted !== "undefined" && typeof isDeleted !== "boolean")
       return res.status(400).json({ message: "Bad Request" });
 
     try {
@@ -44,6 +49,7 @@ export default async function pageHandler(
           parentPageId: parentPageId,
           modifiedAt: new Date(),
           isFavourite: isFavourite,
+          isDeleted: isDeleted,
         },
         select: {
           id: true,
@@ -82,12 +88,15 @@ export default async function pageHandler(
 
   if (req.method === "DELETE") {
     try {
-      const data = await prisma.page.delete({
+      const data = await prisma.page.update({
         where: {
           id_userId: {
             userId: session.accountId,
             id: pageId,
           },
+        },
+        data: {
+          isDeleted: true,
         },
         select: {
           id: true,
@@ -95,6 +104,8 @@ export default async function pageHandler(
           parentPageId: true,
           createdAt: true,
           modifiedAt: true,
+          isDeleted: true,
+          deletedAt: true,
         },
       });
 
@@ -126,6 +137,8 @@ export default async function pageHandler(
           modifiedAt: true,
           isFavourite: true,
           userId: true,
+          isDeleted: true,
+          deletedAt: true,
         },
       });
 

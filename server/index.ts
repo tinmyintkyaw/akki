@@ -143,7 +143,7 @@ const { app } = expressWebsockets(express());
 
 // Add a websocket route for hocuspocus
 app.ws("/collaboration/:document", (websocket, request) => {
-  server.handleConnection(websocket, request, request.params.document);
+  server.handleConnection(websocket, request);
 });
 
 // Add a proxy route for the nextjs server

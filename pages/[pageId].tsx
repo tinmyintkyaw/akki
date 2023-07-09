@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter";
 import { Session, getServerSession } from "next-auth";
 import { InstantSearch } from "react-instantsearch-hooks-web";
+import * as RadixToast from "@radix-ui/react-toast";
 
 import Sidebar from "@/components/sidebar/Sidebar";
 import PageList from "@/components/sidebar/PageList";
@@ -65,26 +66,35 @@ export default function App(props: AppProps) {
       </Head>
 
       <InstantSearch searchClient={searchClient} indexName="pages">
-        <main className={`${inter.className} relative h-screen w-screen`}>
-          <EditorToolbar setIsOpen={() => setIsSidebarOpen((old) => !old)} />
+        <RadixToast.Provider>
+          <main className={`${inter.className} relative h-screen w-screen`}>
+            <EditorToolbar setIsOpen={() => setIsSidebarOpen((old) => !old)} />
 
-          <div className="flex h-screen">
-            <Sidebar isOpen={isSidebarOpen} pageListComponent={<PageList />} />
-
-            {!pageQuery.data && !pageQuery.isLoading && (
-              <div className="flex h-full w-full select-none items-center justify-center">
-                <p>Page Not Found!</p>
-              </div>
-            )}
-
-            {pageQuery.data && (
-              <EditorPane
-                key={pageQuery.data.id}
-                editorComponent={<NoSSRTiptap pageId={pageQuery.data.id} />}
+            <div className="flex h-screen">
+              <Sidebar
+                isOpen={isSidebarOpen}
+                pageListComponent={<PageList />}
               />
-            )}
-          </div>
-        </main>
+
+              {!pageQuery.data && !pageQuery.isLoading && (
+                <div className="flex h-full w-full select-none items-center justify-center">
+                  <p>Page Not Found!</p>
+                </div>
+              )}
+
+              {pageQuery.data && (
+                <EditorPane
+                  key={pageQuery.data.id}
+                  editorComponent={<NoSSRTiptap pageId={pageQuery.data.id} />}
+                />
+              )}
+            </div>
+          </main>
+
+          <RadixToast.Viewport
+            className={`${inter.className} fixed bottom-6 left-1/2 z-50 -ml-24 w-80 outline-none`}
+          />
+        </RadixToast.Provider>
       </InstantSearch>
     </>
   );
