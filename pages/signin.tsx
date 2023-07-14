@@ -8,7 +8,6 @@ import {
   ClientSafeProvider,
 } from "next-auth/react";
 import { BuiltInProviderType } from "next-auth/providers";
-import { useEffect } from "react";
 import { BsDiscord, BsGithub, BsGoogle } from "react-icons/bs";
 
 import { authOptions } from "./api/auth/[...nextauth]";
@@ -24,8 +23,6 @@ type SignInProps = {
 };
 
 export default function SignIn(props: SignInProps) {
-  useEffect(() => console.log(props.providers), [props.providers]);
-
   return (
     <>
       <Head>
@@ -66,7 +63,7 @@ export const getServerSideProps: GetServerSideProps<SignInProps> = async (
 ) => {
   const session = await getServerSession(context.req, context.res, authOptions);
 
-  if (session) return { redirect: { destination: "/page", permanent: false } };
+  if (session) return { redirect: { destination: "/", permanent: false } };
 
   const providers = await getProviders();
   const csrfToken = await getCsrfToken(context);

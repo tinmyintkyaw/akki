@@ -7,6 +7,7 @@ export default function Home() {
   const router = useRouter();
   const recentPages = useRecentPagesQuery();
 
+  // automatically redirect to the last opened page when user logs in
   if (session.status === "authenticated") {
     if (!recentPages.isLoading && !recentPages.isError && recentPages.data) {
       if (!recentPages.data[0]) router.push("/new");
