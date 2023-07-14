@@ -80,7 +80,7 @@ const Editor = (props: EditorProps) => {
         spellCheck={false}
         className={clsx(
           "prose mx-auto h-full w-full break-words px-8 py-4 font-normal text-gray-900 selection:bg-sky-200",
-          "max-w-3xl" // controls the width of the editor
+          "max-w-sm md:max-w-2xl lg:max-w-3xl" // controls the width of the editor
         )}
         editor={editor}
         onKeyDown={(event) => {
