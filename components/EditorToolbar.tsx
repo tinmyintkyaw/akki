@@ -1,32 +1,44 @@
 import ToolbarButton from "@/components/ToolbarButton";
 import ToolbarDropdown from "@/components/ToolbarDropdown";
 import SearchComboBox from "@/components/SearchComboBox";
-import { MdMenu, MdMoreHoriz, MdSearch, MdStar } from "react-icons/md";
+import {
+  MdKeyboardDoubleArrowRight,
+  MdMenu,
+  MdMoreHoriz,
+  MdSearch,
+  MdStar,
+} from "react-icons/md";
 import ProfileDropdown from "./ProfileDropdown";
 
 type EditorToolbarProps = {
-  setIsOpen: () => void;
+  isSidebarOpen: boolean;
+  setIsSidebarOpen: () => void;
 };
 
 export default function EditorToolbar(props: EditorToolbarProps) {
   return (
     <div
       id="editor-toolbar"
-      className="absolute z-40 flex h-12 w-full select-none items-center gap-2 bg-transparent px-2 text-stone-700"
+      className="flex h-12 w-full select-none items-center gap-2 px-2 text-stone-700 drop-shadow-lg"
     >
-      <ToolbarButton icon={MdMenu} onClick={props.setIsOpen} />
+      {!props.isSidebarOpen && (
+        <ToolbarButton
+          icon={MdKeyboardDoubleArrowRight}
+          onClick={props.setIsSidebarOpen}
+        />
+      )}
+
+      <div className="flex-grow" />
 
       <SearchComboBox>
         <ToolbarButton icon={MdSearch} />
       </SearchComboBox>
 
-      <div className="flex-grow" />
-
-      <ProfileDropdown />
-
       <ToolbarDropdown>
         <ToolbarButton icon={MdMoreHoriz} />
       </ToolbarDropdown>
+
+      <ProfileDropdown />
     </div>
   );
 }

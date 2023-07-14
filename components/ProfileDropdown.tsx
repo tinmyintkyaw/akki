@@ -96,7 +96,7 @@ export default function ProfileDropdown(props: ProfileDropdownProps) {
                 <RadixDropdown.RadioGroup value="light">
                   <RadixDropdown.RadioItem value={"light"} asChild>
                     <MenuButton text="Light">
-                      <RadixDropdown.ItemIndicator asChild>
+                      <RadixDropdown.ItemIndicator>
                         <MdCheck className="h-4 w-4" />
                       </RadixDropdown.ItemIndicator>
                     </MenuButton>
@@ -104,7 +104,7 @@ export default function ProfileDropdown(props: ProfileDropdownProps) {
 
                   <RadixDropdown.RadioItem value={"dark"} asChild>
                     <MenuButton text="Dark">
-                      <RadixDropdown.ItemIndicator asChild>
+                      <RadixDropdown.ItemIndicator>
                         <MdCheck className="h-4 w-4" />
                       </RadixDropdown.ItemIndicator>
                     </MenuButton>
@@ -112,7 +112,7 @@ export default function ProfileDropdown(props: ProfileDropdownProps) {
 
                   <RadixDropdown.RadioItem value={"system"} asChild>
                     <MenuButton text="System">
-                      <RadixDropdown.ItemIndicator asChild>
+                      <RadixDropdown.ItemIndicator>
                         <MdCheck className="h-4 w-4" />
                       </RadixDropdown.ItemIndicator>
                     </MenuButton>

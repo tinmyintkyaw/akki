@@ -52,7 +52,6 @@ export default function App(props: AppProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const { pageId } = useRouter().query;
-
   const pageQuery = usePageQuery(pageId as string);
 
   return (
@@ -68,11 +67,10 @@ export default function App(props: AppProps) {
       <InstantSearch searchClient={searchClient} indexName="pages">
         <RadixToast.Provider>
           <main className={`${inter.className} relative h-screen w-screen`}>
-            <EditorToolbar setIsOpen={() => setIsSidebarOpen((old) => !old)} />
-
             <div className="flex h-screen">
               <Sidebar
                 isOpen={isSidebarOpen}
+                setIsOpen={() => setIsSidebarOpen((prev) => !prev)}
                 pageListComponent={<PageList />}
               />
 
@@ -82,10 +80,16 @@ export default function App(props: AppProps) {
                 </div>
               )}
 
-              {pageQuery.data && (
+              {!pageQuery.isLoading && !pageQuery.isError && (
                 <EditorPane
                   key={pageQuery.data.id}
                   editorComponent={<NoSSRTiptap pageId={pageQuery.data.id} />}
+                  toolbarComponent={
+                    <EditorToolbar
+                      isSidebarOpen={isSidebarOpen}
+                      setIsSidebarOpen={() => setIsSidebarOpen((prev) => !prev)}
+                    />
+                  }
                 />
               )}
             </div>
