@@ -42,12 +42,11 @@ const PageItem = (props: { page: any }) => {
   );
 };
 
-type PageListProps = {};
+export default function PageList() {
+  const [isFavouritesOpen, setIsFavouritesOpen] = useState(true);
 
-export default function PageList(props: PageListProps) {
   const queryClient = useQueryClient();
   const pageListQuery = usePageListQuery();
-
   const createPageMutation = useCreatePageMutation(
     "Untitled",
     null,
@@ -56,15 +55,34 @@ export default function PageList(props: PageListProps) {
 
   return (
     <ScrollArea.Root type="auto">
-      <ScrollArea.Viewport className="h-[calc(100vh-3rem)] pr-2 text-sm">
-        <h2 className="px-4 py-2 text-xs font-semibold">Pages</h2>
+      <ScrollArea.Viewport className="flex h-[calc(100vh-3rem)] pr-2 text-sm">
+        {/* Favourites List */}
+        <div className="flex w-full flex-row">
+          <button
+            onClick={() => setIsFavouritesOpen((prev) => !prev)}
+            className="mx-4 my-1 rounded p-1 text-xs font-semibold hover:bg-zinc-200"
+          >
+            Favourites
+          </button>
+        </div>
+
+        {isFavouritesOpen &&
+          pageListQuery.data &&
+          pageListQuery.data
+            .filter((page: any) => page.isFavourite)
+            .map((page: any) => <PageItem key={page.id} page={page} />)}
+
+        {/* Page List */}
+        <div className="flex w-full flex-row">
+          <h2 className="mx-4 my-1 rounded p-1 text-xs font-semibold">Pages</h2>
+        </div>
 
         {pageListQuery.data &&
           pageListQuery.data.map((page: any) => {
             return <PageItem key={page.id} page={page} />;
           })}
 
-        {/* Add Button */}
+        {/* Add Page Button */}
         <button
           onClick={() => createPageMutation.mutate()}
           className="ml-2 flex h-8 w-[calc(100%-0.5rem)] items-center gap-2 rounded-sm px-2 text-sm text-stone-700 hover:bg-stone-300"
