@@ -56,21 +56,28 @@ export default function PageList() {
   return (
     <ScrollArea.Root type="auto">
       <ScrollArea.Viewport className="flex h-[calc(100vh-3rem)] pr-2 text-sm">
-        {/* Favourites List */}
-        <div className="flex w-full flex-row">
-          <button
-            onClick={() => setIsFavouritesOpen((prev) => !prev)}
-            className="mx-4 my-1 rounded p-1 text-xs font-semibold hover:bg-zinc-200"
-          >
-            Favourites
-          </button>
-        </div>
-
+        {/* Favourites List - hides automatically when there are no favourited pages*/}
         {isFavouritesOpen &&
           pageListQuery.data &&
-          pageListQuery.data
-            .filter((page: any) => page.isFavourite)
-            .map((page: any) => <PageItem key={page.id} page={page} />)}
+          pageListQuery.data.filter((page: any) => page.isFavourite).length >
+            0 && (
+            <>
+              <div className="flex w-full flex-row">
+                <button
+                  onClick={() => setIsFavouritesOpen((prev) => !prev)}
+                  className="mx-4 my-1 rounded p-1 text-xs font-semibold hover:bg-zinc-200"
+                >
+                  Favourites
+                </button>
+              </div>
+
+              {pageListQuery.data
+                .filter((page: any) => page.isFavourite)
+                .map((page: any) => (
+                  <PageItem key={page.id} page={page} />
+                ))}
+            </>
+          )}
 
         {/* Page List */}
         <div className="flex w-full flex-row">
