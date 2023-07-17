@@ -73,6 +73,7 @@ module.exports = {
       typography: {
         DEFAULT: {
           css: {
+            color: "var(--foreground)",
             h1: {
               fontWeight: "600",
               fontSize: "1.875rem",
