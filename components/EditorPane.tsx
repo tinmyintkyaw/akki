@@ -26,11 +26,11 @@ export default function EditorPane(props: EditorPaneProps) {
       {!pageQuery.isLoading && !pageQuery.isError && (
         <>
           {pageQuery.data.isDeleted && (
-            <div className="flex h-12 w-full items-center justify-center gap-4 bg-red-400 py-2 text-sm text-neutral-200">
+            <div className="flex h-12 w-full items-center justify-center gap-4 bg-destructive py-2 text-sm text-destructive-foreground">
               <p>This page is currently in Trash</p>
               <button
                 onClick={() => undoDeletePageMutation.mutate()}
-                className="rounded border border-neutral-300 px-4 py-1 hover:bg-red-600"
+                className="rounded border border-neutral-300 px-4 py-1 hover:bg-destructive-foreground/10"
               >
                 Restore
               </button>
@@ -43,7 +43,7 @@ export default function EditorPane(props: EditorPaneProps) {
                 !pageQuery.data.isDeleted
                   ? "h-[calc(100vh-3rem)]"
                   : "h-[calc(100vh-6rem)]"
-              } w-full bg-slate-50 outline-none`}
+              } w-full bg-background outline-none`}
             >
               {props.editorComponent}
             </ScrollArea.Viewport>
@@ -52,7 +52,7 @@ export default function EditorPane(props: EditorPaneProps) {
               orientation="vertical"
               className="select-none"
             >
-              <ScrollArea.Thumb className="min-w-[0.5rem] bg-stone-400 hover:bg-stone-500" />
+              <ScrollArea.Thumb className="min-w-[0.5rem] bg-primary/40 hover:bg-primary/60" />
             </ScrollArea.Scrollbar>
           </ScrollArea.Root>
         </>

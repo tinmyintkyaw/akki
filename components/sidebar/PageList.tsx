@@ -36,7 +36,7 @@ const PageItem = (props: { page: any }) => {
         ))}
 
       {!isCollapsed && props.page.childPages.length <= 0 && (
-        <div className="my-1 ml-8 text-gray-500">No Pages</div>
+        <div className="my-1 ml-8 text-muted-foreground">No Pages</div>
       )}
     </div>
   );
@@ -57,25 +57,23 @@ export default function PageList() {
     <ScrollArea.Root type="auto">
       <ScrollArea.Viewport className="flex h-[calc(100vh-3rem)] pr-2 text-sm">
         {/* Favourites List - hides automatically when there are no favourited pages*/}
-        {isFavouritesOpen &&
-          pageListQuery.data &&
+        {pageListQuery.data &&
           pageListQuery.data.filter((page: any) => page.isFavourite).length >
             0 && (
             <>
               <div className="flex w-full flex-row">
                 <button
                   onClick={() => setIsFavouritesOpen((prev) => !prev)}
-                  className="mx-4 my-1 rounded p-1 text-xs font-semibold hover:bg-zinc-200"
+                  className="mx-4 my-1 rounded p-1 text-xs font-semibold hover:bg-accent"
                 >
                   Favourites
                 </button>
               </div>
 
-              {pageListQuery.data
-                .filter((page: any) => page.isFavourite)
-                .map((page: any) => (
-                  <PageItem key={page.id} page={page} />
-                ))}
+              {isFavouritesOpen &&
+                pageListQuery.data
+                  .filter((page: any) => page.isFavourite)
+                  .map((page: any) => <PageItem key={page.id} page={page} />)}
             </>
           )}
 
@@ -92,7 +90,7 @@ export default function PageList() {
         {/* Add Page Button */}
         <button
           onClick={() => createPageMutation.mutate()}
-          className="ml-2 flex h-8 w-[calc(100%-0.5rem)] items-center gap-2 rounded-sm px-2 text-sm text-stone-700 hover:bg-stone-300"
+          className="ml-2 flex h-8 w-[calc(100%-0.5rem)] items-center gap-2 rounded-sm px-2 text-sm hover:bg-accent"
         >
           <MdAdd className="h-4 w-4" />
           <p className="line-clamp-1">Add Page</p>
@@ -100,7 +98,7 @@ export default function PageList() {
       </ScrollArea.Viewport>
 
       <ScrollArea.Scrollbar orientation="vertical">
-        <ScrollArea.Thumb className="min-w-[0.5rem] bg-stone-300" />
+        <ScrollArea.Thumb className="min-w-[0.5rem] bg-primary/40 hover:bg-primary/60" />
       </ScrollArea.Scrollbar>
     </ScrollArea.Root>
   );

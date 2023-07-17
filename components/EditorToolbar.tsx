@@ -1,14 +1,7 @@
-import ToolbarButton from "@/components/ToolbarButton";
 import ToolbarDropdown from "@/components/ToolbarDropdown";
 import SearchComboBox from "@/components/SearchComboBox";
-import {
-  MdKeyboardDoubleArrowRight,
-  MdMenu,
-  MdMoreHoriz,
-  MdSearch,
-  MdStar,
-} from "react-icons/md";
-import ProfileDropdown from "./ProfileDropdown";
+import { MoreHorizontal, PanelLeftOpen, Search } from "lucide-react";
+import { Button } from "./ui/button";
 
 type EditorToolbarProps = {
   isSidebarOpen: boolean;
@@ -19,26 +12,31 @@ export default function EditorToolbar(props: EditorToolbarProps) {
   return (
     <div
       id="editor-toolbar"
-      className="flex h-12 w-full select-none items-center gap-2 px-2 text-stone-700 drop-shadow-lg"
+      className="flex h-12 w-full select-none items-center gap-2 bg-background px-2 text-foreground"
     >
       {!props.isSidebarOpen && (
-        <ToolbarButton
-          icon={MdKeyboardDoubleArrowRight}
+        <Button
+          variant={"ghost"}
+          size={"icon"}
           onClick={props.setIsSidebarOpen}
-        />
+        >
+          <PanelLeftOpen className="h-5 w-5" />
+        </Button>
       )}
 
       <div className="flex-grow" />
 
       <SearchComboBox>
-        <ToolbarButton icon={MdSearch} />
+        <Button variant={"ghost"} size={"icon"}>
+          <Search className="h-5 w-5" />
+        </Button>
       </SearchComboBox>
 
       <ToolbarDropdown>
-        <ToolbarButton icon={MdMoreHoriz} />
+        <Button variant={"ghost"} size={"icon"}>
+          <MoreHorizontal className="h-5 w-5" />
+        </Button>
       </ToolbarDropdown>
-
-      <ProfileDropdown />
     </div>
   );
 }
