@@ -1,14 +1,8 @@
+import { useState } from "react";
 import * as RadixDropdown from "@radix-ui/react-dropdown-menu";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import {
-  MdStarOutline,
-  MdDeleteOutline,
-  MdStar,
-  MdHistory,
-  MdOutlineFileUpload,
-  MdOutlineFileDownload,
-} from "react-icons/md";
+import { Star, StarOff, Trash2 } from "lucide-react";
 
 import {
   usePageQuery,
@@ -18,7 +12,6 @@ import {
 } from "@/hooks/queryHooks";
 
 import MenuButton from "@/components/MenuButton";
-import { useState } from "react";
 import Toast from "./Toast";
 
 type ToolbarDropdownProps = {
@@ -60,7 +53,7 @@ export default function ToolbarDropdown(props: ToolbarDropdownProps) {
               alignOffset={5}
               side="bottom"
               sideOffset={5}
-              className="flex w-60 flex-col rounded border border-stone-200 bg-stone-50 p-1 shadow-md"
+              className="flex w-60 flex-col rounded border border-border bg-popover p-1 shadow-md"
             >
               <RadixDropdown.Item asChild>
                 <MenuButton
@@ -72,18 +65,18 @@ export default function ToolbarDropdown(props: ToolbarDropdownProps) {
                   onClick={() => toggleFavouriteMutation.mutate()}
                 >
                   {pageQuery.data.isFavourite ? (
-                    <MdStarOutline className="h-4 w-4" />
+                    <StarOff className="h-4 w-4" />
                   ) : (
-                    <MdStar className="h-4 w-4" />
+                    <Star className="h-4 w-4" />
                   )}
                 </MenuButton>
               </RadixDropdown.Item>
 
-              <RadixDropdown.Item asChild>
+              {/* <RadixDropdown.Item asChild>
                 <MenuButton text="Page History" onClick={() => {}}>
                   <MdHistory className="h-4 w-4" />
                 </MenuButton>
-              </RadixDropdown.Item>
+              </RadixDropdown.Item> */}
 
               {/* <RadixDropdown.Separator className="my-1 h-[1px] bg-stone-300" />
 
@@ -99,7 +92,7 @@ export default function ToolbarDropdown(props: ToolbarDropdownProps) {
                 </MenuButton>
               </RadixDropdown.Item> */}
 
-              <RadixDropdown.Separator className="my-1 h-[1px] bg-stone-300" />
+              <RadixDropdown.Separator className="my-1 h-[1px] bg-border" />
 
               <RadixDropdown.Item asChild>
                 <MenuButton
@@ -109,7 +102,7 @@ export default function ToolbarDropdown(props: ToolbarDropdownProps) {
                     setShowUndoToast(true);
                   }}
                 >
-                  <MdDeleteOutline className="h-4 w-4" />
+                  <Trash2 className="h-4 w-4" />
                 </MenuButton>
               </RadixDropdown.Item>
             </RadixDropdown.Content>

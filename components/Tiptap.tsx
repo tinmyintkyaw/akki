@@ -79,7 +79,7 @@ const Editor = (props: EditorProps) => {
       <EditorContent
         spellCheck={false}
         className={clsx(
-          "prose mx-auto h-full w-full break-words bg-background px-8 py-4 font-normal text-foreground selection:bg-sky-200",
+          "prose mx-auto h-full w-full break-words bg-background px-8 py-4 font-normal dark:prose-invert selection:bg-sky-200 dark:selection:bg-sky-700",
           "max-w-sm md:max-w-2xl lg:max-w-3xl" // controls the width of the editor
         )}
         editor={editor}

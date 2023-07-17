@@ -23,7 +23,7 @@ export default function CodeBlockWrapper(props: NodeViewProps) {
 
   return (
     <NodeViewWrapper className="my-2">
-      <div className="not-prose my-1 w-full rounded bg-gray-200 px-3 py-2">
+      <div className="not-prose my-1 w-full rounded bg-muted px-3 py-2">
         <NodeViewContent as="pre" className="w-full px-1" />
       </div>
     </NodeViewWrapper>

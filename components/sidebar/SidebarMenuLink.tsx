@@ -86,7 +86,7 @@ const SidebarMenuLink = (props: SidebarMenuLinkProps) => {
       </RadixContextMenu.Trigger>
 
       <RadixContextMenu.Portal>
-        <RadixContextMenu.Content className="z-50 flex w-56 flex-col rounded border border-stone-200 bg-stone-50 p-1 text-sm shadow-md">
+        <RadixContextMenu.Content className="z-50 flex w-56 flex-col rounded border border-border bg-popover p-1 text-sm shadow-md">
           <RadixContextMenu.Item asChild>
             <MenuButton
               text="Add Nested Page"

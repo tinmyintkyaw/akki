@@ -8,8 +8,7 @@ import {
   useSearchBox,
 } from "react-instantsearch-hooks-web";
 import { useRouter } from "next/router";
-import { HiArrowsUpDown, HiXCircle } from "react-icons/hi2";
-import { MdKeyboardReturn, MdSearch } from "react-icons/md";
+import { ArrowDownUp, CornerDownLeft, Search, XCircle } from "lucide-react";
 
 import useSearchAPIKey from "@/hooks/useSearchAPIKey";
 
@@ -61,7 +60,7 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/50">
           <Dialog.Content
             onCloseAutoFocus={(event) => event.preventDefault()}
-            className={`${inter.className} mx-auto mt-[10vh] max-h-[80vh] max-w-[90vw] rounded bg-gray-100 focus:outline-none md:max-w-2xl`}
+            className={`${inter.className} mx-auto mt-[10vh] max-h-[80vh] max-w-[90vw] rounded bg-popover focus:outline-none md:max-w-2xl`}
           >
             <Combobox
               as={Fragment}
@@ -71,7 +70,7 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
               }}
             >
               <div className="flex h-14 items-center border-b-2 px-3">
-                <MdSearch className="h-6 w-6 text-gray-500" />
+                <Search className="h-6 w-6 text-muted-foreground" />
 
                 <Combobox.Input
                   autoFocus
@@ -91,7 +90,7 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
 
                 {instantSearch.indexUiState.query && (
                   <button onClick={clear}>
-                    <HiXCircle className="h-5 w-5 text-gray-400 hover:text-gray-500" />
+                    <XCircle className="h-5 w-5 text-gray-400 hover:text-gray-500" />
                   </button>
                 )}
               </div>
@@ -111,8 +110,8 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
                       {({ active }) => {
                         return (
                           <div
-                            className={`flex flex-col justify-center rounded px-2 py-2 text-gray-900 ${
-                              active ? "bg-gray-300" : "bg-transparent"
+                            className={`flex flex-col justify-center rounded px-2 py-2 text-foreground ${
+                              active ? "bg-accent" : "bg-transparent"
                             }`}
                           >
                             <Snippet
@@ -125,7 +124,7 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
                               <Snippet
                                 attribute="pageTextContent"
                                 hit={hit}
-                                className="mt-1 line-clamp-2 text-sm text-gray-600"
+                                className="mt-1 line-clamp-2 text-sm text-foreground"
                               />
                             )}
                           </div>
@@ -140,18 +139,18 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
             {/* Keyboard Hints */}
             <div className="flex h-8 select-none items-center gap-4 border-t-2 px-3">
               <li className="flex h-full flex-row items-center gap-1">
-                <HiArrowsUpDown className="h-3 w-3" />
-                <p className="text-xs text-gray-800">Select</p>
+                <ArrowDownUp className="h-3 w-3" />
+                <p className="text-xs text-foreground">Select</p>
               </li>
 
               <li className="flex h-full flex-row items-center gap-1">
-                <MdKeyboardReturn className="h-3 w-3" />
-                <p className="text-xs text-gray-800">Open</p>
+                <CornerDownLeft className="h-3 w-3" />
+                <p className="text-xs text-foreground">Open</p>
               </li>
 
               <li className="flex h-full flex-row items-center gap-1">
                 <p className="text-xs font-medium">Esc</p>
-                <p className="text-xs text-gray-800">Dismiss</p>
+                <p className="text-xs text-foreground">Dismiss</p>
               </li>
             </div>
           </Dialog.Content>

@@ -13,40 +13,41 @@ import MenuButton from "@/components/MenuButton";
 import clsx from "clsx";
 import { inter } from "@/pages/_app";
 
-type ProfileDropdownProps = {};
+import { PanelLeftClose } from "lucide-react";
+import { Button } from "./ui/button";
+import { useTheme } from "next-themes";
+
+type ProfileDropdownProps = {
+  isSidebarOpen: boolean;
+  setIsSidebarOpen: () => void;
+};
 
 export default function ProfileDropdown(props: ProfileDropdownProps) {
   const session = useSession();
+  const { theme, setTheme } = useTheme();
 
   return (
     <RadixDropdown.Root>
-      <RadixDropdown.Trigger className="flex select-none flex-row items-center gap-2 rounded-full p-1 text-sm focus:outline-none hover:bg-stone-300">
-        {session.data &&
-          session.data.user?.name &&
-          session.data.user?.email &&
-          session.data.user?.image && (
-            <>
-              <Avatar.Root>
-                <Avatar.Image
-                  src={session.data.user.image}
-                  alt={session.data.user.name}
-                  className="h-6 w-6 rounded-full"
-                />
+      <div className="flex items-center gap-2 pr-2">
+        <RadixDropdown.Trigger className="flex h-12 flex-grow select-none flex-row items-center gap-2 rounded px-4 text-sm focus:outline-none radix-state-open:bg-accent hover:bg-accent">
+          <p className="text-lg font-medium">Project Potion</p>
+        </RadixDropdown.Trigger>
 
-                <Avatar.Fallback asChild>
-                  <MdOutlineAccountCircle className="h-6 w-6 rounded-full" />
-                </Avatar.Fallback>
-              </Avatar.Root>
-            </>
-          )}
-      </RadixDropdown.Trigger>
+        <Button
+          variant={"ghost"}
+          size={"icon"}
+          onClick={props.setIsSidebarOpen}
+        >
+          <PanelLeftClose className="h-5 w-5" />
+        </Button>
+      </div>
 
       <RadixDropdown.Portal>
         <RadixDropdown.Content
           side="bottom"
           sideOffset={5}
           align="end"
-          className="z-50 flex w-56 flex-col rounded border border-stone-200 bg-stone-50 p-1 text-sm shadow-md"
+          className="z-50 flex w-56 flex-col rounded border border-border bg-popover p-1 text-sm text-popover-foreground shadow-md"
         >
           <div
             className={clsx(
@@ -78,7 +79,7 @@ export default function ProfileDropdown(props: ProfileDropdownProps) {
               )}
           </div>
 
-          <RadixDropdown.Separator className="my-1 h-[1px] bg-stone-300" />
+          <RadixDropdown.Separator className="my-1 h-[1px] bg-border" />
 
           <RadixDropdown.Sub>
             <RadixDropdown.SubTrigger asChild>
@@ -91,9 +92,12 @@ export default function ProfileDropdown(props: ProfileDropdownProps) {
               <RadixDropdown.SubContent
                 alignOffset={-7}
                 sideOffset={5}
-                className="z-50 flex w-56 flex-col rounded border border-stone-200 bg-stone-50 p-1 text-sm shadow-md"
+                className="z-50 flex w-56 flex-col rounded border border-border bg-popover p-1 text-sm shadow-md"
               >
-                <RadixDropdown.RadioGroup value="light">
+                <RadixDropdown.RadioGroup
+                  value={theme}
+                  onValueChange={setTheme}
+                >
                   <RadixDropdown.RadioItem value={"light"} asChild>
                     <MenuButton text="Light">
                       <RadixDropdown.ItemIndicator>
@@ -128,7 +132,7 @@ export default function ProfileDropdown(props: ProfileDropdownProps) {
             </MenuButton>
           </RadixDropdown.Item>
 
-          <RadixDropdown.Separator className="my-1 h-[1px] bg-stone-300" />
+          <RadixDropdown.Separator className="my-1 h-[1px] bg-border" />
 
           <RadixDropdown.Item asChild>
             <MenuButton text="Sign Out" onClick={signOut}>
