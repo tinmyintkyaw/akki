@@ -1,5 +1,4 @@
 import { useState } from "react";
-import * as RadixDropdown from "@radix-ui/react-dropdown-menu";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { Star, StarOff, Trash2 } from "lucide-react";
@@ -11,8 +10,15 @@ import {
   useUndoDeletePageMutation,
 } from "@/hooks/queryHooks";
 
-import MenuButton from "@/components/MenuButton";
 import Toast from "./Toast";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 type ToolbarDropdownProps = {
   children: React.ReactNode;
@@ -43,72 +49,39 @@ export default function ToolbarDropdown(props: ToolbarDropdownProps) {
 
   return (
     <>
-      <RadixDropdown.Root>
-        <RadixDropdown.Trigger asChild>{props.children}</RadixDropdown.Trigger>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>{props.children}</DropdownMenuTrigger>
 
-        <RadixDropdown.Portal>
-          {!pageQuery.isError && pageQuery.data && (
-            <RadixDropdown.Content
-              align="end"
-              alignOffset={5}
-              side="bottom"
-              sideOffset={5}
-              className="flex w-60 flex-col rounded border border-border bg-popover p-1 shadow-md"
-            >
-              <RadixDropdown.Item asChild>
-                <MenuButton
-                  text={
-                    pageQuery.data.isFavourite
-                      ? "Remove from favourites"
-                      : "Add to favourites"
-                  }
-                  onClick={() => toggleFavouriteMutation.mutate()}
-                >
-                  {pageQuery.data.isFavourite ? (
-                    <StarOff className="h-4 w-4" />
-                  ) : (
-                    <Star className="h-4 w-4" />
-                  )}
-                </MenuButton>
-              </RadixDropdown.Item>
+        <DropdownMenuContent className="w-56">
+          <DropdownMenuLabel>Page Actions</DropdownMenuLabel>
 
-              {/* <RadixDropdown.Item asChild>
-                <MenuButton text="Page History" onClick={() => {}}>
-                  <MdHistory className="h-4 w-4" />
-                </MenuButton>
-              </RadixDropdown.Item> */}
+          <DropdownMenuSeparator />
 
-              {/* <RadixDropdown.Separator className="my-1 h-[1px] bg-stone-300" />
+          <DropdownMenuItem onClick={() => toggleFavouriteMutation.mutate()}>
+            {pageQuery.data.isFavourite ? (
+              <StarOff className="mr-2 h-4 w-4" />
+            ) : (
+              <Star className="mr-2 h-4 w-4" />
+            )}
 
-              <RadixDropdown.Item asChild>
-                <MenuButton text="Import" onClick={() => {}}>
-                  <MdOutlineFileUpload className="h-4 w-4" />
-                </MenuButton>
-              </RadixDropdown.Item>
+            <span>
+              {pageQuery.data.isFavourite
+                ? "Remove from favourites"
+                : "Add to favourites"}
+            </span>
+          </DropdownMenuItem>
 
-              <RadixDropdown.Item asChild>
-                <MenuButton text="Export" onClick={() => {}}>
-                  <MdOutlineFileDownload className="h-4 w-4" />
-                </MenuButton>
-              </RadixDropdown.Item> */}
-
-              <RadixDropdown.Separator className="my-1 h-[1px] bg-border" />
-
-              <RadixDropdown.Item asChild>
-                <MenuButton
-                  text="Delete Page"
-                  onClick={() => {
-                    deletePageMutation.mutate();
-                    setShowUndoToast(true);
-                  }}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </MenuButton>
-              </RadixDropdown.Item>
-            </RadixDropdown.Content>
-          )}
-        </RadixDropdown.Portal>
-      </RadixDropdown.Root>
+          <DropdownMenuItem
+            onClick={() => {
+              deletePageMutation.mutate();
+              setShowUndoToast(true);
+            }}
+          >
+            <Trash2 className="mr-2 h-4 w-4" />
+            <span>Delete Page</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       {/* Undo Delete Page Toast */}
       <Toast

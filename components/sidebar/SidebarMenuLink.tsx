@@ -18,7 +18,14 @@ import {
   Trash2,
 } from "lucide-react";
 
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 import MenuButton from "@/components/MenuButton";
+import { Button } from "../ui/button";
 
 type SidebarMenuLinkProps = {
   pageId: string;
@@ -48,8 +55,8 @@ const SidebarMenuLink = (props: SidebarMenuLinkProps) => {
   const deletePageMutation = useDeletePageMutation(props.pageId, queryClient);
 
   return (
-    <RadixContextMenu.Root>
-      <RadixContextMenu.Trigger asChild>
+    <ContextMenu>
+      <ContextMenuTrigger asChild>
         <div
           className={clsx(
             props.isOpen && "bg-accent font-medium",
@@ -83,51 +90,35 @@ const SidebarMenuLink = (props: SidebarMenuLinkProps) => {
             <Plus className="h-4 w-4" />
           </button>
         </div>
-      </RadixContextMenu.Trigger>
+      </ContextMenuTrigger>
 
-      <RadixContextMenu.Portal>
-        <RadixContextMenu.Content className="z-50 flex w-56 flex-col rounded border border-border bg-popover p-1 text-sm shadow-md">
-          <RadixContextMenu.Item asChild>
-            <MenuButton
-              text="Add Nested Page"
-              onClick={() => createPageMutation.mutate()}
-            >
-              <Plus className="h-4 w-4" />
-            </MenuButton>
-          </RadixContextMenu.Item>
+      <ContextMenuContent className="w-56">
+        <ContextMenuItem onClick={() => createPageMutation.mutate()}>
+          <Plus className="mr-2 h-4 w-4" />
+          <span>Add Nested Page</span>
+        </ContextMenuItem>
 
-          <RadixContextMenu.Separator className="my-1 h-[1px] bg-stone-300" />
+        <ContextMenuItem onClick={() => toggleFavouriteMutation.mutate()}>
+          {props.isFavourite ? (
+            <StarOff className="mr-2 h-4 w-4" />
+          ) : (
+            <Star className="mr-2 h-4 w-4" />
+          )}
+          <span>
+            {props.isFavourite ? "Remove from favourites" : "Add to favourites"}
+          </span>
+        </ContextMenuItem>
 
-          <RadixContextMenu.Item asChild>
-            <MenuButton
-              text={
-                props.isFavourite
-                  ? "Remove from favourites"
-                  : "Add to favourites"
-              }
-              onClick={() => toggleFavouriteMutation.mutate()}
-            >
-              {props.isFavourite ? (
-                <StarOff className="h-4 w-4" />
-              ) : (
-                <Star className="h-4 w-4" />
-              )}
-            </MenuButton>
-          </RadixContextMenu.Item>
-
-          <RadixContextMenu.Item asChild>
-            <MenuButton
-              text="Delete Page"
-              onClick={() => {
-                deletePageMutation.mutate();
-              }}
-            >
-              <Trash2 className="h-4 w-4" />
-            </MenuButton>
-          </RadixContextMenu.Item>
-        </RadixContextMenu.Content>
-      </RadixContextMenu.Portal>
-    </RadixContextMenu.Root>
+        <ContextMenuItem
+          onClick={() => {
+            deletePageMutation.mutate();
+          }}
+        >
+          <Trash2 className="mr-2 h-4 w-4" />
+          <span>Delete</span>
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
   );
 };
 

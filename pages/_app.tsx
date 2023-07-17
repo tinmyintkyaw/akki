@@ -21,6 +21,11 @@ export default function App({
     <SessionProvider session={session}>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <style jsx global>{`
+            html {
+              font-family: ${inter.style.fontFamily};
+            }
+          `}</style>
           <Component {...pageProps} />
           <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
         </ThemeProvider>
