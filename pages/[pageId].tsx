@@ -84,7 +84,7 @@ export default function App(props: AppProps) {
                 <PageList />
               </Allotment.Pane>
 
-              <Allotment.Pane className="transition-all will-change-[width] duration-300 ease-in-out">
+              <Allotment.Pane className="contentPane transition-all will-change-[width] duration-300 ease-in-out">
                 {!pageQuery.data && !pageQuery.isLoading && (
                   <div className="flex h-full w-full select-none items-center justify-center">
                     <p>Page Not Found!</p>
