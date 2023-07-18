@@ -110,3 +110,8 @@
   content: attr(data-placeholder);
   @apply pointer-events-none float-left h-0 text-stone-400;
 }
+
+.split-view-sash-dragging .content-pane {
+  /* disable animation while sash dragging */
+  transition: none;
+}

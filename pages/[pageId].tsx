@@ -7,15 +7,17 @@ import TypesenseInstantSearchAdapter from "typesense-instantsearch-adapter";
 import { Session, getServerSession } from "next-auth";
 import { InstantSearch } from "react-instantsearch-hooks-web";
 import * as RadixToast from "@radix-ui/react-toast";
+import { Allotment, LayoutPriority } from "allotment";
 
-import Sidebar from "@/components/sidebar/Sidebar";
+import { usePageQuery } from "@/hooks/queryHooks";
+
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import PageList from "@/components/sidebar/PageList";
 import EditorPane from "@/components/EditorPane";
 import EditorToolbar from "@/components/EditorToolbar";
+import ProfileDropdown from "@/components/ProfileDropdown";
 
-import { usePageQuery } from "@/hooks/queryHooks";
-import { inter } from "@/pages/_app";
-import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import "allotment/dist/style.css";
 
 const NoSSRTiptap = dynamic(() => import("@/components/Tiptap"), {
   ssr: false,
@@ -66,38 +68,48 @@ export default function App(props: AppProps) {
 
       <InstantSearch searchClient={searchClient} indexName="pages">
         <RadixToast.Provider>
-          <main className={`${inter.className} relative h-screen w-screen`}>
-            <div className="flex h-screen">
-              <Sidebar
-                isOpen={isSidebarOpen}
-                setIsOpen={() => setIsSidebarOpen((prev) => !prev)}
-                pageListComponent={<PageList />}
-              />
-
-              {!pageQuery.data && !pageQuery.isLoading && (
-                <div className="flex h-full w-full select-none items-center justify-center">
-                  <p>Page Not Found!</p>
-                </div>
-              )}
-
-              {!pageQuery.isLoading && !pageQuery.isError && (
-                <EditorPane
-                  key={pageQuery.data.id}
-                  editorComponent={<NoSSRTiptap pageId={pageQuery.data.id} />}
-                  toolbarComponent={
-                    <EditorToolbar
-                      isSidebarOpen={isSidebarOpen}
-                      setIsSidebarOpen={() => setIsSidebarOpen((prev) => !prev)}
-                    />
-                  }
+          <main className="h-screen w-screen">
+            <Allotment proportionalLayout={false}>
+              <Allotment.Pane
+                minSize={250}
+                preferredSize={350}
+                maxSize={600}
+                priority={LayoutPriority.Low}
+                visible={isSidebarOpen}
+              >
+                <ProfileDropdown
+                  isSidebarOpen={isSidebarOpen}
+                  setIsSidebarOpen={() => setIsSidebarOpen((prev) => !prev)}
                 />
-              )}
-            </div>
+                <PageList />
+              </Allotment.Pane>
+
+              <Allotment.Pane className="transition-all will-change-[width] duration-300 ease-in-out">
+                {!pageQuery.data && !pageQuery.isLoading && (
+                  <div className="flex h-full w-full select-none items-center justify-center">
+                    <p>Page Not Found!</p>
+                  </div>
+                )}
+
+                {!pageQuery.isLoading && !pageQuery.isError && (
+                  <EditorPane
+                    key={pageQuery.data.id}
+                    editorComponent={<NoSSRTiptap pageId={pageQuery.data.id} />}
+                    toolbarComponent={
+                      <EditorToolbar
+                        isSidebarOpen={isSidebarOpen}
+                        setIsSidebarOpen={() =>
+                          setIsSidebarOpen((prev) => !prev)
+                        }
+                      />
+                    }
+                  />
+                )}
+              </Allotment.Pane>
+            </Allotment>
           </main>
 
-          <RadixToast.Viewport
-            className={`${inter.className} fixed bottom-6 left-1/2 z-50 -ml-24 w-80 outline-none`}
-          />
+          <RadixToast.Viewport className="fixed bottom-6 left-1/2 z-50 -ml-24 w-80 outline-none" />
         </RadixToast.Provider>
       </InstantSearch>
     </>

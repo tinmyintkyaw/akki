@@ -59,6 +59,7 @@
     "@tiptap/pm": "^2.0.3",
     "@tiptap/react": "^2.0.3",
     "@tiptap/starter-kit": "^2.0.3",
+    "allotment": "^1.19.2",
     "class-variance-authority": "^0.6.1",
     "clsx": "^1.2.1",
     "dotenv": "^16.0.3",
