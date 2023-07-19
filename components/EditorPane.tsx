@@ -1,9 +1,9 @@
-import * as ScrollArea from "@radix-ui/react-scroll-area";
 import { useRouter } from "next/router";
 import { ReactNode, useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { usePageQuery, useUndoDeletePageMutation } from "@/hooks/queryHooks";
+import { ScrollArea } from "./ui/scroll-area";
 
 type EditorPaneProps = {
   editorComponent: ReactNode;
@@ -37,24 +37,16 @@ export default function EditorPane(props: EditorPaneProps) {
             </div>
           )}
 
-          <ScrollArea.Root type="auto">
-            <ScrollArea.Viewport
-              className={`${
-                !pageQuery.data.isDeleted
-                  ? "h-[calc(100vh-3rem)]"
-                  : "h-[calc(100vh-6rem)]"
-              } w-full bg-background outline-none`}
-            >
-              {props.editorComponent}
-            </ScrollArea.Viewport>
-
-            <ScrollArea.Scrollbar
-              orientation="vertical"
-              className="select-none"
-            >
-              <ScrollArea.Thumb className="min-w-[0.5rem] bg-primary/40 hover:bg-primary/60" />
-            </ScrollArea.Scrollbar>
-          </ScrollArea.Root>
+          <ScrollArea
+            type="auto"
+            className={`${
+              !pageQuery.data.isDeleted
+                ? "h-[calc(100vh-3rem)]"
+                : "h-[calc(100vh-6rem)]"
+            } w-full bg-background outline-none`}
+          >
+            {props.editorComponent}
+          </ScrollArea>
         </>
       )}
     </div>
