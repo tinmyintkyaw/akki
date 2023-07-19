@@ -69,7 +69,7 @@ export default function App(props: AppProps) {
       <InstantSearch searchClient={searchClient} indexName="pages">
         <RadixToast.Provider>
           <main className="h-screen w-screen">
-            <Allotment proportionalLayout={false}>
+            <Allotment proportionalLayout={false} separator={!!isSidebarOpen}>
               <Allotment.Pane
                 minSize={250}
                 preferredSize={350}
