@@ -2,7 +2,12 @@ import { useRouter } from "next/router";
 import { ReactNode, useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
-import { usePageQuery, useUndoDeletePageMutation } from "@/hooks/queryHooks";
+import {
+  usePageQuery,
+  useRecentPagesQuery,
+  usePermanentlyDeletePageMutation,
+  useUndoDeletePageMutation,
+} from "@/hooks/queryHooks";
 import { ScrollArea } from "./ui/scroll-area";
 
 type EditorPaneProps = {
@@ -14,7 +19,12 @@ export default function EditorPane(props: EditorPaneProps) {
   const queryClient = useQueryClient();
   const router = useRouter();
   const pageQuery = usePageQuery(router.query.pageId as string);
+  const recentPagesQuery = useRecentPagesQuery();
   const undoDeletePageMutation = useUndoDeletePageMutation(
+    router.query.pageId as string,
+    queryClient
+  );
+  const permanentlyDeletePageMutation = usePermanentlyDeletePageMutation(
     router.query.pageId as string,
     queryClient
   );
@@ -33,6 +43,18 @@ export default function EditorPane(props: EditorPaneProps) {
                 className="rounded border border-neutral-300 px-4 py-1 hover:bg-destructive-foreground/10"
               >
                 Restore
+              </button>
+
+              <button
+                onClick={async () => {
+                  permanentlyDeletePageMutation.mutate();
+                  await recentPagesQuery.refetch();
+                  if (!recentPagesQuery.data[0]) router.push("/new");
+                  router.push(`/${recentPagesQuery.data[0].id}`);
+                }}
+                className="rounded border border-neutral-300 px-4 py-1 hover:bg-destructive-foreground/10"
+              >
+                Delete Permanently
               </button>
             </div>
           )}
