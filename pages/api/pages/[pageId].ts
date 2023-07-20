@@ -88,15 +88,12 @@ export default async function pageHandler(
 
   if (req.method === "DELETE") {
     try {
-      const data = await prisma.page.update({
+      const data = await prisma.page.delete({
         where: {
           id_userId: {
             userId: session.accountId,
             id: pageId,
           },
-        },
-        data: {
-          isDeleted: true,
         },
         select: {
           id: true,

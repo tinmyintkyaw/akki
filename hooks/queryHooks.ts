@@ -22,6 +22,28 @@ export const useRecentPagesQuery = () => {
   });
 };
 
+export const useDeletedPagesQuery = () => {
+  return useQuery({
+    queryKey: ["deletedPages"],
+    queryFn: async () => {
+      const response = await fetch("/api/pages/deleted");
+      if (!response.ok) throw new Error("Failed to fetch deleted pages");
+      return response.json();
+    },
+  });
+};
+
+export const useFavouritePagesQuery = () => {
+  return useQuery({
+    queryKey: ["favouritePages"],
+    queryFn: async () => {
+      const response = await fetch("/api/pages/favourite");
+      if (!response.ok) throw new Error("Failed to fetch favourited pages");
+      return response.json();
+    },
+  });
+};
+
 export const usePageQuery = (id: string) => {
   return useQuery({
     queryKey: ["page", id],
@@ -53,6 +75,7 @@ export const useCreatePageMutation = (
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pageList"] });
+      queryClient.invalidateQueries({ queryKey: ["deletedPages"] });
     },
   });
 };
@@ -96,15 +119,37 @@ export const useUpdatePageMutation = ({
 export const useDeletePageMutation = (id: string, queryClient: QueryClient) => {
   return useMutation({
     mutationFn: async () => {
+      const response = await fetch(`/api/pages/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          isDeleted: true,
+        }),
+      });
+      if (!response.ok) throw new Error("Failed to delete page");
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["pageList"] });
+      queryClient.invalidateQueries({ queryKey: ["deletedPages"] });
+      queryClient.invalidateQueries({ queryKey: ["page", id] });
+    },
+  });
+};
+
+export const usePermanentlyDeletePageMutation = (
+  id: string,
+  queryClient: QueryClient
+) => {
+  return useMutation({
+    mutationFn: async () => {
       const response = await fetch(`/api/pages/${id}`, { method: "DELETE" });
       if (!response.ok) throw new Error("Failed to delete page");
       return response;
     },
-    onMutate: () => {
-      // queryClient.removeQueries({ queryKey: ["page", id] });
-    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pageList"] });
+      queryClient.invalidateQueries({ queryKey: ["deletedPages"] });
       queryClient.invalidateQueries({ queryKey: ["page", id] });
     },
   });
@@ -131,6 +176,7 @@ export const useUndoDeletePageMutation = (
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pageList"] });
+      queryClient.invalidateQueries({ queryKey: ["deletedPages"] });
       queryClient.invalidateQueries({ queryKey: ["page", id] });
     },
   });
