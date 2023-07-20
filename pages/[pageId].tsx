@@ -51,7 +51,7 @@ export const typesenseInstantSearchAdaptor = new TypesenseInstantSearchAdapter({
 const searchClient = typesenseInstantSearchAdaptor.searchClient;
 
 export default function App(props: AppProps) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidePanelOpen, setIsSidePanelOpen] = useState(true);
 
   const { pageId } = useRouter().query;
   const pageQuery = usePageQuery(pageId as string);
@@ -69,17 +69,17 @@ export default function App(props: AppProps) {
       <InstantSearch searchClient={searchClient} indexName="pages">
         <RadixToast.Provider>
           <main className="h-screen w-screen">
-            <Allotment proportionalLayout={false} separator={!!isSidebarOpen}>
+            <Allotment proportionalLayout={false} separator={!!isSidePanelOpen}>
               <Allotment.Pane
                 minSize={250}
                 preferredSize={350}
                 maxSize={600}
                 priority={LayoutPriority.Low}
-                visible={isSidebarOpen}
+                visible={isSidePanelOpen}
               >
                 <ProfileDropdown
-                  isSidebarOpen={isSidebarOpen}
-                  setIsSidebarOpen={() => setIsSidebarOpen((prev) => !prev)}
+                  isSidebarOpen={isSidePanelOpen}
+                  setIsSidebarOpen={() => setIsSidePanelOpen((prev) => !prev)}
                 />
                 <PageList />
               </Allotment.Pane>
@@ -97,9 +97,9 @@ export default function App(props: AppProps) {
                     editorComponent={<NoSSRTiptap pageId={pageQuery.data.id} />}
                     toolbarComponent={
                       <EditorToolbar
-                        isSidebarOpen={isSidebarOpen}
+                        isSidebarOpen={isSidePanelOpen}
                         setIsSidebarOpen={() =>
-                          setIsSidebarOpen((prev) => !prev)
+                          setIsSidePanelOpen((prev) => !prev)
                         }
                       />
                     }

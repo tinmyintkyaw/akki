@@ -150,7 +150,7 @@ export const usePermanentlyDeletePageMutation = (
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pageList"] });
       queryClient.invalidateQueries({ queryKey: ["deletedPages"] });
-      queryClient.invalidateQueries({ queryKey: ["page", id] });
+      queryClient.removeQueries({ queryKey: ["page", id] });
     },
   });
 };
