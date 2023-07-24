@@ -10,8 +10,6 @@ export default function ImageWrapper(props: NodeViewProps) {
 
   const nodeViewRef = useRef<HTMLElement>(null);
 
-  useEffect(() => console.log(props), [props]);
-
   return (
     <NodeViewWrapper ref={nodeViewRef}>
       <NodeViewContent>
@@ -33,6 +31,7 @@ export default function ImageWrapper(props: NodeViewProps) {
           src={props.node.attrs.src}
           alt={props.node.attrs.alt}
           title={props.node.attrs.title}
+          className={`${props.selected && "opacity-80"}`}
         />
         {/* </ResizableBox> */}
       </NodeViewContent>
