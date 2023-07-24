@@ -3,47 +3,49 @@ import { Plugin } from "@tiptap/pm/state";
 
 const CustomImageBackend = Image.extend({
   draggable: true,
-  // parseHTML() {
-  //   return [
-  //     {
-  //       tag: this.options.allowBase64
-  //         ? "img[src]"
-  //         : 'img[src]:not([src^="data:"])',
-  //       getAttrs(node) {
-  //         if (node instanceof HTMLImageElement) {
-  //           return {
-  //             src: node.getAttribute("src"),
-  //             alt: node.getAttribute("alt"),
-  //             title: node.getAttribute("title"),
-  //           };
-  //         }
-  //         return {};
-  //       },
-  //     },
-  //   ];
-  // },
-  // addProseMirrorPlugins() {
-  //   return [
-  //     new Plugin({
-  //       props: {
-  //         handleDOMEvents: {
-  //           paste(view, event) {
-  //             if (!event.clipboardData) return;
-  //             const files = Array.from(event.clipboardData.files);
-  //             if (files.length === 0) return;
-  //             files.forEach((file) => {
-  //               const { name, type, size } = file;
-  //               console.log(file);
-  //             });
-  //           },
-  //           drop(view, event) {
-  //             console.log({ view, event });
-  //           },
-  //         },
-  //       },
-  //     }),
-  //   ];
-  // },
+  addProseMirrorPlugins() {
+    return [
+      new Plugin({
+        props: {
+          handleDrop(view, event, slice, moved) {
+            if (moved) return false;
+            if (!event.dataTransfer?.files[0]) return false;
+
+            const file = event.dataTransfer.files[0];
+            const formData = new FormData();
+            formData.append("image", file);
+
+            fetch("/api/images/upload", {
+              method: "POST",
+              body: formData,
+            })
+              .then((res) => res.json())
+              .then((data) => {
+                const imageURI = data.url;
+                const { schema } = view.state;
+                const coordinates = view.posAtCoords({
+                  left: event.clientX,
+                  top: event.clientY,
+                });
+
+                if (!coordinates) return false;
+
+                const node = schema.nodes.image.create({ src: imageURI });
+                const transaction = view.state.tr.insert(coordinates.pos, node);
+                return view.dispatch(transaction);
+              })
+              .catch((err) => console.error(err));
+
+            return true;
+          },
+          handlePaste(view, event, slice) {
+            console.log("paste");
+            console.log(event.clipboardData?.files[0]);
+          },
+        },
+      }),
+    ];
+  },
 });
 
 export default CustomImageBackend;
