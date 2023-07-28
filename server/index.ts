@@ -5,7 +5,7 @@ import { Database } from "@hocuspocus/extension-database";
 
 import { prisma } from "../lib/prismadb";
 import { TiptapTransformer } from "@hocuspocus/transformer";
-import { generateText } from "@tiptap/core";
+import { JSONContent, generateText } from "@tiptap/core";
 
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
@@ -83,9 +83,25 @@ const server = Server.configure({
         console.log("Storing page");
 
         try {
-          const json = await TiptapTransformer.fromYdoc(data.document);
+          const { default: json } = await TiptapTransformer.fromYdoc(
+            data.document
+          );
 
-          const textContent = generateText(json.default, [
+          const isJSONContent = (json: any): json is JSONContent => {
+            return (json as JSONContent) !== undefined;
+          };
+
+          if (!isJSONContent(json)) throw new Error("Invalid JSON");
+
+          if (!json.content) throw new Error("Invalid content");
+
+          // Remove title node from JSON
+          const [, ...contentWithoutTitle] = json.content;
+          const jsonWithoutTitle = Object.assign({}, json, {
+            content: contentWithoutTitle,
+          });
+
+          const textContent = generateText(jsonWithoutTitle, [
             StarterKit.configure({
               document: false,
               history: false,
