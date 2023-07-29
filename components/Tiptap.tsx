@@ -52,9 +52,15 @@ const Editor = (props: EditorProps) => {
       CustomImageFrontend.configure({ allowBase64: true }),
       CustomCodeBlock.configure({ lowlight: lowlight, defaultLanguage: "js" }),
       Placeholder.configure({
+        includeChildren: true,
         placeholder({ node }) {
-          if (node.type.name !== "codeBloack") return "Start typing...";
-          return "";
+          if (node.type.name === "codeBlock") return "";
+          if (node.type.name === "heading") {
+            if (node.attrs.level === 1) return "Heading 1";
+            if (node.attrs.level === 2) return "Heading 2";
+            if (node.attrs.level === 3) return "Heading 3";
+          }
+          return "Start writing...";
         },
       }),
       Collaboration.configure({ document: props.ydoc }),
