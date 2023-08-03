@@ -57,8 +57,13 @@ export const usePageQuery = (id: string) => {
 };
 
 export const useCreatePageMutation = (
-  pageName: string,
-  parentPageId: string | null,
+  {
+    pageName,
+    parentPageId,
+  }: {
+    pageName: string;
+    parentPageId: string | null;
+  },
   queryClient: QueryClient
 ) => {
   return useMutation({
@@ -80,19 +85,20 @@ export const useCreatePageMutation = (
   });
 };
 
-export const useUpdatePageMutation = ({
-  id,
-  pageName,
-  parentPageId,
-  isFavourite,
-  queryClient,
-}: {
-  id: string;
-  pageName?: string;
-  parentPageId?: string | null;
-  isFavourite?: boolean;
-  queryClient: QueryClient;
-}) => {
+export const useUpdatePageMutation = (
+  {
+    id,
+    pageName,
+    parentPageId,
+    isFavourite,
+  }: {
+    id: string;
+    pageName?: string;
+    parentPageId?: string | null;
+    isFavourite?: boolean;
+  },
+  queryClient: QueryClient
+) => {
   return useMutation({
     mutationFn: async () => {
       const response = await fetch(`/api/pages/${id}`, {

@@ -16,6 +16,7 @@ import SidebarMenuLink from "./SidebarMenuLink";
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
 import DeletedPages from "./DeletedPages";
+import PageTree from "@/pages/tree2";
 
 const PageItem = (props: { page: any }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -60,8 +61,7 @@ export default function PageList() {
   const pageListQuery = usePageListQuery();
   const favouritePagesQuery = useFavouritePagesQuery();
   const createPageMutation = useCreatePageMutation(
-    "Untitled",
-    null,
+    { pageName: "Untitled", parentPageId: null },
     queryClient
   );
 
@@ -100,7 +100,7 @@ export default function PageList() {
       )}
 
       {/* Page List */}
-      <div className="mb-2 pr-2">
+      {/* <div className="mb-2 pr-2">
         <div className="flex w-full flex-row">
           <h2 className="mx-4 my-1 rounded p-1 text-xs font-semibold">Pages</h2>
         </div>
@@ -109,7 +109,9 @@ export default function PageList() {
           pageListQuery.data.map((page: any) => {
             return <PageItem key={page.id} page={page} />;
           })}
-      </div>
+      </div> */}
+
+      <PageTree />
 
       {/* Add Page Button */}
       <Button

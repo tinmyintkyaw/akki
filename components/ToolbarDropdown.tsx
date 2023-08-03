@@ -31,11 +31,13 @@ export default function ToolbarDropdown(props: ToolbarDropdownProps) {
   const router = useRouter();
 
   const pageQuery = usePageQuery(router.query.pageId as string);
-  const toggleFavouriteMutation = useUpdatePageMutation({
-    id: pageQuery.data?.id as string,
-    isFavourite: !pageQuery.data?.isFavourite as boolean,
-    queryClient,
-  });
+  const toggleFavouriteMutation = useUpdatePageMutation(
+    {
+      id: pageQuery.data?.id as string,
+      isFavourite: !pageQuery.data?.isFavourite as boolean,
+    },
+    queryClient
+  );
 
   const deletePageMutation = useDeletePageMutation(
     router.query.pageId as string,

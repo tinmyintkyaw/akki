@@ -12,11 +12,13 @@ export default function BlockquoteWrapper(props: NodeViewProps) {
 
   const pageQuery = usePageQuery(router.query.pageId as string);
 
-  const updatePageMutation = useUpdatePageMutation({
-    id: pageQuery.data.id as string,
-    pageName: props.node.textContent ? props.node.textContent : "Untitled",
-    queryClient,
-  });
+  const updatePageMutation = useUpdatePageMutation(
+    {
+      id: pageQuery.data.id as string,
+      pageName: props.node.textContent ? props.node.textContent : "Untitled",
+    },
+    queryClient
+  );
 
   useEffect(() => {
     if (

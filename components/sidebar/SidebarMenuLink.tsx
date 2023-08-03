@@ -42,16 +42,17 @@ const SidebarMenuLink = (props: SidebarMenuLinkProps) => {
   const queryClient = useQueryClient();
 
   const createPageMutation = useCreatePageMutation(
-    "Untitled",
-    props.pageId,
+    { pageName: "Untitled", parentPageId: props.pageId },
     queryClient
   );
 
-  const toggleFavouriteMutation = useUpdatePageMutation({
-    id: props.pageId,
-    isFavourite: !props.isFavourite,
-    queryClient,
-  });
+  const toggleFavouriteMutation = useUpdatePageMutation(
+    {
+      id: props.pageId,
+      isFavourite: !props.isFavourite,
+    },
+    queryClient
+  );
   const deletePageMutation = useDeletePageMutation(props.pageId, queryClient);
 
   return (
