@@ -80,20 +80,28 @@ export default async function pagesHandler(
         select: {
           id: true,
           pageName: true,
-          parentPageId: true,
-          createdAt: true,
-          modifiedAt: true,
+          // createdAt: true,
+          // modifiedAt: true,
           isFavourite: true,
           userId: true,
+          parentPageId: true,
+          childPages: {
+            select: {
+              id: true,
+              // pageName: true,
+              // createdAt: true,
+              // modifiedAt: true,
+              // isFavourite: true,
+              // userId: true,
+            },
+          },
         },
         orderBy: {
           createdAt: "asc",
         },
       });
 
-      const pageTree = createPageTree(data, null);
-
-      return res.status(200).json(pageTree);
+      return res.status(200).json(data);
     } catch (err) {
       return res.status(500).json({ message: "Internal Server Error" });
     }

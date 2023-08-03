@@ -16,7 +16,7 @@ import SidebarMenuLink from "./SidebarMenuLink";
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
 import DeletedPages from "./DeletedPages";
-import PageTree from "@/pages/tree2";
+import PageTree from "@/components/sidebar/PageTree";
 
 const PageItem = (props: { page: any }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -72,7 +72,7 @@ export default function PageList() {
         <div className="mb-2 px-2">
           <button
             onClick={() => setIsFavouritesOpen((prev) => !prev)}
-            className="mx-4 my-1 rounded p-1 text-xs font-semibold hover:bg-accent"
+            className="my-1 rounded p-1 text-xs font-semibold hover:bg-accent"
           >
             Favourites
           </button>
@@ -99,19 +99,11 @@ export default function PageList() {
         </div>
       )}
 
-      {/* Page List */}
-      {/* <div className="mb-2 pr-2">
-        <div className="flex w-full flex-row">
-          <h2 className="mx-4 my-1 rounded p-1 text-xs font-semibold">Pages</h2>
-        </div>
+      <div className="mb-2 px-2">
+        <div className="my-1 rounded p-1 text-xs font-semibold">Pages</div>
 
-        {pageListQuery.data &&
-          pageListQuery.data.map((page: any) => {
-            return <PageItem key={page.id} page={page} />;
-          })}
-      </div> */}
-
-      <PageTree />
+        <PageTree currentlyOpenPage={router.query.pageId as string} />
+      </div>
 
       {/* Add Page Button */}
       <Button
