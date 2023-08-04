@@ -388,12 +388,15 @@ const PageTree: React.FC<PageTreeProps> = (props) => {
             setSelectedItems(items);
           }}
           onRenameItem={(item, newName) => {
+            setIsRenaming(true);
             setUpdatePagePayload({
               id: item.index.toString(),
               pageName: newName,
             });
             updatePageMutation.mutate();
+            setIsRenaming(false);
           }}
+          onAbortRenamingItem={(item) => setIsRenaming(false)}
           onPrimaryAction={(item) => router.push(`/${item.index}`)}
           onDrop={(items, target) => {
             if (target.targetType !== "item") return;
