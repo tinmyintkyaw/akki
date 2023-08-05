@@ -17,8 +17,6 @@ import serverTypesenseClient, {
 } from "../typesense/typesense-client";
 import TaskList from "@tiptap/extension-task-list";
 import TaskItem from "@tiptap/extension-task-item";
-import CustomDocument from "../tiptap/CustomDocument";
-import BackendTitle from "../tiptap/BackendTitle";
 import CustomHeading from "../tiptap/CustomHeading";
 
 // Configure hocuspocus
@@ -103,12 +101,9 @@ const server = Server.configure({
 
           const textContent = generateText(jsonWithoutTitle, [
             StarterKit.configure({
-              document: false,
               history: false,
               heading: false,
             }),
-            CustomDocument,
-            BackendTitle,
             CustomHeading.configure({ levels: [1, 2, 3] }),
             Link,
             TaskList,

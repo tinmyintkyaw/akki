@@ -22,7 +22,6 @@ export default function SelectMenu(props: { editor: Editor }) {
           isEmptyTextBlock ||
           !editor.isEditable ||
           // Don't show on some nodes
-          editor.isActive("title") ||
           editor.isActive("image")
         ) {
           return false;
