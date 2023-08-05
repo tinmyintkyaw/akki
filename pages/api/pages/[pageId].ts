@@ -6,7 +6,6 @@ import serverTypesenseClient, {
 } from "@/typesense/typesense-client";
 import { authOptions } from "../auth/[...nextauth]";
 import { prisma } from "@/lib/prismadb";
-import { isDeleted } from "yjs";
 
 export default async function pageHandler(
   req: NextApiRequest,
@@ -22,12 +21,12 @@ export default async function pageHandler(
     return res.status(400).json({ message: "Bad Request" });
 
   if (req.method === "PATCH") {
-    const { pageName, parentPageId, isFavourite, isDeleted } = req.body;
+    const { pageName, collectionId, isFavourite, isDeleted } = req.body;
 
     if (pageName && typeof pageName !== "string")
       return res.status(400).json({ message: "Bad Request" });
 
-    if (parentPageId && typeof parentPageId !== "string")
+    if (collectionId && typeof collectionId !== "string")
       return res.status(400).json({ message: "Bad Request" });
 
     if (typeof isFavourite !== "undefined" && typeof isFavourite !== "boolean")
@@ -37,7 +36,7 @@ export default async function pageHandler(
       return res.status(400).json({ message: "Bad Request" });
 
     try {
-      const data = await prisma.page.update({
+      const updatedPage = await prisma.page.update({
         where: {
           id_userId: {
             userId: session.accountId,
@@ -46,31 +45,33 @@ export default async function pageHandler(
         },
         data: {
           pageName: pageName,
-          parentPageId: parentPageId,
+          collectionId: collectionId,
           modifiedAt: new Date(),
           isFavourite: isFavourite,
           isDeleted: isDeleted,
+          deletedAt: isDeleted ? new Date() : undefined,
         },
         select: {
           id: true,
           pageName: true,
-          parentPageId: true,
-          createdAt: true,
-          modifiedAt: true,
           isFavourite: true,
+          createdAt: true,
+          accessedAt: true,
+          modifiedAt: true,
+          collectionId: true,
           userId: true,
           textContent: true,
         },
       });
 
       const typesensePage: typesensePageDocument = {
-        id: data.id,
-        userId: data.userId,
-        pageName: data.pageName,
-        pageTextContent: data.textContent,
-        pageCreatedAt: data.createdAt.getTime(),
-        pageModifiedAt: data.modifiedAt.getTime(),
-        isFavourite: data.isFavourite,
+        id: updatedPage.id,
+        userId: updatedPage.userId,
+        pageName: updatedPage.pageName,
+        pageTextContent: updatedPage.textContent,
+        pageCreatedAt: updatedPage.createdAt.getTime(),
+        pageModifiedAt: updatedPage.modifiedAt.getTime(),
+        isFavourite: updatedPage.isFavourite,
       };
 
       await serverTypesenseClient
@@ -78,7 +79,7 @@ export default async function pageHandler(
         .documents()
         .upsert(typesensePage);
 
-      const { textContent, ...responseData } = data;
+      const { textContent, ...responseData } = updatedPage;
 
       return res.status(200).json(responseData);
     } catch (err) {
@@ -88,7 +89,7 @@ export default async function pageHandler(
 
   if (req.method === "DELETE") {
     try {
-      const data = await prisma.page.delete({
+      const deletedPage = await prisma.page.delete({
         where: {
           id_userId: {
             userId: session.accountId,
@@ -98,17 +99,18 @@ export default async function pageHandler(
         select: {
           id: true,
           pageName: true,
-          parentPageId: true,
+          isFavourite: true,
           createdAt: true,
+          accessedAt: true,
           modifiedAt: true,
-          isDeleted: true,
-          deletedAt: true,
+          collectionId: true,
+          userId: true,
         },
       });
 
       await serverTypesenseClient
         .collections("pages")
-        .documents(data.id)
+        .documents(deletedPage.id)
         .delete();
 
       return res.status(204).end();
@@ -119,7 +121,7 @@ export default async function pageHandler(
 
   if (req.method === "GET") {
     try {
-      const data = await prisma.page.findUnique({
+      const page = await prisma.page.findUnique({
         where: {
           id_userId: {
             userId: session.accountId,
@@ -129,19 +131,18 @@ export default async function pageHandler(
         select: {
           id: true,
           pageName: true,
-          parentPageId: true,
-          createdAt: true,
-          modifiedAt: true,
           isFavourite: true,
+          createdAt: true,
+          accessedAt: true,
+          modifiedAt: true,
+          collectionId: true,
           userId: true,
-          isDeleted: true,
-          deletedAt: true,
         },
       });
 
-      if (!data) return res.status(404).json({ message: "Not Found" });
+      if (!page) return res.status(404).json({ message: "Not Found" });
 
-      return res.status(200).json(data);
+      return res.status(200).json(page);
     } catch (err) {
       return res.status(500).json({ message: "Internal Server Error" });
     }

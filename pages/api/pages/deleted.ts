@@ -11,7 +11,7 @@ const trashPagesHandler: NextApiHandler = async (req, res) => {
 
   if (req.method === "GET") {
     try {
-      const data = await prisma.page.findMany({
+      const pages = await prisma.page.findMany({
         where: {
           userId: session.accountId,
           isDeleted: true,
@@ -19,16 +19,16 @@ const trashPagesHandler: NextApiHandler = async (req, res) => {
         select: {
           id: true,
           pageName: true,
-          parentPageId: true,
-          createdAt: true,
-          modifiedAt: true,
           isFavourite: true,
+          createdAt: true,
+          accessedAt: true,
+          modifiedAt: true,
+          collectionId: true,
           userId: true,
-          isDeleted: true,
         },
       });
 
-      return res.status(200).json(data);
+      return res.status(200).json(pages);
     } catch (err) {
       return res.status(500).json({ message: "Internal Server Error" });
     }

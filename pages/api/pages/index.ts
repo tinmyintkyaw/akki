@@ -18,43 +18,43 @@ export default async function pagesHandler(
   if (!session) return res.status(401).json({ message: "Unauthorized" });
 
   if (req.method === "POST") {
-    const { pageName, parentPageId } = req.body;
+    const { pageName, collectionId } = req.body;
 
     if (!pageName || typeof pageName !== "string")
       return res.status(400).json({ message: "Bad Request" });
 
-    if (parentPageId && typeof parentPageId !== "string")
+    if (collectionId && typeof collectionId !== "string")
       return res.status(400).json({ message: "Error" });
 
     try {
-      const data = await prisma.page.create({
+      const newPage = await prisma.page.create({
         data: {
           userId: session.accountId,
           pageName: pageName,
-          parentPageId: parentPageId,
+          collectionId: collectionId,
           ydoc: Buffer.from(Y.encodeStateAsUpdate(new Y.Doc())),
           textContent: "",
         },
         select: {
           id: true,
           pageName: true,
-          parentPageId: true,
-          createdAt: true,
-          modifiedAt: true,
           isFavourite: true,
+          createdAt: true,
+          accessedAt: true,
+          modifiedAt: true,
+          collectionId: true,
           userId: true,
-          textContent: true,
         },
       });
 
       const typesensePage: typesensePageDocument = {
-        id: data.id,
-        userId: data.userId,
-        pageName: data.pageName,
-        pageTextContent: data.textContent,
-        pageCreatedAt: data.createdAt.getTime(),
-        pageModifiedAt: data.modifiedAt.getTime(),
-        isFavourite: data.isFavourite,
+        id: newPage.id,
+        userId: newPage.userId,
+        pageName: newPage.pageName,
+        pageTextContent: "",
+        pageCreatedAt: newPage.createdAt.getTime(),
+        pageModifiedAt: newPage.modifiedAt.getTime(),
+        isFavourite: newPage.isFavourite,
       };
 
       await serverTypesenseClient
@@ -62,9 +62,7 @@ export default async function pagesHandler(
         .documents()
         .create(typesensePage);
 
-      const { textContent, ...responseData } = data;
-
-      return res.status(201).json(responseData);
+      return res.status(201).json(newPage);
     } catch (err) {
       return res.status(500).json({ message: err });
     }
@@ -72,7 +70,7 @@ export default async function pagesHandler(
 
   if (req.method === "GET") {
     try {
-      const data = await prisma.page.findMany({
+      const pages = await prisma.page.findMany({
         where: {
           userId: session.accountId,
           isDeleted: false,
@@ -80,31 +78,16 @@ export default async function pagesHandler(
         select: {
           id: true,
           pageName: true,
-          createdAt: true,
-          modifiedAt: true,
           isFavourite: true,
+          createdAt: true,
+          accessedAt: true,
+          modifiedAt: true,
+          collectionId: true,
           userId: true,
-          parentPageId: true,
-          childPages: {
-            where: {
-              isDeleted: false,
-            },
-            select: {
-              id: true,
-              pageName: true,
-              createdAt: true,
-              modifiedAt: true,
-              isFavourite: true,
-              userId: true,
-            },
-          },
-        },
-        orderBy: {
-          createdAt: "asc",
         },
       });
 
-      return res.status(200).json(data);
+      return res.status(200).json(pages);
     } catch (err) {
       return res.status(500).json({ message: "Internal Server Error" });
     }

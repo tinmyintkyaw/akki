@@ -11,7 +11,7 @@ const favouritePagesHandler: NextApiHandler = async (req, res) => {
 
   if (req.method === "GET") {
     try {
-      const data = await prisma.page.findMany({
+      const favouritePages = await prisma.page.findMany({
         where: {
           userId: session.accountId,
           isFavourite: true,
@@ -19,15 +19,16 @@ const favouritePagesHandler: NextApiHandler = async (req, res) => {
         select: {
           id: true,
           pageName: true,
-          parentPageId: true,
-          createdAt: true,
-          modifiedAt: true,
           isFavourite: true,
+          createdAt: true,
+          accessedAt: true,
+          modifiedAt: true,
+          collectionId: true,
           userId: true,
         },
       });
 
-      return res.status(200).json(data);
+      return res.status(200).json(favouritePages);
     } catch (err) {
       return res.status(500).json({ message: err });
     }
