@@ -40,7 +40,7 @@ interface EditorProps {
 
 const Editor = (props: EditorProps) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [newName, setNewName] = useState<string>("");
+  const [newName, setNewName] = useState<string | undefined>();
 
   const session = useSession();
   const router = useRouter();
@@ -49,13 +49,16 @@ const Editor = (props: EditorProps) => {
   const pageQuery = usePageQuery(router.query.pageId as string);
 
   const updatePageMutation = useUpdatePageMutation(
-    { id: router.query.pageId as string, pageName: newName },
+    {
+      id: router.query.pageId as string,
+      pageName: newName ? newName : "Untitled",
+    },
     queryClient
   );
 
   const titleEditor = useEditor({
     extensions: [Document, Text, Heading.configure({ levels: [1] })],
-    content: "",
+    content: pageQuery.data.pageName,
     onUpdate({ editor }) {
       setIsEditing(true);
       setNewName(editor.getText());
@@ -107,15 +110,6 @@ const Editor = (props: EditorProps) => {
     },
   });
 
-  // Keep titleEditor's content in sync with query data
-  useEffect(() => {
-    if (pageQuery.isLoading || pageQuery.isError) return;
-    if (!pageQuery.data) return;
-    if (!titleEditor) return;
-
-    titleEditor.commands.setContent(pageQuery.data.pageName);
-  }, [titleEditor, pageQuery.data, pageQuery.isError, pageQuery.isLoading]);
-
   // Mutate remote data on title edit
   useEffect(() => {
     if (!isEditing) return;
@@ -128,15 +122,26 @@ const Editor = (props: EditorProps) => {
     return () => clearTimeout(timeout);
   }, [isEditing, updatePageMutation]);
 
+  // Sync remote data with editor content, only when not editing
+  useEffect(() => {
+    if (pageQuery.isLoading || pageQuery.isError) return;
+    if (!titleEditor) return;
+    if (titleEditor.isFocused) return;
+
+    titleEditor.commands.setContent(pageQuery.data.pageName);
+  }, [pageQuery.data, pageQuery.isError, pageQuery.isLoading, titleEditor]);
+
   return (
     <>
-      <EditorContent
-        editor={titleEditor}
-        className={clsx(
-          "prose mx-auto h-full w-full break-words bg-background px-8 pt-6 font-normal dark:prose-invert selection:bg-sky-200 dark:selection:bg-sky-700",
-          "max-w-sm md:max-w-2xl lg:max-w-3xl" // controls the width of the editor
-        )}
-      />
+      {!pageQuery.isLoading && !pageQuery.isError && pageQuery.data && (
+        <EditorContent
+          editor={titleEditor}
+          className={clsx(
+            "prose mx-auto h-full w-full break-words bg-background px-8 pt-6 font-normal dark:prose-invert selection:bg-sky-200 dark:selection:bg-sky-700",
+            "max-w-sm md:max-w-2xl lg:max-w-3xl" // controls the width of the editor
+          )}
+        />
+      )}
 
       {contentEditor && <SelectMenu editor={contentEditor} />}
 
