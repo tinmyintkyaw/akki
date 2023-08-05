@@ -131,6 +131,14 @@ const Editor = (props: EditorProps) => {
     titleEditor.commands.setContent(pageQuery.data.pageName);
   }, [pageQuery.data, pageQuery.isError, pageQuery.isLoading, titleEditor]);
 
+  // Autofocus editor on load
+  useEffect(() => {
+    if (!contentEditor) return;
+
+    // TODO: return focus to last cursor position
+    contentEditor.commands.focus("end");
+  }, [contentEditor]);
+
   return (
     <>
       {!pageQuery.isLoading && !pageQuery.isError && pageQuery.data && (
@@ -140,6 +148,10 @@ const Editor = (props: EditorProps) => {
             "prose mx-auto h-full w-full break-words bg-background px-8 pt-6 font-normal dark:prose-invert selection:bg-sky-200 dark:selection:bg-sky-700",
             "max-w-sm md:max-w-2xl lg:max-w-3xl" // controls the width of the editor
           )}
+          onKeyDown={(event) => {
+            if (event.key !== "ArrowDown") return;
+            contentEditor?.commands.focus("start");
+          }}
         />
       )}
 
@@ -153,10 +165,10 @@ const Editor = (props: EditorProps) => {
         )}
         editor={contentEditor}
         // Prevent Tab key from escaping editor
-        // onKeyDown={(event) => {
-        //   if (event.key !== "Tab") return;
-        //   event.preventDefault();
-        // }}
+        onKeyDown={(event) => {
+          if (event.key !== "Tab") return;
+          event.preventDefault();
+        }}
       />
     </>
   );
