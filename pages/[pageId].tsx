@@ -9,7 +9,7 @@ import { InstantSearch } from "react-instantsearch-hooks-web";
 import * as RadixToast from "@radix-ui/react-toast";
 import { Allotment, LayoutPriority } from "allotment";
 
-import { usePageQuery } from "@/hooks/queryHooks";
+import { usePageQuery } from "@/hooks/pageQueryHooks";
 
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import PageList from "@/components/sidebar/PageList";

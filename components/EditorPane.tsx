@@ -7,7 +7,7 @@ import {
   useRecentPagesQuery,
   usePermanentlyDeletePageMutation,
   useUndoDeletePageMutation,
-} from "@/hooks/queryHooks";
+} from "@/hooks/pageQueryHooks";
 import { ScrollArea } from "./ui/scroll-area";
 
 type EditorPaneProps = {

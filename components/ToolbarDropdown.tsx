@@ -8,7 +8,7 @@ import {
   useUpdatePageMutation,
   useDeletePageMutation,
   useUndoDeletePageMutation,
-} from "@/hooks/queryHooks";
+} from "@/hooks/pageQueryHooks";
 
 import Toast from "./Toast";
 import {

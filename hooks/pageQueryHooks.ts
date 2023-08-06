@@ -4,7 +4,7 @@ import { DeletedPage, DeletedPageList, Page, PageList } from "@/types/queries";
 
 export const usePagesListQuery = () => {
   return useQuery({
-    queryKey: ["pages"],
+    queryKey: ["pageList"],
     queryFn: async () => {
       const response = await fetch("/api/pages");
       if (!response.ok) throw new Error("Failed to fetch pages");

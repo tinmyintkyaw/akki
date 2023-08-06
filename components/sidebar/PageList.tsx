@@ -9,8 +9,8 @@ import { FileText, Plus } from "lucide-react";
 import {
   useCreatePageMutation,
   useFavouritePagesQuery,
-  usePageListQuery,
-} from "@/hooks/queryHooks";
+  usePagesListQuery,
+} from "@/hooks/pageQueryHooks";
 
 import SidebarMenuLink from "./SidebarMenuLink";
 import { Button } from "../ui/button";
@@ -58,7 +58,7 @@ export default function PageList() {
 
   const router = useRouter();
   const queryClient = useQueryClient();
-  const pageListQuery = usePageListQuery();
+  const pageListQuery = usePagesListQuery();
   const favouritePagesQuery = useFavouritePagesQuery();
   const createPageMutation = useCreatePageMutation(
     { pageName: "Untitled", parentPageId: null },
@@ -68,7 +68,7 @@ export default function PageList() {
   return (
     <ScrollArea type="auto" className="flex h-[calc(100vh-3rem)] text-sm">
       {/* Favourites List - hides automatically when there are no favourited pages*/}
-      {favouritePagesQuery.data && favouritePagesQuery.data.length > 0 && (
+      {/* {favouritePagesQuery.data && favouritePagesQuery.data.length > 0 && (
         <div className="mb-2 px-2">
           <button
             onClick={() => setIsFavouritesOpen((prev) => !prev)}
@@ -97,12 +97,12 @@ export default function PageList() {
               </Button>
             ))}
         </div>
-      )}
+      )} */}
 
       <div className="mb-2 px-2">
         <div className="my-1 rounded p-1 text-xs font-semibold">Pages</div>
 
-        <PageTree currentlyOpenPage={router.query.pageId as string} />
+        {/* <PageTree currentlyOpenPage={router.query.pageId as string} /> */}
       </div>
 
       {/* Add Page Button */}

@@ -2,7 +2,7 @@ import {
   useCreatePageMutation,
   useUpdatePageMutation,
   useDeletePageMutation,
-} from "@/hooks/queryHooks";
+} from "@/hooks/pageQueryHooks";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import * as RadixContextMenu from "@radix-ui/react-context-menu";

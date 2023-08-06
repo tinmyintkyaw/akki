@@ -17,7 +17,7 @@ import {
   useDeletedPagesQuery,
   usePermanentlyDeletePageMutation,
   useUndoDeletePageMutation,
-} from "@/hooks/queryHooks";
+} from "@/hooks/pageQueryHooks";
 
 const DeletedPages: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
