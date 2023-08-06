@@ -34,6 +34,9 @@ export default async function pagesHandler(
           modifiedAt: true,
           userId: true,
           pages: {
+            where: {
+              isDeleted: false,
+            },
             select: {
               id: true,
             },
@@ -66,6 +69,9 @@ export default async function pagesHandler(
           modifiedAt: true,
           userId: true,
           pages: {
+            where: {
+              isDeleted: false,
+            },
             select: {
               id: true,
             },
