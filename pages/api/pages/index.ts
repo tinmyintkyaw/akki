@@ -3,7 +3,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
 
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import createPageTree from "@/utils/createPageTree";
 import { prisma } from "@/lib/prismadb";
 import serverTypesenseClient, {
   typesensePageDocument,

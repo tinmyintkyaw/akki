@@ -4,9 +4,6 @@ import { getServerSession } from "next-auth/next";
 
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { prisma } from "@/lib/prismadb";
-import serverTypesenseClient, {
-  typesensePageDocument,
-} from "@/typesense/typesense-client";
 
 export default async function pagesHandler(
   req: NextApiRequest,

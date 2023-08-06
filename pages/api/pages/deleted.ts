@@ -23,6 +23,7 @@ const trashPagesHandler: NextApiHandler = async (req, res) => {
           createdAt: true,
           accessedAt: true,
           modifiedAt: true,
+          deletedAt: true,
           collectionId: true,
           userId: true,
         },
