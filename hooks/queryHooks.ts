@@ -1,12 +1,15 @@
 import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 
-export const usePageListQuery = () => {
+import { DeletedPage, DeletedPageList, Page, PageList } from "@/types/queries";
+
+export const usePagesListQuery = () => {
   return useQuery({
-    queryKey: ["pageList"],
+    queryKey: ["pages"],
     queryFn: async () => {
       const response = await fetch("/api/pages");
       if (!response.ok) throw new Error("Failed to fetch pages");
-      return response.json();
+      const json: PageList = await response.json();
+      return json;
     },
   });
 };
@@ -17,7 +20,8 @@ export const useRecentPagesQuery = () => {
     queryFn: async () => {
       const response = await fetch("/api/pages/recent");
       if (!response.ok) throw new Error("Failed to fetch recent pages");
-      return response.json();
+      const json: PageList = await response.json();
+      return json;
     },
   });
 };
@@ -28,7 +32,8 @@ export const useDeletedPagesQuery = () => {
     queryFn: async () => {
       const response = await fetch("/api/pages/deleted");
       if (!response.ok) throw new Error("Failed to fetch deleted pages");
-      return response.json();
+      const json: DeletedPageList = await response.json();
+      return json;
     },
   });
 };
@@ -39,7 +44,8 @@ export const useFavouritePagesQuery = () => {
     queryFn: async () => {
       const response = await fetch("/api/pages/favourite");
       if (!response.ok) throw new Error("Failed to fetch favourited pages");
-      return response.json();
+      const json: PageList = await response.json();
+      return json;
     },
   });
 };
@@ -50,7 +56,8 @@ export const usePageQuery = (id: string) => {
     queryFn: async () => {
       const response = await fetch(`/api/pages/${id}`);
       if (!response.ok) throw new Error("Failed to fetch page");
-      return response.json();
+      const json: Page = await response.json();
+      return json;
     },
     enabled: !!id,
   });
@@ -76,7 +83,8 @@ export const useCreatePageMutation = (
         body: JSON.stringify({ pageName, parentPageId }),
       });
       if (!response.ok) throw new Error("Failed to create page");
-      return response.json();
+      const json: Page = await response.json();
+      return json;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pageList"] });
@@ -113,7 +121,8 @@ export const useUpdatePageMutation = (
         }),
       });
       if (!response.ok) throw new Error("Failed to update page");
-      return response.json();
+      const json: Page = await response.json();
+      return json;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pageList"] });
@@ -133,7 +142,8 @@ export const useDeletePageMutation = (id: string, queryClient: QueryClient) => {
         }),
       });
       if (!response.ok) throw new Error("Failed to delete page");
-      return response;
+      const json: DeletedPage = await response.json();
+      return json;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pageList"] });
@@ -175,7 +185,8 @@ export const useUndoDeletePageMutation = (
         body: JSON.stringify({ isDeleted: false }),
       });
       if (!response.ok) throw new Error("Failed to revert delete page");
-      return response;
+      const json: Page = await response.json();
+      return json;
     },
     onMutate: () => {
       queryClient.fetchQuery({ queryKey: ["page", id] });
