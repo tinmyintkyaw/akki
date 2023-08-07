@@ -1,31 +1,27 @@
 import { useMemo } from "react";
 import { ExplicitDataSource } from "react-complex-tree";
 
-import {
-  CollectionList,
-  DeletedCollectionList,
-  PageList,
-  DeletedPageList,
-} from "@/types/queries";
+import { CollectionList, PageList } from "@/types/queries";
+import { usePagesListQuery } from "./pageQueryHooks";
+import { useCollectionListQuery } from "./collectionQueryHooks";
 
-interface useTreeDataProps {
-  pages: PageList | DeletedPageList;
-  collections: CollectionList | DeletedCollectionList;
-}
-
-export const useTreeData = (props: useTreeDataProps) => {
-  const { collections, pages } = props;
+export const useTreeData = () => {
+  const pageListQuery = usePagesListQuery();
+  const collectionListQuery = useCollectionListQuery();
 
   return useMemo(() => {
+    if (pageListQuery.isLoading || pageListQuery.isError) return;
+    if (collectionListQuery.isLoading || collectionListQuery.isError) return;
+
     const pagesMap = new Map(
-      pages.map((page) => [
+      pageListQuery.data.map((page) => [
         page.id,
         { index: page.id, isFolder: false, children: [], data: page },
       ])
     );
 
     const collectionsMap = new Map(
-      collections.map((collection) => {
+      collectionListQuery.data.map((collection) => {
         const { pages, ...collectionWithoutChildren } = collection;
         return [
           collection.id,
@@ -53,7 +49,14 @@ export const useTreeData = (props: useTreeDataProps) => {
     };
 
     return treeData;
-  }, [collections, pages]);
+  }, [
+    collectionListQuery.data,
+    collectionListQuery.isError,
+    collectionListQuery.isLoading,
+    pageListQuery.data,
+    pageListQuery.isError,
+    pageListQuery.isLoading,
+  ]);
 };
 
 interface useFavouritesTreeDataProps {
