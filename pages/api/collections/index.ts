@@ -33,6 +33,8 @@ export default async function pagesHandler(
           accessedAt: true,
           modifiedAt: true,
           userId: true,
+          isDeleted: true,
+          deletedAt: true,
           pages: {
             where: {
               isDeleted: false,
@@ -68,6 +70,8 @@ export default async function pagesHandler(
           accessedAt: true,
           modifiedAt: true,
           userId: true,
+          isDeleted: true,
+          deletedAt: true,
           pages: {
             where: {
               isDeleted: false,

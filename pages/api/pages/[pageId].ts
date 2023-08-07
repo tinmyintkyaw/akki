@@ -61,6 +61,8 @@ export default async function pageHandler(
           collectionId: true,
           userId: true,
           textContent: true,
+          isDeleted: true,
+          deletedAt: true,
         },
       });
 
@@ -105,6 +107,8 @@ export default async function pageHandler(
           modifiedAt: true,
           collectionId: true,
           userId: true,
+          isDeleted: true,
+          deletedAt: true,
         },
       });
 
@@ -137,6 +141,8 @@ export default async function pageHandler(
           modifiedAt: true,
           collectionId: true,
           userId: true,
+          isDeleted: true,
+          deletedAt: true,
         },
       });
 

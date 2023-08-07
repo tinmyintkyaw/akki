@@ -22,8 +22,8 @@ export default async function pagesHandler(
     if (!pageName || typeof pageName !== "string")
       return res.status(400).json({ message: "Bad Request" });
 
-    if (collectionId && typeof collectionId !== "string")
-      return res.status(400).json({ message: "Error" });
+    if (!collectionId || typeof collectionId !== "string")
+      return res.status(400).json({ message: "Bad Request" });
 
     try {
       const newPage = await prisma.page.create({
@@ -43,6 +43,8 @@ export default async function pagesHandler(
           modifiedAt: true,
           collectionId: true,
           userId: true,
+          isDeleted: true,
+          deletedAt: true,
         },
       });
 
@@ -83,6 +85,8 @@ export default async function pagesHandler(
           modifiedAt: true,
           collectionId: true,
           userId: true,
+          isDeleted: true,
+          deletedAt: true,
         },
       });
 

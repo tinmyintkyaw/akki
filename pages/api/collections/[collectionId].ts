@@ -1,9 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 
-import serverTypesenseClient, {
-  typesensePageDocument,
-} from "@/typesense/typesense-client";
 import { authOptions } from "../auth/[...nextauth]";
 import { prisma } from "@/lib/prismadb";
 
@@ -55,6 +52,8 @@ export default async function pageHandler(
           accessedAt: true,
           modifiedAt: true,
           userId: true,
+          isDeleted: true,
+          deletedAt: true,
           pages: {
             where: {
               isDeleted: false,
@@ -109,6 +108,8 @@ export default async function pageHandler(
           accessedAt: true,
           modifiedAt: true,
           userId: true,
+          isDeleted: true,
+          deletedAt: true,
           pages: {
             where: {
               isDeleted: false,
