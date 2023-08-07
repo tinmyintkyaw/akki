@@ -39,7 +39,7 @@ const PageTree: React.FC = () => {
   const [isRenaming, setIsRenaming] = useState(false);
   const [pageToRename, setPageToRename] = useState<TreeItemIndex>("");
 
-  const treeRef = useRef<TreeRef>(null);
+  const mainTreeRef = useRef<TreeRef>(null);
 
   // Automatically expand the collection current page is in
   useEffect(() => {
@@ -50,44 +50,20 @@ const PageTree: React.FC = () => {
   // This effect is required to make React Complex Tree handle focus management
   // on rename input when rename action is initiated from context menu
   useEffect(() => {
-    if (!treeRef.current || !isRenaming || !pageToRename) return;
-    treeRef.current.startRenamingItem(pageToRename);
+    if (!mainTreeRef.current || !isRenaming || !pageToRename) return;
+    mainTreeRef.current.startRenamingItem(pageToRename);
   }, [isRenaming, pageToRename]);
-
-  const customInteractionMode: InteractionManager = {
-    mode: "custom",
-    extends: InteractionMode.ClickArrowToExpand,
-    createInteractiveElementProps: (item, treeId, actions, renderFlags) => {
-      return {
-        onClick: (e) => {
-          actions.focusItem();
-          if (e.shiftKey) {
-            actions.selectUpTo(!e.ctrlKey);
-          } else if (e.ctrlKey || e.metaKey) {
-            if (renderFlags.isSelected) {
-              actions.unselectItem();
-            } else {
-              actions.addToSelectedItems();
-            }
-          } else {
-            actions.selectItem();
-            actions.primaryAction();
-          }
-        },
-      };
-    },
-  };
 
   return (
     <>
-      {treeData && pageQuery.data && (
+      {treeData && (
         <ControlledTreeEnvironment
           items={treeData.items}
           getItemTitle={(item) =>
             item.isFolder ? item.data.collectionName : item.data.pageName
           }
           viewState={{
-            ["controlledTree"]: { focusedItem, expandedItems, selectedItems },
+            ["mainTree"]: { focusedItem, expandedItems, selectedItems },
           }}
           canDragAndDrop={true}
           canDropOnFolder={true}
@@ -134,10 +110,7 @@ const PageTree: React.FC = () => {
             setIsRenaming(false);
           }}
           onAbortRenamingItem={() => setIsRenaming(false)}
-          onPrimaryAction={(item) => {
-            if (!item.isFolder) router.push(`/${item.index}`);
-            return;
-          }}
+          onPrimaryAction={(item) => router.push(`/${item.index}`)}
           onDrop={(items, target) => {
             items.forEach((item) => {
               if (target.targetType === "item") {
@@ -160,7 +133,6 @@ const PageTree: React.FC = () => {
           renderItem={(props) => (
             <TreeItem
               {...props}
-              openItem={pageQuery.data.id}
               expandedItems={expandedItems}
               selectedItems={selectedItems}
               setExpandedItems={setExpandedItems}
@@ -171,10 +143,10 @@ const PageTree: React.FC = () => {
           )}
         >
           <Tree
-            treeId="controlledTree"
+            treeId="mainTree"
             rootItem="root"
             treeLabel="Page Tree"
-            ref={treeRef}
+            ref={mainTreeRef}
           />
         </ControlledTreeEnvironment>
       )}

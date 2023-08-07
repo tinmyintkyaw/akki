@@ -1,3 +1,5 @@
+import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/router";
 import clsx from "clsx";
 import {
   TreeItem,
@@ -26,7 +28,6 @@ import {
   useDeletePageMutation,
   useUpdatePageMutation,
 } from "@/hooks/pageQueryHooks";
-import { useQueryClient } from "@tanstack/react-query";
 
 interface ItemProps {
   item: TreeItem;
@@ -41,8 +42,9 @@ interface ItemProps {
   setExpandedItems: React.Dispatch<React.SetStateAction<TreeItemIndex[]>>;
   setIsRenaming: React.Dispatch<React.SetStateAction<boolean>>;
   setPageToRename: React.Dispatch<React.SetStateAction<TreeItemIndex>>;
-  openItem: TreeItemIndex;
 }
+
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 const TreeItem: React.FC<ItemProps> = (props) => {
   const {
@@ -55,9 +57,9 @@ const TreeItem: React.FC<ItemProps> = (props) => {
     setExpandedItems,
     setIsRenaming,
     setPageToRename,
-    openItem,
   } = props;
 
+  const router = useRouter();
   const queryClient = useQueryClient();
   const createPageMutation = useCreatePageMutation(queryClient);
   const updatePageMutation = useUpdatePageMutation(queryClient);
@@ -66,9 +68,15 @@ const TreeItem: React.FC<ItemProps> = (props) => {
   const InteractiveComponent = context.isRenaming ? "div" : "button";
   const type = context.isRenaming ? undefined : "button";
 
+  const [parent, enableAnimations] = useAutoAnimate();
+
   return (
     <ContextMenu>
-      <li {...context.itemContainerWithChildrenProps} className="flex flex-col">
+      <li
+        {...context.itemContainerWithChildrenProps}
+        ref={parent}
+        className="flex flex-col"
+      >
         <div
           {...(context.itemContainerWithoutChildrenProps as any)}
           className="h-[34px]"
@@ -83,7 +91,7 @@ const TreeItem: React.FC<ItemProps> = (props) => {
                   ? "bg-sky-700"
                   : "hover:bg-accent",
                 context.isDraggingOver && "bg-sky-700",
-                item.index && item.index === openItem && "bg-accent"
+                item.index && item.index === router.query.pageId && "bg-accent"
               )}
             >
               {item.isFolder && arrow}
@@ -110,7 +118,7 @@ const TreeItem: React.FC<ItemProps> = (props) => {
                       item.index.toString(),
                     ]);
                   }}
-                  className="ml-1 flex h-8 w-8 items-center justify-center rounded opacity-0 group-hover:opacity-100 hover:bg-neutral-700"
+                  className="ml-1 flex h-8 w-8 items-center justify-center rounded opacity-0 group-hover:opacity-100 hover:bg-neutral-300 dark:hover:bg-neutral-700"
                 >
                   <Plus className="h-4 w-4" />
                 </div>

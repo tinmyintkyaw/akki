@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { TreeItemRenderContext } from "react-complex-tree";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 import { Check, ChevronDown } from "lucide-react";
 
@@ -23,11 +24,11 @@ interface ItemArrowProps {
 export const ItemArrow: React.FC<ItemArrowProps> = ({ context }) => (
   <div
     {...context.arrowProps}
-    className="flex h-8 w-8 items-center justify-center rounded hover:bg-neutral-700"
+    className="flex h-8 w-8 items-center justify-center rounded hover:bg-neutral-300 dark:hover:bg-neutral-700"
   >
     <ChevronDown
       className={clsx(
-        "h-4 w-4 transition-transform",
+        "h-4 w-4 transition-transform duration-300",
         context.isExpanded && "rotate-180"
       )}
     />
@@ -50,8 +51,13 @@ interface ItemsContainerProps {
 }
 export const ItemsContainer: React.FC<ItemsContainerProps> = (props) => {
   const { children, containerProps, depth } = props;
+  const [parent, enableAnimations] = useAutoAnimate();
   return (
-    <ul {...containerProps} className={clsx(depth === 0 ? "pl-0" : "pl-8")}>
+    <ul
+      {...containerProps}
+      ref={parent}
+      className={clsx(depth === 0 ? "pl-0" : "pl-8")}
+    >
       {children}
     </ul>
   );
