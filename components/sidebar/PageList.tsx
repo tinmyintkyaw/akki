@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 import clsx from "clsx";
 
 import { Plus } from "lucide-react";
@@ -15,12 +16,16 @@ import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
 import DeletedPages from "./DeletedPages";
 import PageTree from "@/components/tree-views/PageTree";
+import FavouritePageTree from "../tree-views/FavouritePageTree";
 
 export default function PageList() {
   const [isFavouritesOpen, setIsFavouritesOpen] = useState(true);
 
   const router = useRouter();
   const queryClient = useQueryClient();
+  const [favouritesDiv] = useAutoAnimate();
+  const [mainTreeDiv] = useAutoAnimate();
+
   const pageListQuery = usePagesListQuery();
   const favouritePagesQuery = useFavouritePagesQuery();
   const createPageMutation = useCreatePageMutation(queryClient);
@@ -28,38 +33,17 @@ export default function PageList() {
   return (
     <ScrollArea type="auto" className="flex h-[calc(100vh-3rem)] text-sm">
       {/* Favourites List - hides automatically when there are no favourited pages*/}
-      {/* {favouritePagesQuery.data && favouritePagesQuery.data.length > 0 && (
-        <div className="mb-2 px-2">
-          <button
-            onClick={() => setIsFavouritesOpen((prev) => !prev)}
-            className="my-1 rounded p-1 text-xs font-semibold hover:bg-accent"
-          >
-            Favourites
-          </button>
+      <div ref={favouritesDiv} className="mb-2 px-2">
+        <button
+          onClick={() => setIsFavouritesOpen((prev) => !prev)}
+          className="my-1 rounded p-1 text-xs font-semibold hover:bg-accent"
+        >
+          Favourites
+        </button>
+        {isFavouritesOpen && <FavouritePageTree />}
+      </div>
 
-          {isFavouritesOpen &&
-            favouritePagesQuery.data.map((page: any) => (
-              <Button
-                variant={"ghost"}
-                size={"default"}
-                key={page.id}
-                onClick={() => router.push(`/${page.id}`)}
-                className={clsx(
-                  page.id === router.query.pageId &&
-                    "my-1 bg-accent text-accent-foreground",
-                  "w-full"
-                )}
-              >
-                <FileText className="mr-2 h-4 w-4" />
-                <span className="line-clamp-1 flex-grow text-start">
-                  {page.pageName}
-                </span>
-              </Button>
-            ))}
-        </div>
-      )} */}
-
-      <div className="mb-2 px-2">
+      <div ref={mainTreeDiv} className="mb-2 px-2">
         <div className="my-1 rounded p-1 text-xs font-semibold">Pages</div>
         <PageTree />
       </div>
