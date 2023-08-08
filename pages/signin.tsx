@@ -13,6 +13,7 @@ import { BsDiscord, BsGithub, BsGoogle } from "react-icons/bs";
 import { authOptions } from "./api/auth/[...nextauth]";
 import { inter } from "./_app";
 import Head from "next/head";
+import { Button } from "@/components/ui/button";
 
 type SignInProps = {
   providers: Record<
@@ -29,28 +30,33 @@ export default function SignIn(props: SignInProps) {
         <title>Sign In</title>
       </Head>
       <main
-        className={`${inter.className} flex h-screen w-full items-center justify-center bg-neutral-100`}
+        className={`${inter.className} flex h-screen w-full items-center justify-center bg-background`}
       >
         <div className="flex select-none flex-col items-center gap-2">
           <h1 className="mb-4 text-2xl font-semibold">Sign In</h1>
           {props.providers &&
             Object.values(props.providers).map((provider) => (
-              <button
+              <Button
+                variant={"outline"}
+                size={"default"}
                 key={provider.id}
                 onClick={() => signIn(provider.id)}
-                className={`inline-flex h-10 w-80 items-center justify-center rounded border border-zinc-300 bg-zinc-100 text-sm font-medium text-zinc-900 hover:bg-zinc-200`}
+                className="w-64"
               >
                 {provider.id === "google" && (
-                  <BsGoogle className="mr-2 h-4 w-4" />
+                  <BsGoogle className="mr-3 h-4 w-4" />
                 )}
+
                 {provider.id === "github" && (
-                  <BsGithub className="mr-2 h-4 w-4" />
+                  <BsGithub className="mr-3 h-4 w-4" />
                 )}
+
                 {provider.id === "discord" && (
-                  <BsDiscord className="mr-2 h-4 w-4" />
+                  <BsDiscord className="mr-3 h-4 w-4" />
                 )}
-                {`Continue with ${provider.name}`}
-              </button>
+
+                <span>{`Continue with ${provider.name}`}</span>
+              </Button>
             ))}
         </div>
       </main>
