@@ -6,7 +6,13 @@ import serverTypesenseClient, {
 } from "@/typesense/typesense-client";
 import { authOptions } from "../auth/[...nextauth]";
 import { prisma } from "@/lib/prismadb";
-import { isDeleted } from "yjs";
+import { pageSelect } from "./index";
+import { Prisma } from "@prisma/client";
+
+const pageSelectWithTextContent = {
+  ...pageSelect,
+  textContent: true,
+} satisfies Prisma.PageSelect;
 
 export default async function pageHandler(
   req: NextApiRequest,
@@ -22,12 +28,13 @@ export default async function pageHandler(
     return res.status(400).json({ message: "Bad Request" });
 
   if (req.method === "PATCH") {
-    const { pageName, parentPageId, isFavourite, isDeleted } = req.body;
+    const { pageName, collectionId, isFavourite, isDeleted, accessedAt } =
+      req.body;
 
     if (pageName && typeof pageName !== "string")
       return res.status(400).json({ message: "Bad Request" });
 
-    if (parentPageId && typeof parentPageId !== "string")
+    if (collectionId && typeof collectionId !== "string")
       return res.status(400).json({ message: "Bad Request" });
 
     if (typeof isFavourite !== "undefined" && typeof isFavourite !== "boolean")
@@ -36,8 +43,15 @@ export default async function pageHandler(
     if (typeof isDeleted !== "undefined" && typeof isDeleted !== "boolean")
       return res.status(400).json({ message: "Bad Request" });
 
+    if (
+      typeof accessedAt !== "undefined" &&
+      typeof accessedAt !== "string" &&
+      isNaN(Date.parse(accessedAt))
+    )
+      return res.status(400).json({ message: "Bad Request" });
+
     try {
-      const data = await prisma.page.update({
+      const updatedPage = await prisma.page.update({
         where: {
           id_userId: {
             userId: session.accountId,
@@ -46,39 +60,62 @@ export default async function pageHandler(
         },
         data: {
           pageName: pageName,
-          parentPageId: parentPageId,
+          collectionId: collectionId,
           modifiedAt: new Date(),
           isFavourite: isFavourite,
           isDeleted: isDeleted,
+          deletedAt: isDeleted ? new Date() : undefined,
+          accessedAt: new Date(Date.parse(accessedAt)),
         },
-        select: {
-          id: true,
-          pageName: true,
-          parentPageId: true,
-          createdAt: true,
-          modifiedAt: true,
-          isFavourite: true,
-          userId: true,
-          textContent: true,
-        },
+        select: pageSelectWithTextContent,
       });
 
-      const typesensePage: typesensePageDocument = {
-        id: data.id,
-        userId: data.userId,
-        pageName: data.pageName,
-        pageTextContent: data.textContent,
-        pageCreatedAt: data.createdAt.getTime(),
-        pageModifiedAt: data.modifiedAt.getTime(),
-        isFavourite: data.isFavourite,
+      // On restoring a page, restore its collection as well
+      if (typeof isDeleted !== "undefined" && !isDeleted) {
+        await prisma.collection.update({
+          where: {
+            id_userId: {
+              id: updatedPage.collectionId,
+              userId: session.accountId,
+            },
+          },
+          data: {
+            isDeleted: false,
+          },
+        });
+      }
+
+      // Delete the page from typesense db on soft delete
+      // and add it back on restore
+      if (typeof isDeleted !== "undefined") {
+        if (!isDeleted) {
+          const typesensePage: typesensePageDocument = {
+            id: updatedPage.id,
+            userId: updatedPage.userId,
+            pageName: updatedPage.pageName,
+            pageTextContent: updatedPage.textContent,
+            pageCreatedAt: updatedPage.createdAt.getTime(),
+            pageModifiedAt: updatedPage.modifiedAt.getTime(),
+            isFavourite: updatedPage.isFavourite,
+          };
+
+          await serverTypesenseClient
+            .collections("pages")
+            .documents()
+            .upsert(typesensePage);
+        } else {
+          await serverTypesenseClient
+            .collections("pages")
+            .documents(updatedPage.id)
+            .delete();
+        }
+      }
+
+      // transform data for client
+      const { textContent, collection, ...responseData } = {
+        ...updatedPage,
+        collectionName: updatedPage.collection.collectionName,
       };
-
-      await serverTypesenseClient
-        .collections("pages")
-        .documents()
-        .upsert(typesensePage);
-
-      const { textContent, ...responseData } = data;
 
       return res.status(200).json(responseData);
     } catch (err) {
@@ -88,27 +125,19 @@ export default async function pageHandler(
 
   if (req.method === "DELETE") {
     try {
-      const data = await prisma.page.delete({
+      const deletedPage = await prisma.page.delete({
         where: {
           id_userId: {
             userId: session.accountId,
             id: pageId,
           },
         },
-        select: {
-          id: true,
-          pageName: true,
-          parentPageId: true,
-          createdAt: true,
-          modifiedAt: true,
-          isDeleted: true,
-          deletedAt: true,
-        },
+        select: pageSelect,
       });
 
       await serverTypesenseClient
         .collections("pages")
-        .documents(data.id)
+        .documents(deletedPage.id)
         .delete();
 
       return res.status(204).end();
@@ -119,29 +148,24 @@ export default async function pageHandler(
 
   if (req.method === "GET") {
     try {
-      const data = await prisma.page.findUnique({
+      const page = await prisma.page.findUnique({
         where: {
           id_userId: {
             userId: session.accountId,
             id: pageId,
           },
         },
-        select: {
-          id: true,
-          pageName: true,
-          parentPageId: true,
-          createdAt: true,
-          modifiedAt: true,
-          isFavourite: true,
-          userId: true,
-          isDeleted: true,
-          deletedAt: true,
-        },
+        select: pageSelect,
       });
 
-      if (!data) return res.status(404).json({ message: "Not Found" });
+      if (!page) return res.status(404).json({ message: "Not Found" });
 
-      return res.status(200).json(data);
+      const { collection, ...response } = {
+        ...page,
+        collectionName: page.collection.collectionName,
+      };
+
+      return res.status(200).json(response);
     } catch (err) {
       return res.status(500).json({ message: "Internal Server Error" });
     }

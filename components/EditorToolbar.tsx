@@ -12,7 +12,7 @@ export default function EditorToolbar(props: EditorToolbarProps) {
   return (
     <div
       id="editor-toolbar"
-      className="flex h-12 w-full select-none items-center gap-2 bg-background px-2 text-foreground"
+      className="flex h-12 w-full select-none items-center gap-2 border-b bg-background px-2 text-foreground shadow-lg"
     >
       {!props.isSidebarOpen && (
         <Button

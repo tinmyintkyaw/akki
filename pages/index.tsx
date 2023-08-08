@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import { useRecentPagesQuery } from "@/hooks/queryHooks";
+import { useRecentPagesQuery } from "@/hooks/pageQueryHooks";
 
 export default function Home() {
   const session = useSession();

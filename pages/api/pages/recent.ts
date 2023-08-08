@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 
 import { authOptions } from "../auth/[...nextauth]";
 import { prisma } from "@/lib/prismadb";
+import { pageSelect } from ".";
 
 export default async function recentPagesHandler(
   req: NextApiRequest,
@@ -16,26 +17,27 @@ export default async function recentPagesHandler(
     return res.status(405).json({ message: "Method Not Allowed" });
 
   try {
-    const data = await prisma.page.findMany({
+    const recentPages = await prisma.page.findMany({
       where: {
         userId: session.accountId,
         isDeleted: false,
       },
       orderBy: {
-        accessedAt: "asc",
+        accessedAt: "desc",
       },
       take: 10,
-      select: {
-        id: true,
-        pageName: true,
-        parentPageId: true,
-        createdAt: true,
-        modifiedAt: true,
-        isFavourite: true,
-        userId: true,
-      },
+      select: pageSelect,
     });
-    return res.status(200).json(data);
+
+    const response = recentPages.map((page) => {
+      const { collection, ...transformedPage } = {
+        ...page,
+        collectionName: page.collection.collectionName,
+      };
+      return transformedPage;
+    });
+
+    return res.status(200).json(response);
   } catch (err) {
     return res.status(500).json({ message: "Internal Server Error" });
   }

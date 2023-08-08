@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 
 import { prisma } from "@/lib/prismadb";
 import { authOptions } from "../auth/[...nextauth]";
-import { pageSelect } from ".";
+import { collectionSelect } from ".";
 
 const trashPagesHandler: NextApiHandler = async (req, res) => {
   const session = await getServerSession(req, res, authOptions);
@@ -12,23 +12,20 @@ const trashPagesHandler: NextApiHandler = async (req, res) => {
 
   if (req.method === "GET") {
     try {
-      const pages = await prisma.page.findMany({
+      const deletedCollections = await prisma.collection.findMany({
         where: {
           userId: session.accountId,
           isDeleted: true,
         },
-        select: pageSelect,
+        select: collectionSelect,
       });
 
-      const response = pages.map((page) => {
-        const { collection, ...transformedPage } = {
-          ...page,
-          collectionName: page.collection.collectionName,
-        };
-        return transformedPage;
+      const responseData = deletedCollections.map((collection) => {
+        const childPageIds = collection.pages.map((page) => page.id);
+        return { ...collection, pages: childPageIds };
       });
 
-      return res.status(200).json(response);
+      return res.status(200).json(responseData);
     } catch (err) {
       return res.status(500).json({ message: "Internal Server Error" });
     }

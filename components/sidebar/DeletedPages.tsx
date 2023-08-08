@@ -17,24 +17,18 @@ import {
   useDeletedPagesQuery,
   usePermanentlyDeletePageMutation,
   useUndoDeletePageMutation,
-} from "@/hooks/queryHooks";
+} from "@/hooks/pageQueryHooks";
 
 const DeletedPages: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [pageIdToChange, setIdPageToChange] = useState<string>("");
 
   const router = useRouter();
   const queryClient = useQueryClient();
   const recentPagesQuery = useRecentPagesQuery();
   const deletedPagesQuery = useDeletedPagesQuery();
-  const undoDeletePageMutation = useUndoDeletePageMutation(
-    pageIdToChange,
-    queryClient
-  );
-  const permanentlyDeletePageMutation = usePermanentlyDeletePageMutation(
-    pageIdToChange,
-    queryClient
-  );
+  const undoDeletePageMutation = useUndoDeletePageMutation(queryClient);
+  const permanentlyDeletePageMutation =
+    usePermanentlyDeletePageMutation(queryClient);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -45,14 +39,14 @@ const DeletedPages: React.FC = () => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="flex h-screen w-screen flex-col md:h-[50vh]">
+      <DialogContent className="flex h-screen w-screen flex-col md:h-[50vh] xl:max-w-lg">
         <DialogHeader className="w-full">
           <DialogTitle>Trash</DialogTitle>
         </DialogHeader>
 
-        <ScrollArea>
+        <ScrollArea className="pr-3">
           {deletedPagesQuery.data &&
-            deletedPagesQuery.data.map((page: any) => (
+            deletedPagesQuery.data.map((page) => (
               <Button
                 variant={"ghost"}
                 size={"default"}
@@ -61,43 +55,57 @@ const DeletedPages: React.FC = () => {
                   router.push(`/${page.id}`);
                   setIsOpen(false);
                 }}
-                className="w-full"
-                asChild
+                className="h-full w-full py-2"
               >
-                <div>
-                  <FileText className="mr-2 h-4 w-4" />
-                  <span className="flex-grow text-start">{page.pageName}</span>
-
-                  {/* Buttons nested inside another button  */}
-                  <Button
-                    variant={"ghost"}
-                    size={"icon"}
-                    onClick={(e) => {
-                      setIdPageToChange(page.id);
-                      undoDeletePageMutation.mutate();
-                      setIsOpen(false);
-                    }}
-                  >
-                    <Undo className="h-4 w-4" />
-                  </Button>
-
-                  <Button
-                    variant={"ghost"}
-                    size={"icon"}
-                    onClick={async (e) => {
-                      setIdPageToChange(page.id);
-                      permanentlyDeletePageMutation.mutate();
-
-                      await recentPagesQuery.refetch();
-                      if (!recentPagesQuery.data[0]) router.push("/new");
-                      router.push(`/${recentPagesQuery.data[0].id}`);
-
-                      setIsOpen(false);
-                    }}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                <div className="flex flex-grow flex-col">
+                  <div className="inline-flex items-center">
+                    <FileText className="mr-2 h-4 w-4" />
+                    <span className="flex-grow select-none text-start">
+                      {page.pageName}
+                    </span>
+                  </div>
+                  <span className="flex-grow select-none pl-6 text-start text-xs text-muted-foreground">
+                    {page.collectionName}
+                  </span>
                 </div>
+
+                {/* Buttons nested inside another button  */}
+                <Button
+                  variant={"ghost"}
+                  size={"icon"}
+                  onClick={(e) => {
+                    undoDeletePageMutation.mutate({ id: page.id });
+                    setIsOpen(false);
+                  }}
+                  className="hover:bg-neutral-300 dark:hover:bg-neutral-700"
+                >
+                  <Undo className="h-4 w-4" />
+                </Button>
+
+                <Button
+                  variant={"ghost"}
+                  size={"icon"}
+                  onClick={async () => {
+                    permanentlyDeletePageMutation.mutate({ id: page.id });
+
+                    if (page.id !== router.query.pageId)
+                      return setIsOpen(false);
+
+                    await recentPagesQuery.refetch();
+                    if (
+                      recentPagesQuery.isError ||
+                      !recentPagesQuery.data ||
+                      !recentPagesQuery.data[0]
+                    )
+                      return router.push("/new");
+
+                    router.push(`/${recentPagesQuery.data[0].id}`);
+                    setIsOpen(false);
+                  }}
+                  className="hover:bg-neutral-300 dark:hover:bg-neutral-700"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
               </Button>
             ))}
         </ScrollArea>

@@ -42,7 +42,7 @@ model SocketSession {
   sessionToken String   @unique
   createdAt    DateTime
   isUsed       Boolean
-  User         User     @relation(fields: [userId], references: [id])
+  user         User     @relation(fields: [userId], references: [id])
   userId       String
 }
 
@@ -55,6 +55,7 @@ model User {
   accounts       Account[]
   sessions       Session[]
   socketSessions SocketSession[]
+  collections    Collection[]
   pages          Page[]
 }
 
@@ -66,22 +67,37 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+model Collection {
+  id             String    @id @default(cuid())
+  collectionName String
+  createdAt      DateTime  @default(now())
+  modifiedAt     DateTime  @default(now())
+  accessedAt     DateTime  @default(now())
+  isDeleted      Boolean   @default(false)
+  deletedAt      DateTime?
+  isFavourite    Boolean   @default(false)
+  userId         String
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pages          Page[]
+
+  @@unique([id, userId])
+}
+
 model Page {
-  id           String    @id @default(cuid())
+  id           String     @id @default(cuid())
   pageName     String
   ydoc         Bytes?
-  createdAt    DateTime  @default(now())
-  modifiedAt   DateTime  @default(now())
-  accessedAt   DateTime  @default(now())
-  User         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId       String
-  parentPage   Page?     @relation("ChildPages", fields: [parentPageId], references: [id])
-  parentPageId String?
-  childPages   Page[]    @relation("ChildPages")
-  isFavourite  Boolean   @default(false)
-  isDeleted    Boolean   @default(false)
+  createdAt    DateTime   @default(now())
+  modifiedAt   DateTime   @default(now())
+  accessedAt   DateTime   @default(now())
+  isDeleted    Boolean    @default(false)
   deletedAt    DateTime?
+  isFavourite  Boolean    @default(false)
   textContent  String
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  collectionId String
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
 
   @@unique([id, userId])
 }

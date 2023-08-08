@@ -1,12 +1,15 @@
 import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 
-export const usePageListQuery = () => {
+import { Page, PageList } from "@/types/queries";
+
+export const usePagesListQuery = () => {
   return useQuery({
     queryKey: ["pageList"],
     queryFn: async () => {
       const response = await fetch("/api/pages");
       if (!response.ok) throw new Error("Failed to fetch pages");
-      return response.json();
+      const json: PageList = await response.json();
+      return json;
     },
   });
 };
@@ -17,7 +20,8 @@ export const useRecentPagesQuery = () => {
     queryFn: async () => {
       const response = await fetch("/api/pages/recent");
       if (!response.ok) throw new Error("Failed to fetch recent pages");
-      return response.json();
+      const json: PageList = await response.json();
+      return json;
     },
   });
 };
@@ -28,7 +32,8 @@ export const useDeletedPagesQuery = () => {
     queryFn: async () => {
       const response = await fetch("/api/pages/deleted");
       if (!response.ok) throw new Error("Failed to fetch deleted pages");
-      return response.json();
+      const json: PageList = await response.json();
+      return json;
     },
   });
 };
@@ -39,7 +44,8 @@ export const useFavouritePagesQuery = () => {
     queryFn: async () => {
       const response = await fetch("/api/pages/favourite");
       if (!response.ok) throw new Error("Failed to fetch favourited pages");
-      return response.json();
+      const json: PageList = await response.json();
+      return json;
     },
   });
 };
@@ -50,57 +56,51 @@ export const usePageQuery = (id: string) => {
     queryFn: async () => {
       const response = await fetch(`/api/pages/${id}`);
       if (!response.ok) throw new Error("Failed to fetch page");
-      return response.json();
+      const json: Page = await response.json();
+      return json;
     },
     enabled: !!id,
   });
 };
 
-export const useCreatePageMutation = (
-  {
-    pageName,
-    parentPageId,
-  }: {
-    pageName: string;
-    parentPageId: string | null;
-  },
-  queryClient: QueryClient
-) => {
+export const useCreatePageMutation = (queryClient: QueryClient) => {
   return useMutation({
-    mutationFn: async () => {
+    mutationFn: async (variables: {
+      pageName: string;
+      collectionId: string;
+    }) => {
+      const { pageName, collectionId } = variables;
+
       const response = await fetch("/api/pages", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ pageName, parentPageId }),
+        body: JSON.stringify({ pageName, collectionId }),
       });
       if (!response.ok) throw new Error("Failed to create page");
-      return response.json();
+      const json: Page = await response.json();
+      return json;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pageList"] });
+      queryClient.invalidateQueries({ queryKey: ["collectionList"] });
       queryClient.invalidateQueries({ queryKey: ["deletedPages"] });
     },
   });
 };
 
-export const useUpdatePageMutation = (
-  {
-    id,
-    pageName,
-    parentPageId,
-    isFavourite,
-  }: {
-    id: string;
-    pageName?: string;
-    parentPageId?: string | null;
-    isFavourite?: boolean;
-  },
-  queryClient: QueryClient
-) => {
+export const useUpdatePageMutation = (queryClient: QueryClient) => {
   return useMutation({
-    mutationFn: async () => {
+    mutationFn: async (variables: {
+      id: string;
+      pageName?: string;
+      collectionId?: string | null;
+      isFavourite?: boolean;
+      accessedAt?: string;
+    }) => {
+      const { id, pageName, collectionId, isFavourite, accessedAt } = variables;
+
       const response = await fetch(`/api/pages/${id}`, {
         method: "PATCH",
         headers: {
@@ -108,23 +108,29 @@ export const useUpdatePageMutation = (
         },
         body: JSON.stringify({
           ...(typeof pageName !== "undefined" && { pageName }),
-          ...(typeof parentPageId !== "undefined" && { parentPageId }),
+          ...(typeof collectionId !== "undefined" && { collectionId }),
           ...(typeof isFavourite !== "undefined" && { isFavourite }),
+          ...(typeof accessedAt !== "undefined" && { accessedAt }),
         }),
       });
       if (!response.ok) throw new Error("Failed to update page");
-      return response.json();
+      const json: Page = await response.json();
+      return json;
     },
-    onSuccess: () => {
+    onSuccess: ({ id }) => {
       queryClient.invalidateQueries({ queryKey: ["pageList"] });
+      queryClient.invalidateQueries({ queryKey: ["favouritePages"] });
+      queryClient.invalidateQueries({ queryKey: ["collectionList"] });
       queryClient.invalidateQueries({ queryKey: ["page", id] });
     },
   });
 };
 
-export const useDeletePageMutation = (id: string, queryClient: QueryClient) => {
+export const useDeletePageMutation = (queryClient: QueryClient) => {
   return useMutation({
-    mutationFn: async () => {
+    mutationFn: async (variables: { id: string }) => {
+      const { id } = variables;
+
       const response = await fetch(`/api/pages/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -133,40 +139,42 @@ export const useDeletePageMutation = (id: string, queryClient: QueryClient) => {
         }),
       });
       if (!response.ok) throw new Error("Failed to delete page");
-      return response;
+      const json: Page = await response.json();
+      return json;
     },
-    onSuccess: () => {
+    onSuccess: ({ id }) => {
       queryClient.invalidateQueries({ queryKey: ["pageList"] });
+      queryClient.invalidateQueries({ queryKey: ["favouritePages"] });
+      queryClient.invalidateQueries({ queryKey: ["collectionList"] });
       queryClient.invalidateQueries({ queryKey: ["deletedPages"] });
       queryClient.invalidateQueries({ queryKey: ["page", id] });
     },
   });
 };
 
-export const usePermanentlyDeletePageMutation = (
-  id: string,
-  queryClient: QueryClient
-) => {
+export const usePermanentlyDeletePageMutation = (queryClient: QueryClient) => {
   return useMutation({
-    mutationFn: async () => {
+    mutationFn: async (variables: { id: string }) => {
+      const { id } = variables;
+
       const response = await fetch(`/api/pages/${id}`, { method: "DELETE" });
       if (!response.ok) throw new Error("Failed to delete page");
       return response;
     },
-    onSuccess: () => {
+    onSuccess: (data, { id }) => {
       queryClient.invalidateQueries({ queryKey: ["pageList"] });
+      queryClient.invalidateQueries({ queryKey: ["collectionList"] });
       queryClient.invalidateQueries({ queryKey: ["deletedPages"] });
       queryClient.removeQueries({ queryKey: ["page", id] });
     },
   });
 };
 
-export const useUndoDeletePageMutation = (
-  id: string,
-  queryClient: QueryClient
-) => {
+export const useUndoDeletePageMutation = (queryClient: QueryClient) => {
   return useMutation({
-    mutationFn: async () => {
+    mutationFn: async (variables: { id: string }) => {
+      const { id } = variables;
+
       const response = await fetch(`/api/pages/${id}`, {
         method: "PATCH",
         headers: {
@@ -175,13 +183,17 @@ export const useUndoDeletePageMutation = (
         body: JSON.stringify({ isDeleted: false }),
       });
       if (!response.ok) throw new Error("Failed to revert delete page");
-      return response;
+      const json: Page = await response.json();
+      return json;
     },
-    onMutate: () => {
+    onMutate: ({ id }) => {
       queryClient.fetchQuery({ queryKey: ["page", id] });
     },
-    onSuccess: () => {
+    onSuccess: ({ id }) => {
       queryClient.invalidateQueries({ queryKey: ["pageList"] });
+      queryClient.invalidateQueries({ queryKey: ["favouritePages"] });
+      queryClient.invalidateQueries({ queryKey: ["collectionList"] });
+      queryClient.invalidateQueries({ queryKey: ["favouriteCollections"] });
       queryClient.invalidateQueries({ queryKey: ["deletedPages"] });
       queryClient.invalidateQueries({ queryKey: ["page", id] });
     },
