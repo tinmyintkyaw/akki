@@ -1,12 +1,32 @@
 import * as Y from "yjs";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
+import { Prisma } from "@prisma/client";
 
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { prisma } from "@/lib/prismadb";
 import serverTypesenseClient, {
   typesensePageDocument,
 } from "@/typesense/typesense-client";
+
+export const pageSelect = {
+  id: true,
+  pageName: true,
+  isFavourite: true,
+  createdAt: true,
+  accessedAt: true,
+  modifiedAt: true,
+  collectionId: true,
+  userId: true,
+  textContent: true,
+  isDeleted: true,
+  deletedAt: true,
+  collection: {
+    select: {
+      collectionName: true,
+    },
+  },
+} satisfies Prisma.PageSelect;
 
 export default async function pagesHandler(
   req: NextApiRequest,
@@ -34,18 +54,7 @@ export default async function pagesHandler(
           ydoc: Buffer.from(Y.encodeStateAsUpdate(new Y.Doc())),
           textContent: "",
         },
-        select: {
-          id: true,
-          pageName: true,
-          isFavourite: true,
-          createdAt: true,
-          accessedAt: true,
-          modifiedAt: true,
-          collectionId: true,
-          userId: true,
-          isDeleted: true,
-          deletedAt: true,
-        },
+        select: pageSelect,
       });
 
       const typesensePage: typesensePageDocument = {
@@ -63,7 +72,12 @@ export default async function pagesHandler(
         .documents()
         .create(typesensePage);
 
-      return res.status(201).json(newPage);
+      const { collection, ...response } = {
+        ...newPage,
+        collectionName: newPage.collection.collectionName,
+      };
+
+      return res.status(201).json(response);
     } catch (err) {
       return res.status(500).json({ message: err });
     }
@@ -76,21 +90,18 @@ export default async function pagesHandler(
           userId: session.accountId,
           isDeleted: false,
         },
-        select: {
-          id: true,
-          pageName: true,
-          isFavourite: true,
-          createdAt: true,
-          accessedAt: true,
-          modifiedAt: true,
-          collectionId: true,
-          userId: true,
-          isDeleted: true,
-          deletedAt: true,
-        },
+        select: pageSelect,
       });
 
-      return res.status(200).json(pages);
+      const response = pages.map((page) => {
+        const { collection, ...transformedPage } = {
+          ...page,
+          collectionName: page.collection.collectionName,
+        };
+        return transformedPage;
+      });
+
+      return res.status(200).json(response);
     } catch (err) {
       return res.status(500).json({ message: "Internal Server Error" });
     }

@@ -6,6 +6,13 @@ import serverTypesenseClient, {
 } from "@/typesense/typesense-client";
 import { authOptions } from "../auth/[...nextauth]";
 import { prisma } from "@/lib/prismadb";
+import { pageSelect } from "./index";
+import { Prisma } from "@prisma/client";
+
+const pageSelectWithTextContent = {
+  ...pageSelect,
+  textContent: true,
+} satisfies Prisma.PageSelect;
 
 export default async function pageHandler(
   req: NextApiRequest,
@@ -51,19 +58,7 @@ export default async function pageHandler(
           isDeleted: isDeleted,
           deletedAt: isDeleted ? new Date() : undefined,
         },
-        select: {
-          id: true,
-          pageName: true,
-          isFavourite: true,
-          createdAt: true,
-          accessedAt: true,
-          modifiedAt: true,
-          collectionId: true,
-          userId: true,
-          textContent: true,
-          isDeleted: true,
-          deletedAt: true,
-        },
+        select: pageSelectWithTextContent,
       });
 
       const typesensePage: typesensePageDocument = {
@@ -81,7 +76,11 @@ export default async function pageHandler(
         .documents()
         .upsert(typesensePage);
 
-      const { textContent, ...responseData } = updatedPage;
+      // transform data for client
+      const { textContent, collection, ...responseData } = {
+        ...updatedPage,
+        collectionName: updatedPage.collection.collectionName,
+      };
 
       return res.status(200).json(responseData);
     } catch (err) {
@@ -98,18 +97,7 @@ export default async function pageHandler(
             id: pageId,
           },
         },
-        select: {
-          id: true,
-          pageName: true,
-          isFavourite: true,
-          createdAt: true,
-          accessedAt: true,
-          modifiedAt: true,
-          collectionId: true,
-          userId: true,
-          isDeleted: true,
-          deletedAt: true,
-        },
+        select: pageSelect,
       });
 
       await serverTypesenseClient
@@ -132,23 +120,17 @@ export default async function pageHandler(
             id: pageId,
           },
         },
-        select: {
-          id: true,
-          pageName: true,
-          isFavourite: true,
-          createdAt: true,
-          accessedAt: true,
-          modifiedAt: true,
-          collectionId: true,
-          userId: true,
-          isDeleted: true,
-          deletedAt: true,
-        },
+        select: pageSelect,
       });
 
       if (!page) return res.status(404).json({ message: "Not Found" });
 
-      return res.status(200).json(page);
+      const { collection, ...response } = {
+        ...page,
+        collectionName: page.collection.collectionName,
+      };
+
+      return res.status(200).json(response);
     } catch (err) {
       return res.status(500).json({ message: "Internal Server Error" });
     }

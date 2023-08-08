@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 
 import { authOptions } from "../auth/[...nextauth]";
 import { prisma } from "@/lib/prismadb";
+import { pageSelect } from ".";
 
 export default async function recentPagesHandler(
   req: NextApiRequest,
@@ -25,18 +26,18 @@ export default async function recentPagesHandler(
         accessedAt: "asc",
       },
       take: 10,
-      select: {
-        id: true,
-        pageName: true,
-        isFavourite: true,
-        createdAt: true,
-        accessedAt: true,
-        modifiedAt: true,
-        collectionId: true,
-        userId: true,
-      },
+      select: pageSelect,
     });
-    return res.status(200).json(recentPages);
+
+    const response = recentPages.map((page) => {
+      const { collection, ...transformedPage } = {
+        ...page,
+        collectionName: page.collection.collectionName,
+      };
+      return transformedPage;
+    });
+
+    return res.status(200).json(response);
   } catch (err) {
     return res.status(500).json({ message: "Internal Server Error" });
   }

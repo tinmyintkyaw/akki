@@ -23,13 +23,25 @@ const trashPagesHandler: NextApiHandler = async (req, res) => {
           createdAt: true,
           accessedAt: true,
           modifiedAt: true,
-          deletedAt: true,
           collectionId: true,
           userId: true,
+          isDeleted: true,
+          deletedAt: true,
+          collection: {
+            select: { collectionName: true },
+          },
         },
       });
 
-      return res.status(200).json(pages);
+      const response = pages.map((page) => {
+        const { collection, ...transformedPage } = {
+          ...page,
+          collectionName: page.collection.collectionName,
+        };
+        return transformedPage;
+      });
+
+      return res.status(200).json(response);
     } catch (err) {
       return res.status(500).json({ message: "Internal Server Error" });
     }

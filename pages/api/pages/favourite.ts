@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 
 import { prisma } from "@/lib/prismadb";
 import { authOptions } from "../auth/[...nextauth]";
+import { pageSelect } from ".";
 
 const favouritePagesHandler: NextApiHandler = async (req, res) => {
   const session = await getServerSession(req, res, authOptions);
@@ -16,19 +17,18 @@ const favouritePagesHandler: NextApiHandler = async (req, res) => {
           userId: session.accountId,
           isFavourite: true,
         },
-        select: {
-          id: true,
-          pageName: true,
-          isFavourite: true,
-          createdAt: true,
-          accessedAt: true,
-          modifiedAt: true,
-          collectionId: true,
-          userId: true,
-        },
+        select: pageSelect,
       });
 
-      return res.status(200).json(favouritePages);
+      const response = favouritePages.map((page) => {
+        const { collection, ...transformedPage } = {
+          ...page,
+          collectionName: page.collection.collectionName,
+        };
+        return transformedPage;
+      });
+
+      return res.status(200).json(response);
     } catch (err) {
       return res.status(500).json({ message: err });
     }
