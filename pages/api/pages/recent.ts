@@ -23,7 +23,7 @@ export default async function recentPagesHandler(
         isDeleted: false,
       },
       orderBy: {
-        accessedAt: "asc",
+        accessedAt: "desc",
       },
       take: 10,
       select: pageSelect,

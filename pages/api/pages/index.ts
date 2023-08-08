@@ -18,7 +18,6 @@ export const pageSelect = {
   modifiedAt: true,
   collectionId: true,
   userId: true,
-  textContent: true,
   isDeleted: true,
   deletedAt: true,
   collection: {

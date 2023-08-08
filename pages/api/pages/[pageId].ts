@@ -28,7 +28,8 @@ export default async function pageHandler(
     return res.status(400).json({ message: "Bad Request" });
 
   if (req.method === "PATCH") {
-    const { pageName, collectionId, isFavourite, isDeleted } = req.body;
+    const { pageName, collectionId, isFavourite, isDeleted, accessedAt } =
+      req.body;
 
     if (pageName && typeof pageName !== "string")
       return res.status(400).json({ message: "Bad Request" });
@@ -40,6 +41,13 @@ export default async function pageHandler(
       return res.status(400).json({ message: "Bad Request" });
 
     if (typeof isDeleted !== "undefined" && typeof isDeleted !== "boolean")
+      return res.status(400).json({ message: "Bad Request" });
+
+    if (
+      typeof accessedAt !== "undefined" &&
+      typeof accessedAt !== "string" &&
+      isNaN(Date.parse(accessedAt))
+    )
       return res.status(400).json({ message: "Bad Request" });
 
     try {
@@ -57,6 +65,7 @@ export default async function pageHandler(
           isFavourite: isFavourite,
           isDeleted: isDeleted,
           deletedAt: isDeleted ? new Date() : undefined,
+          accessedAt: new Date(Date.parse(accessedAt)),
         },
         select: pageSelectWithTextContent,
       });
