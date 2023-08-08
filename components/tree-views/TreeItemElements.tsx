@@ -24,7 +24,7 @@ interface ItemArrowProps {
 export const ItemArrow: React.FC<ItemArrowProps> = ({ context }) => (
   <div
     {...context.arrowProps}
-    className="flex h-8 w-8 items-center justify-center rounded hover:bg-neutral-300 dark:hover:bg-neutral-700"
+    className="flex h-8 items-center justify-center rounded pl-2"
   >
     <ChevronDown
       className={clsx(
@@ -56,7 +56,7 @@ export const ItemsContainer: React.FC<ItemsContainerProps> = (props) => {
     <ul
       {...containerProps}
       ref={parent}
-      className={clsx(depth === 0 ? "pl-0" : "pl-8")}
+      // className={clsx(depth === 0 ? "pl-0" : "pl-6")}
     >
       {children}
     </ul>

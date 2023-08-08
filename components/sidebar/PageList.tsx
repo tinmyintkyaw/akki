@@ -2,21 +2,17 @@ import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import clsx from "clsx";
 
 import { Plus } from "lucide-react";
 
-import {
-  useCreatePageMutation,
-  useFavouritePagesQuery,
-  usePagesListQuery,
-} from "@/hooks/pageQueryHooks";
+import { useCreatePageMutation } from "@/hooks/pageQueryHooks";
 
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
 import DeletedPages from "./DeletedPages";
 import PageTree from "@/components/tree-views/PageTree";
 import FavouritePageTree from "../tree-views/FavouritePageTree";
+import clsx from "clsx";
 
 export default function PageList() {
   const [isFavouritesOpen, setIsFavouritesOpen] = useState(true);
@@ -26,12 +22,13 @@ export default function PageList() {
   const [favouritesDiv] = useAutoAnimate();
   const [mainTreeDiv] = useAutoAnimate();
 
-  const pageListQuery = usePagesListQuery();
-  const favouritePagesQuery = useFavouritePagesQuery();
   const createPageMutation = useCreatePageMutation(queryClient);
 
   return (
-    <ScrollArea type="auto" className="flex h-[calc(100vh-3rem)] text-sm">
+    <ScrollArea
+      type="auto"
+      className={clsx("flex h-[calc(100vh-3rem)] px-1 text-sm")}
+    >
       {/* Favourites List - hides automatically when there are no favourited pages*/}
       <div ref={favouritesDiv} className="mb-2 px-2">
         <button
@@ -48,8 +45,9 @@ export default function PageList() {
         <PageTree />
       </div>
 
-      {/* Add Page Button */}
-      {/* <Button
+      <div className="mb-2 px-2">
+        {/* Add Page Button */}
+        {/* <Button
         variant={"ghost"}
         size={"default"}
         onClick={() => createPageMutation.mutate()}
@@ -59,7 +57,8 @@ export default function PageList() {
         <span className="flex-grow text-start">Add Page</span>
       </Button> */}
 
-      <DeletedPages />
+        <DeletedPages />
+      </div>
     </ScrollArea>
   );
 }

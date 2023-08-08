@@ -53,6 +53,7 @@ const TreeItem: React.FC<ItemProps> = (props) => {
     context,
     title,
     item,
+    depth,
     selectedItems,
     setExpandedItems,
     setIsRenaming,
@@ -86,12 +87,13 @@ const TreeItem: React.FC<ItemProps> = (props) => {
               type={type}
               {...(context.interactiveElementProps as any)}
               className={clsx(
-                "group inline-flex h-8 w-full items-center justify-center rounded text-sm outline-2 outline-sky-700 focus-visible:outline",
+                "group inline-flex h-8 w-full items-center justify-center rounded text-sm outline-2 outline-sky-700 transition-colors focus-visible:outline",
                 context.isSelected && selectedItems.length > 1
                   ? "bg-sky-700"
                   : "hover:bg-accent",
                 context.isDraggingOver && "bg-sky-700",
-                item.index && item.index === router.query.pageId && "bg-accent"
+                item.index && item.index === router.query.pageId && "bg-accent",
+                depth === 0 ? "pl-0" : "pl-6"
               )}
             >
               {item.isFolder && arrow}
