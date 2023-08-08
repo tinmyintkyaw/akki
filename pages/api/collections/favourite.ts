@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 
 import { prisma } from "@/lib/prismadb";
 import { authOptions } from "../auth/[...nextauth]";
+import { collectionSelect } from ".";
 
 const favouritePagesHandler: NextApiHandler = async (req, res) => {
   const session = await getServerSession(req, res, authOptions);
@@ -15,21 +16,9 @@ const favouritePagesHandler: NextApiHandler = async (req, res) => {
         where: {
           userId: session.accountId,
           isFavourite: true,
+          isDeleted: false,
         },
-        select: {
-          id: true,
-          collectionName: true,
-          isFavourite: true,
-          createdAt: true,
-          accessedAt: true,
-          modifiedAt: true,
-          userId: true,
-          pages: {
-            select: {
-              id: true,
-            },
-          },
-        },
+        select: collectionSelect,
       });
 
       const responseData = favouriteCollections.map((collection) => {

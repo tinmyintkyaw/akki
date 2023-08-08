@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 
 import { authOptions } from "../auth/[...nextauth]";
 import { prisma } from "@/lib/prismadb";
+import { collectionSelect } from ".";
 
 export default async function pageHandler(
   req: NextApiRequest,
@@ -44,26 +45,21 @@ export default async function pageHandler(
           isDeleted: isDeleted,
           deletedAt: isDeleted ? new Date() : undefined,
         },
-        select: {
-          id: true,
-          collectionName: true,
-          isFavourite: true,
-          createdAt: true,
-          accessedAt: true,
-          modifiedAt: true,
-          userId: true,
-          isDeleted: true,
-          deletedAt: true,
-          pages: {
-            where: {
-              isDeleted: false,
-            },
-            select: {
-              id: true,
-            },
-          },
-        },
+        select: collectionSelect,
       });
+
+      // Apply soft delete to all child pages
+      if (typeof isDeleted !== "undefined")
+        await prisma.page.updateMany({
+          where: {
+            collectionId: collectionId,
+            userId: session.accountId,
+          },
+          data: {
+            isDeleted: isDeleted,
+            deletedAt: isDeleted ? new Date() : undefined,
+          },
+        });
 
       const childPageIds = updatedCollection.pages.map((page) => page.id);
       const responseData = { ...updatedCollection, pages: childPageIds };
@@ -76,7 +72,7 @@ export default async function pageHandler(
 
   if (req.method === "DELETE") {
     try {
-      const deletedCollection = await prisma.collection.delete({
+      await prisma.collection.delete({
         where: {
           id_userId: {
             id: collectionId,
@@ -100,25 +96,7 @@ export default async function pageHandler(
             id: collectionId,
           },
         },
-        select: {
-          id: true,
-          collectionName: true,
-          isFavourite: true,
-          createdAt: true,
-          accessedAt: true,
-          modifiedAt: true,
-          userId: true,
-          isDeleted: true,
-          deletedAt: true,
-          pages: {
-            where: {
-              isDeleted: false,
-            },
-            select: {
-              id: true,
-            },
-          },
-        },
+        select: collectionSelect,
       });
 
       if (!collection) return res.status(404).json({ message: "Not Found" });

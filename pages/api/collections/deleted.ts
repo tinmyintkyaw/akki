@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 
 import { prisma } from "@/lib/prismadb";
 import { authOptions } from "../auth/[...nextauth]";
+import { collectionSelect } from ".";
 
 const trashPagesHandler: NextApiHandler = async (req, res) => {
   const session = await getServerSession(req, res, authOptions);
@@ -16,20 +17,7 @@ const trashPagesHandler: NextApiHandler = async (req, res) => {
           userId: session.accountId,
           isDeleted: true,
         },
-        select: {
-          id: true,
-          collectionName: true,
-          isFavourite: true,
-          createdAt: true,
-          accessedAt: true,
-          modifiedAt: true,
-          userId: true,
-          pages: {
-            select: {
-              id: true,
-            },
-          },
-        },
+        select: collectionSelect,
       });
 
       const responseData = deletedCollections.map((collection) => {

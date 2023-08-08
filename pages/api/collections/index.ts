@@ -1,9 +1,29 @@
-import * as Y from "yjs";
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth/next";
+import { Prisma } from "@prisma/client";
 
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { prisma } from "@/lib/prismadb";
+
+export const collectionSelect = {
+  id: true,
+  collectionName: true,
+  isFavourite: true,
+  createdAt: true,
+  accessedAt: true,
+  modifiedAt: true,
+  userId: true,
+  isDeleted: true,
+  deletedAt: true,
+  pages: {
+    where: {
+      isDeleted: false,
+    },
+    select: {
+      id: true,
+    },
+  },
+} satisfies Prisma.CollectionSelect;
 
 export default async function pagesHandler(
   req: NextApiRequest,
@@ -25,25 +45,7 @@ export default async function pagesHandler(
           collectionName: collectionName,
           userId: session.accountId,
         },
-        select: {
-          id: true,
-          collectionName: true,
-          isFavourite: true,
-          createdAt: true,
-          accessedAt: true,
-          modifiedAt: true,
-          userId: true,
-          isDeleted: true,
-          deletedAt: true,
-          pages: {
-            where: {
-              isDeleted: false,
-            },
-            select: {
-              id: true,
-            },
-          },
-        },
+        select: collectionSelect,
       });
 
       const childPageIds = newCollection.pages.map((page) => page.id);
@@ -62,25 +64,7 @@ export default async function pagesHandler(
           userId: session.accountId,
           isDeleted: false,
         },
-        select: {
-          id: true,
-          collectionName: true,
-          isFavourite: true,
-          createdAt: true,
-          accessedAt: true,
-          modifiedAt: true,
-          userId: true,
-          isDeleted: true,
-          deletedAt: true,
-          pages: {
-            where: {
-              isDeleted: false,
-            },
-            select: {
-              id: true,
-            },
-          },
-        },
+        select: collectionSelect,
       });
 
       const responseData = collections.map((collection) => {
