@@ -31,23 +31,9 @@ export default function ToolbarDropdown(props: ToolbarDropdownProps) {
   const router = useRouter();
 
   const pageQuery = usePageQuery(router.query.pageId as string);
-  const toggleFavouriteMutation = useUpdatePageMutation(
-    {
-      id: pageQuery.data?.id as string,
-      isFavourite: !pageQuery.data?.isFavourite as boolean,
-    },
-    queryClient
-  );
-
-  const deletePageMutation = useDeletePageMutation(
-    router.query.pageId as string,
-    queryClient
-  );
-
-  const undoDeletePageMutation = useUndoDeletePageMutation(
-    router.query.pageId as string,
-    queryClient
-  );
+  const toggleFavouriteMutation = useUpdatePageMutation(queryClient);
+  const deletePageMutation = useDeletePageMutation(queryClient);
+  const undoDeletePageMutation = useUndoDeletePageMutation(queryClient);
 
   return (
     <>
@@ -59,15 +45,21 @@ export default function ToolbarDropdown(props: ToolbarDropdownProps) {
 
           <DropdownMenuSeparator />
 
-          <DropdownMenuItem onClick={() => toggleFavouriteMutation.mutate()}>
-            {pageQuery.data.isFavourite ? (
+          <DropdownMenuItem
+            onClick={() =>
+              toggleFavouriteMutation.mutate({
+                id: router.query.pageId as string,
+              })
+            }
+          >
+            {pageQuery.data?.isFavourite ? (
               <StarOff className="mr-2 h-4 w-4" />
             ) : (
               <Star className="mr-2 h-4 w-4" />
             )}
 
             <span>
-              {pageQuery.data.isFavourite
+              {pageQuery.data?.isFavourite
                 ? "Remove from favourites"
                 : "Add to favourites"}
             </span>
@@ -75,7 +67,7 @@ export default function ToolbarDropdown(props: ToolbarDropdownProps) {
 
           <DropdownMenuItem
             onClick={() => {
-              deletePageMutation.mutate();
+              deletePageMutation.mutate({ id: router.query.pageId as string });
               setShowUndoToast(true);
             }}
           >
@@ -93,7 +85,7 @@ export default function ToolbarDropdown(props: ToolbarDropdownProps) {
         actionText="Undo"
         title="Page moved to trash"
         actionOnClick={() => {
-          undoDeletePageMutation.mutate();
+          undoDeletePageMutation.mutate({ id: router.query.pageId as string });
           setShowUndoToast(false);
         }}
       />

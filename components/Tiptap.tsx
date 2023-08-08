@@ -25,7 +25,7 @@ import CustomImageFrontend from "@/tiptap/CustomImageFrontend";
 
 import SelectMenu from "@/components/BubbleMenu";
 
-import { usePageQuery, useUpdatePageMutation } from "@/hooks/queryHooks";
+import { usePageQuery, useUpdatePageMutation } from "@/hooks/pageQueryHooks";
 
 import "highlight.js/styles/atom-one-light.css";
 
@@ -40,7 +40,6 @@ interface EditorProps {
 
 const Editor = (props: EditorProps) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [newName, setNewName] = useState<string | undefined>();
 
   const session = useSession();
   const router = useRouter();
@@ -48,20 +47,13 @@ const Editor = (props: EditorProps) => {
 
   const pageQuery = usePageQuery(router.query.pageId as string);
 
-  const updatePageMutation = useUpdatePageMutation(
-    {
-      id: router.query.pageId as string,
-      pageName: newName ? newName : "Untitled",
-    },
-    queryClient
-  );
+  const updatePageMutation = useUpdatePageMutation(queryClient);
 
   const titleEditor = useEditor({
     extensions: [Document, Text, Heading.configure({ levels: [1] })],
-    content: pageQuery.data.pageName,
+    content: pageQuery.data?.pageName,
     onUpdate({ editor }) {
       setIsEditing(true);
-      setNewName(editor.getText());
     },
     editorProps: {
       attributes: {
@@ -108,6 +100,13 @@ const Editor = (props: EditorProps) => {
         class: "outline-none",
       },
     },
+    onCreate() {
+      // set last accessed time for recent pages feature
+      updatePageMutation.mutate({
+        id: router.query.pageId as string,
+        accessedAt: new Date(Date.now()).toISOString(),
+      });
+    },
   });
 
   // Mutate remote data on title edit
@@ -115,12 +114,15 @@ const Editor = (props: EditorProps) => {
     if (!isEditing) return;
 
     const timeout = setTimeout(() => {
-      updatePageMutation.mutate();
+      updatePageMutation.mutate({
+        id: router.query.pageId as string,
+        pageName: titleEditor?.getText(),
+      });
       setIsEditing(false);
     }, 500);
 
     return () => clearTimeout(timeout);
-  }, [isEditing, updatePageMutation]);
+  }, [isEditing, router.query.pageId, titleEditor, updatePageMutation]);
 
   // Sync remote data with editor content, only when not editing
   useEffect(() => {
@@ -130,14 +132,6 @@ const Editor = (props: EditorProps) => {
 
     titleEditor.commands.setContent(pageQuery.data.pageName);
   }, [pageQuery.data, pageQuery.isError, pageQuery.isLoading, titleEditor]);
-
-  // Autofocus editor on load
-  useEffect(() => {
-    if (!contentEditor) return;
-
-    // TODO: return focus to last cursor position
-    contentEditor.commands.focus("end");
-  }, [contentEditor]);
 
   return (
     <>

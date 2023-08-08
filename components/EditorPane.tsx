@@ -20,14 +20,9 @@ export default function EditorPane(props: EditorPaneProps) {
   const router = useRouter();
   const pageQuery = usePageQuery(router.query.pageId as string);
   const recentPagesQuery = useRecentPagesQuery();
-  const undoDeletePageMutation = useUndoDeletePageMutation(
-    router.query.pageId as string,
-    queryClient
-  );
-  const permanentlyDeletePageMutation = usePermanentlyDeletePageMutation(
-    router.query.pageId as string,
-    queryClient
-  );
+  const undoDeletePageMutation = useUndoDeletePageMutation(queryClient);
+  const permanentlyDeletePageMutation =
+    usePermanentlyDeletePageMutation(queryClient);
 
   return (
     <div id="editor-pane" className="w-full">
@@ -39,7 +34,11 @@ export default function EditorPane(props: EditorPaneProps) {
             <div className="flex h-12 w-full items-center justify-center gap-4 bg-destructive py-2 text-sm text-destructive-foreground">
               <p>This page is currently in Trash</p>
               <button
-                onClick={() => undoDeletePageMutation.mutate()}
+                onClick={() =>
+                  undoDeletePageMutation.mutate({
+                    id: router.query.pageId as string,
+                  })
+                }
                 className="rounded border border-neutral-300 px-4 py-1 hover:bg-destructive-foreground/10"
               >
                 Restore
@@ -47,9 +46,18 @@ export default function EditorPane(props: EditorPaneProps) {
 
               <button
                 onClick={async () => {
-                  permanentlyDeletePageMutation.mutate();
+                  permanentlyDeletePageMutation.mutate({
+                    id: router.query.pageId as string,
+                  });
                   await recentPagesQuery.refetch();
-                  if (!recentPagesQuery.data[0]) router.push("/new");
+
+                  if (
+                    recentPagesQuery.isError ||
+                    !recentPagesQuery.data ||
+                    !recentPagesQuery.data[0]
+                  )
+                    return router.push("/new");
+
                   router.push(`/${recentPagesQuery.data[0].id}`);
                 }}
                 className="rounded border border-neutral-300 px-4 py-1 hover:bg-destructive-foreground/10"
