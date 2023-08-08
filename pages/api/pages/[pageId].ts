@@ -61,20 +61,29 @@ export default async function pageHandler(
         select: pageSelectWithTextContent,
       });
 
-      const typesensePage: typesensePageDocument = {
-        id: updatedPage.id,
-        userId: updatedPage.userId,
-        pageName: updatedPage.pageName,
-        pageTextContent: updatedPage.textContent,
-        pageCreatedAt: updatedPage.createdAt.getTime(),
-        pageModifiedAt: updatedPage.modifiedAt.getTime(),
-        isFavourite: updatedPage.isFavourite,
-      };
+      // delete the page from typesense db on soft delete
+      // and add it back on restore
+      if (!isDeleted) {
+        const typesensePage: typesensePageDocument = {
+          id: updatedPage.id,
+          userId: updatedPage.userId,
+          pageName: updatedPage.pageName,
+          pageTextContent: updatedPage.textContent,
+          pageCreatedAt: updatedPage.createdAt.getTime(),
+          pageModifiedAt: updatedPage.modifiedAt.getTime(),
+          isFavourite: updatedPage.isFavourite,
+        };
 
-      await serverTypesenseClient
-        .collections("pages")
-        .documents()
-        .upsert(typesensePage);
+        await serverTypesenseClient
+          .collections("pages")
+          .documents()
+          .upsert(typesensePage);
+      } else {
+        await serverTypesenseClient
+          .collections("pages")
+          .documents(updatedPage.id)
+          .delete();
+      }
 
       // transform data for client
       const { textContent, collection, ...responseData } = {
