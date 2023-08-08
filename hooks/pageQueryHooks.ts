@@ -193,6 +193,7 @@ export const useUndoDeletePageMutation = (queryClient: QueryClient) => {
       queryClient.invalidateQueries({ queryKey: ["pageList"] });
       queryClient.invalidateQueries({ queryKey: ["favouritePages"] });
       queryClient.invalidateQueries({ queryKey: ["collectionList"] });
+      queryClient.invalidateQueries({ queryKey: ["favouriteCollections"] });
       queryClient.invalidateQueries({ queryKey: ["deletedPages"] });
       queryClient.invalidateQueries({ queryKey: ["page", id] });
     },
