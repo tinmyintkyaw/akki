@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useState } from "react";
 import {
   Snippet,
+  Highlight,
   useHits,
   useInstantSearch,
   useSearchBox,
@@ -14,12 +15,30 @@ import { Dialog, DialogTrigger, DialogContent } from "./ui/dialog";
 import { ScrollArea } from "./ui/scroll-area";
 import {
   Command,
-  CommandDialog,
   CommandEmpty,
   CommandInput,
   CommandItem,
   CommandList,
 } from "./ui/command";
+
+import { typesensePageDocument } from "@/typesense/typesense-client";
+
+type HighlightResult = {
+  value: string;
+  matchLevel: string;
+  matchedWords: string[];
+};
+
+type SnippetResult = {
+  value: string;
+  matchLevel: string;
+  matchedWords: string[];
+};
+
+type MyHitType = typesensePageDocument & {
+  _snippetResult: Record<string, SnippetResult>;
+  _highlightResult: Record<string, HighlightResult>;
+};
 
 type SearchComboBoxProps = {
   children: ReactNode;
@@ -32,7 +51,7 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
   const router = useRouter();
   const instantSearch = useInstantSearch({ catchError: true });
   const { query, refine, clear } = useSearchBox();
-  const { hits } = useHits();
+  const { hits } = useHits<MyHitType>();
 
   const searchAPIKeyQuery = useSearchAPIKey();
 
@@ -74,7 +93,7 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
               placeholder="Search..."
               value={input}
               onValueChange={(value) => setInput(value)}
-              onFocus={(e) => refine("")}
+              onFocus={(e) => refine(input)}
             />
             <CommandList className="max-h-[calc(100vh-80px)] scrollbar-none md:max-h-[50vh]">
               <CommandEmpty>No Results Found</CommandEmpty>
@@ -82,32 +101,56 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
               {instantSearch.error && <CommandEmpty>Loading...</CommandEmpty>}
 
               <ScrollArea className="h-[calc(100vh-80px)] w-full md:h-[50vh]">
-                {!instantSearch.error &&
-                  hits.map((hit) => (
+                {hits.map((hit) => {
+                  return (
                     <CommandItem
                       key={hit.objectID}
                       value={hit.objectID}
-                      className="flex flex-col"
+                      className="flex w-full flex-col px-4 py-3"
                       onSelect={(value) => {
                         router.push(`/${value}`);
                         clear();
                       }}
                     >
-                      <Snippet
-                        attribute="pageName"
-                        hit={hit}
-                        className="my-2 w-full truncate px-2 text-start font-medium"
-                      />
+                      <div className="w-full text-base font-medium">
+                        {hit._highlightResult?.pageName.matchedWords.length >
+                        0 ? (
+                          <Highlight
+                            attribute={"pageName"}
+                            hit={hit}
+                            className=""
+                            highlightedTagName={"strong"}
+                            classNames={{
+                              highlighted: "text-gray-950 dark:text-gray-100",
+                              nonHighlighted:
+                                "text-gray-800 dark:text-gray-400",
+                            }}
+                          />
+                        ) : (
+                          <span className="">{hit.pageName}</span>
+                        )}
+                      </div>
 
-                      {instantSearch.indexUiState.query && (
-                        <Snippet
-                          attribute="pageTextContent"
-                          hit={hit}
-                          className="mb-2 line-clamp-2 w-full px-2 text-start text-sm text-foreground"
-                        />
-                      )}
+                      <div className="w-full text-sm text-accent-foreground">
+                        {instantSearch.indexUiState.query &&
+                          hit._snippetResult?.pageTextContent.matchedWords
+                            .length > 0 && (
+                            <Snippet
+                              attribute={"pageTextContent"}
+                              hit={hit}
+                              highlightedTagName={"strong"}
+                              className="mt-2"
+                              classNames={{
+                                highlighted: "text-gray-950 dark:text-gray-100",
+                                nonHighlighted:
+                                  "text-gray-800 dark:text-gray-400",
+                              }}
+                            />
+                          )}
+                      </div>
                     </CommandItem>
-                  ))}
+                  );
+                })}
               </ScrollArea>
             </CommandList>
 

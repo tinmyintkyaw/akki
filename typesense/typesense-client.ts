@@ -23,7 +23,7 @@ const serverTypesenseClient = new Typesense.Client({
   apiKey: process.env.TYPESENSE_API_KEY,
 });
 
-export interface typesensePageDocument {
+export type typesensePageDocument = {
   id: string;
   pageName: string;
   pageTextContent: string;
@@ -31,7 +31,7 @@ export interface typesensePageDocument {
   pageModifiedAt: number;
   isFavourite: boolean;
   userId: string;
-}
+};
 
 export const typesenseCollectionSchema: CollectionCreateSchema = {
   name: "pages",
