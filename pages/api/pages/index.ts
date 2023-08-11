@@ -90,6 +90,9 @@ export default async function pagesHandler(
           isDeleted: false,
         },
         select: pageSelect,
+        orderBy: {
+          createdAt: "asc",
+        },
       });
 
       const response = pages.map((page) => {

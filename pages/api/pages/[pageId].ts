@@ -65,7 +65,10 @@ export default async function pageHandler(
           isFavourite: isFavourite,
           isDeleted: isDeleted,
           deletedAt: isDeleted ? new Date() : undefined,
-          accessedAt: new Date(Date.parse(accessedAt)),
+          accessedAt:
+            typeof accessedAt !== "undefined"
+              ? new Date(Date.parse(accessedAt))
+              : undefined,
         },
         select: pageSelectWithTextContent,
       });
@@ -85,29 +88,35 @@ export default async function pageHandler(
         });
       }
 
-      // Delete the page from typesense db on soft delete
-      // and add it back on restore
-      if (typeof isDeleted !== "undefined") {
-        if (!isDeleted) {
-          const typesensePage: typesensePageDocument = {
-            id: updatedPage.id,
-            userId: updatedPage.userId,
-            pageName: updatedPage.pageName,
-            pageTextContent: updatedPage.textContent,
-            pageCreatedAt: updatedPage.createdAt.getTime(),
-            pageModifiedAt: updatedPage.modifiedAt.getTime(),
-            isFavourite: updatedPage.isFavourite,
-          };
+      const typesensePage: typesensePageDocument = {
+        id: updatedPage.id,
+        userId: updatedPage.userId,
+        pageName: updatedPage.pageName,
+        pageTextContent: updatedPage.textContent,
+        pageCreatedAt: updatedPage.createdAt.getTime(),
+        pageModifiedAt: updatedPage.modifiedAt.getTime(),
+        isFavourite: updatedPage.isFavourite,
+      };
 
-          await serverTypesenseClient
-            .collections("pages")
-            .documents()
-            .upsert(typesensePage);
-        } else {
+      if (typeof isDeleted === "undefined") {
+        // Update page in typesense db
+        await serverTypesenseClient
+          .collections("pages")
+          .documents()
+          .upsert(typesensePage);
+      } else {
+        if (isDeleted) {
+          // Delete the page from typesense db on soft delete
           await serverTypesenseClient
             .collections("pages")
             .documents(updatedPage.id)
             .delete();
+        } else {
+          // and add it back on restore
+          await serverTypesenseClient
+            .collections("pages")
+            .documents()
+            .upsert(typesensePage);
         }
       }
 

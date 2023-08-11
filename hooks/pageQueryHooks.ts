@@ -2,12 +2,24 @@ import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 
 import { Page, PageList } from "@/types/queries";
 
+class FetchError extends Error {
+  status: number;
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = "FetchError";
+    this.status = status;
+  }
+}
+
 export const usePagesListQuery = () => {
   return useQuery({
     queryKey: ["pageList"],
     queryFn: async () => {
       const response = await fetch("/api/pages");
-      if (!response.ok) throw new Error("Failed to fetch pages");
+      if (!response.ok)
+        throw new Error("Failed to fetch pages", {
+          cause: { code: response.status },
+        });
       const json: PageList = await response.json();
       return json;
     },
@@ -47,19 +59,28 @@ export const useFavouritePagesQuery = () => {
       const json: PageList = await response.json();
       return json;
     },
+    notifyOnChangeProps: ["data", "error", "isLoading"],
   });
 };
 
 export const usePageQuery = (id: string) => {
   return useQuery({
     queryKey: ["page", id],
-    queryFn: async () => {
+    queryFn: async (): Promise<Page> => {
       const response = await fetch(`/api/pages/${id}`);
-      if (!response.ok) throw new Error("Failed to fetch page");
+      if (!response.ok)
+        throw new FetchError("Failed to fetch page", response.status);
       const json: Page = await response.json();
       return json;
     },
     enabled: !!id,
+    retry(failureCount, error: FetchError) {
+      if (error.status === 404) {
+        return false;
+      }
+      if (failureCount <= 3) return true;
+      return false;
+    },
   });
 };
 

@@ -19,6 +19,9 @@ const favouritePagesHandler: NextApiHandler = async (req, res) => {
           isDeleted: false,
         },
         select: collectionSelect,
+        orderBy: {
+          createdAt: "asc",
+        },
       });
 
       const responseData = favouriteCollections.map((collection) => {

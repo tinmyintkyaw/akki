@@ -74,14 +74,14 @@ export const useUpdateCollectionMutation = (queryClient: QueryClient) => {
     }) => {
       const { id, collectionName, isFavourite, accessedAt } = variables;
 
-      const response = await fetch(`/api/pages/${id}`, {
+      const response = await fetch(`/api/collections/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           ...(typeof collectionName !== "undefined" && {
-            pageName: collectionName,
+            collectionName: collectionName,
           }),
           ...(typeof isFavourite !== "undefined" && { isFavourite }),
           ...(typeof accessedAt !== "undefined" && { accessedAt }),

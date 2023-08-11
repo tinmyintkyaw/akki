@@ -22,6 +22,9 @@ export const collectionSelect = {
     select: {
       id: true,
     },
+    orderBy: {
+      createdAt: "asc",
+    },
   },
 } satisfies Prisma.CollectionSelect;
 
@@ -65,6 +68,9 @@ export default async function pagesHandler(
           isDeleted: false,
         },
         select: collectionSelect,
+        orderBy: {
+          createdAt: "asc",
+        },
       });
 
       const responseData = collections.map((collection) => {
