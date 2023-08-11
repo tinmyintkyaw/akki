@@ -1,5 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import { BubbleMenu, Editor, isTextSelection } from "@tiptap/react";
+import {
+  BubbleMenu,
+  Editor,
+  isTextSelection,
+  getNodeType,
+} from "@tiptap/react";
 import { Menu } from "@headlessui/react";
 import clsx from "clsx";
 import {
@@ -110,8 +115,10 @@ export default function SelectMenu(props: { editor: Editor }) {
   }, [props.editor]);
 
   const [show, setShow] = useState(false);
-  const [selected, setSelected] = useState(commands[0]);
+  const [selected, setSelected] = useState(commands[8]);
 
+  // Detect node type for currently selected text
+  // TODO: improve detection logic & refactor
   useEffect(() => {
     const currNodeId = commands.filter((node) => {
       switch (node.id) {
@@ -126,7 +133,11 @@ export default function SelectMenu(props: { editor: Editor }) {
       }
     });
 
-    setSelected(currNodeId[0]);
+    if (currNodeId.length > 0) {
+      setSelected(currNodeId[0]);
+    } else {
+      setSelected(commands[7]);
+    }
   }, [commands, props.editor, props.editor.state.selection]);
 
   return (
