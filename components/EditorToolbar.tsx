@@ -21,6 +21,16 @@ export default function EditorToolbar(props: EditorToolbarProps) {
       id="editor-toolbar"
       className="flex h-12 w-full select-none items-center gap-2 border-b bg-background px-2 text-foreground shadow-lg"
     >
+      {!props.isSidebarOpen && (
+        <Button
+          variant={"ghost"}
+          size={"icon"}
+          onClick={props.setIsSidebarOpen}
+        >
+          <PanelLeftOpen className="h-5 w-5" />
+        </Button>
+      )}
+
       {pageQuery.isLoading || (pageQuery.isError && <div>Loading</div>)}
 
       {pageQuery.data && (
@@ -33,16 +43,6 @@ export default function EditorToolbar(props: EditorToolbarProps) {
             <span>{pageQuery.data.pageName}</span>
           </Button>
         </div>
-      )}
-
-      {!props.isSidebarOpen && (
-        <Button
-          variant={"ghost"}
-          size={"icon"}
-          onClick={props.setIsSidebarOpen}
-        >
-          <PanelLeftOpen className="h-5 w-5" />
-        </Button>
       )}
 
       <div className="flex-grow" />

@@ -18,6 +18,6 @@ export default function Home() {
   if (session.status === "unauthenticated") {
     // TODO: Landing page
     // return <p>Index</p>;
-    router.push("/login");
+    router.push("/signin");
   }
 }

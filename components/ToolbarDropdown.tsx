@@ -40,43 +40,47 @@ export default function ToolbarDropdown(props: ToolbarDropdownProps) {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>{props.children}</DropdownMenuTrigger>
 
-        <DropdownMenuContent className="w-56">
-          <DropdownMenuLabel>Page Actions</DropdownMenuLabel>
+        {pageQuery.data && (
+          <DropdownMenuContent className="w-56">
+            <DropdownMenuLabel>Page Actions</DropdownMenuLabel>
 
-          <DropdownMenuSeparator />
+            <DropdownMenuSeparator />
 
-          <DropdownMenuItem
-            onClick={() =>
-              toggleFavouriteMutation.mutate({
-                id: router.query.pageId as string,
-              })
-            }
-          >
-            {pageQuery.data?.isFavourite ? (
-              <StarOff className="mr-2 h-4 w-4" />
-            ) : (
-              <Star className="mr-2 h-4 w-4" />
-            )}
+            <DropdownMenuItem
+              onClick={() =>
+                toggleFavouriteMutation.mutate({
+                  id: router.query.pageId as string,
+                  isFavourite: !pageQuery.data.isFavourite,
+                })
+              }
+            >
+              {pageQuery.data?.isFavourite ? (
+                <StarOff className="mr-2 h-4 w-4" />
+              ) : (
+                <Star className="mr-2 h-4 w-4" />
+              )}
 
-            <span>
-              {pageQuery.data?.isFavourite
-                ? "Remove from favourites"
-                : "Add to favourites"}
-            </span>
-          </DropdownMenuItem>
+              <span>
+                {pageQuery.data?.isFavourite
+                  ? "Remove from favourites"
+                  : "Add to favourites"}
+              </span>
+            </DropdownMenuItem>
 
-          <DropdownMenuItem
-            onClick={() => {
-              deletePageMutation.mutate({ id: router.query.pageId as string });
-              setShowUndoToast(true);
-            }}
-          >
-            <Trash2 className="mr-2 h-4 w-4" />
-            <span>Delete Page</span>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
+            <DropdownMenuItem
+              onClick={() => {
+                deletePageMutation.mutate({
+                  id: router.query.pageId as string,
+                });
+                setShowUndoToast(true);
+              }}
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              <span>Delete Page</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        )}
       </DropdownMenu>
-
       {/* Undo Delete Page Toast */}
       <Toast
         hasAction
