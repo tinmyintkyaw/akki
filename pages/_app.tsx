@@ -7,8 +7,10 @@ import { Inter, Roboto_Flex } from "next/font/google";
 
 import "@/styles/globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/toaster";
 
 export const inter = Inter({ subsets: ["latin"] });
+export const roboto = Roboto_Flex({ subsets: ["latin"] });
 
 export default function App({
   Component,
@@ -22,10 +24,11 @@ export default function App({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <style jsx global>{`
             html {
-              font-family: ${inter.style.fontFamily};
+              font-family: ${roboto.style.fontFamily};
             }
           `}</style>
           <Component {...pageProps} />
+          <Toaster />
           <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
         </ThemeProvider>
       </QueryClientProvider>
