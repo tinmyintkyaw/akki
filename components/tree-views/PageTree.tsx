@@ -11,6 +11,7 @@ import {
 } from "react-complex-tree";
 
 import { usePageQuery, useUpdatePageMutation } from "@/hooks/pageQueryHooks";
+import { useUpdateCollectionMutation } from "@/hooks/collectionQueryHooks";
 import { useTreeData } from "@/hooks/useTreeData";
 
 import "react-complex-tree/lib/style-modern.css";
@@ -29,6 +30,7 @@ const PageTree: React.FC = () => {
   const pageQuery = usePageQuery(router.query.pageId as string);
 
   const updatePageMutation = useUpdatePageMutation(queryClient);
+  const updateCollectionMutation = useUpdateCollectionMutation(queryClient);
 
   const treeData = useTreeData();
 
@@ -67,6 +69,7 @@ const PageTree: React.FC = () => {
           }}
           canDragAndDrop={true}
           canDropOnFolder={true}
+          canReorderItems={false}
           canRename={true}
           canSearch={false}
           canDropAt={(items, target) => {
@@ -100,7 +103,11 @@ const PageTree: React.FC = () => {
             setIsRenaming(true);
 
             if (item.isFolder) {
-              // ...Mutate Collection
+              console.log({ item, newName });
+              updateCollectionMutation.mutate({
+                id: item.index.toString(),
+                collectionName: newName,
+              });
             } else {
               updatePageMutation.mutate({
                 id: item.index.toString(),

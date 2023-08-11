@@ -28,6 +28,10 @@ import {
   useDeletePageMutation,
   useUpdatePageMutation,
 } from "@/hooks/pageQueryHooks";
+import {
+  useDeleteCollectionMutation,
+  useUpdateCollectionMutation,
+} from "@/hooks/collectionQueryHooks";
 
 interface ItemProps {
   item: TreeItem;
@@ -65,11 +69,13 @@ const TreeItem: React.FC<ItemProps> = (props) => {
   const createPageMutation = useCreatePageMutation(queryClient);
   const updatePageMutation = useUpdatePageMutation(queryClient);
   const deletePageMutation = useDeletePageMutation(queryClient);
+  const updateCollectionMutation = useUpdateCollectionMutation(queryClient);
+  const deleteCollectionMutation = useDeleteCollectionMutation(queryClient);
 
   const InteractiveComponent = context.isRenaming ? "div" : "button";
   const type = context.isRenaming ? undefined : "button";
 
-  const [parent, enableAnimations] = useAutoAnimate();
+  const [parent] = useAutoAnimate();
 
   return (
     <ContextMenu>
@@ -87,7 +93,7 @@ const TreeItem: React.FC<ItemProps> = (props) => {
               type={type}
               {...(context.interactiveElementProps as any)}
               className={clsx(
-                "group inline-flex h-8 w-full items-center justify-center rounded text-sm outline-2 outline-sky-700 transition-colors focus-visible:outline",
+                "group inline-flex h-8 w-full items-center justify-center rounded text-sm outline-2 outline-sky-700 transition-colors focus-visible:outline radix-state-open:bg-accent",
                 context.isSelected && selectedItems.length > 1
                   ? "bg-sky-700"
                   : "hover:bg-accent",
@@ -157,7 +163,10 @@ const TreeItem: React.FC<ItemProps> = (props) => {
         <ContextMenuItem
           onClick={() => {
             if (item.isFolder) {
-              // ...Mutate collection here
+              updateCollectionMutation.mutate({
+                id: item.index.toString(),
+                isFavourite: !item.data.isFavourite,
+              });
             } else {
               updatePageMutation.mutate({
                 id: item.index.toString(),
@@ -190,7 +199,11 @@ const TreeItem: React.FC<ItemProps> = (props) => {
 
         <ContextMenuItem
           onClick={() => {
-            deletePageMutation.mutate({ id: item.index.toString() });
+            if (item.isFolder) {
+              deleteCollectionMutation.mutate({ id: item.index.toString() });
+            } else {
+              deletePageMutation.mutate({ id: item.index.toString() });
+            }
             // TODO: push to most recent page
           }}
         >
