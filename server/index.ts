@@ -2,10 +2,10 @@ import express from "express";
 import expressWebsockets from "express-ws";
 import { Server } from "@hocuspocus/server";
 import { Database } from "@hocuspocus/extension-database";
-
-import { prisma } from "../lib/prismadb";
 import { TiptapTransformer } from "@hocuspocus/transformer";
 import { JSONContent, generateText } from "@tiptap/core";
+
+import { prisma } from "../lib/prismadb";
 
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
@@ -28,31 +28,38 @@ const server = Server.configure({
   async onAuthenticate(data) {
     console.log("Authenticating");
 
-    const socketSession = await prisma.socketSession.findUniqueOrThrow({
+    const multiplayerSession = await prisma.multiplayerSession.findUnique({
       where: {
-        sessionToken: data.token,
+        key: data.token,
       },
-    });
-
-    if (socketSession.isUsed) throw new Error("Invalid token");
-
-    if (Date.now() - socketSession.createdAt.getTime() > 10 * 1000)
-      throw new Error("Token expired");
-
-    /* TODO: use a task scheduler for periodically purging
-    used websocket tokens from db */
-
-    await prisma.page.findUniqueOrThrow({
-      where: {
-        id_userId: {
-          id: data.documentName,
-          userId: socketSession.userId,
+      select: {
+        id: true,
+        isUsed: true,
+        expires: true,
+        session: {
+          select: {
+            userId: true,
+          },
         },
       },
     });
 
-    return { userId: socketSession.userId };
+    if (!multiplayerSession) throw new Error("Invalid token");
+
+    if (multiplayerSession.isUsed) throw new Error("Invalid token");
+
+    if (Date.now() > new Date(multiplayerSession.expires).getTime())
+      throw new Error("Token expired");
+
+    return { userId: multiplayerSession.session.userId };
   },
+
+  // TODO: Check for the validity of current session every x interval
+  // beforeHandleMessage(data) {
+  //   return new Promise((resolve, reject) => {
+  //     resolve(data);
+  //   });
+  // },
 
   extensions: [
     new Database({
@@ -93,13 +100,7 @@ const server = Server.configure({
 
           if (!json.content) throw new Error("Invalid content");
 
-          // Remove title node from JSON
-          const [, ...contentWithoutTitle] = json.content;
-          const jsonWithoutTitle = Object.assign({}, json, {
-            content: contentWithoutTitle,
-          });
-
-          const textContent = generateText(jsonWithoutTitle, [
+          const textContent = generateText(json, [
             StarterKit.configure({
               history: false,
               heading: false,
@@ -108,7 +109,7 @@ const server = Server.configure({
             Link,
             TaskList,
             TaskItem.configure({ nested: true }),
-            CustomImage.configure({ allowBase64: true }),
+            CustomImage,
           ]);
 
           const dbPage = await prisma.page.update({
@@ -141,6 +142,8 @@ const server = Server.configure({
             .collections("pages")
             .documents()
             .upsert(typesensePage);
+
+          // data.document.broadcastStateless("synced!");
         } catch (err) {
           console.log(err);
         }
@@ -156,15 +159,6 @@ const { app } = expressWebsockets(express());
 app.ws("/collaboration/:document", (websocket, request) => {
   server.handleConnection(websocket, request);
 });
-
-// Add a proxy route for the nextjs server
-// app.use(
-//   "/",
-//   createProxyMiddleware({
-//     target: "http://localhost:3000",
-//     // changeOrigin: true,
-//   })
-// );
 
 // TODO: Tidy up server init
 const checkFirstStart = async () => {
