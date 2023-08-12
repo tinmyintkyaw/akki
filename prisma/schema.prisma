@@ -30,31 +30,33 @@ model Account {
 }
 
 model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                 String               @id @default(cuid())
+  sessionToken       String               @unique
+  userId             String
+  expires            DateTime
+  user               User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  MultiplayerSession MultiplayerSession[]
 }
 
-model SocketSession {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  createdAt    DateTime
-  isUsed       Boolean
-  user         User     @relation(fields: [userId], references: [id])
-  userId       String
+model MultiplayerSession {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  isUsed    Boolean  @default(false)
+  expires   DateTime
+  session   Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId String
 }
 
 model User {
-  id             String          @id @default(cuid())
+  id             String       @id @default(cuid())
   name           String?
-  email          String?         @unique
+  email          String?      @unique
   emailVerified  DateTime?
   image          String?
+  typesenseKeyId Int?
+  typesenseKey   String?
   accounts       Account[]
   sessions       Session[]
-  socketSessions SocketSession[]
   collections    Collection[]
   pages          Page[]
 }
