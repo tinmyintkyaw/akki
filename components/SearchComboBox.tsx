@@ -47,6 +47,7 @@ type SearchComboBoxProps = {
 export default function SearchComboBox(props: SearchComboBoxProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
+  const [retryCount, setRetryCount] = useState(0);
 
   const router = useRouter();
   const instantSearch = useInstantSearch({ catchError: true });
@@ -75,6 +76,21 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
     return () => clearTimeout(timeout);
   }, [input, refine]);
 
+  // TODO: implement exponential backoff
+  useEffect(() => {
+    if (!instantSearch.error) return setRetryCount(0);
+    if (retryCount >= 10) return;
+
+    const timeout = setTimeout(() => {
+      searchAPIKeyQuery.refetch();
+      setRetryCount((prev) => prev + 1);
+    }, 3 * 1000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [instantSearch.error, retryCount, searchAPIKeyQuery]);
+
   return (
     <>
       <Dialog
@@ -96,9 +112,9 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
               onFocus={(e) => refine(input)}
             />
             <CommandList className="max-h-[calc(100vh-80px)] scrollbar-none md:max-h-[50vh]">
-              <CommandEmpty>No Results Found</CommandEmpty>
-
-              {instantSearch.error && <CommandEmpty>Loading...</CommandEmpty>}
+              {hits.length === 0 && (
+                <CommandEmpty>No Results Found</CommandEmpty>
+              )}
 
               <ScrollArea className="h-[calc(100vh-80px)] w-full md:h-[50vh]">
                 {hits.map((hit) => {
