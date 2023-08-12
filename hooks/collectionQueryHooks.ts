@@ -44,7 +44,7 @@ export const useCreateCollectionMutation = (queryClient: QueryClient) => {
     mutationFn: async (variables: { collectionName?: string }) => {
       const { collectionName } = variables;
 
-      const response = await fetch("/api/pages", {
+      const response = await fetch("/api/collections", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

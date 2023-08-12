@@ -6,6 +6,7 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Plus } from "lucide-react";
 
 import { useCreatePageMutation } from "@/hooks/pageQueryHooks";
+import { useCreateCollectionMutation } from "@/hooks/collectionQueryHooks";
 
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
@@ -22,7 +23,7 @@ export default function PageList() {
   const [favouritesDiv] = useAutoAnimate();
   const [mainTreeDiv] = useAutoAnimate();
 
-  const createPageMutation = useCreatePageMutation(queryClient);
+  const createCollectionMutation = useCreateCollectionMutation(queryClient);
 
   return (
     <ScrollArea
@@ -46,16 +47,17 @@ export default function PageList() {
       </div>
 
       <div className="mb-2 px-2">
-        {/* Add Page Button */}
-        {/* <Button
-        variant={"ghost"}
-        size={"default"}
-        onClick={() => createPageMutation.mutate()}
-        className="w-full"
-      >
-        <Plus className="mr-2 h-4 w-4" />
-        <span className="flex-grow text-start">Add Page</span>
-      </Button> */}
+        <Button
+          variant={"ghost"}
+          size={"default"}
+          onClick={() =>
+            createCollectionMutation.mutate({ collectionName: "Untitled" })
+          }
+          className="w-full"
+        >
+          <Plus className="mr-2 h-4 w-4" />
+          <span className="flex-grow truncate text-start">Add Collection</span>
+        </Button>
 
         <DeletedPages />
       </div>
