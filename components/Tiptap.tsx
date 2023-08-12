@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 
 import * as Y from "yjs";
@@ -26,6 +26,7 @@ import CustomImageFrontend from "@/tiptap/CustomImageFrontend";
 import SelectMenu from "@/components/BubbleMenu";
 
 import { usePageQuery, useUpdatePageMutation } from "@/hooks/pageQueryHooks";
+import useMultiplayerEditor from "@/hooks/useMultiplayerEditor";
 
 import "highlight.js/styles/atom-one-light.css";
 
@@ -52,7 +53,7 @@ const Editor = (props: EditorProps) => {
   const titleEditor = useEditor({
     extensions: [Document, Text, Heading.configure({ levels: [1] })],
     content: pageQuery.data?.pageName,
-    onUpdate({ editor }) {
+    onUpdate() {
       setIsEditing(true);
     },
     editorProps: {
@@ -154,7 +155,7 @@ const Editor = (props: EditorProps) => {
       <EditorContent
         spellCheck={false}
         className={clsx(
-          "prose mx-auto h-full w-full break-words bg-background px-8 pb-6 font-normal dark:prose-invert selection:bg-sky-200 dark:selection:bg-sky-700",
+          "font-base prose mx-auto h-full w-full break-words bg-background px-8 pb-6 text-base dark:prose-invert selection:bg-sky-200 dark:selection:bg-sky-700",
           "max-w-sm md:max-w-2xl lg:max-w-3xl" // controls the width of the editor
         )}
         editor={contentEditor}
@@ -169,40 +170,12 @@ const Editor = (props: EditorProps) => {
 };
 
 const Tiptap = (props: TiptapProps) => {
-  const [ydoc, setYdoc] = useState<Y.Doc>(new Y.Doc());
-  const [webSocketProvider, setWebSocketProvider] =
-    useState<HocuspocusProvider | null>(null);
-  const [showEditor, setShowEditor] = useState(false);
-
-  // Prevent React Strict Mode from opening multiple connections
-  useLayoutEffect(() => {
-    const provider = new HocuspocusProvider({
-      url: `ws://localhost:8080/collaboration/${props.pageId}`,
-      name: props.pageId,
-      document: ydoc,
-      token: async () => {
-        const response = await fetch("/api/collab/token");
-        if (!response.ok) return "";
-        const { collabToken } = await response.json();
-        return collabToken as string;
-      },
-    });
-
-    setWebSocketProvider(provider);
-
-    return () => {
-      provider.destroy();
-      setWebSocketProvider(null);
-    };
-  }, [ydoc, props.pageId]);
-
-  useEffect(() => {
-    if (!webSocketProvider) return;
-    setShowEditor(true);
-  }, [webSocketProvider]);
+  const { multiplayerProvider, ydoc, isReady } = useMultiplayerEditor({
+    documentName: props.pageId,
+  });
 
   return (
-    <>{showEditor && <Editor ydoc={ydoc} provider={webSocketProvider} />}</>
+    <>{isReady && <Editor ydoc={ydoc} provider={multiplayerProvider} />}</>
   );
 };
 
