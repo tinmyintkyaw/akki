@@ -104,7 +104,7 @@ const TreeItem: React.FC<ItemProps> = (props) => {
             >
               {item.isFolder && arrow}
 
-              <div className="flex h-8 w-8 items-center justify-center rounded">
+              <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded">
                 {item.isFolder ? (
                   <Folder className="h-4 w-4" />
                 ) : (
