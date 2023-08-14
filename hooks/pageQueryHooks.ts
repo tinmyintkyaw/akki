@@ -74,6 +74,7 @@ export const usePageQuery = (id: string) => {
       return json;
     },
     enabled: !!id,
+    refetchOnWindowFocus: false,
     retry(failureCount, error: FetchError) {
       if (error.status === 404) {
         return false;

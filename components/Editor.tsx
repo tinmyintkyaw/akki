@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 
-import * as Y from "yjs";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 import clsx from "clsx";
 import { useSession } from "next-auth/react";
@@ -26,17 +25,12 @@ import CustomImageFrontend from "@/tiptap/CustomImageFrontend";
 import SelectMenu from "@/components/BubbleMenu";
 
 import { usePageQuery, useUpdatePageMutation } from "@/hooks/pageQueryHooks";
-import useMultiplayerEditor from "@/hooks/useMultiplayerEditor";
 
 import "highlight.js/styles/atom-one-light.css";
 
-interface TiptapProps {
-  pageId: string;
-}
-
 interface EditorProps {
-  ydoc: Y.Doc;
-  provider: HocuspocusProvider | null;
+  // ydoc: Y.Doc;
+  provider: HocuspocusProvider;
 }
 
 const Editor = (props: EditorProps) => {
@@ -47,7 +41,6 @@ const Editor = (props: EditorProps) => {
   const queryClient = useQueryClient();
 
   const pageQuery = usePageQuery(router.query.pageId as string);
-
   const updatePageMutation = useUpdatePageMutation(queryClient);
 
   const titleEditor = useEditor({
@@ -88,7 +81,9 @@ const Editor = (props: EditorProps) => {
           return "Start writing...";
         },
       }),
-      Collaboration.configure({ document: props.ydoc }),
+      Collaboration.configure({
+        document: props.provider.document,
+      }),
       CollaborationCursor.configure({
         provider: props.provider,
         user: {
@@ -135,7 +130,7 @@ const Editor = (props: EditorProps) => {
   }, [pageQuery.data, pageQuery.isError, pageQuery.isLoading, titleEditor]);
 
   return (
-    <>
+    <div className="h-full w-full">
       {!pageQuery.isLoading && !pageQuery.isError && pageQuery.data && (
         <EditorContent
           editor={titleEditor}
@@ -144,39 +139,31 @@ const Editor = (props: EditorProps) => {
             "max-w-sm md:max-w-2xl lg:max-w-3xl" // controls the width of the editor
           )}
           onKeyDown={(event) => {
-            if (event.key !== "ArrowDown") return;
+            if (event.key !== "Tab") return;
             contentEditor?.commands.focus("start");
           }}
         />
       )}
 
-      {contentEditor && <SelectMenu editor={contentEditor} />}
-
-      <EditorContent
-        spellCheck={false}
-        className={clsx(
-          "font-base prose mx-auto h-full w-full break-words bg-background px-8 pb-6 text-base dark:prose-invert selection:bg-sky-200 dark:selection:bg-sky-700",
-          "max-w-sm md:max-w-2xl lg:max-w-3xl" // controls the width of the editor
-        )}
-        editor={contentEditor}
-        // Prevent Tab key from escaping editor
-        onKeyDown={(event) => {
-          if (event.key !== "Tab") return;
-          event.preventDefault();
-        }}
-      />
-    </>
+      {contentEditor && (
+        <EditorContent
+          spellCheck={false}
+          className={clsx(
+            "font-base prose mx-auto h-full w-full break-words bg-background px-8 pb-6 text-base dark:prose-invert selection:bg-sky-200 dark:selection:bg-sky-700",
+            "max-w-sm md:max-w-2xl lg:max-w-3xl" // controls the width of the editor
+          )}
+          editor={contentEditor}
+          // Prevent Tab key from escaping editor
+          onKeyDown={(event) => {
+            if (event.key !== "Tab") return;
+            event.preventDefault();
+          }}
+        >
+          <SelectMenu editor={contentEditor} />
+        </EditorContent>
+      )}
+    </div>
   );
 };
 
-const Tiptap = (props: TiptapProps) => {
-  const { multiplayerProvider, ydoc, isReady } = useMultiplayerEditor({
-    documentName: props.pageId,
-  });
-
-  return (
-    <>{isReady && <Editor ydoc={ydoc} provider={multiplayerProvider} />}</>
-  );
-};
-
-export default Tiptap;
+export default Editor;

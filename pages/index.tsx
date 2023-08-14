@@ -1,23 +1,61 @@
-import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
-import { useRecentPagesQuery } from "@/hooks/pageQueryHooks";
+import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]";
+import { prisma } from "@/lib/prismadb";
 
-export default function Home() {
-  const session = useSession();
-  const router = useRouter();
-  const recentPages = useRecentPagesQuery();
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
 
-  // automatically redirect to the last opened page when user logs in
-  if (session.status === "authenticated") {
-    if (!recentPages.isLoading && !recentPages.isError && recentPages.data) {
-      if (!recentPages.data[0]) router.push("/new");
-      router.push(`/${recentPages.data[0].id}`);
+  if (!session)
+    return {
+      redirect: {
+        destination: "/signin",
+        permanent: false,
+      },
+    };
+
+  try {
+    const recentPages = await prisma.page.findMany({
+      where: {
+        userId: session.accountId,
+        isDeleted: false,
+      },
+      orderBy: {
+        accessedAt: "desc",
+      },
+      take: 3,
+      select: {
+        id: true,
+      },
+    });
+
+    if (recentPages.length > 0) {
+      return {
+        redirect: {
+          destination: `/${recentPages[0].id}`,
+          permanent: false,
+        },
+      };
+    } else {
+      return {
+        redirect: {
+          destination: "/new",
+          permanent: false,
+        },
+      };
     }
+  } catch (err) {
+    return {
+      redirect: {
+        destination: "/signin",
+        permanent: false,
+      },
+    };
   }
+};
 
-  if (session.status === "unauthenticated") {
-    // TODO: Landing page
-    // return <p>Index</p>;
-    router.push("/signin");
-  }
+export default function Home(): InferGetServerSidePropsType<
+  typeof getServerSideProps
+> {
+  return <main>Hello There!</main>;
 }

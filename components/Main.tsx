@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Head from "next/head";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { InstantSearch } from "react-instantsearch-hooks-web";
 import { Allotment, LayoutPriority } from "allotment";
@@ -9,7 +8,6 @@ import PageList from "@/components/sidebar/PageList";
 import EditorPane from "@/components/EditorPane";
 import EditorToolbar from "@/components/EditorToolbar";
 import ProfileDropdown from "@/components/ProfileDropdown";
-const Tiptap = dynamic(() => import("@/components/Tiptap"));
 
 import useInstantSearchClient from "@/hooks/useInstantSearchClient";
 import { usePageQuery } from "@/hooks/pageQueryHooks";
@@ -24,7 +22,7 @@ const AppHome = () => {
   const instantSearchClient = useInstantSearchClient();
 
   return (
-    <>
+    <main className="h-screen w-screen">
       <Head>
         <title>{`${
           pageQuery.data ? pageQuery.data.pageName : "Project Potion"
@@ -34,53 +32,34 @@ const AppHome = () => {
       </Head>
 
       <InstantSearch searchClient={instantSearchClient} indexName="pages">
-        <main className="h-screen w-screen">
-          <Allotment proportionalLayout={false} separator={!!isSidePanelOpen}>
-            <Allotment.Pane
-              minSize={250}
-              preferredSize={350}
-              maxSize={600}
-              priority={LayoutPriority.Low}
-              visible={isSidePanelOpen}
-            >
-              <ProfileDropdown
+        <Allotment proportionalLayout={false} separator={!!isSidePanelOpen}>
+          <Allotment.Pane
+            minSize={250}
+            preferredSize={350}
+            maxSize={600}
+            priority={LayoutPriority.Low}
+            visible={isSidePanelOpen}
+          >
+            <ProfileDropdown
+              isSidebarOpen={isSidePanelOpen}
+              setIsSidebarOpen={() => setIsSidePanelOpen((prev) => !prev)}
+            />
+            <PageList />
+          </Allotment.Pane>
+
+          <Allotment.Pane
+          // className="contentPane transition-all will-change-[width] duration-300 ease-in-out"
+          >
+            <EditorPane>
+              <EditorToolbar
                 isSidebarOpen={isSidePanelOpen}
                 setIsSidebarOpen={() => setIsSidePanelOpen((prev) => !prev)}
               />
-              <PageList />
-            </Allotment.Pane>
-
-            <Allotment.Pane className="contentPane transition-all will-change-[width] duration-300 ease-in-out">
-              {!pageQuery.isLoading && pageQuery.isError && (
-                <div className="flex h-full w-full select-none items-center justify-center">
-                  {/* TODO: Add proper error components */}
-                  {pageQuery.error.status === 404 ? (
-                    <p>Page Not Found!</p>
-                  ) : (
-                    <p>Error!</p>
-                  )}
-                </div>
-              )}
-
-              {!pageQuery.isLoading && !pageQuery.isError && (
-                <EditorPane
-                  key={pageQuery.data.id}
-                  editorComponent={<Tiptap pageId={pageQuery.data.id} />}
-                  toolbarComponent={
-                    <EditorToolbar
-                      isSidebarOpen={isSidePanelOpen}
-                      setIsSidebarOpen={() =>
-                        setIsSidePanelOpen((prev) => !prev)
-                      }
-                    />
-                  }
-                />
-              )}
-            </Allotment.Pane>
-          </Allotment>
-        </main>
+            </EditorPane>
+          </Allotment.Pane>
+        </Allotment>
       </InstantSearch>
-    </>
+    </main>
   );
 };
 
