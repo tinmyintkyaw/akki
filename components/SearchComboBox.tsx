@@ -22,6 +22,7 @@ import {
 } from "./ui/command";
 
 import { typesensePageDocument } from "@/typesense/typesense-client";
+import { useQueryClient } from "@tanstack/react-query";
 
 type HighlightResult = {
   value: string;
@@ -47,9 +48,9 @@ type SearchComboBoxProps = {
 export default function SearchComboBox(props: SearchComboBoxProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
-  const [retryCount, setRetryCount] = useState(0);
 
   const router = useRouter();
+  const queryClient = useQueryClient();
   const instantSearch = useInstantSearch({ catchError: true });
   const { query, refine, clear } = useSearchBox();
   const { hits } = useHits<MyHitType>();
@@ -76,20 +77,18 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
     return () => clearTimeout(timeout);
   }, [input, refine]);
 
-  // TODO: implement exponential backoff
+  // refetch key on expiry
   useEffect(() => {
-    if (!instantSearch.error) return setRetryCount(0);
-    if (retryCount >= 10) return;
+    if (instantSearch.status !== "error") return;
 
     const timeout = setTimeout(() => {
-      searchAPIKeyQuery.refetch();
-      setRetryCount((prev) => prev + 1);
-    }, 3 * 1000);
+      queryClient.invalidateQueries({ queryKey: ["searchAPIKey"] });
+    }, 3000);
 
     return () => {
       clearTimeout(timeout);
     };
-  }, [instantSearch.error, retryCount, searchAPIKeyQuery]);
+  }, [instantSearch.status, queryClient]);
 
   return (
     <>
@@ -126,6 +125,7 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
                       onSelect={(value) => {
                         router.push(`/${value}`);
                         clear();
+                        setIsOpen((prev) => !prev);
                       }}
                     >
                       <div className="w-full text-base font-medium">
