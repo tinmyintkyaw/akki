@@ -19,7 +19,7 @@ export default function EditorToolbar(props: EditorToolbarProps) {
   return (
     <div
       id="editor-toolbar"
-      className="flex h-12 w-full select-none items-center gap-2 border-b bg-background px-2 text-foreground shadow-lg"
+      className="flex h-12 w-full select-none items-center gap-2 border-b bg-background px-2 text-foreground shadow"
     >
       {!props.isSidebarOpen && (
         <Button
@@ -31,16 +31,20 @@ export default function EditorToolbar(props: EditorToolbarProps) {
         </Button>
       )}
 
-      {pageQuery.isLoading || (pageQuery.isError && <div>Loading</div>)}
+      {pageQuery.isError && <div className="mx-2">Error</div>}
 
       {pageQuery.data && (
         <div className="flex flex-row items-center">
           <Button variant={"link"} size={"default"} className="h-7">
-            <span>{pageQuery.data.collectionName}</span>
+            <span className="max-w-[15ch] truncate">
+              {pageQuery.data.collectionName}
+            </span>
           </Button>
           <span>/</span>
           <Button variant={"link"} size={"default"} className="h-7">
-            <span>{pageQuery.data.pageName}</span>
+            <span className="max-w-[20ch] truncate">
+              {pageQuery.data.pageName}
+            </span>
           </Button>
         </div>
       )}
