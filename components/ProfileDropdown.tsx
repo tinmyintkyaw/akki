@@ -12,6 +12,14 @@ import {
 
 import { Button } from "./ui/button";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -23,40 +31,22 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import SettingsComponent from "./Settings";
 
-type ProfileDropdownProps = {
-  isSidebarOpen: boolean;
-  setIsSidebarOpen: () => void;
-};
-
-export default function ProfileDropdown(props: ProfileDropdownProps) {
+const ProfileDropdown = () => {
   const session = useSession();
   const { theme, setTheme } = useTheme();
 
   return (
     <>
-      <DropdownMenu>
-        <div className="flex items-center gap-2 pr-2">
-          <DropdownMenuTrigger className="flex h-12 flex-grow select-none flex-row items-center gap-2 rounded px-4 text-sm focus:outline-none radix-state-open:bg-accent hover:bg-accent">
-            <p className="text-lg font-medium">Project Potion</p>
-          </DropdownMenuTrigger>
-
-          <Button
-            variant={"ghost"}
-            size={"icon"}
-            onClick={props.setIsSidebarOpen}
-          >
-            <PanelLeftClose className="h-5 w-5" />
-          </Button>
-        </div>
-
-        <DropdownMenuContent className="w-64">
-          <div className="flex select-none flex-row items-center gap-2 rounded px-2 py-3 focus:outline-none">
-            {session.data &&
-              session.data.user?.name &&
-              session.data.user?.email &&
-              session.data.user?.image && (
-                <>
+      <Dialog>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant={"ghost"} size={"icon"} className="rounded-full">
+              {session.data &&
+                session.data.user?.name &&
+                session.data.user?.email &&
+                session.data.user?.image && (
                   <Avatar.Root>
                     <Avatar.Image
                       src={session.data.user.image}
@@ -68,50 +58,57 @@ export default function ProfileDropdown(props: ProfileDropdownProps) {
                       <UserCircle className="h-6 w-6 rounded-full" />
                     </Avatar.Fallback>
                   </Avatar.Root>
+                )}
+            </Button>
+          </DropdownMenuTrigger>
 
-                  <p className="line-clamp-1 font-medium">
-                    {session.data.user?.name}
-                  </p>
-                </>
-              )}
-          </div>
+          <DropdownMenuContent className="w-52">
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>
+                <SunMoon className="mr-2 h-4 w-4" />
+                <span>Change Theme</span>
+              </DropdownMenuSubTrigger>
 
-          <DropdownMenuSeparator />
+              <DropdownMenuSubContent>
+                <DropdownMenuRadioGroup value={theme} onValueChange={setTheme}>
+                  <DropdownMenuRadioItem value="light">
+                    <span>Light</span>
+                  </DropdownMenuRadioItem>
 
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>
-              <SunMoon className="mr-2 h-4 w-4" />
-              <span>Change Theme</span>
-            </DropdownMenuSubTrigger>
+                  <DropdownMenuRadioItem value="dark">
+                    <span>Dark</span>
+                  </DropdownMenuRadioItem>
 
-            <DropdownMenuSubContent>
-              <DropdownMenuRadioGroup value={theme} onValueChange={setTheme}>
-                <DropdownMenuRadioItem value="light">
-                  <span>Light</span>
-                </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="system">
+                    <span>System</span>
+                  </DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
 
-                <DropdownMenuRadioItem value="dark">
-                  <span>Dark</span>
-                </DropdownMenuRadioItem>
+            <DialogTrigger asChild>
+              <DropdownMenuItem>
+                <Settings className="mr-2 h-4 w-4" />
+                <span>Settings</span>
+              </DropdownMenuItem>
+            </DialogTrigger>
 
-                <DropdownMenuRadioItem value="system">
-                  <span>System</span>
-                </DropdownMenuRadioItem>
-              </DropdownMenuRadioGroup>
-            </DropdownMenuSubContent>
-          </DropdownMenuSub>
+            <DropdownMenuItem onClick={() => signOut()}>
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Sign Out</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
-          <DropdownMenuItem>
-            <Settings className="mr-2 h-4 w-4" />
-            <span>Settings</span>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem onClick={() => signOut()}>
-            <LogOut className="mr-2 h-4 w-4" />
-            <span>Sign Out</span>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+        <DialogContent className="h-screen w-screen max-w-[100vw] bg-popover md:h-2/3 md:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Settings</DialogTitle>
+            <SettingsComponent />
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </>
   );
-}
+};
+
+export default ProfileDropdown;

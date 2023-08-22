@@ -103,7 +103,7 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
         <DialogTrigger asChild>{props.children}</DialogTrigger>
 
         <DialogContent className="p-0">
-          <Command shouldFilter={false} loop={true}>
+          <Command shouldFilter={false}>
             <CommandInput
               placeholder="Search..."
               value={input}
@@ -128,7 +128,7 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
                         setIsOpen((prev) => !prev);
                       }}
                     >
-                      <div className="w-full text-base font-medium">
+                      <div className="w-full text-[15px] font-medium">
                         {hit._highlightResult?.pageName.matchedWords.length >
                         0 ? (
                           <Highlight
@@ -147,7 +147,7 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
                         )}
                       </div>
 
-                      <div className="w-full text-sm text-accent-foreground">
+                      <div className="mt-1 w-full text-sm text-accent-foreground">
                         {instantSearch.indexUiState.query &&
                           hit._snippetResult?.pageTextContent.matchedWords
                             .length > 0 && (

@@ -57,5 +57,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 export default function Home(): InferGetServerSidePropsType<
   typeof getServerSideProps
 > {
-  return <main>Hello There!</main>;
+  // Marketing Page
+  return <main></main>;
 }

@@ -135,7 +135,7 @@ const Editor = (props: EditorProps) => {
         <EditorContent
           editor={titleEditor}
           className={clsx(
-            "prose mx-auto h-full w-full break-words bg-background px-8 pt-6 font-normal dark:prose-invert selection:bg-sky-200 dark:selection:bg-sky-700",
+            "mx-auto h-full w-full break-words bg-background px-8 pb-6 pt-12 text-3xl font-semibold dark:prose-invert selection:bg-primary dark:selection:bg-[#315EC1]",
             "max-w-sm md:max-w-2xl lg:max-w-3xl" // controls the width of the editor
           )}
           onKeyDown={(event) => {
@@ -149,7 +149,7 @@ const Editor = (props: EditorProps) => {
         <EditorContent
           spellCheck={false}
           className={clsx(
-            "font-base prose mx-auto h-full w-full break-words bg-background px-8 pb-6 text-base dark:prose-invert selection:bg-sky-200 dark:selection:bg-sky-700",
+            "prose prose-neutral mx-auto h-full w-full break-words bg-background px-8 pb-6 text-base dark:prose-invert selection:bg-primary dark:selection:bg-[#315EC1]",
             "max-w-sm md:max-w-2xl lg:max-w-3xl" // controls the width of the editor
           )}
           editor={contentEditor}

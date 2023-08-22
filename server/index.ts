@@ -57,6 +57,7 @@ const server = Server.configure({
   // TODO: Check for the validity of current session every x interval
   // beforeHandleMessage(data) {
   //   return new Promise((resolve, reject) => {
+  //     console.log(data.instance.getConnectionsCount());
   //     resolve(data);
   //   });
   // },
@@ -156,7 +157,7 @@ const server = Server.configure({
 const { app } = expressWebsockets(express());
 
 // Add a websocket route for hocuspocus
-app.ws("/collaboration/:document", (websocket, request) => {
+app.ws("/collaboration", (websocket, request) => {
   server.handleConnection(websocket, request);
 });
 

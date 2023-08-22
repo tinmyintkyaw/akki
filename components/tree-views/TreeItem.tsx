@@ -86,31 +86,33 @@ const TreeItem: React.FC<ItemProps> = (props) => {
       >
         <div
           {...(context.itemContainerWithoutChildrenProps as any)}
-          className="h-[34px]"
+          className="h-[38px]"
         >
           <ContextMenuTrigger asChild>
             <InteractiveComponent
               type={type}
               {...(context.interactiveElementProps as any)}
               className={clsx(
-                "group inline-flex h-8 w-full items-center justify-center rounded text-sm outline-2 outline-sky-700 transition-colors focus-visible:outline radix-state-open:bg-accent",
+                "group inline-flex h-9 w-full items-center justify-center rounded text-sm outline-2 outline-ring transition-colors focus-visible:outline radix-state-open:bg-accent",
                 context.isSelected && selectedItems.length > 1
-                  ? "bg-sky-700"
+                  ? "bg-primary"
                   : "hover:bg-accent",
                 context.isDraggingOver && "bg-sky-700",
-                item.index && item.index === router.query.pageId && "bg-accent",
+                item.index &&
+                  item.index === router.query.pageId &&
+                  "bg-accent hover:bg-neutral-300 dark:hover:bg-neutral-600",
                 depth === 0 ? "pl-0" : "pl-6"
               )}
             >
               {item.isFolder && arrow}
 
-              <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded">
+              {/* <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded">
                 {item.isFolder ? (
                   <Folder className="h-4 w-4" />
                 ) : (
                   <FileText className="h-4 w-4" />
                 )}
-              </div>
+              </div> */}
 
               {title}
 
@@ -126,7 +128,7 @@ const TreeItem: React.FC<ItemProps> = (props) => {
                       item.index.toString(),
                     ]);
                   }}
-                  className="ml-1 flex h-8 w-8 items-center justify-center rounded opacity-0 group-hover:opacity-100 hover:bg-neutral-300 dark:hover:bg-neutral-700"
+                  className="ml-1 flex h-9 w-9 items-center justify-center rounded text-accent-foreground opacity-0 group-hover:opacity-100 hover:bg-neutral-300 dark:hover:bg-neutral-600"
                 >
                   <Plus className="h-4 w-4" />
                 </div>
@@ -156,7 +158,7 @@ const TreeItem: React.FC<ItemProps> = (props) => {
             }}
           >
             <Plus className="mr-2 h-4 w-4" />
-            <span>Add Page</span>
+            <span className="leading-4">Add Page</span>
           </ContextMenuItem>
         )}
 
@@ -180,7 +182,7 @@ const TreeItem: React.FC<ItemProps> = (props) => {
           ) : (
             <Star className="mr-2 h-4 w-4" />
           )}
-          <span>
+          <span className="leading-4">
             {item.data.isFavourite
               ? "Remove from favourites"
               : "Add to favourites"}
@@ -194,7 +196,7 @@ const TreeItem: React.FC<ItemProps> = (props) => {
           }}
         >
           <FileEdit className="mr-2 h-4 w-4" />
-          <span>Rename</span>
+          <span className="leading-4">Rename</span>
         </ContextMenuItem>
 
         <ContextMenuItem
@@ -208,7 +210,7 @@ const TreeItem: React.FC<ItemProps> = (props) => {
           }}
         >
           <Trash2 className="mr-2 h-4 w-4" />
-          <span>Delete</span>
+          <span className="leading-4">Delete</span>
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>

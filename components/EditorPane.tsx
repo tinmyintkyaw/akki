@@ -43,30 +43,34 @@ export default function EditorPane(props: EditorPaneProps) {
       {!pageQuery.isLoading &&
         !pageQuery.isError &&
         pageQuery.data.isDeleted && (
-          <div className="flex h-12 w-full items-center justify-center gap-4 bg-destructive py-2 text-sm text-destructive-foreground">
-            <p>This page is currently in Trash</p>
-            <button
+          <div className="flex h-12 w-full items-center justify-center gap-4 bg-red-100 py-2 text-sm dark:bg-red-900">
+            <p className="select-none font-medium">
+              This page is currently in Trash
+            </p>
+            <Button
+              variant={"outline"}
               onClick={() =>
                 undoDeletePageMutation.mutate({
                   id: router.query.pageId as string,
                 })
               }
-              className="rounded border border-neutral-300 px-4 py-1 hover:bg-destructive-foreground/10"
+              className="h-8 border-red-300 bg-transparent hover:bg-red-200 dark:border-red-400 dark:hover:bg-red-800"
             >
               Restore
-            </button>
+            </Button>
 
-            <button
+            <Button
+              variant={"outline"}
               onClick={async () => {
                 permanentlyDeletePageMutation.mutate({
                   id: router.query.pageId as string,
                 });
                 router.push("/");
               }}
-              className="rounded border border-neutral-300 px-4 py-1 hover:bg-destructive-foreground/10"
+              className="h-8 border-red-300 bg-transparent hover:bg-red-200 dark:border-red-400 dark:hover:bg-red-800"
             >
               Delete Permanently
-            </button>
+            </Button>
           </div>
         )}
 
@@ -93,6 +97,7 @@ export default function EditorPane(props: EditorPaneProps) {
               ? "Page Not Found"
               : "Error"}
           </h1>
+
           <Button
             variant={"outline"}
             size={"default"}

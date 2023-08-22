@@ -1,6 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 import { Fragment, useEffect, useRef, useState } from "react";
 import { NodeViewWrapper, NodeViewContent, NodeViewProps } from "@tiptap/react";
+import clsx from "clsx";
+import { CircleDot } from "lucide-react";
 // import {  ResizableBox } from "react-resizable";
 
 // import "react-resizable/css/styles.css";
@@ -11,8 +13,15 @@ export default function ImageWrapper(props: NodeViewProps) {
   const nodeViewRef = useRef<HTMLElement>(null);
 
   return (
-    <NodeViewWrapper ref={nodeViewRef}>
+    <NodeViewWrapper>
       <NodeViewContent>
+        <img
+          src={props.node.attrs.src}
+          alt={props.node.attrs.alt}
+          title={props.node.attrs.title}
+          className={clsx(props.selected && "opacity-80", "h-full w-full")}
+        />
+
         {/* <ResizableBox
             axis="x"
             width={width}
@@ -27,12 +36,7 @@ export default function ImageWrapper(props: NodeViewProps) {
             ]}
             className="mx-auto"
           > */}
-        <img
-          src={props.node.attrs.src}
-          alt={props.node.attrs.alt}
-          title={props.node.attrs.title}
-          className={`${props.selected && "opacity-80"}`}
-        />
+
         {/* </ResizableBox> */}
       </NodeViewContent>
     </NodeViewWrapper>

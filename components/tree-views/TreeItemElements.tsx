@@ -15,7 +15,9 @@ interface ItemTitleProps {
   title: string;
 }
 export const ItemTitle: React.FC<ItemTitleProps> = ({ title }) => (
-  <span className="line-clamp-1 flex-grow text-start">{title}</span>
+  <span className="mx-2 line-clamp-1 flex-grow text-start align-middle text-sm font-medium leading-4 text-secondary-foreground">
+    {title}
+  </span>
 );
 
 interface ItemArrowProps {
@@ -28,7 +30,7 @@ export const ItemArrow: React.FC<ItemArrowProps> = ({ context }) => (
   >
     <ChevronDown
       className={clsx(
-        "h-4 w-4 transition-transform duration-300",
+        "h-4 w-4 text-accent-foreground transition-transform duration-300",
         context.isExpanded && "rotate-180"
       )}
     />
@@ -53,11 +55,7 @@ export const ItemsContainer: React.FC<ItemsContainerProps> = (props) => {
   const { children, containerProps, depth } = props;
   const [parent, enableAnimations] = useAutoAnimate();
   return (
-    <ul
-      {...containerProps}
-      ref={parent}
-      // className={clsx(depth === 0 ? "pl-0" : "pl-6")}
-    >
+    <ul {...containerProps} ref={parent}>
       {children}
     </ul>
   );

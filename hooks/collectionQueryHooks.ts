@@ -105,7 +105,7 @@ export const useDeleteCollectionMutation = (queryClient: QueryClient) => {
     mutationFn: async (variables: { id: string }) => {
       const { id } = variables;
 
-      const response = await fetch(`/api/pages/${id}`, {
+      const response = await fetch(`/api/collections/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

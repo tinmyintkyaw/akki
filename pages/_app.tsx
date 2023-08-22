@@ -10,7 +10,6 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 
 export const inter = Inter({ subsets: ["latin"] });
-export const roboto = Roboto_Flex({ subsets: ["latin"] });
 
 export default function App({
   Component,
@@ -24,7 +23,7 @@ export default function App({
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <style jsx global>{`
             html {
-              font-family: ${roboto.style.fontFamily};
+              font-family: ${inter.style.fontFamily};
             }
           `}</style>
           <Component {...pageProps} />

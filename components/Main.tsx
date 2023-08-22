@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import { InstantSearch } from "react-instantsearch-hooks-web";
 import { Allotment, LayoutPriority } from "allotment";
 
-import PageList from "@/components/sidebar/PageList";
 import EditorPane from "@/components/EditorPane";
 import EditorToolbar from "@/components/EditorToolbar";
 import ProfileDropdown from "@/components/ProfileDropdown";
@@ -13,6 +12,7 @@ import useInstantSearchClient from "@/hooks/useInstantSearchClient";
 import { usePageQuery } from "@/hooks/pageQueryHooks";
 
 import "allotment/dist/style.css";
+import Sidebar from "./sidebar/Sidebar";
 
 const AppHome = () => {
   const [isSidePanelOpen, setIsSidePanelOpen] = useState(true);
@@ -40,11 +40,7 @@ const AppHome = () => {
             priority={LayoutPriority.Low}
             visible={isSidePanelOpen}
           >
-            <ProfileDropdown
-              isSidebarOpen={isSidePanelOpen}
-              setIsSidebarOpen={() => setIsSidePanelOpen((prev) => !prev)}
-            />
-            <PageList />
+            <Sidebar isOpen={isSidePanelOpen} setIsOpen={setIsSidePanelOpen} />
           </Allotment.Pane>
 
           <Allotment.Pane

@@ -17,10 +17,14 @@ const useMultiplayerProvider = (pageId: string) => {
       url: `ws://localhost:8080/collaboration`,
       document: new Y.Doc(),
       token: async () => {
-        const response = await fetch("/api/collab/token");
-        if (!response.ok) return "";
-        const json: { collabToken: string } = await response.json();
-        return json.collabToken;
+        try {
+          const response = await fetch("/api/collab/token");
+          if (!response.ok) return "";
+          const json: { collabToken: string } = await response.json();
+          return json.collabToken;
+        } catch (err) {
+          return "";
+        }
       },
       onStatus({ status }) {
         setStatus(status);
