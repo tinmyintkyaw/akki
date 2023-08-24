@@ -1,4 +1,4 @@
-import { findChildren } from "@tiptap/core";
+// import { findChildren } from "@tiptap/core";
 import Image from "@tiptap/extension-image";
 import { Plugin } from "@tiptap/pm/state";
 
@@ -17,16 +17,25 @@ const CustomImageBackend = Image.extend({
   draggable: true,
 
   addProseMirrorPlugins() {
+    const getPageIdFromStorage = () => {
+      if (typeof this.editor.storage.doc.pageId === "string") {
+        return this.editor.storage.doc.pageId;
+      } else {
+        return "";
+      }
+    };
+
     return [
       new Plugin({
         props: {
-          handleDrop(view, event, moved) {
+          handleDrop(view, event, slice, moved) {
             if (moved) return false;
             if (!event.dataTransfer?.files[0]) return false;
 
             const file = event.dataTransfer.files[0];
             const formData = new FormData();
             formData.append("image", file);
+            formData.append("pageId", getPageIdFromStorage());
 
             uploadImage(formData)
               .then((url) => {
@@ -48,7 +57,6 @@ const CustomImageBackend = Image.extend({
           },
 
           handlePaste(view, event) {
-            console.log("paste");
             const items = Array.from(event.clipboardData?.items || []);
 
             for (const item of items) {
@@ -58,6 +66,7 @@ const CustomImageBackend = Image.extend({
 
                 const formData = new FormData();
                 formData.append("image", file);
+                formData.append("pageId", getPageIdFromStorage());
 
                 uploadImage(formData)
                   .then((url) => {
@@ -71,7 +80,7 @@ const CustomImageBackend = Image.extend({
               }
             }
 
-            return false;
+            return true;
           },
         },
       }),

@@ -1,5 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
+import path from "path";
+import fs from "fs";
 
 import serverTypesenseClient, {
   typesensePageDocument,
@@ -142,6 +144,13 @@ export default async function pageHandler(
           },
         },
         select: pageSelect,
+      });
+
+      const uploadDir = path.join(process.cwd(), "uploads", session.accountId);
+      deletedPage.files.forEach(async (file) => {
+        fs.rm(path.join(uploadDir, file.fileName), (err) => {
+          if (err) throw err;
+        });
       });
 
       await serverTypesenseClient

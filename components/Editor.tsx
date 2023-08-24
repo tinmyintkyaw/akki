@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useEditor, EditorContent } from "@tiptap/react";
+import { useEditor, EditorContent, generateJSON } from "@tiptap/react";
 
 import { HocuspocusProvider } from "@hocuspocus/provider";
 import clsx from "clsx";
@@ -21,6 +21,7 @@ import Text from "@tiptap/extension-text";
 import CustomCodeBlock from "@/tiptap/CustomCodeBlock";
 import CustomHeading from "@/tiptap/CustomHeading";
 import CustomImageFrontend from "@/tiptap/CustomImageFrontend";
+import CustomDocument from "@/tiptap/CustomDocument";
 
 import SelectMenu from "@/components/BubbleMenu";
 
@@ -59,12 +60,14 @@ const Editor = (props: EditorProps) => {
   const contentEditor = useEditor({
     extensions: [
       StarterKit.configure({
+        document: false,
         history: false,
         heading: false,
         codeBlock: false,
       }),
       Link,
       TaskList,
+      CustomDocument,
       TaskItem.configure({ nested: true }),
       CustomHeading.configure({ levels: [1, 2, 3] }),
       CustomImageFrontend.configure({ allowBase64: true }),
@@ -96,12 +99,16 @@ const Editor = (props: EditorProps) => {
         class: "outline-none",
       },
     },
-    onCreate() {
+
+    onCreate({ editor }) {
       // set last accessed time for recent pages feature
       updatePageMutation.mutate({
         id: router.query.pageId as string,
         accessedAt: new Date(Date.now()).toISOString(),
       });
+
+      // set pageId for later access from prosemirror extensions
+      editor.storage.doc.pageId = pageQuery.data?.id;
     },
   });
 
@@ -135,7 +142,7 @@ const Editor = (props: EditorProps) => {
         <EditorContent
           editor={titleEditor}
           className={clsx(
-            "mx-auto h-full w-full break-words bg-background px-8 pb-6 pt-12 text-3xl font-semibold dark:prose-invert selection:bg-primary dark:selection:bg-[#315EC1]",
+            "mx-auto h-full w-full break-words bg-background px-8 pb-6 pt-12 text-4xl font-semibold dark:prose-invert selection:bg-primary dark:selection:bg-[#315EC1]",
             "max-w-sm md:max-w-2xl lg:max-w-3xl" // controls the width of the editor
           )}
           onKeyDown={(event) => {

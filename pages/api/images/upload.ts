@@ -1,10 +1,11 @@
 import path from "path";
-import fs from "fs";
+import fs from "fs/promises";
 import { NextApiHandler, NextApiRequest } from "next";
 import { Session, getServerSession } from "next-auth";
 import formidable, { errors as formidableErrors } from "formidable";
 
 import { authOptions } from "../auth/[...nextauth]";
+import { prisma } from "@/lib/prismadb";
 
 const parseForm = async (
   req: NextApiRequest,
@@ -14,10 +15,10 @@ const parseForm = async (
     const uploadDir = path.join(process.cwd(), "uploads", session.accountId);
 
     try {
-      fs.statSync(uploadDir);
+      await fs.stat(uploadDir);
     } catch (err: any) {
       if (err.code === "ENOENT") {
-        fs.mkdirSync(uploadDir, { recursive: true });
+        await fs.mkdir(uploadDir, { recursive: true });
       } else {
         reject(err);
         return;
@@ -30,7 +31,9 @@ const parseForm = async (
       keepExtensions: true,
       filter: (part) => {
         return (
-          (part.name === "image" && part.mimetype?.includes("image")) || false
+          (part.name === "image" && part.mimetype?.includes("image")) ||
+          part.name === "id" ||
+          false
         );
       },
       filename(name, ext, part, form) {
@@ -56,9 +59,21 @@ const imageUploadHandler: NextApiHandler = async (req, res) => {
     try {
       const { fields, files } = await parseForm(req, session);
 
+      const pageId = Array.isArray(fields.pageId)
+        ? fields.pageId[0]
+        : fields.pageId;
+
       const newFilename = Array.isArray(files.image)
         ? files.image.map((file) => file.newFilename)
         : files.image.newFilename;
+
+      await prisma.file.create({
+        data: {
+          userId: session.accountId,
+          pageId: pageId,
+          fileName: Array.isArray(newFilename) ? newFilename[0] : newFilename,
+        },
+      });
 
       // TODO: derive base url from env file
       const url = `http://localhost:3000/api/images/${

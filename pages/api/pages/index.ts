@@ -25,6 +25,12 @@ export const pageSelect = {
       collectionName: true,
     },
   },
+  files: {
+    select: {
+      id: true,
+      fileName: true,
+    },
+  },
 } satisfies Prisma.PageSelect;
 
 export default async function pagesHandler(
