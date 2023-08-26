@@ -1,59 +1,53 @@
 import { useMemo } from "react";
 import { ExplicitDataSource } from "react-complex-tree";
 
-import { usePagesListQuery } from "./pageQueryHooks";
-import { useCollectionListQuery } from "./collectionQueryHooks";
+import { usePageListQuery } from "./pageQueryHooks";
+import { Page } from "@/types/queries";
 
 export const useTreeData = () => {
-  const pageListQuery = usePagesListQuery();
-  const collectionListQuery = useCollectionListQuery();
+  const pageListQuery = usePageListQuery();
 
-  return useMemo(() => {
-    if (pageListQuery.isLoading || pageListQuery.isError) return;
-    if (collectionListQuery.isLoading || collectionListQuery.isError) return;
-
-    const pagesMap = new Map(
+  const pageListMap = useMemo(() => {
+    if (pageListQuery.isLoading || pageListQuery.isError) return null;
+    return new Map(
       pageListQuery.data.map((page) => [
         page.id,
-        { index: page.id, isFolder: false, children: [], data: page },
+        {
+          index: page.id,
+          // isFolder: page.childPages.length > 0 ? true : false,
+          isFolder: true,
+          children: page.childPages,
+          data: (() => {
+            const { id, childPages, userId, ...data } = page;
+            return data;
+          })(),
+        },
       ])
     );
+  }, [pageListQuery.data, pageListQuery.isError, pageListQuery.isLoading]);
 
-    const collectionsMap = new Map(
-      collectionListQuery.data.map((collection) => {
-        const { pages, ...collectionWithoutChildren } = collection;
-        return [
-          collection.id,
-          {
-            index: collection.id,
-            isFolder: true,
-            children: collection.pages,
-            data: collectionWithoutChildren,
-          },
-        ];
-      })
-    );
+  return useMemo(() => {
+    if (!pageListMap) return null;
 
-    const treeData: ExplicitDataSource = {
+    let childPageIds: string[] = [];
+
+    pageListMap.forEach((page) => {
+      if (page.data.parentId === null) childPageIds.push(page.index);
+    });
+
+    const treeData: ExplicitDataSource<Page> = {
       items: {
         root: {
           index: "root",
           isFolder: true,
-          children: [...Array.from(collectionsMap.keys())],
-          data: {},
+          children: childPageIds,
+          // @ts-ignore
+          data: null,
         },
-        ...Object.fromEntries(collectionsMap),
-        ...Object.fromEntries(pagesMap),
+        ...Object.fromEntries(pageListMap),
       },
     };
 
     return treeData;
-  }, [
-    collectionListQuery.data,
-    collectionListQuery.isError,
-    collectionListQuery.isLoading,
-    pageListQuery.data,
-    pageListQuery.isError,
-    pageListQuery.isLoading,
-  ]);
+  }, [pageListMap]);
 };
