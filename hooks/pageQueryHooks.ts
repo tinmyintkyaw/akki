@@ -11,7 +11,7 @@ class FetchError extends Error {
   }
 }
 
-export const usePagesListQuery = () => {
+export const usePageListQuery = () => {
   return useQuery({
     queryKey: ["pageList"],
     queryFn: async () => {
@@ -89,16 +89,16 @@ export const useCreatePageMutation = (queryClient: QueryClient) => {
   return useMutation({
     mutationFn: async (variables: {
       pageName: string;
-      collectionId: string;
+      parentId?: string | null;
     }) => {
-      const { pageName, collectionId } = variables;
+      const { pageName, parentId } = variables;
 
       const response = await fetch("/api/pages", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ pageName, collectionId }),
+        body: JSON.stringify({ pageName, parentId }),
       });
       if (!response.ok) throw new Error("Failed to create page");
       const json: Page = await response.json();
@@ -106,7 +106,6 @@ export const useCreatePageMutation = (queryClient: QueryClient) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["pageList"] });
-      queryClient.invalidateQueries({ queryKey: ["collectionList"] });
       queryClient.invalidateQueries({ queryKey: ["deletedPages"] });
     },
   });
@@ -117,11 +116,11 @@ export const useUpdatePageMutation = (queryClient: QueryClient) => {
     mutationFn: async (variables: {
       id: string;
       pageName?: string;
-      collectionId?: string | null;
+      parentId?: string | null;
       isFavourite?: boolean;
       accessedAt?: string;
     }) => {
-      const { id, pageName, collectionId, isFavourite, accessedAt } = variables;
+      const { id, pageName, parentId, isFavourite, accessedAt } = variables;
 
       const response = await fetch(`/api/pages/${id}`, {
         method: "PATCH",
@@ -129,10 +128,10 @@ export const useUpdatePageMutation = (queryClient: QueryClient) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          ...(typeof pageName !== "undefined" && { pageName }),
-          ...(typeof collectionId !== "undefined" && { collectionId }),
-          ...(typeof isFavourite !== "undefined" && { isFavourite }),
-          ...(typeof accessedAt !== "undefined" && { accessedAt }),
+          pageName,
+          parentId,
+          isFavourite,
+          accessedAt,
         }),
       });
       if (!response.ok) throw new Error("Failed to update page");
@@ -142,7 +141,6 @@ export const useUpdatePageMutation = (queryClient: QueryClient) => {
     onSuccess: ({ id }) => {
       queryClient.invalidateQueries({ queryKey: ["pageList"] });
       queryClient.invalidateQueries({ queryKey: ["favouritePages"] });
-      queryClient.invalidateQueries({ queryKey: ["collectionList"] });
       queryClient.invalidateQueries({ queryKey: ["page", id] });
     },
   });
@@ -167,7 +165,6 @@ export const useDeletePageMutation = (queryClient: QueryClient) => {
     onSuccess: ({ id }) => {
       queryClient.invalidateQueries({ queryKey: ["pageList"] });
       queryClient.invalidateQueries({ queryKey: ["favouritePages"] });
-      queryClient.invalidateQueries({ queryKey: ["collectionList"] });
       queryClient.invalidateQueries({ queryKey: ["deletedPages"] });
       queryClient.invalidateQueries({ queryKey: ["page", id] });
     },
@@ -185,7 +182,6 @@ export const usePermanentlyDeletePageMutation = (queryClient: QueryClient) => {
     },
     onSuccess: (data, { id }) => {
       queryClient.invalidateQueries({ queryKey: ["pageList"] });
-      queryClient.invalidateQueries({ queryKey: ["collectionList"] });
       queryClient.invalidateQueries({ queryKey: ["deletedPages"] });
       queryClient.removeQueries({ queryKey: ["page", id] });
     },
@@ -214,8 +210,6 @@ export const useUndoDeletePageMutation = (queryClient: QueryClient) => {
     onSuccess: ({ id }) => {
       queryClient.invalidateQueries({ queryKey: ["pageList"] });
       queryClient.invalidateQueries({ queryKey: ["favouritePages"] });
-      queryClient.invalidateQueries({ queryKey: ["collectionList"] });
-      queryClient.invalidateQueries({ queryKey: ["favouriteCollections"] });
       queryClient.invalidateQueries({ queryKey: ["deletedPages"] });
       queryClient.invalidateQueries({ queryKey: ["page", id] });
     },

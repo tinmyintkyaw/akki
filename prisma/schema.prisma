@@ -32,7 +32,7 @@ model Session {
   userId             String
   expires            DateTime
   user               User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
-  MultiplayerSession MultiplayerSession[]
+  multiplayerSession MultiplayerSession[]
 }
 
 model MultiplayerSession {
@@ -45,16 +45,15 @@ model MultiplayerSession {
 }
 
 model User {
-  id             String       @id @default(cuid())
+  id             String    @id @default(cuid())
   name           String?
-  email          String?      @unique
+  email          String?   @unique
   emailVerified  DateTime?
   image          String?
   typesenseKeyId Int?
   typesenseKey   String?
   accounts       Account[]
   sessions       Session[]
-  collections    Collection[]
   pages          Page[]
   files          File[]
 }
@@ -67,38 +66,23 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Collection {
-  id             String    @id @default(cuid())
-  collectionName String
-  createdAt      DateTime  @default(now())
-  modifiedAt     DateTime  @default(now())
-  accessedAt     DateTime  @default(now())
-  isDeleted      Boolean   @default(false)
-  deletedAt      DateTime?
-  isFavourite    Boolean   @default(false)
-  userId         String
-  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  pages          Page[]
-
-  @@unique([id, userId])
-}
-
 model Page {
-  id           String     @id @default(cuid())
-  pageName     String
-  ydoc         Bytes?
-  createdAt    DateTime   @default(now())
-  modifiedAt   DateTime   @default(now())
-  accessedAt   DateTime   @default(now())
-  isDeleted    Boolean    @default(false)
-  deletedAt    DateTime?
-  isFavourite  Boolean    @default(false)
-  textContent  String
-  userId       String
-  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  collectionId String
-  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
-  files        File[]
+  id          String    @id @default(cuid())
+  pageName    String
+  ydoc        Bytes?
+  textContent String
+  isFavourite Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  modifiedAt  DateTime  @default(now())
+  accessedAt  DateTime  @default(now())
+  isDeleted   Boolean   @default(false)
+  deletedAt   DateTime?
+  files       File[]
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parentId    String?
+  childPages  Page[]    @relation(name: "childPages")
+  Page        Page?     @relation(name: "childPages", fields: [parentId], references: [id])
 
   @@unique([id, userId])
 }

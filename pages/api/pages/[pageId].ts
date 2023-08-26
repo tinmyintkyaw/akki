@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiHandler } from "next";
 import { getServerSession } from "next-auth";
 import path from "path";
 import fs from "fs";
@@ -10,47 +10,43 @@ import { authOptions } from "../auth/[...nextauth]";
 import { prisma } from "@/lib/prismadb";
 import { pageSelect } from "./index";
 import { Prisma } from "@prisma/client";
+import {
+  isStringOrUndefined,
+  isDateStringOrUndefined,
+  isNullOrUndefinedOrString,
+  isBooleanOrUndefined,
+} from "@/utils/typeGuards";
 
 const pageSelectWithTextContent = {
   ...pageSelect,
   textContent: true,
+  childPages: {
+    select: {
+      id: true,
+      pageName: true,
+      userId: true,
+      isFavourite: true,
+      textContent: true,
+      createdAt: true,
+      modifiedAt: true,
+    },
+  },
 } satisfies Prisma.PageSelect;
 
-export default async function pageHandler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+const pageAPIHandler: NextApiHandler = async (req, res) => {
   const { pageId } = req.query;
-
   const session = await getServerSession(req, res, authOptions);
-
-  if (!session) return res.status(401).json({ message: "Unauthorized" });
-
-  if (!pageId || typeof pageId !== "string")
-    return res.status(400).json({ message: "Bad Request" });
+  if (!session) return res.status(401).end();
+  if (!pageId || typeof pageId !== "string") return res.status(400).end();
 
   if (req.method === "PATCH") {
-    const { pageName, collectionId, isFavourite, isDeleted, accessedAt } =
-      req.body;
+    const { pageName, parentId, isFavourite, isDeleted, accessedAt } = req.body;
 
-    if (pageName && typeof pageName !== "string")
-      return res.status(400).json({ message: "Bad Request" });
-
-    if (collectionId && typeof collectionId !== "string")
-      return res.status(400).json({ message: "Bad Request" });
-
-    if (typeof isFavourite !== "undefined" && typeof isFavourite !== "boolean")
-      return res.status(400).json({ message: "Bad Request" });
-
-    if (typeof isDeleted !== "undefined" && typeof isDeleted !== "boolean")
-      return res.status(400).json({ message: "Bad Request" });
-
-    if (
-      typeof accessedAt !== "undefined" &&
-      typeof accessedAt !== "string" &&
-      isNaN(Date.parse(accessedAt))
-    )
-      return res.status(400).json({ message: "Bad Request" });
+    if (!isStringOrUndefined(pageName)) return res.status(400).end();
+    if (!isNullOrUndefinedOrString(parentId)) return res.status(400).end();
+    if (!isBooleanOrUndefined(isFavourite)) return res.status(400).end();
+    if (!isBooleanOrUndefined(isDeleted)) return res.status(400).end();
+    if (!isDateStringOrUndefined(accessedAt)) return res.status(400).end();
 
     try {
       const updatedPage = await prisma.page.update({
@@ -62,30 +58,25 @@ export default async function pageHandler(
         },
         data: {
           pageName: pageName,
-          collectionId: collectionId,
+          parentId: parentId,
           modifiedAt: new Date(),
           isFavourite: isFavourite,
           isDeleted: isDeleted,
           deletedAt: isDeleted ? new Date() : undefined,
-          accessedAt:
-            typeof accessedAt !== "undefined"
-              ? new Date(Date.parse(accessedAt))
-              : undefined,
+          accessedAt: accessedAt ? new Date(Date.parse(accessedAt)) : undefined,
         },
         select: pageSelectWithTextContent,
       });
 
-      // On restoring a page, restore its collection as well
-      if (typeof isDeleted !== "undefined" && !isDeleted) {
-        await prisma.collection.update({
+      if (typeof isDeleted !== "undefined") {
+        await prisma.page.updateMany({
           where: {
-            id_userId: {
-              id: updatedPage.collectionId,
-              userId: session.accountId,
-            },
+            userId: session.accountId,
+            parentId: pageId,
           },
           data: {
-            isDeleted: false,
+            isDeleted: isDeleted,
+            deletedAt: isDeleted ? new Date() : undefined,
           },
         });
       }
@@ -100,8 +91,8 @@ export default async function pageHandler(
         isFavourite: updatedPage.isFavourite,
       };
 
+      // Update page in typesense db
       if (typeof isDeleted === "undefined") {
-        // Update page in typesense db
         await serverTypesenseClient
           .collections("pages")
           .documents()
@@ -113,24 +104,48 @@ export default async function pageHandler(
             .collections("pages")
             .documents(updatedPage.id)
             .delete();
+
+          updatedPage.childPages.map(async (page) => {
+            await serverTypesenseClient
+              .collections("pages")
+              .documents(page.id)
+              .delete();
+          });
         } else {
           // and add it back on restore
           await serverTypesenseClient
             .collections("pages")
             .documents()
             .upsert(typesensePage);
+
+          updatedPage.childPages.forEach(async (page) => {
+            const typesensePage: typesensePageDocument = {
+              id: page.id,
+              userId: page.userId,
+              pageName: page.pageName,
+              pageTextContent: page.textContent,
+              pageCreatedAt: page.createdAt.getTime(),
+              pageModifiedAt: page.modifiedAt.getTime(),
+              isFavourite: page.isFavourite,
+            };
+
+            await serverTypesenseClient
+              .collections("pages")
+              .documents()
+              .upsert(typesensePage);
+          });
         }
       }
 
-      // transform data for client
-      const { textContent, collection, ...responseData } = {
+      const { Page, ...response } = {
         ...updatedPage,
-        collectionName: updatedPage.collection.collectionName,
+        childPages: updatedPage.childPages.map((page) => page.id),
+        parentPageName: updatedPage.Page ? updatedPage.pageName : null,
       };
 
-      return res.status(200).json(responseData);
+      return res.status(200).json(response);
     } catch (err) {
-      return res.status(500).json({ message: "Internal Server Error" });
+      return res.status(500).end();
     }
   }
 
@@ -158,9 +173,16 @@ export default async function pageHandler(
         .documents(deletedPage.id)
         .delete();
 
+      deletedPage.childPages.forEach(async (page) => {
+        await serverTypesenseClient
+          .collections("pages")
+          .documents(page.id)
+          .delete();
+      });
+
       return res.status(204).end();
     } catch (err) {
-      return res.status(500).json({ message: "Internal Server Error" });
+      return res.status(500).end();
     }
   }
 
@@ -176,18 +198,21 @@ export default async function pageHandler(
         select: pageSelect,
       });
 
-      if (!page) return res.status(404).json({ message: "Not Found" });
+      if (!page) return res.status(404).end();
 
-      const { collection, ...response } = {
+      const { Page, ...response } = {
         ...page,
-        collectionName: page.collection.collectionName,
+        childPages: page.childPages.map((page) => page.id),
+        parentPageName: page.Page ? page.pageName : null,
       };
 
       return res.status(200).json(response);
     } catch (err) {
-      return res.status(500).json({ message: "Internal Server Error" });
+      return res.status(500).end();
     }
   }
 
-  return res.status(405).json({ message: "Method Not Allowed" });
-}
+  return res.status(405).end();
+};
+
+export default pageAPIHandler;

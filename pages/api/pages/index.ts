@@ -1,5 +1,5 @@
 import * as Y from "yjs";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiHandler } from "next";
 import { getServerSession } from "next-auth/next";
 import { Prisma } from "@prisma/client";
 
@@ -8,6 +8,7 @@ import { prisma } from "@/lib/prismadb";
 import serverTypesenseClient, {
   typesensePageDocument,
 } from "@/typesense/typesense-client";
+import { isNullOrUndefinedOrString } from "@/utils/typeGuards";
 
 export const pageSelect = {
   id: true,
@@ -16,13 +17,19 @@ export const pageSelect = {
   createdAt: true,
   accessedAt: true,
   modifiedAt: true,
-  collectionId: true,
   userId: true,
   isDeleted: true,
   deletedAt: true,
-  collection: {
+  parentId: true,
+  childPages: {
+    where: {
+      isDeleted: false,
+    },
     select: {
-      collectionName: true,
+      id: true,
+    },
+    orderBy: {
+      createdAt: "asc",
     },
   },
   files: {
@@ -31,31 +38,30 @@ export const pageSelect = {
       fileName: true,
     },
   },
+  Page: {
+    select: {
+      pageName: true,
+    },
+  },
 } satisfies Prisma.PageSelect;
 
-export default async function pagesHandler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+const pagesAPIHandler: NextApiHandler = async (req, res) => {
   const session = await getServerSession(req, res, authOptions);
 
-  if (!session) return res.status(401).json({ message: "Unauthorized" });
+  if (!session) return res.status(401).end();
 
   if (req.method === "POST") {
-    const { pageName, collectionId } = req.body;
+    const { pageName, parentId } = req.body;
 
-    if (!pageName || typeof pageName !== "string")
-      return res.status(400).json({ message: "Bad Request" });
-
-    if (!collectionId || typeof collectionId !== "string")
-      return res.status(400).json({ message: "Bad Request" });
+    if (typeof pageName !== "string") return res.status(400).end();
+    if (!isNullOrUndefinedOrString(parentId)) return res.status(400).end();
 
     try {
       const newPage = await prisma.page.create({
         data: {
           userId: session.accountId,
           pageName: pageName,
-          collectionId: collectionId,
+          parentId: parentId,
           ydoc: Buffer.from(Y.encodeStateAsUpdate(new Y.Doc())),
           textContent: "",
         },
@@ -77,14 +83,15 @@ export default async function pagesHandler(
         .documents()
         .create(typesensePage);
 
-      const { collection, ...response } = {
+      const { Page, ...response } = {
         ...newPage,
-        collectionName: newPage.collection.collectionName,
+        childPages: newPage.childPages.map((page) => page.id),
+        parentPageName: newPage.Page ? newPage.pageName : null,
       };
 
       return res.status(201).json(response);
     } catch (err) {
-      return res.status(500).json({ message: err });
+      return res.status(500).end();
     }
   }
 
@@ -102,18 +109,22 @@ export default async function pagesHandler(
       });
 
       const response = pages.map((page) => {
-        const { collection, ...transformedPage } = {
+        const { Page, ...response } = {
           ...page,
-          collectionName: page.collection.collectionName,
+          childPages: page.childPages.map((page) => page.id),
+          parentPageName: page.Page ? page.Page.pageName : null,
         };
-        return transformedPage;
+
+        return response;
       });
 
       return res.status(200).json(response);
     } catch (err) {
-      return res.status(500).json({ message: "Internal Server Error" });
+      return res.status(500).end();
     }
   }
 
-  return res.status(405).json({ message: "Method Not Allowed" });
-}
+  return res.status(405).end();
+};
+
+export default pagesAPIHandler;

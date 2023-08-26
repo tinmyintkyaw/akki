@@ -21,11 +21,13 @@ const trashPagesHandler: NextApiHandler = async (req, res) => {
       });
 
       const response = pages.map((page) => {
-        const { collection, ...transformedPage } = {
+        const { Page, ...response } = {
           ...page,
-          collectionName: page.collection.collectionName,
+          childPages: page.childPages.map((page) => page.id),
+          parentPageName: page.Page ? page.Page.pageName : null,
         };
-        return transformedPage;
+
+        return response;
       });
 
       return res.status(200).json(response);

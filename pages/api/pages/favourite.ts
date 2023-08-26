@@ -8,7 +8,7 @@ import { pageSelect } from ".";
 const favouritePagesHandler: NextApiHandler = async (req, res) => {
   const session = await getServerSession(req, res, authOptions);
 
-  if (!session) return res.status(401).json({ message: "Unauthorized" });
+  if (!session) return res.status(401).end();
 
   if (req.method === "GET") {
     try {
@@ -16,6 +16,7 @@ const favouritePagesHandler: NextApiHandler = async (req, res) => {
         where: {
           userId: session.accountId,
           isFavourite: true,
+          isDeleted: false,
         },
         select: pageSelect,
         orderBy: {
@@ -24,19 +25,21 @@ const favouritePagesHandler: NextApiHandler = async (req, res) => {
       });
 
       const response = favouritePages.map((page) => {
-        const { collection, ...transformedPage } = {
+        const { Page, ...response } = {
           ...page,
-          collectionName: page.collection.collectionName,
+          childPages: page.childPages.map((page) => page.id),
+          parentPageName: page.Page ? page.Page.pageName : null,
         };
-        return transformedPage;
+
+        return response;
       });
 
       return res.status(200).json(response);
     } catch (err) {
-      return res.status(500).json({ message: err });
+      return res.status(500).end();
     }
   }
-  return res.status(405).json({ message: "Method Not Allowed" });
+  return res.status(405).end();
 };
 
 export default favouritePagesHandler;
