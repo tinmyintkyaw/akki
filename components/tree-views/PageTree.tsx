@@ -10,11 +10,6 @@ import {
   InteractionManager,
 } from "react-complex-tree";
 
-import { usePageQuery, useUpdatePageMutation } from "@/hooks/pageQueryHooks";
-import { useUpdateCollectionMutation } from "@/hooks/collectionQueryHooks";
-import { useTreeData } from "@/hooks/useTreeData";
-
-import "react-complex-tree/lib/style-modern.css";
 import {
   ItemArrow,
   ItemTitle,
@@ -24,15 +19,52 @@ import {
 } from "./TreeItemElements";
 import TreeItem from "./TreeItem";
 
+import {
+  usePageQuery,
+  usePageListQuery,
+  useUpdatePageMutation,
+} from "@/hooks/pageQueryHooks";
+import { useTreeData } from "@/hooks/useTreeData";
+import useParentPageIds from "@/hooks/useParentPageIds";
+
+import "react-complex-tree/lib/style-modern.css";
+
+const customInteractionMode: InteractionManager = {
+  mode: "custom",
+  extends: InteractionMode.ClickArrowToExpand,
+  createInteractiveElementProps: (item, treeId, actions, renderFlags) => {
+    return {
+      onClick: (e) => {
+        e.stopPropagation();
+        actions.focusItem();
+        if (e.shiftKey) {
+          actions.selectUpTo(!e.ctrlKey);
+        } else if (e.ctrlKey || e.metaKey) {
+          if (renderFlags.isSelected) {
+            actions.unselectItem();
+          } else {
+            actions.addToSelectedItems();
+          }
+        } else {
+          // actions.selectItem();
+          actions.primaryAction();
+        }
+      },
+    };
+  },
+};
+
 const PageTree: React.FC = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const pageQuery = usePageQuery(router.query.pageId as string);
 
   const updatePageMutation = useUpdatePageMutation(queryClient);
-  const updateCollectionMutation = useUpdateCollectionMutation(queryClient);
 
   const treeData = useTreeData();
+  const parentPageIds = useParentPageIds(
+    pageQuery.data ? pageQuery.data.id : ""
+  );
 
   const [focusedItem, setFocusedItem] = useState<TreeItemIndex>("");
   const [expandedItems, setExpandedItems] = useState<TreeItemIndex[]>([]);
@@ -43,11 +75,11 @@ const PageTree: React.FC = () => {
 
   const mainTreeRef = useRef<TreeRef>(null);
 
-  // Automatically expand the collection current page is in
+  // Automatically expand the parents of the current page
   useEffect(() => {
-    if (pageQuery.isLoading || pageQuery.isError) return;
-    setExpandedItems((prev) => [...prev, pageQuery.data.collectionId]);
-  }, [pageQuery.data, pageQuery.isError, pageQuery.isLoading]);
+    if (!parentPageIds) return;
+    setExpandedItems((prev) => [...prev, ...parentPageIds]);
+  }, [parentPageIds]);
 
   // This effect is required to make React Complex Tree handle focus management
   // on rename input when rename action is initiated from context menu
@@ -61,9 +93,7 @@ const PageTree: React.FC = () => {
       {treeData && (
         <ControlledTreeEnvironment
           items={treeData.items}
-          getItemTitle={(item) =>
-            item.isFolder ? item.data.collectionName : item.data.pageName
-          }
+          getItemTitle={(item) => item.data.pageName}
           viewState={{
             ["mainTree"]: { focusedItem, expandedItems, selectedItems },
           }}
@@ -72,19 +102,7 @@ const PageTree: React.FC = () => {
           canReorderItems={false}
           canRename={true}
           canSearch={false}
-          canDropAt={(items, target) => {
-            // Prevent dropping a collection onto another collection
-            if (
-              items.some((item) => item.isFolder) &&
-              target.targetType === "item" &&
-              target.parentItem === "root"
-            ) {
-              return false;
-            } else {
-              return true;
-            }
-          }}
-          defaultInteractionMode={InteractionMode.ClickArrowToExpand}
+          defaultInteractionMode={customInteractionMode}
           onFocusItem={(item) => setFocusedItem(item.index)}
           onExpandItem={(item) =>
             setExpandedItems([...expandedItems, item.index])
@@ -101,19 +119,10 @@ const PageTree: React.FC = () => {
           }}
           onRenameItem={(item, newName) => {
             setIsRenaming(true);
-
-            if (item.isFolder) {
-              console.log({ item, newName });
-              updateCollectionMutation.mutate({
-                id: item.index.toString(),
-                collectionName: newName,
-              });
-            } else {
-              updatePageMutation.mutate({
-                id: item.index.toString(),
-                pageName: newName,
-              });
-            }
+            updatePageMutation.mutate({
+              id: item.index.toString(),
+              pageName: newName,
+            });
             setIsRenaming(false);
           }}
           onAbortRenamingItem={() => setIsRenaming(false)}
@@ -121,17 +130,14 @@ const PageTree: React.FC = () => {
           onDrop={(items, target) => {
             items.forEach((item) => {
               if (target.targetType === "item") {
-                // Do nothing if dropped onto it's own collection
-                if (item.data.collectionId === target.targetItem) return;
-
                 updatePageMutation.mutate({
                   id: item.index.toString(),
-                  collectionId: target.targetItem.toString(),
+                  parentId: target.targetItem.toString(),
                 });
               }
             });
           }}
-          renderDepthOffset={32}
+          renderDepthOffset={16}
           renderItemTitle={(props) => <ItemTitle {...props} />}
           renderItemArrow={(props) => <ItemArrow {...props} />}
           renderItemsContainer={(props) => <ItemsContainer {...props} />}

@@ -23,6 +23,31 @@ import {
 } from "./TreeItemElements";
 import TreeItem from "./TreeItem";
 
+const customInteractionMode: InteractionManager = {
+  mode: "custom",
+  extends: InteractionMode.ClickArrowToExpand,
+  createInteractiveElementProps: (item, treeId, actions, renderFlags) => {
+    return {
+      onClick: (e) => {
+        e.stopPropagation();
+        actions.focusItem();
+        if (e.shiftKey) {
+          actions.selectUpTo(!e.ctrlKey);
+        } else if (e.ctrlKey || e.metaKey) {
+          if (renderFlags.isSelected) {
+            actions.unselectItem();
+          } else {
+            actions.addToSelectedItems();
+          }
+        } else {
+          // actions.selectItem();
+          actions.primaryAction();
+        }
+      },
+    };
+  },
+};
+
 const FavouritesTree: React.FC = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -44,7 +69,11 @@ const FavouritesTree: React.FC = () => {
   // Automatically expand the collection current page is in
   useEffect(() => {
     if (pageQuery.isLoading || pageQuery.isError) return;
-    setExpandedItems((prev) => [...prev, pageQuery.data.collectionId]);
+
+    const { parentId } = pageQuery.data;
+    if (!parentId) return;
+
+    setExpandedItems((prev) => [...prev, parentId]);
   }, [pageQuery.data, pageQuery.isError, pageQuery.isLoading]);
 
   // This effect is required to make React Complex Tree handle focus management
@@ -59,16 +88,14 @@ const FavouritesTree: React.FC = () => {
       {favTreeData && (
         <ControlledTreeEnvironment
           items={favTreeData.items}
-          getItemTitle={(item) =>
-            item.isFolder ? item.data.collectionName : item.data.pageName
-          }
+          getItemTitle={(item) => item.data.pageName}
           viewState={{
             ["favTree"]: { focusedItem, expandedItems, selectedItems },
           }}
           canDragAndDrop={false}
           canSearch={false}
           canRename={true}
-          defaultInteractionMode={InteractionMode.ClickArrowToExpand}
+          defaultInteractionMode={customInteractionMode}
           onFocusItem={(item) => setFocusedItem(item.index)}
           onExpandItem={(item) =>
             setExpandedItems([...expandedItems, item.index])
@@ -85,15 +112,10 @@ const FavouritesTree: React.FC = () => {
           }}
           onRenameItem={(item, newName) => {
             setIsRenaming(true);
-
-            if (item.isFolder) {
-              // ...Mutate Collection
-            } else {
-              updatePageMutation.mutate({
-                id: item.index.toString(),
-                pageName: newName,
-              });
-            }
+            updatePageMutation.mutate({
+              id: item.index.toString(),
+              pageName: newName,
+            });
             setIsRenaming(false);
           }}
           onAbortRenamingItem={() => setIsRenaming(false)}

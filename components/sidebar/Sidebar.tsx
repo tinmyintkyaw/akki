@@ -10,7 +10,7 @@ import PageTree from "@/components/tree-views/PageTree";
 import FavouritePageTree from "@/components/tree-views/FavouritePageTree";
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
-import { useCreateCollectionMutation } from "@/hooks/collectionQueryHooks";
+import { useCreatePageMutation } from "@/hooks/pageQueryHooks";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -24,7 +24,7 @@ const Sidebar: React.FC<SidebarProps> = ({ setIsOpen }) => {
   const [favouritesDiv] = useAutoAnimate();
   const [mainTreeDiv] = useAutoAnimate();
 
-  const createCollectionMutation = useCreateCollectionMutation(queryClient);
+  const createPageMutation = useCreatePageMutation(queryClient);
 
   return (
     <aside className="bg-muted">
@@ -77,11 +77,11 @@ const Sidebar: React.FC<SidebarProps> = ({ setIsOpen }) => {
           variant={"ghost"}
           className="w-full justify-start"
           onClick={() =>
-            createCollectionMutation.mutate({ collectionName: "Untitled" })
+            createPageMutation.mutate({ pageName: "Untitled", parentId: null })
           }
         >
           <Plus className="mr-2 h-4 w-4" />
-          <span className="align-middle leading-4">New Collection</span>
+          <span className="align-middle leading-4">New Page</span>
         </Button>
 
         <DeletedPages />

@@ -1,6 +1,5 @@
 import clsx from "clsx";
 import { TreeItemRenderContext } from "react-complex-tree";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 import { Check, ChevronDown } from "lucide-react";
 
@@ -15,7 +14,7 @@ interface ItemTitleProps {
   title: string;
 }
 export const ItemTitle: React.FC<ItemTitleProps> = ({ title }) => (
-  <span className="mx-2 line-clamp-1 flex-grow text-start align-middle text-sm font-medium leading-4 text-secondary-foreground">
+  <span className="line-clamp-1 flex-grow text-start align-middle text-sm font-medium leading-4 text-secondary-foreground">
     {title}
   </span>
 );
@@ -23,19 +22,25 @@ export const ItemTitle: React.FC<ItemTitleProps> = ({ title }) => (
 interface ItemArrowProps {
   context: TreeItemRenderContext;
 }
-export const ItemArrow: React.FC<ItemArrowProps> = ({ context }) => (
-  <div
-    {...context.arrowProps}
-    className="flex h-8 items-center justify-center rounded pl-2"
-  >
-    <ChevronDown
-      className={clsx(
-        "h-4 w-4 text-accent-foreground transition-transform duration-300",
-        context.isExpanded && "rotate-180"
-      )}
-    />
-  </div>
-);
+export const ItemArrow: React.FC<ItemArrowProps> = ({ context }) => {
+  return (
+    <div
+      {...context.arrowProps}
+      onClick={(e) => {
+        e.stopPropagation();
+        context.arrowProps.onClick && context.arrowProps.onClick(e);
+      }}
+      className="flex h-8 w-8 items-center justify-center rounded"
+    >
+      <ChevronDown
+        className={clsx(
+          "h-4 w-4 text-accent-foreground transition-transform duration-300",
+          context.isExpanded && "rotate-180"
+        )}
+      />
+    </div>
+  );
+};
 
 interface TreeContainerProps {
   children: React.ReactNode;
@@ -53,12 +58,8 @@ interface ItemsContainerProps {
 }
 export const ItemsContainer: React.FC<ItemsContainerProps> = (props) => {
   const { children, containerProps, depth } = props;
-  const [parent, enableAnimations] = useAutoAnimate();
-  return (
-    <ul {...containerProps} ref={parent}>
-      {children}
-    </ul>
-  );
+
+  return <ul {...containerProps}>{children}</ul>;
 };
 
 interface RenameInputProps {
