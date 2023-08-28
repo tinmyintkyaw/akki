@@ -9,7 +9,7 @@ import {
 import { useRouter } from "next/router";
 import { ArrowDownUp, CornerDownLeft, Search, XCircle } from "lucide-react";
 
-import useSearchAPIKey from "@/hooks/useSearchAPIKey";
+import useSearchAPIKey from "@/hooks/search/useSearchAPIKey";
 
 import { Dialog, DialogTrigger, DialogContent } from "../ui/dialog";
 import { ScrollArea } from "../ui/scroll-area";

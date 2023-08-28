@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { ExplicitDataSource } from "react-complex-tree";
 
-import { usePageListQuery } from "./pageQueryHooks";
+import { usePageListQuery } from "../pageQueryHooks";
 import { Page } from "@/types/queries";
 
 export const useTreeData = () => {

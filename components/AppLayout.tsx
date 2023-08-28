@@ -8,7 +8,7 @@ import { InstantSearch } from "react-instantsearch-hooks-web";
 import Sidebar from "./sidebar/Sidebar";
 
 import { usePageQuery } from "@/hooks/pageQueryHooks";
-import useInstantSearchClient from "@/hooks/useInstantSearchClient";
+import useInstantSearchClient from "@/hooks/search/useInstantSearchClient";
 
 import { SidebarContext } from "@/contexts/SidebarContext";
 import "allotment/dist/style.css";

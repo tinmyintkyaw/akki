@@ -10,7 +10,7 @@ import {
 
 import { usePageQuery, useUpdatePageMutation } from "@/hooks/pageQueryHooks";
 import useParentPageIds from "@/hooks/useParentPageIds";
-import { useTreeData } from "@/hooks/useTreeData";
+import { useTreeData } from "@/hooks/tree-view/useTreeData";
 
 import customInteractionMode from "@/components/tree-views/CustomInteractionMode";
 import ItemArrow from "@/components/tree-views/ItemArrow";

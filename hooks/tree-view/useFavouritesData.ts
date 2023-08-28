@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { ExplicitDataSource } from "react-complex-tree";
 
-import { useFavouritePagesQuery } from "./pageQueryHooks";
+import { useFavouritePagesQuery } from "../pageQueryHooks";
 
 const useFavouritesTreeData = () => {
   const favPageListQuery = useFavouritePagesQuery();

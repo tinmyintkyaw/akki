@@ -9,7 +9,7 @@ import {
 } from "react-complex-tree";
 
 import { usePageQuery, useUpdatePageMutation } from "@/hooks/pageQueryHooks";
-import useFavouritesTreeData from "@/hooks/useFavouritesData";
+import useFavouritesTreeData from "@/hooks/tree-view/useFavouritesData";
 
 import customInteractionMode from "@/components/tree-views/CustomInteractionMode";
 import ItemArrow from "@/components/tree-views/ItemArrow";

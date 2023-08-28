@@ -2,7 +2,7 @@ import AppLayout from "@/components/AppLayout";
 import { useSession } from "next-auth/react";
 
 import Editor from "@/components/editor/Editor";
-import useMultiplayerProvider from "@/hooks/useMultiplayerProvider";
+import useMultiplayerProvider from "@/hooks/editor/useMultiplayerProvider";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { usePageQuery } from "@/hooks/pageQueryHooks";
