@@ -1,14 +1,14 @@
 import { useTheme } from "next-themes";
-import { Button } from "./ui/button";
-import { ScrollArea } from "./ui/scroll-area";
+import { Button } from "../ui/button";
+import { ScrollArea } from "../ui/scroll-area";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "./ui/tabs";
+} from "../ui/select";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "../ui/tabs";
 
 const SettingsComponent: React.FC = () => {
   const { theme, setTheme } = useTheme();

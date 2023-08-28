@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useEditor, EditorContent, generateJSON } from "@tiptap/react";
+import { EditorContent, useEditor } from "@tiptap/react";
 
 import { HocuspocusProvider } from "@hocuspocus/provider";
 import clsx from "clsx";
@@ -23,7 +23,7 @@ import CustomHeading from "@/tiptap/CustomHeading";
 import CustomImageFrontend from "@/tiptap/CustomImageFrontend";
 import CustomDocument from "@/tiptap/CustomDocument";
 
-import SelectMenu from "@/components/BubbleMenu";
+import SelectMenu from "@/components/editor/BubbleMenu";
 
 import { usePageQuery, useUpdatePageMutation } from "@/hooks/pageQueryHooks";
 
@@ -107,7 +107,7 @@ const Editor = (props: EditorProps) => {
         accessedAt: new Date(Date.now()).toISOString(),
       });
 
-      // set pageId for later access from prosemirror extensions
+      // set pageId for later access from prose-mirror extensions
       editor.storage.doc.pageId = pageQuery.data?.id;
     },
   });
@@ -137,7 +137,7 @@ const Editor = (props: EditorProps) => {
   }, [pageQuery.data, pageQuery.isError, pageQuery.isLoading, titleEditor]);
 
   return (
-    <div className="h-full w-full">
+    <>
       {!pageQuery.isLoading && !pageQuery.isError && pageQuery.data && (
         <EditorContent
           editor={titleEditor}
@@ -169,7 +169,7 @@ const Editor = (props: EditorProps) => {
           <SelectMenu editor={contentEditor} />
         </EditorContent>
       )}
-    </div>
+    </>
   );
 };
 

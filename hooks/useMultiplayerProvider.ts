@@ -51,7 +51,7 @@ const useMultiplayerProvider = (pageId: string) => {
   }, [pageId]);
 
   return {
-    providerRef: provider,
+    provider: provider.current,
     isAuthenticated,
     isReady,
     status,

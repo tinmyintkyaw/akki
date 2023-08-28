@@ -1,52 +1,25 @@
-import React, { useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  Tree,
-  InteractionMode,
-  TreeRef,
-  TreeItemIndex,
   ControlledTreeEnvironment,
-  InteractionManager,
+  Tree,
+  TreeItemIndex,
+  TreeRef,
 } from "react-complex-tree";
 
 import { usePageQuery, useUpdatePageMutation } from "@/hooks/pageQueryHooks";
 import useFavouritesTreeData from "@/hooks/useFavouritesData";
 
-import "react-complex-tree/lib/style-modern.css";
-import {
-  ItemArrow,
-  ItemTitle,
-  ItemsContainer,
-  RenameInput,
-  TreeContainer,
-} from "./TreeItemElements";
-import TreeItem from "./TreeItem";
+import customInteractionMode from "@/components/tree-views/CustomInteractionMode";
+import ItemArrow from "@/components/tree-views/ItemArrow";
+import ItemRenameInput from "@/components/tree-views/ItemRenameInput";
+import ItemTitle from "@/components/tree-views/ItemTitle";
+import ItemsContainer from "@/components/tree-views/ItemsContainer";
+import TreeContainer from "@/components/tree-views/TreeContainer";
+import TreeItem from "@/components/tree-views/TreeItem";
 
-const customInteractionMode: InteractionManager = {
-  mode: "custom",
-  extends: InteractionMode.ClickArrowToExpand,
-  createInteractiveElementProps: (item, treeId, actions, renderFlags) => {
-    return {
-      onClick: (e) => {
-        e.stopPropagation();
-        actions.focusItem();
-        if (e.shiftKey) {
-          actions.selectUpTo(!e.ctrlKey);
-        } else if (e.ctrlKey || e.metaKey) {
-          if (renderFlags.isSelected) {
-            actions.unselectItem();
-          } else {
-            actions.addToSelectedItems();
-          }
-        } else {
-          // actions.selectItem();
-          actions.primaryAction();
-        }
-      },
-    };
-  },
-};
+import "react-complex-tree/lib/style-modern.css";
 
 const FavouritesTree: React.FC = () => {
   const router = useRouter();
@@ -125,7 +98,7 @@ const FavouritesTree: React.FC = () => {
           renderItemArrow={(props) => <ItemArrow {...props} />}
           renderItemsContainer={(props) => <ItemsContainer {...props} />}
           renderTreeContainer={(props) => <TreeContainer {...props} />}
-          renderRenameInput={(props) => <RenameInput {...props} />}
+          renderRenameInput={(props) => <ItemRenameInput {...props} />}
           renderItem={(props) => (
             <TreeItem
               {...props}

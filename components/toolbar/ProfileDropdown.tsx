@@ -10,7 +10,7 @@ import {
   UserCircle,
 } from "lucide-react";
 
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import {
   Dialog,
   DialogContent,
@@ -18,7 +18,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "./ui/dialog";
+} from "../ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,8 +30,8 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import SettingsComponent from "./Settings";
+} from "../ui/dropdown-menu";
+import SettingsComponent from "../settings/Settings";
 
 const ProfileDropdown = () => {
   const session = useSession();

@@ -11,15 +11,15 @@ import { ArrowDownUp, CornerDownLeft, Search, XCircle } from "lucide-react";
 
 import useSearchAPIKey from "@/hooks/useSearchAPIKey";
 
-import { Dialog, DialogTrigger, DialogContent } from "./ui/dialog";
-import { ScrollArea } from "./ui/scroll-area";
+import { Dialog, DialogTrigger, DialogContent } from "../ui/dialog";
+import { ScrollArea } from "../ui/scroll-area";
 import {
   Command,
   CommandEmpty,
   CommandInput,
   CommandItem,
   CommandList,
-} from "./ui/command";
+} from "../ui/command";
 
 import { typesensePageDocument } from "@/typesense/typesense-client";
 import { useQueryClient } from "@tanstack/react-query";

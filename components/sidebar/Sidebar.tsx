@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { useState } from "react";
+import { FC, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 
@@ -14,10 +14,10 @@ import { useCreatePageMutation } from "@/hooks/pageQueryHooks";
 
 interface SidebarProps {
   isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
+  toggleIsOpen: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ setIsOpen }) => {
+const Sidebar: FC<SidebarProps> = ({ toggleIsOpen }) => {
   const [isFavouritesOpen, setIsFavouritesOpen] = useState(true);
 
   const queryClient = useQueryClient();
@@ -34,11 +34,7 @@ const Sidebar: React.FC<SidebarProps> = ({ setIsOpen }) => {
           <h1>Project Potion</h1>
         </header>
 
-        <Button
-          variant={"ghost"}
-          size={"icon"}
-          onClick={() => setIsOpen(false)}
-        >
+        <Button variant={"ghost"} size={"icon"} onClick={() => toggleIsOpen()}>
           <PanelLeftClose className="h-5 w-5" />
         </Button>
       </div>

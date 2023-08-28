@@ -1,23 +1,24 @@
-import express from "express";
-import expressWebsockets from "express-ws";
-import { Server } from "@hocuspocus/server";
 import { Database } from "@hocuspocus/extension-database";
+import { Server } from "@hocuspocus/server";
 import { TiptapTransformer } from "@hocuspocus/transformer";
 import { JSONContent, generateText } from "@tiptap/core";
+import express from "express";
+import expressWebsockets from "express-ws";
 
 import { prisma } from "../lib/prismadb";
 
-import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
+import StarterKit from "@tiptap/starter-kit";
+import CustomDocument from "../tiptap/CustomDocument";
 import CustomImage from "../tiptap/CustomImageBackend";
 
+import TaskItem from "@tiptap/extension-task-item";
+import TaskList from "@tiptap/extension-task-list";
+import CustomHeading from "../tiptap/CustomHeading";
 import serverTypesenseClient, {
   typesenseCollectionSchema,
   typesensePageDocument,
 } from "../typesense/typesense-client";
-import TaskList from "@tiptap/extension-task-list";
-import TaskItem from "@tiptap/extension-task-item";
-import CustomHeading from "../tiptap/CustomHeading";
 
 // Configure hocuspocus
 const server = Server.configure({
@@ -50,6 +51,17 @@ const server = Server.configure({
 
     if (Date.now() > new Date(multiplayerSession.expires).getTime())
       throw new Error("Token expired");
+
+    const page = await prisma.page.findUnique({
+      where: {
+        id_userId: {
+          userId: multiplayerSession.session.userId,
+          id: data.documentName,
+        },
+      },
+    });
+
+    if (!page) throw new Error("Page not found");
 
     return { userId: multiplayerSession.session.userId };
   },
@@ -103,9 +115,11 @@ const server = Server.configure({
 
           const textContent = generateText(json, [
             StarterKit.configure({
+              document: false,
               history: false,
               heading: false,
             }),
+            CustomDocument,
             CustomHeading.configure({ levels: [1, 2, 3] }),
             Link,
             TaskList,

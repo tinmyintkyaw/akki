@@ -14,9 +14,23 @@ export const authOptions: AuthOptions = {
   },
 
   callbacks: {
-    async session({ session, user, token }) {
-      session.accountId = user.id;
-      return session;
+    async session({ session, user, token, newSession }) {
+      // session.accountId = user.id;
+      return { ...session, accountId: user.id };
+    },
+  },
+
+  events: {
+    async createUser({ user }) {
+      try {
+        await prisma.setting.create({
+          data: {
+            userId: user.id,
+          },
+        });
+      } catch (error) {
+        console.error(error);
+      }
     },
   },
 
@@ -34,6 +48,7 @@ export const authOptions: AuthOptions = {
       clientSecret: process.env.DISCORD_CLIENT_SECRET as string,
     }),
   ],
+
   pages: {
     signIn: "/signin",
   },

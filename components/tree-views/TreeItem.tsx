@@ -103,7 +103,7 @@ const TreeItem: React.FC<ItemProps> = (props) => {
                       item.index.toString(),
                     ]);
                   }}
-                  className="ml-1 flex h-9 w-9 items-center justify-center rounded text-accent-foreground opacity-0 group-hover:opacity-100 hover:bg-neutral-300 dark:hover:bg-neutral-600"
+                  className="ml-1 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded text-accent-foreground opacity-0 group-hover:opacity-100 hover:bg-neutral-300 dark:hover:bg-neutral-600"
                 >
                   <Plus className="h-4 w-4" />
                 </div>

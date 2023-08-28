@@ -1,16 +1,33 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/router";
-import { useTheme } from "next-themes";
+import {
+  LogOut,
+  Moon,
+  Settings,
+  Star,
+  StarOff,
+  SunMedium,
+  Trash,
+} from "lucide-react";
 import { signOut } from "next-auth/react";
-import { LogOut, Settings, Star, StarOff, SunMoon, Trash2 } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useRouter } from "next/router";
 
 import {
-  usePageQuery,
-  useUpdatePageMutation,
   useDeletePageMutation,
+  usePageQuery,
   useUndoDeletePageMutation,
+  useUpdatePageMutation,
 } from "@/hooks/pageQueryHooks";
 
+import { ToastAction } from "@radix-ui/react-toast";
+import SettingsComponent from "../settings/Settings";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,17 +39,8 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "./ui/dialog";
-import { useToast } from "./ui/use-toast";
-import { ToastAction } from "@radix-ui/react-toast";
-import SettingsComponent from "./Settings";
+} from "../ui/dropdown-menu";
+import { useToast } from "../ui/use-toast";
 
 interface ToolbarDropdownProps {
   children: React.ReactNode;
@@ -42,7 +50,7 @@ const ToolbarDropdown: React.FC<ToolbarDropdownProps> = (props) => {
   const queryClient = useQueryClient();
   const router = useRouter();
   const { toast } = useToast();
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
 
   const pageQuery = usePageQuery(router.query.pageId as string);
   const toggleFavouriteMutation = useUpdatePageMutation(queryClient);
@@ -100,17 +108,20 @@ const ToolbarDropdown: React.FC<ToolbarDropdownProps> = (props) => {
                   });
                 }}
               >
-                <Trash2 className="mr-2 h-4 w-4" />
+                <Trash className="mr-2 h-4 w-4" />
                 <span className="leading-4">Delete Page</span>
               </DropdownMenuItem>
+
+              <DropdownMenuSeparator />
             </>
           )}
 
-          <DropdownMenuSeparator />
-
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>
-              <SunMoon className="mr-2 h-4 w-4" />
+              {resolvedTheme === "light" && (
+                <SunMedium className="mr-2 h-4 w-4" />
+              )}
+              {resolvedTheme === "dark" && <Moon className="mr-2 h-4 w-4" />}
               <span className="leading-4">Change Theme</span>
             </DropdownMenuSubTrigger>
 

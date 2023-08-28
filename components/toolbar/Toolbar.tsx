@@ -10,33 +10,31 @@ import {
 
 import { usePageQuery } from "@/hooks/pageQueryHooks";
 
-import { Button } from "./ui/button";
-import ToolbarDropdown from "@/components/ToolbarDropdown";
-import SearchComboBox from "@/components/SearchComboBox";
+import { Button } from "../ui/button";
+import ToolbarDropdown from "@/components/toolbar/ToolbarDropdown";
+import SearchComboBox from "@/components/search/SearchComboBox";
+import { FC, useContext } from "react";
+import { SidebarContext } from "@/contexts/SidebarContext";
 // import ProfileDropdown from "@/components/ProfileDropdown";
 
-type EditorToolbarProps = {
-  isSidebarOpen: boolean;
-  setIsSidebarOpen: (isSidebarOpen: boolean) => void;
-};
+type EditorToolbarProps = {};
 
-const EditorToolbar: React.FC<EditorToolbarProps> = ({
-  isSidebarOpen,
-  setIsSidebarOpen,
-}) => {
+const Toolbar: FC<EditorToolbarProps> = () => {
   const router = useRouter();
   const pageQuery = usePageQuery(router.query.pageId as string);
+
+  const sidebarContext = useContext(SidebarContext);
 
   return (
     <div
       id="editor-toolbar"
       className="inline-flex h-12 w-full select-none items-center gap-2 border-b bg-background px-2 text-foreground shadow"
     >
-      {!isSidebarOpen && (
+      {!sidebarContext.isSidebarOpen && (
         <Button
           variant={"ghost"}
           size={"icon"}
-          onClick={() => setIsSidebarOpen(true)}
+          onClick={sidebarContext.toggleSidebarOpen}
           className="h-9 w-9 flex-shrink-0"
         >
           <PanelLeftOpen className="h-5 w-5" />
@@ -80,4 +78,4 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
   );
 };
 
-export default EditorToolbar;
+export default Toolbar;

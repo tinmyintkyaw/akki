@@ -27,8 +27,8 @@ import {
   TextQuote,
 } from "lucide-react";
 
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { Button } from "./ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Button } from "../ui/button";
 
 type TextConvertCommand = {
   id: string;
