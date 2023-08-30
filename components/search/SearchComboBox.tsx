@@ -1,18 +1,15 @@
+import { useQueryClient } from "@tanstack/react-query";
+import { ArrowDownUp, CornerDownLeft } from "lucide-react";
+import { useRouter } from "next/router";
 import { ReactNode, useEffect, useState } from "react";
 import {
-  Snippet,
   Highlight,
+  Snippet,
   useHits,
   useInstantSearch,
   useSearchBox,
 } from "react-instantsearch-hooks-web";
-import { useRouter } from "next/router";
-import { ArrowDownUp, CornerDownLeft, Search, XCircle } from "lucide-react";
 
-import useSearchAPIKey from "@/hooks/search/useSearchAPIKey";
-
-import { Dialog, DialogTrigger, DialogContent } from "../ui/dialog";
-import { ScrollArea } from "../ui/scroll-area";
 import {
   Command,
   CommandEmpty,
@@ -20,9 +17,10 @@ import {
   CommandItem,
   CommandList,
 } from "../ui/command";
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
+import { ScrollArea } from "../ui/scroll-area";
 
-import { typesensePageDocument } from "@/typesense/typesense-client";
-import { useQueryClient } from "@tanstack/react-query";
+import typesensePageDocument from "@/types/typesense-page-document";
 
 type HighlightResult = {
   value: string;
@@ -54,8 +52,6 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
   const instantSearch = useInstantSearch({ catchError: true });
   const { query, refine, clear } = useSearchBox();
   const { hits } = useHits<MyHitType>();
-
-  const searchAPIKeyQuery = useSearchAPIKey();
 
   // Open with keyboard shortcut
   useEffect(() => {

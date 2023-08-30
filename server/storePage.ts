@@ -9,9 +9,8 @@ import { prisma } from "../lib/prismadb";
 import CustomDocument from "../tiptap/CustomDocument";
 import CustomHeading from "../tiptap/CustomHeading";
 import CustomImageBackend from "../tiptap/CustomImageBackend";
-import serverTypesenseClient, {
-  typesensePageDocument,
-} from "../typesense/typesense-client";
+import serverTypesenseClient from "../typesense/typesense-client";
+import typesensePageDocument from "@/types/typesense-page-document";
 
 const storePage = (data: storePayload) => {
   return new Promise<void>(async (resolve, reject) => {

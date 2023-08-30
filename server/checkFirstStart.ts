@@ -1,7 +1,6 @@
-import serverTypesenseClient, {
-  typesenseCollectionSchema,
-} from "../typesense/typesense-client";
+import serverTypesenseClient from "../typesense/typesense-client";
 import { prisma } from "../lib/prismadb";
+import typesenseCollectionSchema from "../typesense/typesense-collection-schema";
 
 // TODO: Tidy up server init
 const checkFirstStart = async () => {

@@ -3,9 +3,7 @@ import { getServerSession } from "next-auth";
 import path from "path";
 import fs from "fs";
 
-import serverTypesenseClient, {
-  typesensePageDocument,
-} from "@/typesense/typesense-client";
+import serverTypesenseClient from "@/typesense/typesense-client";
 import { authOptions } from "../auth/[...nextauth]";
 import { prisma } from "@/lib/prismadb";
 import { pageSelect } from "./index";
@@ -16,6 +14,7 @@ import {
   isNullOrUndefinedOrString,
   isBooleanOrUndefined,
 } from "@/utils/typeGuards";
+import typesensePageDocument from "@/types/typesense-page-document";
 
 const pageSelectWithTextContent = {
   ...pageSelect,

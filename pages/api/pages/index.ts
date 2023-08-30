@@ -5,10 +5,9 @@ import { Prisma } from "@prisma/client";
 
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { prisma } from "@/lib/prismadb";
-import serverTypesenseClient, {
-  typesensePageDocument,
-} from "@/typesense/typesense-client";
+import serverTypesenseClient from "@/typesense/typesense-client";
 import { isNullOrUndefinedOrString } from "@/utils/typeGuards";
+import typesensePageDocument from "@/types/typesense-page-document";
 
 export const pageSelect = {
   id: true,
