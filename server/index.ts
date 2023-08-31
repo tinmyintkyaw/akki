@@ -72,12 +72,12 @@ const server = Server.configure({
 const { app } = expressWebsockets(express());
 
 // Add a websocket route for hocuspocus
-app.ws("/collaboration", (websocket, request) => {
+app.ws("/", (websocket, request) => {
   server.handleConnection(websocket, request);
 });
 
 // Start the server
-app.listen(8080, async () => {
-  console.log("Listening on http://127.0.0.1:8080");
+app.listen(3300, async () => {
+  console.log("Listening on http://127.0.0.1:3300");
   await checkFirstStart();
 });

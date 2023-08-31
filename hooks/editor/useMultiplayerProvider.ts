@@ -2,6 +2,10 @@ import { HocuspocusProvider, WebSocketStatus } from "@hocuspocus/provider";
 import { useEffect, useRef, useState } from "react";
 import * as Y from "yjs";
 
+const MULTIPLAYER_URL = process.env.MULTIPLAYER_URL
+  ? process.env.MULTIPLAYER_URL
+  : "ws://localhost:3300";
+
 const useMultiplayerProvider = (pageId: string) => {
   const provider = useRef<HocuspocusProvider>();
 
@@ -14,11 +18,11 @@ const useMultiplayerProvider = (pageId: string) => {
   useEffect(() => {
     provider.current = new HocuspocusProvider({
       name: pageId,
-      url: `ws://localhost:8080/collaboration`,
+      url: MULTIPLAYER_URL,
       document: new Y.Doc(),
       token: async () => {
         try {
-          const response = await fetch("/api/collab/token");
+          const response = await fetch("/api/multiplayer/token");
           if (!response.ok) return "";
           const json: { collabToken: string } = await response.json();
           return json.collabToken;
@@ -36,7 +40,7 @@ const useMultiplayerProvider = (pageId: string) => {
         setisAuthenticated(false);
       },
       // Event fired on initial successful sync of Y.js document
-      // and set a state to let React know when to re-render the editor
+      // and to React know when to re-render the editor
       onSynced() {
         setIsReady(true);
       },
