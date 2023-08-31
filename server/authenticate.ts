@@ -1,8 +1,14 @@
 import { onAuthenticatePayload } from "@hocuspocus/server";
 import { prisma } from "../lib/prismadb";
 
-const authenticate = (data: onAuthenticatePayload) => {
-  return new Promise<{ userId: string }>(async (resolve, reject) => {
+const authenticate = (
+  data: onAuthenticatePayload,
+  lastCheckedTimestamps: Map<string, number>
+) => {
+  return new Promise<{
+    userId: string;
+    sessionId: string;
+  }>(async (resolve, reject) => {
     try {
       const multiplayerSession =
         await prisma.multiplayerSession.findUniqueOrThrow({
@@ -26,7 +32,7 @@ const authenticate = (data: onAuthenticatePayload) => {
       if (Date.now() > new Date(multiplayerSession.expires).getTime())
         throw new Error("Token expired");
 
-      const page = await prisma.page.findUniqueOrThrow({
+      await prisma.page.findUniqueOrThrow({
         where: {
           id_userId: {
             userId: multiplayerSession.session.userId,
@@ -35,7 +41,12 @@ const authenticate = (data: onAuthenticatePayload) => {
         },
       });
 
-      return resolve({ userId: multiplayerSession.session.userId });
+      lastCheckedTimestamps.set(multiplayerSession.id, Date.now());
+
+      return resolve({
+        userId: multiplayerSession.session.userId,
+        sessionId: multiplayerSession.id,
+      });
     } catch (error) {
       return reject();
     }
