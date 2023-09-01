@@ -1,16 +1,17 @@
-import AppLayout from "@/components/AppLayout";
-import { useSession } from "next-auth/react";
-
-import Editor from "@/components/editor/Editor";
-import useMultiplayerProvider from "@/hooks/editor/useMultiplayerProvider";
-import { useRouter } from "next/router";
-import React, { useEffect } from "react";
-import { usePageQuery } from "@/hooks/pageQueryHooks";
-import PageNotFound from "@/components/editor/PageNotFound";
 import clsx from "clsx";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+
+import useMultiplayerProvider from "@/hooks/editor/useMultiplayerProvider";
+import { usePageQuery } from "@/hooks/pageQueryHooks";
+
+import AppLayout from "@/components/AppLayout";
 import DeletedPageBanner from "@/components/editor/DeletedPageBanner";
+import Editor from "@/components/editor/Editor";
+import PageNotFound from "@/components/editor/PageNotFound";
 import Toolbar from "@/components/toolbar/Toolbar";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function App() {
   const session = useSession();
@@ -26,7 +27,8 @@ export default function App() {
     router.push("/signin");
   }, [router, session.status]);
 
-  if (session.status === "loading") return <></>;
+  if (session.status === "loading" || session.status === "unauthenticated")
+    return <></>;
 
   return (
     <AppLayout>
@@ -44,7 +46,7 @@ export default function App() {
                 <ScrollArea
                   type="auto"
                   className={clsx(
-                    "h-[calc(100vh-3rem)] w-full bg-background outline-none",
+                    "h-[calc(100vh-3rem)] w-full",
                     pageQuery.data.isDeleted && "h-[calc(100vh-6rem)]"
                   )}
                 >
