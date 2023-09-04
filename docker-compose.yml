@@ -1,32 +1,36 @@
 version: "3"
-# TODO: scope env vars to each service
+
 services:
   web:
     container_name: web
     build:
       context: .
-      dockerfile: next.prod.Dockerfile
+      dockerfile: Dockerfile
+      target: web
     restart: unless-stopped
     ports:
       - "3000:3000"
     env_file:
-      - .env
+      - .env.production.local
+    volumes:
+      - web-uploads:/app/uploads
     networks:
       - app-network
     depends_on:
       postgres:
         condition: service_healthy
 
-  socket:
+  multiplayer:
     container_name: socket
     build:
       context: .
-      dockerfile: socket.prod.Dockerfile
+      dockerfile: Dockerfile
+      target: multiplayer
     restart: unless-stopped
     ports:
-      - "8080:8080"
+      - "3300:3300"
     env_file:
-      - .env.local
+      - .env.production.local
     # environment:
     # - DATABASE_URL=${DATABASE_URL}
     # - TYPESENSE_API_KEY="${TYPESENSE_API_KEY}"
@@ -46,7 +50,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-      - ./dev-data/postgres-data:/var/lib/postgresql/data
+      # - ./dev-data/postgres-data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
     networks:
       - app-network
     healthcheck:
@@ -65,7 +70,8 @@ services:
       TYPESENSE_DATA_DIR: "/data"
       TYPESENSE_ENABLE_CORS: "true"
     volumes:
-      - ./dev-data/typesense-data:/data
+      # - ./dev-data/typesense-data:/data
+      - typesense-data:/data
     networks:
       - app-network
     depends_on:

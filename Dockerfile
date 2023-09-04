@@ -23,17 +23,14 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npx prisma generate
-# This will do the trick, use the corresponding env file for each environment.
-# COPY .env.production.sample .env.production
 RUN yarn build
 
 
-# 3. Production image, copy all the files and run next
-FROM base AS runner
+# Next.js server
+FROM base AS web
 WORKDIR /app
 
-# ENV NODE_ENV=production
-ENV NODE_ENV=dev
+ENV NODE_ENV=production
 
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nextjs -u 1001
@@ -45,7 +42,26 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-
 USER nextjs
 
 CMD ["node", "server.js"]
+
+
+# Multiplayer server
+FROM base AS multiplayer
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S multiplayer -u 1001
+
+COPY --from=builder --chown=multiplayer:nodejs /app/dist ./dist
+
+# Copy prisma client
+COPY --from=builder --chown=multiplayer:nodejs /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder --chown=multiplayer:nodejs /app/node_modules/prisma ./node_modules/prisma
+
+USER multiplayer
+
+CMD [ "node", "dist/index.js" ]
