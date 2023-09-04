@@ -29,22 +29,17 @@ const Editor = (props: EditorProps) => {
         <EditorContent
           editor={titleEditor}
           className={clsx(
-            "mx-auto h-full w-full break-words bg-background px-8 pb-6 pt-12 text-4xl font-semibold dark:prose-invert selection:bg-primary dark:selection:bg-[#315EC1]",
-            "max-w-sm md:max-w-2xl lg:max-w-3xl" // controls the width of the editor
+            "mx-auto h-full w-full bg-background px-8 pb-8 pt-12 text-4xl font-bold text-foreground",
+            "max-w-3xl"
           )}
-          onKeyDown={(event) => {
-            if (event.key !== "Tab") return;
-            contentEditor?.commands.focus("start");
-          }}
         />
       )}
 
       {contentEditor && (
         <EditorContent
-          spellCheck={false}
           className={clsx(
-            "prose prose-neutral mx-auto h-full w-full break-words bg-background px-8 pb-6 text-base dark:prose-invert selection:bg-primary dark:selection:bg-[#315EC1]",
-            "max-w-sm md:max-w-2xl lg:max-w-3xl" // controls the width of the editor
+            "prose prose-gray mx-auto h-full w-full bg-background px-8 pb-6 dark:prose-invert",
+            "max-w-3xl"
           )}
           editor={contentEditor}
           // Prevent Tab key from escaping editor

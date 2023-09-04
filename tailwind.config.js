@@ -76,7 +76,6 @@ module.exports = {
       typography: {
         DEFAULT: {
           css: {
-            color: "var(--foreground)",
             p: {
               lineHeight: "1.75rem",
             },
