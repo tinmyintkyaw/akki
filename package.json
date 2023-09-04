@@ -7,9 +7,9 @@
     "client": "next start",
     "client:dev": "next dev",
     "server": "dotenv -e .env.local -- node dist/index.js",
-    "server:dev": "ts-node --project tsconfig.server.json server/index.ts",
+    "server:dev": "dotenv -e .env.development.local -- ts-node --project tsconfig.server.json server/index.ts",
     "build": "next build && npm run build:server",
-    "build:server": "esbuild ./server/index.ts --bundle --platform=node --target=node18 --tsconfig=tsconfig.server.json --outfile=./dist/index.js",
+    "build:server": "esbuild ./server/index.ts --bundle --minify --platform=node --target=node18 --tsconfig=tsconfig.server.json --outfile=./dist/index.js",
     "start": "concurrently 'npm:client' 'npm:server'",
     "lint": "next lint",
     "db:push": "dotenv -e .env.local -- npx prisma db push",
@@ -89,6 +89,7 @@
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.6",
     "tailwindcss-radix": "^2.8.0",
+    "@tailwindcss/typography": "^0.5.9",
     "typesense": "^1.5.3",
     "typesense-instantsearch-adapter": "^2.6.0",
     "y-indexeddb": "^9.0.9",
@@ -96,7 +97,6 @@
     "yjs": "^13.5.51"
   },
   "devDependencies": {
-    "@tailwindcss/typography": "^0.5.9",
     "@types/formidable": "^3.4.0",
     "@types/express": "^4.17.17",
     "@types/express-ws": "^3.0.1",
