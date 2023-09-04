@@ -56,6 +56,7 @@ model User {
   sessions       Session[]
   pages          Page[]
   files          File[]
+  Setting        Setting?
 }
 
 model VerificationToken {
@@ -96,6 +97,13 @@ model File {
   page     Page   @relation(fields: [pageId], references: [id], onDelete: Cascade)
 
   @@unique([id, userId, pageId])
+}
+
+model Setting {
+  id          String @id @default(cuid())
+  editorWidth Int    @default(0)
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String @unique
 }
 
 model GlobalSetting {
