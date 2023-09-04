@@ -47,13 +47,15 @@ const CustomImageBackend = Image.extend({
 
                 if (!coordinates) return false;
 
-                const node = schema.nodes.image.create({ src: url });
+                const node = schema.nodes.image.create({
+                  src: `${window.location.protocol}//${url}`,
+                });
                 const transaction = view.state.tr.insert(coordinates.pos, node);
                 return view.dispatch(transaction);
               })
               .catch((err) => console.error(err));
 
-            return true;
+            return false;
           },
 
           handlePaste(view, event) {
@@ -71,7 +73,9 @@ const CustomImageBackend = Image.extend({
                 uploadImage(formData)
                   .then((url) => {
                     const { schema } = view.state;
-                    const node = schema.nodes.image.create({ src: url });
+                    const node = schema.nodes.image.create({
+                      src: `${window.location.protocol}//${url}`,
+                    });
                     const transaction =
                       view.state.tr.replaceSelectionWith(node);
                     view.dispatch(transaction);
@@ -79,8 +83,7 @@ const CustomImageBackend = Image.extend({
                   .catch((err) => console.error(err));
               }
             }
-
-            return true;
+            return false;
           },
         },
       }),

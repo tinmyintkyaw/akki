@@ -75,8 +75,7 @@ const imageUploadHandler: NextApiHandler = async (req, res) => {
         },
       });
 
-      // TODO: derive base url from env file
-      const url = `http://localhost:3000/api/images/${
+      const url = `${req.headers.host}/api/images/${
         Array.isArray(newFilename) ? newFilename[0] : newFilename
       }`;
 
