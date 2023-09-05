@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "concurrently 'npm:client:dev' 'npm:server:dev'",
-    "client": "node server.js",
+    "client": "dotenv -e .env.production.local -- node .next/standalone/server.js",
     "client:dev": "next dev",
     "server": "NODE_ENV=production node dist/index.js",
-    "server:dev": "NODE_ENV=development ts-node --project tsconfig.server.json server/index.ts",
+    "server:dev": "NODE_ENV=development ts-node --transpileOnly --project tsconfig.server.json server/index.ts",
     "build": "next build && npm run build:server",
     "build:server": "esbuild ./server/index.ts --bundle --minify --platform=node --target=node18 --tsconfig=tsconfig.server.json --outfile=./dist/index.js",
     "start": "concurrently 'npm:client' 'npm:server'",
