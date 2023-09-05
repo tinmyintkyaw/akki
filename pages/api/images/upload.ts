@@ -59,33 +59,27 @@ const imageUploadHandler: NextApiHandler = async (req, res) => {
     try {
       const { fields, files } = await parseForm(req, session);
 
-      const pageId = Array.isArray(fields.pageId)
-        ? fields.pageId[0]
-        : fields.pageId;
+      if (!fields.pageId || !files.image) return res.status(500).end();
 
-      const newFilename = Array.isArray(files.image)
-        ? files.image.map((file) => file.newFilename)
-        : files.image.newFilename;
+      const fileName = Array.isArray(files.image) ? files.image[0].newFilename: files.image.newFilename
 
       await prisma.file.create({
         data: {
           userId: session.accountId,
-          pageId: pageId,
-          fileName: Array.isArray(newFilename) ? newFilename[0] : newFilename,
+          pageId: fields.pageId[0],
+          fileName: fileName,
         },
       });
 
-      const url = `${req.headers.host}/api/images/${
-        Array.isArray(newFilename) ? newFilename[0] : newFilename
-      }`;
+      const url = `${req.headers.host}/api/images/${fileName}`;
 
       return res.status(200).json({ url });
     } catch (err) {
-      return res.status(500).json({ message: "Internal Server Error" });
+      return res.status(500).end();
     }
   }
 
-  return res.status(405).json({ message: "Method Not Allowed" });
+  return res.status(405).end();
 };
 
 export const config = {
