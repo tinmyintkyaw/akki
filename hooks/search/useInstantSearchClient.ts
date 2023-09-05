@@ -4,9 +4,10 @@ import TypesenseInstantsearchAdapter, {
 } from "typesense-instantsearch-adapter";
 import useSearchAPIKey from "./useSearchAPIKey";
 
-const TYPESENSE_HOST = process.env.TYPESENSE_HOST || "localhost";
-const TYPESENSE_PORT = process.env.TYPESENSE_PORT
-  ? parseInt(process.env.TYPESENSE_PORT)
+const TYPESENSE_HOST = process.env.PUBLIC_TYPESENSE_HOST || "localhost";
+const TYPESENSE_PROTOCOL = process.env.PUBLIC_TYPESENSE_PROTOCOL || "http";
+const TYPESENSE_PORT = process.env.PUBLIC_TYPESENSE_PORT
+  ? parseInt(process.env.PUBLIC_TYPESENSE_PORT)
   : 8108;
 
 const typesenseAdapterOptions: TypesenseInstantsearchAdapterOptions = {
@@ -16,7 +17,7 @@ const typesenseAdapterOptions: TypesenseInstantsearchAdapterOptions = {
       {
         host: TYPESENSE_HOST,
         port: TYPESENSE_PORT,
-        protocol: "http",
+        protocol: TYPESENSE_PROTOCOL,
       },
     ],
   },
