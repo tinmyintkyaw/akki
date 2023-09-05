@@ -107,6 +107,10 @@ const DeletedPages: React.FC = () => {
                 </Button>
               </Button>
             ))}
+
+          {deletedPagesQuery.data && deletedPagesQuery.data.length === 0 && (
+            <p className="mt-6 w-full text-center text-sm">No Pages in Trash</p>
+          )}
         </ScrollArea>
       </DialogContent>
     </Dialog>

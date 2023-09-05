@@ -7,7 +7,10 @@ import { PanelLeftClose, Plus, SquareAsterisk } from "lucide-react";
 import DeletedPages from "@/components/sidebar/DeletedPages";
 import FavouritePageTree from "@/components/tree-views/FavouritePageTree";
 import PageTree from "@/components/tree-views/PageTree";
-import { useCreatePageMutation } from "@/hooks/pageQueryHooks";
+import {
+  useCreatePageMutation,
+  usePageListQuery,
+} from "@/hooks/pageQueryHooks";
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
 
@@ -20,7 +23,7 @@ const Sidebar: FC<SidebarProps> = ({ toggleIsOpen }) => {
   const [isFavouritesOpen, setIsFavouritesOpen] = useState(true);
 
   const queryClient = useQueryClient();
-
+  const pageListQuery = usePageListQuery();
   const createPageMutation = useCreatePageMutation(queryClient);
 
   return (
@@ -40,12 +43,12 @@ const Sidebar: FC<SidebarProps> = ({ toggleIsOpen }) => {
         type="hover"
         className={clsx("flex h-[calc(100vh-9rem)] text-sm")}
       >
-        <div className="px-3 pb-2 pt-1">
+        <div className="px-3 pt-1">
           <Button
             variant={"ghost"}
             size={"default"}
             onClick={() => setIsFavouritesOpen((prev) => !prev)}
-            className="h-7"
+            className="mb-1 h-7"
           >
             <span className="w-full text-start text-[13px] font-medium text-muted-foreground">
               Starred
@@ -56,12 +59,19 @@ const Sidebar: FC<SidebarProps> = ({ toggleIsOpen }) => {
         </div>
 
         <div className="px-3 pb-2 pt-1">
-          <Button variant={"ghost"} size={"default"} className="h-7">
+          <Button variant={"ghost"} size={"default"} className="mb-1 h-7">
             <span className="w-full text-start text-[13px] font-medium text-muted-foreground">
               Pages
             </span>
           </Button>
-          <PageTree />
+
+          {pageListQuery.data && pageListQuery.data.length >= 1 ? (
+            <PageTree />
+          ) : (
+            <p className="ml-2 w-full text-[13px] text-muted-foreground">
+              No Pages
+            </p>
+          )}
         </div>
       </ScrollArea>
 
