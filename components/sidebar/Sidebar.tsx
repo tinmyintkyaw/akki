@@ -1,16 +1,15 @@
+import { useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import { FC, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 import { PanelLeftClose, Plus, SquareAsterisk } from "lucide-react";
 
 import DeletedPages from "@/components/sidebar/DeletedPages";
-import PageTree from "@/components/tree-views/PageTree";
 import FavouritePageTree from "@/components/tree-views/FavouritePageTree";
+import PageTree from "@/components/tree-views/PageTree";
+import { useCreatePageMutation } from "@/hooks/pageQueryHooks";
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
-import { useCreatePageMutation } from "@/hooks/pageQueryHooks";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -21,8 +20,6 @@ const Sidebar: FC<SidebarProps> = ({ toggleIsOpen }) => {
   const [isFavouritesOpen, setIsFavouritesOpen] = useState(true);
 
   const queryClient = useQueryClient();
-  const [favouritesDiv] = useAutoAnimate();
-  const [mainTreeDiv] = useAutoAnimate();
 
   const createPageMutation = useCreatePageMutation(queryClient);
 
@@ -43,7 +40,7 @@ const Sidebar: FC<SidebarProps> = ({ toggleIsOpen }) => {
         type="hover"
         className={clsx("flex h-[calc(100vh-9rem)] text-sm")}
       >
-        <div ref={favouritesDiv} className="px-3 pb-2 pt-1">
+        <div className="px-3 pb-2 pt-1">
           <Button
             variant={"ghost"}
             size={"default"}
@@ -58,7 +55,7 @@ const Sidebar: FC<SidebarProps> = ({ toggleIsOpen }) => {
           {isFavouritesOpen && <FavouritePageTree />}
         </div>
 
-        <div ref={mainTreeDiv} className="px-3 pb-2 pt-1">
+        <div className="px-3 pb-2 pt-1">
           <Button variant={"ghost"} size={"default"} className="h-7">
             <span className="w-full text-start text-[13px] font-medium text-muted-foreground">
               Pages

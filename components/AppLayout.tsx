@@ -3,7 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { FC, ReactNode, useContext } from "react";
-import { InstantSearch } from "react-instantsearch-hooks-web";
+import { InstantSearch } from "react-instantsearch";
 
 import Sidebar from "./sidebar/Sidebar";
 

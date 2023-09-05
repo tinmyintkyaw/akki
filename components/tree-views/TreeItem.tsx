@@ -1,6 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/router";
 import clsx from "clsx";
+import { useRouter } from "next/router";
 import {
   TreeItem,
   TreeItemIndex,
@@ -10,16 +10,16 @@ import {
 import { FileEdit, Plus, Star, StarOff, Trash2 } from "lucide-react";
 
 import {
+  useCreatePageMutation,
+  useDeletePageMutation,
+  useUpdatePageMutation,
+} from "@/hooks/pageQueryHooks";
+import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuTrigger,
 } from "../ui/context-menu";
-import {
-  useCreatePageMutation,
-  useDeletePageMutation,
-  useUpdatePageMutation,
-} from "@/hooks/pageQueryHooks";
 
 interface ItemProps {
   item: TreeItem;
@@ -35,8 +35,6 @@ interface ItemProps {
   setIsRenaming: React.Dispatch<React.SetStateAction<boolean>>;
   setPageToRename: React.Dispatch<React.SetStateAction<TreeItemIndex>>;
 }
-
-import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 const TreeItem: React.FC<ItemProps> = (props) => {
   const {
@@ -61,15 +59,9 @@ const TreeItem: React.FC<ItemProps> = (props) => {
   const InteractiveComponent = context.isRenaming ? "div" : "button";
   const type = context.isRenaming ? undefined : "button";
 
-  const [parent] = useAutoAnimate();
-
   return (
     <ContextMenu>
-      <li
-        {...context.itemContainerWithChildrenProps}
-        ref={parent}
-        className="flex flex-col"
-      >
+      <li {...context.itemContainerWithChildrenProps} className="flex flex-col">
         <ContextMenuTrigger asChild>
           <div
             {...(context.itemContainerWithoutChildrenProps as any)}
@@ -79,7 +71,7 @@ const TreeItem: React.FC<ItemProps> = (props) => {
               type={type}
               {...(context.interactiveElementProps as any)}
               className={clsx(
-                "group inline-flex h-9 w-full items-center justify-center rounded text-sm outline-2 -outline-offset-1 outline-ring transition-colors focus-visible:outline radix-state-open:bg-accent hover:bg-accent",
+                "group inline-flex h-9 w-full items-center justify-center rounded text-sm outline-2 -outline-offset-1 outline-ring transition-colors radix-state-open:bg-accent hover:bg-accent focus-visible:outline",
                 // context.isSelected && "outline outline-2 outline-ring",
                 context.isDraggingOver && "bg-sky-700",
                 item.index === router.query.pageId && "bg-accent"

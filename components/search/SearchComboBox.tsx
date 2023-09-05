@@ -8,7 +8,7 @@ import {
   useHits,
   useInstantSearch,
   useSearchBox,
-} from "react-instantsearch-hooks-web";
+} from "react-instantsearch";
 
 import {
   Command,
