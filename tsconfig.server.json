@@ -1,9 +1,9 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "dist",
+    "outDir": "dist/server",
     "module": "ESNext",
     "moduleResolution": "NodeNext"
   },
-  "include": ["src/server/*.ts"]
+  "include": ["src/server"]
 }
