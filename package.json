@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently 'vite' 'pnpm run server:dev'",
-    "server:dev": "tsx watch --clear-screen=false --tsconfig src/server/tsconfig.json src/server/index.ts",
-    "build": "tsc && vite build",
+    "dev:server": "tsx watch --clear-screen=false --tsconfig src/server/tsconfig.json src/server/index.ts",
+    "build:client": "tsc && vite build",
     "build:server": "esbuild src/server/index.ts --bundle --minify --platform=node --tsconfig=src/server/tsconfig.json --outfile=./dist/server/index.cjs",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
