@@ -2,11 +2,11 @@
 module.exports = {
   darkMode: ["class"],
   content: [
-    "./pages/**/*.{ts,tsx}",
-    "./components/**/*.{ts,tsx}",
-    "./app/**/*.{ts,tsx}",
-    "./src/**/*.{ts,tsx}",
-  ],
+    './pages/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './app/**/*.{ts,tsx}',
+    './src/**/*.{ts,tsx}',
+	],
   theme: {
     container: {
       center: true,
@@ -17,41 +17,38 @@ module.exports = {
     },
     extend: {
       colors: {
-        border: "var(--border)",
-        input: "var(--input)",
-        ring: "var(--ring)",
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "var(--primary)",
-          foreground: "var(--primary-foreground)",
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: "var(--secondary)",
-          foreground: "var(--secondary-foreground)",
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
         },
         destructive: {
-          DEFAULT: "var(--destructive)",
-          foreground: "var(--destructive-foreground)",
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
         },
         muted: {
-          DEFAULT: "var(--muted)",
-          foreground: "var(--muted-foreground)",
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "var(--accent)",
-          foreground: "var(--accent-foreground)",
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
         },
         popover: {
-          DEFAULT: "var(--popover)",
-          foreground: "var(--popover-foreground)",
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
         },
         card: {
-          DEFAULT: "var(--card)",
-          foreground: "var(--card-foreground)",
-        },
-        scrollbar: {
-          thumb: "var(--scrollbar-thumb)",
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
         },
       },
       borderRadius: {
@@ -73,67 +70,7 @@ module.exports = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
-      typography: {
-        DEFAULT: {
-          css: {
-            p: {
-              lineHeight: "1.75rem",
-            },
-            h1: {
-              fontWeight: "600",
-              fontSize: "1.875rem",
-            },
-            h2: {
-              fontWeight: "600",
-              marginTop: "0",
-            },
-            h3: {
-              fontWeight: "600",
-            },
-            a: {
-              cursor: "pointer",
-            },
-            blockquote: {
-              fontWeight: "400",
-              fontStyle: "normal",
-            },
-            "blockquote p:first-of-type::before": {
-              content: "",
-            },
-            "blockquote p:last-of-type::after": {
-              content: "",
-            },
-            "li > *": {
-              marginTop: "0",
-              marginBottom: "0",
-            },
-            "ul[data-type='taskList']": {
-              listStyleType: "none",
-            },
-            "ul[data-type='taskList'] > li": {
-              position: "relative",
-            },
-            "ul[data-type='taskList'] > li > label": {
-              position: "absolute",
-              left: "-1.25rem",
-            },
-            "ul[data-type='taskList'] > li > label > input": {
-              width: "1rem",
-              height: "1.75rem",
-            },
-            "ul[data-type='taskList'] > li > div > *": {
-              marginTop: "0",
-              marginBottom: "0",
-            },
-          },
-        },
-      },
     },
   },
-  plugins: [
-    require("tailwindcss-animate"),
-    require("@tailwindcss/typography"),
-    require("tailwindcss-radix")(),
-    require("tailwind-scrollbar"),
-  ],
-};
+  plugins: [require("tailwindcss-animate")],
+}
