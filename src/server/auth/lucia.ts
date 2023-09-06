@@ -11,6 +11,8 @@ export const auth = lucia({
   env: "DEV",
   middleware: express(),
   adapter: prisma(client),
+
+  // TODO: setup CSRF protection in dev mode
   csrfProtection: {
     allowedSubDomains: "*",
   },
