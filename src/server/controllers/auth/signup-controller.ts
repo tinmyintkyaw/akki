@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { auth } from "../../auth/lucia";
+import { auth } from "@/lucia.js";
 
 const signupController: RequestHandler = async (req, res) => {
   const { username, password } = req.body;

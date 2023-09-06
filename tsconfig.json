@@ -27,5 +27,6 @@
     }
   },
   "include": ["src/client", "src/client/vite-env.d.ts"],
+  "exclude": ["src/server"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

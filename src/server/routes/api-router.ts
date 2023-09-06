@@ -1,7 +1,7 @@
 import express from "express";
-import sessionController from "../controllers/session-controller";
-import authRouter from "./auth-router";
-import pageRouter from "./page-router";
+import sessionController from "@/controllers/session-controller.js";
+import authRouter from "@/routes/auth-router.js";
+import pageRouter from "@/routes/page-router.js";
 
 const apiRouter = express.Router();
 

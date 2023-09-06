@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { auth } from "../auth/lucia";
+import { auth } from "@/lucia.js";
 
 const validateSession: RequestHandler = async (req, res, next) => {
   const authRequest = auth.handleRequest(req, res);

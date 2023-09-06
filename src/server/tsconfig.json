@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "outDir": "dist/server",
+    "module": "ESNext",
+    "moduleResolution": "NodeNext",
+    "allowSyntheticDefaultImports": true,
+
+    /* Path aliases */
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": ["./**/*.ts"]
+}

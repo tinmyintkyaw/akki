@@ -1,7 +1,7 @@
 import express from "express";
-import signInController from "../controllers/auth/signin-controller";
-import signupController from "../controllers/auth/signup-controller";
-import signOutController from "../controllers/auth/signout-controller";
+import signInController from "@/controllers/auth/signin-controller.js";
+import signupController from "@/controllers/auth/signup-controller.js";
+import signOutController from "@/controllers/auth/signout-controller.js";
 
 const authRouter = express.Router();
 
