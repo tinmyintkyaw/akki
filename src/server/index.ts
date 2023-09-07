@@ -1,7 +1,9 @@
 import apiRouter from "@/routes/api-router.js";
+import checkFirstStart from "@/utils/check-first-start.js";
+import initTypesenseClient from "@/utils/init-typesense-client.js";
+import { Prisma } from "@prisma/client";
 import express from "express";
 import path from "path";
-import initTypesenseClient from "./utils/init-typesense-client.js";
 
 const app = express();
 
@@ -16,10 +18,18 @@ app.use(express.json());
 
 app.use("/api", apiRouter);
 
-// TODO: use env file to get the path where static files are stored
+// TODO: don't server static files in PROD
 app.use("/", express.static(path.join(process.cwd(), "dist/client")));
 
-// Start the server
-app.listen(3000, async () => {
-  console.log("Listening on http://127.0.0.1:3000");
-});
+checkFirstStart()
+  .then(() => {
+    app.listen(3000, async () => {
+      console.log("Listening on port 3000");
+    });
+  })
+  .catch((error) => {
+    if (error instanceof Prisma.PrismaClientInitializationError) {
+      console.log("Cannot connect to DB");
+    }
+    console.log("Cannot start server");
+  });
