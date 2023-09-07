@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import { auth } from "@/lucia.js";
-import typesenseClient from "@/db/typesense-client.js";
+import { typesenseClient } from "@/index.js";
 
 const signOutController: RequestHandler = async (req, res) => {
   const authRequest = auth.handleRequest(req, res);

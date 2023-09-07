@@ -1,6 +1,6 @@
-import { RequestHandler } from "express";
+import { typesenseClient } from "@/index.js";
 import { auth } from "@/lucia.js";
-import typesenseClient from "@/db/typesense-client.js";
+import { RequestHandler } from "express";
 
 const signupController: RequestHandler = async (req, res) => {
   const { username, password } = req.body;

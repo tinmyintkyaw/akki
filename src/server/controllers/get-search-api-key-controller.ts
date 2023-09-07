@@ -1,4 +1,4 @@
-import typesenseClient from "@/db/typesense-client.js";
+import { typesenseClient } from "@/index.js";
 import { RequestHandler } from "express";
 
 const getSearchAPIKeyController: RequestHandler = async (_req, res, next) => {
