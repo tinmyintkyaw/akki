@@ -1,5 +1,6 @@
 import { RequestHandler } from "express";
 import { auth } from "@/lucia.js";
+import typesenseClient from "@/db/typesense-client.js";
 
 const signupController: RequestHandler = async (req, res) => {
   const { username, password } = req.body;
@@ -8,6 +9,11 @@ const signupController: RequestHandler = async (req, res) => {
     return res.sendStatus(400);
 
   try {
+    const newTypesenseKey = await typesenseClient.keys().create({
+      actions: ["documents:search"],
+      collections: ["pages"],
+    });
+
     const user = await auth.createUser({
       key: {
         providerId: "username",
@@ -16,12 +22,16 @@ const signupController: RequestHandler = async (req, res) => {
       },
       attributes: {
         username,
+        searchKey: newTypesenseKey.value,
+        searchKeyId: newTypesenseKey.id,
       },
     });
 
     const session = await auth.createSession({
       userId: user.userId,
-      attributes: {},
+      attributes: {
+        editorKey: crypto.randomUUID(),
+      },
     });
 
     const authRequest = auth.handleRequest(req, res);

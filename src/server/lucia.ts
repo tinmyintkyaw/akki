@@ -18,6 +18,13 @@ export const auth = lucia({
   getUserAttributes(databaseUser) {
     return {
       username: databaseUser.username,
+      searchKeyId: databaseUser.searchKeyId,
+      searchKey: databaseUser.searchKey,
+    };
+  },
+  getSessionAttributes(databaseSession) {
+    return {
+      editorKey: databaseSession.editorKey,
     };
   },
 });

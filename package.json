@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "concurrently 'vite' 'pnpm run server:dev'",
     "dev:server": "tsx watch --clear-screen=false --tsconfig src/server/tsconfig.json src/server/index.ts",
+    "build": "pnpm run build:client && pnpm run build:server",
     "build:client": "tsc && vite build",
     "build:server": "esbuild src/server/index.ts --bundle --minify --platform=node --tsconfig=src/server/tsconfig.json --outfile=./dist/server/index.cjs",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
@@ -24,7 +25,9 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tailwind-merge": "^1.14.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "typesense": "^1.7.1",
+    "typesense-instantsearch-adapter": "^2.7.1"
   },
   "devDependencies": {
     "@types/express": "^4.17.17",

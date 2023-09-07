@@ -17,7 +17,9 @@ const signInController: RequestHandler = async (req, res) => {
 
     const session = await auth.createSession({
       userId: key.userId,
-      attributes: {},
+      attributes: {
+        editorKey: crypto.randomUUID(),
+      },
     });
 
     const authRequest = auth.handleRequest(req, res);

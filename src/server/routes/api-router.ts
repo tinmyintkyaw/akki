@@ -1,3 +1,4 @@
+import getSearchAPIKeyController from "@/controllers/get-search-api-key-controller.js";
 import sessionController from "@/controllers/session-controller.js";
 import validateSession from "@/middlewares/validate-session.js";
 import authRouter from "@/routes/auth-router.js";
@@ -19,8 +20,6 @@ apiRouter.use("/pages", validateSession, pageRouter);
 
 apiRouter.use("/files", validateSession, fileRouter);
 
-// apiRouter.use("/multiplayer", (req, res) => {});
-
-// apiRouter.use("/search", (req, res) => {});
+apiRouter.get("/search/key", validateSession, getSearchAPIKeyController);
 
 export default apiRouter;
