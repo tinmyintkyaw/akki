@@ -1,29 +1,33 @@
+import createPageController from "@/controllers/pages/create-page-controller.js";
+import deletePageController from "@/controllers/pages/delete-page-controller.js";
+import getDeletedPageListController from "@/controllers/pages/deleted-page-list-controller.js";
+import editPageController from "@/controllers/pages/edit-page-controller.js";
+import getPageController from "@/controllers/pages/get-page-controller.js";
+import getPageListController from "@/controllers/pages/get-page-list-controller.js";
+import getRecentPageListController from "@/controllers/pages/recent-page-list-controller.js";
+import getStarredPageListController from "@/controllers/pages/starred-page-list-controller.js";
+import {
+  validateCreatePageBody,
+  validateEditPageBody,
+} from "@/middlewares/validate-req-body.js";
 import express from "express";
 
 const pageRouter = express.Router();
 
-// // get page list
-// pageRouter.get("/", async (req, res) => {});
+pageRouter.get("/", getPageListController);
 
-// // create new page
-// pageRouter.post("/", async (req, res) => {});
+pageRouter.post("/", validateCreatePageBody, createPageController);
 
-// // get page by id
-// pageRouter.get("/:pageId", async (req, res) => {});
+pageRouter.get("/recent", getRecentPageListController);
 
-// // delete page by id
-// pageRouter.delete("/:pageId", async (req, res) => {});
+pageRouter.get("/deleted", getDeletedPageListController);
 
-// // modify page by id
-// pageRouter.patch("/:pageId", async (req, res) => {});
+pageRouter.get("/starred", getStarredPageListController);
 
-// // get deleted page list
-// pageRouter.get("/deleted", async (req, res) => {});
+pageRouter.get("/:pageId", getPageController);
 
-// // get starred page list
-// pageRouter.get("/starred", async (req, res) => {});
+pageRouter.delete("/:pageId", deletePageController);
 
-// // get recent page list
-// pageRouter.get("/recent", async (req, res) => {});
+pageRouter.patch("/:pageId", validateEditPageBody, editPageController);
 
 export default pageRouter;

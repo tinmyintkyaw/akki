@@ -12,6 +12,9 @@ model User {
   username     String    @unique
   auth_session Session[]
   key          Key[]
+  Page         Page[]
+  File         File[]
+  Setting      Setting?
 }
 
 model Session {
@@ -31,4 +34,49 @@ model Key {
   user            User    @relation(references: [id], fields: [user_id], onDelete: Cascade)
 
   @@index([user_id])
+}
+
+model Page {
+  id          String    @id @default(cuid())
+  pageName    String
+  ydoc        Bytes?
+  textContent String
+  isFavourite Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  modifiedAt  DateTime  @default(now())
+  accessedAt  DateTime  @default(now())
+  isDeleted   Boolean   @default(false)
+  deletedAt   DateTime?
+  files       File[]
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parentId    String?
+  childPages  Page[]    @relation(name: "childPages")
+  Page        Page?     @relation(name: "childPages", fields: [parentId], references: [id])
+
+  @@unique([id, userId])
+}
+
+model File {
+  id       String @id @default(cuid())
+  fileName String @unique
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pageId   String
+  page     Page   @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@unique([id, userId, pageId])
+}
+
+model Setting {
+  id          String @id @default(cuid())
+  editorWidth Int    @default(0)
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String @unique
+}
+
+model GlobalSetting {
+  id    Int    @id @default(autoincrement())
+  key   String @unique
+  value String
 }
