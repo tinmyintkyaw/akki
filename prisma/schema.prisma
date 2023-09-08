@@ -23,7 +23,7 @@ model Session {
   active_expires    BigInt
   idle_expires      BigInt
   user              User   @relation(references: [id], fields: [user_id], onDelete: Cascade)
-  editorKey         String
+  editorKey         String @unique
   typesenseKeyId    String
   typesenseKeyValue String
 
