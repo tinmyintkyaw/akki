@@ -15,17 +15,17 @@ model User {
   Page         Page[]
   File         File[]
   Setting      Setting?
-  searchKeyId  BigInt
-  searchKey    String
 }
 
 model Session {
-  id             String @id @unique
-  user_id        String
-  active_expires BigInt
-  idle_expires   BigInt
-  user           User   @relation(references: [id], fields: [user_id], onDelete: Cascade)
-  editorKey      String
+  id                String @id @unique
+  user_id           String
+  active_expires    BigInt
+  idle_expires      BigInt
+  user              User   @relation(references: [id], fields: [user_id], onDelete: Cascade)
+  editorKey         String
+  typesenseKeyId    String
+  typesenseKeyValue String
 
   @@index([user_id])
 }

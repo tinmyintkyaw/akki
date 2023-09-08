@@ -8,7 +8,7 @@ const signOutController: RequestHandler = async (req, res) => {
 
   if (!session) return res.sendStatus(401);
 
-  await typesenseClient.keys(session.user.searchKeyId).delete();
+  await typesenseClient.keys(Number(session.typesenseKeyId)).delete();
 
   await auth.invalidateSession(session.sessionId);
   return res.sendStatus(302);

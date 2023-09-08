@@ -9,11 +9,6 @@ const signupController: RequestHandler = async (req, res) => {
     return res.sendStatus(400);
 
   try {
-    const newTypesenseKey = await typesenseClient.keys().create({
-      actions: ["documents:search"],
-      collections: ["pages"],
-    });
-
     const user = await auth.createUser({
       key: {
         providerId: "username",
@@ -22,15 +17,22 @@ const signupController: RequestHandler = async (req, res) => {
       },
       attributes: {
         username,
-        searchKey: newTypesenseKey.value,
-        searchKeyId: newTypesenseKey.id,
       },
+    });
+
+    // Generate new typesense key for every new session
+    const newTypesenseKey = await typesenseClient.keys().create({
+      description: `search-only key for user:${username}`,
+      actions: ["documents:search"],
+      collections: ["pages"],
     });
 
     const session = await auth.createSession({
       userId: user.userId,
       attributes: {
         editorKey: crypto.randomUUID(),
+        typesenseKeyId: newTypesenseKey.id.toString(),
+        typesenseKeyValue: newTypesenseKey.value,
       },
     });
 

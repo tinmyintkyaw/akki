@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import { auth } from "@/lucia.js";
 
-const validateSession: RequestHandler = async (req, res, next) => {
+const checkIfSignedIn: RequestHandler = async (req, res, next) => {
   const authRequest = auth.handleRequest(req, res);
   const session = await authRequest.validate();
 
@@ -11,4 +11,4 @@ const validateSession: RequestHandler = async (req, res, next) => {
   next();
 };
 
-export default validateSession;
+export default checkIfSignedIn;

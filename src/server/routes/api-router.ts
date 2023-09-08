@@ -1,6 +1,5 @@
-import getSearchAPIKeyController from "@/controllers/get-search-api-key-controller.js";
 import sessionController from "@/controllers/session-controller.js";
-import validateSession from "@/middlewares/validate-session.js";
+import checkIfSignedIn from "@/middlewares/check-signin.js";
 import authRouter from "@/routes/auth-router.js";
 import fileRouter from "@/routes/file-router.js";
 import pageRouter from "@/routes/page-router.js";
@@ -16,10 +15,8 @@ apiRouter.get("/session", sessionController);
 
 apiRouter.use(authRouter);
 
-apiRouter.use("/pages", validateSession, pageRouter);
+apiRouter.use("/pages", checkIfSignedIn, pageRouter);
 
-apiRouter.use("/files", validateSession, fileRouter);
-
-apiRouter.get("/search/key", validateSession, getSearchAPIKeyController);
+apiRouter.use("/files", checkIfSignedIn, fileRouter);
 
 export default apiRouter;

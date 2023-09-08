@@ -1,6 +1,7 @@
+import { typesenseClient } from "@/index.js";
+import { auth } from "@/lucia.js";
 import { RequestHandler } from "express";
 import { LuciaError } from "lucia";
-import { auth } from "@/lucia.js";
 
 const signInController: RequestHandler = async (req, res) => {
   const { username, password } = req.body;
@@ -9,6 +10,12 @@ const signInController: RequestHandler = async (req, res) => {
     return res.status(400).end();
 
   try {
+    const newTypesenseKey = await typesenseClient.keys().create({
+      description: `search-only key for user:${username}`,
+      actions: ["documents:search"],
+      collections: ["pages"],
+    });
+
     const key = await auth.useKey(
       "username",
       username.toLocaleLowerCase(),
@@ -19,6 +26,8 @@ const signInController: RequestHandler = async (req, res) => {
       userId: key.userId,
       attributes: {
         editorKey: crypto.randomUUID(),
+        typesenseKeyId: newTypesenseKey.id.toString(),
+        typesenseKeyValue: newTypesenseKey.value,
       },
     });
 
