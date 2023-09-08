@@ -1,12 +1,9 @@
 import prisma from "@/db/prisma-client.js";
+import { typesenseClient } from "@/index.js";
+import typesenseDocument from "@/types/typesenseDocument.js";
 import { pageSelect } from "@/utils/prisma-page-select.js";
 import { RequestHandler } from "express";
 import { matchedData, validationResult } from "express-validator";
-
-// interface CreatePagePayload {
-//   pageName: string;
-//   parentId: string | null | undefined;
-// }
 
 const createPageController: RequestHandler = async (req, res, next) => {
   if (!res.locals.session) return res.sendStatus(401);
@@ -27,6 +24,21 @@ const createPageController: RequestHandler = async (req, res, next) => {
       },
       select: pageSelect,
     });
+
+    const typesensePage: typesenseDocument = {
+      id: newPage.id,
+      userId: newPage.userId,
+      pageName: newPage.pageName,
+      textContent: "",
+      createdAt: newPage.createdAt.getTime(),
+      modifiedAt: newPage.modifiedAt.getTime(),
+      isFavourite: newPage.isFavourite,
+    };
+
+    await typesenseClient
+      .collections("pages")
+      .documents()
+      .create(typesensePage);
 
     return res.status(201).json(newPage);
   } catch (error) {

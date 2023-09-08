@@ -18,7 +18,7 @@ const uploadFileController: RequestHandler = async (req, res, next) => {
       },
     });
 
-    const url = `${req.headers.host}/api/assets/${fileName}`;
+    const url = `${req.headers.host}/api/files/${fileName}`;
 
     return res.status(200).json({ url });
   } catch (error) {

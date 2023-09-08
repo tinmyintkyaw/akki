@@ -38,4 +38,15 @@ export const pageSelect = {
 export const pageSelectWithTextContent = {
   ...pageSelect,
   textContent: true,
+  childPages: {
+    select: {
+      id: true,
+      pageName: true,
+      userId: true,
+      isFavourite: true,
+      textContent: true,
+      createdAt: true,
+      modifiedAt: true,
+    },
+  },
 } satisfies Prisma.PageSelect;
