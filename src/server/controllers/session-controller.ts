@@ -7,7 +7,7 @@ const sessionController: RequestHandler = async (req, res) => {
 
   if (!session) return res.sendStatus(401);
 
-  return res.status(200).json(session.user);
+  return res.status(200).json(session);
 };
 
 export default sessionController;

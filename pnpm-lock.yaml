@@ -17,6 +17,9 @@ dependencies:
   '@lucia-auth/adapter-prisma':
     specifier: ^3.0.1
     version: 3.0.1(@prisma/client@5.2.0)(lucia@2.4.2)
+  '@lucia-auth/oauth':
+    specifier: ^3.1.0
+    version: 3.1.0(lucia@2.4.2)
   '@radix-ui/react-slot':
     specifier: ^1.0.2
     version: 1.0.2(@types/react@18.2.21)(react@18.2.0)
@@ -744,6 +747,14 @@ packages:
       lucia: ^2.0.0
     dependencies:
       '@prisma/client': 5.2.0(prisma@5.2.0)
+      lucia: 2.4.2
+    dev: false
+
+  /@lucia-auth/oauth@3.1.0(lucia@2.4.2):
+    resolution: {integrity: sha512-jGrmZYL58YHs9g+dBWKmmsYIPvZRstYGULvuyjzMuF5xab8MF9NSEDYarIoazPdKO+UeM9rVxWy3hbTRg+ZXUg==}
+    peerDependencies:
+      lucia: ^2.0.0
+    dependencies:
       lucia: 2.4.2
     dev: false
 

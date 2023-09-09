@@ -21,6 +21,7 @@ app.use(express.json());
 app.use("/api", apiRouter);
 
 app.ws("/editor", (websocket, req) => {
+  console.log(req.hostname);
   hocuspocusServer.handleConnection(websocket, req);
 });
 
@@ -37,5 +38,5 @@ checkFirstStart()
     if (error instanceof Prisma.PrismaClientInitializationError) {
       console.log("Cannot connect to DB");
     }
-    console.log("Cannot start server");
+    process.exit(1);
   });
