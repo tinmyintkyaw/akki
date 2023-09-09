@@ -1,6 +1,6 @@
 import prisma from "@/db/prisma-client.js";
 import { typesenseClient } from "@/index.js";
-import typesenseDocument from "@/types/typesenseDocument.js";
+import typesenseDocument from "@/types/typesense-document.js";
 import { pageSelectWithTextContent } from "@/utils/prisma-page-select.js";
 import { Request, RequestHandler } from "express";
 import { matchedData, validationResult } from "express-validator";

@@ -8,6 +8,11 @@ export default defineConfig({
   build: {
     outDir: "dist/client",
   },
+  server: {
+    hmr: {
+      port: 5500,
+    },
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

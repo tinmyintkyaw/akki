@@ -1,6 +1,6 @@
 import prisma from "@/db/prisma-client.js";
 import { typesenseClient } from "@/index.js";
-import typesenseDocument from "@/types/typesenseDocument.js";
+import typesenseDocument from "@/types/typesense-document.js";
 import { storePayload } from "@hocuspocus/server";
 import { TiptapTransformer } from "@hocuspocus/transformer";
 import Image from "@tiptap/extension-image";

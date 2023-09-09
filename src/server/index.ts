@@ -5,7 +5,11 @@ import hocuspocusServer from "@/websocket/websocket-server.js";
 import { Prisma } from "@prisma/client";
 import express from "express";
 import expressWebsockets from "express-ws";
-import path from "path";
+import httpProxy from "http-proxy";
+
+const proxy = httpProxy.createProxyServer({
+  target: "http://localhost:5173",
+});
 
 const { app } = expressWebsockets(express());
 
@@ -25,8 +29,10 @@ app.ws("/editor", (websocket, req) => {
   hocuspocusServer.handleConnection(websocket, req);
 });
 
-// TODO: don't server static files in PROD
-app.use("/", express.static(path.join(process.cwd(), "dist/client")));
+// TODO: turn off proxy server on PROD
+app.use("/", (req, res) => {
+  proxy.web(req, res, {});
+});
 
 checkFirstStart()
   .then(() => {
