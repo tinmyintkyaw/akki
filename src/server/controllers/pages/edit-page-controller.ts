@@ -2,13 +2,14 @@ import prisma from "@/db/prisma-client.js";
 import { typesenseClient } from "@/index.js";
 import typesenseDocument from "@/types/typesense-document.js";
 import { pageSelectWithTextContent } from "@/utils/prisma-page-select.js";
+import { transformPageResponseData } from "@/utils/transform-response-data.js";
 import { Request, RequestHandler } from "express";
 import { matchedData, validationResult } from "express-validator";
 
 const editPageController: RequestHandler = async (
   req: Request<{ pageId: string }>,
   res,
-  next
+  next,
 ) => {
   if (!res.locals.session) return res.sendStatus(401);
 
@@ -91,7 +92,7 @@ const editPageController: RequestHandler = async (
           createdAt: page.createdAt.getTime(),
           modifiedAt: page.modifiedAt.getTime(),
           isFavourite: page.isFavourite,
-        })
+        }),
       );
 
       await typesenseClient
@@ -101,11 +102,9 @@ const editPageController: RequestHandler = async (
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { Page, ...response } = {
-      ...updatedPage,
-      childPages: updatedPage.childPages.map((page) => page.id),
-      parentPageName: updatedPage.Page ? updatedPage.pageName : null,
-    };
+    const { textContent, ...stripped } = updatedPage;
+
+    const response = transformPageResponseData(stripped);
 
     return res.status(200).json(response);
   } catch (error) {

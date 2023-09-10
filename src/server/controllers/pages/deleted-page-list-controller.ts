@@ -1,5 +1,6 @@
 import prisma from "@/db/prisma-client.js";
 import { pageSelect } from "@/utils/prisma-page-select.js";
+import { transformPageListResponseData } from "@/utils/transform-response-data.js";
 import { RequestHandler } from "express";
 
 const getDeletedPageListController: RequestHandler = async (req, res, next) => {
@@ -19,16 +20,7 @@ const getDeletedPageListController: RequestHandler = async (req, res, next) => {
       },
     });
 
-    const response = deletedPageList.map((page) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { Page, ...response } = {
-        ...page,
-        childPages: page.childPages.map((page) => page.id),
-        parentPageName: page.Page ? page.Page.pageName : null,
-      };
-
-      return response;
-    });
+    const response = transformPageListResponseData(deletedPageList);
 
     return res.status(200).json(response);
   } catch (error) {

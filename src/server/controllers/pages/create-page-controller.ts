@@ -2,6 +2,7 @@ import prisma from "@/db/prisma-client.js";
 import { typesenseClient } from "@/index.js";
 import typesenseDocument from "@/types/typesense-document.js";
 import { pageSelect } from "@/utils/prisma-page-select.js";
+import { transformPageResponseData } from "@/utils/transform-response-data.js";
 import { RequestHandler } from "express";
 import { matchedData, validationResult } from "express-validator";
 
@@ -40,7 +41,9 @@ const createPageController: RequestHandler = async (req, res, next) => {
       .documents()
       .create(typesensePage);
 
-    return res.status(201).json(newPage);
+    const response = transformPageResponseData(newPage);
+
+    return res.status(201).json(response);
   } catch (error) {
     next(error);
   }

@@ -1,11 +1,12 @@
 import prisma from "@/db/prisma-client.js";
 import { pageSelect } from "@/utils/prisma-page-select.js";
+import { transformPageResponseData } from "@/utils/transform-response-data.js";
 import { Request, RequestHandler } from "express";
 
 const getPageController: RequestHandler = async (
   req: Request<{ pageId: string }>,
   res,
-  next
+  next,
 ) => {
   if (!res.locals.session) return res.sendStatus(401);
 
@@ -22,12 +23,7 @@ const getPageController: RequestHandler = async (
 
     if (!page) return res.sendStatus(404);
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { Page, ...response } = {
-      ...page,
-      childPages: page.childPages.map((page) => page.id),
-      parentPageName: page.Page ? page.pageName : null,
-    };
+    const response = transformPageResponseData(page);
 
     return res.status(200).json(response);
   } catch (error) {

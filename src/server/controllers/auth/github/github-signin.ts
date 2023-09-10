@@ -7,7 +7,7 @@ const githubSignInController: RequestHandler = async (_req, res) => {
     httpOnly: true,
     secure: false, // TODO: should be true in PROD
     path: "/",
-    maxAge: 1 * 1000,
+    maxAge: 60 * 1000,
   });
 
   return res.status(302).setHeader("Location", url.toString()).end();

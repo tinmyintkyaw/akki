@@ -1,5 +1,6 @@
-import { RequestHandler } from "express";
 import { auth } from "@/lucia.js";
+import SessionResponse from "@/shared/types/session-response.js";
+import { RequestHandler } from "express";
 
 const sessionController: RequestHandler = async (req, res) => {
   const authRequest = auth.handleRequest(req, res);
@@ -7,7 +8,14 @@ const sessionController: RequestHandler = async (req, res) => {
 
   if (!session) return res.sendStatus(401);
 
-  return res.status(200).json(session);
+  res.setHeader("Cache-Control", "no-cache");
+
+  const sessionResponse: SessionResponse = {
+    editorKey: session.editorKey,
+    searchKey: session.searchKey,
+    user: { ...session.user },
+  };
+  return res.status(200).json(sessionResponse);
 };
 
 export default sessionController;

@@ -1,5 +1,6 @@
 import prisma from "@/db/prisma-client.js";
 import { pageSelect } from "@/utils/prisma-page-select.js";
+import { transformPageListResponseData } from "@/utils/transform-response-data.js";
 import { RequestHandler } from "express";
 
 const getPageListController: RequestHandler = async (req, res, next) => {
@@ -8,7 +9,7 @@ const getPageListController: RequestHandler = async (req, res, next) => {
   const { userId } = res.locals.session.user;
 
   try {
-    const pages = await prisma.page.findMany({
+    const pagesList = await prisma.page.findMany({
       where: {
         userId: userId,
         isDeleted: false,
@@ -19,16 +20,7 @@ const getPageListController: RequestHandler = async (req, res, next) => {
       },
     });
 
-    const response = pages.map((page) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { Page, ...response } = {
-        ...page,
-        childPages: page.childPages.map((page) => page.id),
-        parentPageName: page.Page ? page.Page.pageName : null,
-      };
-
-      return response;
-    });
+    const response = transformPageListResponseData(pagesList);
 
     return res.status(200).json(response);
   } catch (error) {

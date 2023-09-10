@@ -5,11 +5,6 @@ import hocuspocusServer from "@/websocket/websocket-server.js";
 import { Prisma } from "@prisma/client";
 import express from "express";
 import expressWebsockets from "express-ws";
-import httpProxy from "http-proxy";
-
-const proxy = httpProxy.createProxyServer({
-  target: "http://localhost:5173",
-});
 
 const { app } = expressWebsockets(express());
 
@@ -29,15 +24,10 @@ app.ws("/editor", (websocket, req) => {
   hocuspocusServer.handleConnection(websocket, req);
 });
 
-// TODO: turn off proxy server on PROD
-app.use("/", (req, res) => {
-  proxy.web(req, res, {});
-});
-
 checkFirstStart()
   .then(() => {
-    app.listen(3000, async () => {
-      console.log("Listening on port 3000");
+    app.listen(3300, async () => {
+      console.log("Listening on port 3300");
     });
   })
   .catch((error) => {

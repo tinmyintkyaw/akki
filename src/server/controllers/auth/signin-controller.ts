@@ -34,7 +34,7 @@ const signInController: RequestHandler = async (req, res) => {
     const authRequest = auth.handleRequest(req, res);
     authRequest.setSession(session);
 
-    return res.status(302).json(session.user);
+    return res.status(302).setHeader("Location", "/").end();
   } catch (error) {
     if (
       error instanceof LuciaError &&

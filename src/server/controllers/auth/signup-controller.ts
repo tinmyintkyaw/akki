@@ -16,6 +16,7 @@ const signupController: RequestHandler = async (req, res) => {
         password,
       },
       attributes: {
+        // name: "",
         username,
       },
     });
@@ -39,7 +40,7 @@ const signupController: RequestHandler = async (req, res) => {
     const authRequest = auth.handleRequest(req, res);
     authRequest.setSession(session);
 
-    return res.status(302).json(session.user);
+    return res.status(302).setHeader("Location", "/").end();
   } catch (error) {
     console.error(error);
     return res.sendStatus(500);
