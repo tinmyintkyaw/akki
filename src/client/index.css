@@ -4,48 +4,50 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    --background: hsl(0, 0%, 98%);
+    --foreground: hsl(0, 0%, 4%);
+    --card: hsl(0, 0%, 98%);
+    --card-foreground: hsl(0, 0%, 4%);
+    --popover: hsl(0, 0%, 98%);
+    --popover-foreground: hsl(0, 0%, 4%);
+    --primary: hsl(221, 59%, 87%);
+    --primary-foreground: hsl(0, 0%, 97%);
+    --secondary: hsl(0, 0%, 96%);
+    --secondary-foreground: hsl(0, 0%, 25%);
+    --muted: hsl(0, 0%, 96%);
+    --muted-foreground: hsl(0, 0%, 32%);
+    --accent: hsl(0, 0%, 90%);
+    --accent-foreground: hsl(0, 0%, 4%);
+    --destructive: hsl(359, 69%, 74%);
+    --destructive-foreground: hsl(0, 100%, 97%);
+    --border: hsl(0, 0%, 83%);
+    --input: hsl(0, 0%, 83%);
+    --ring: hsl(221, 59%, 63%);
     --radius: 0.5rem;
+    --scrollbar-thumb: hsl(0, 0%, 64%);
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --background: hsl(0, 0%, 10%);
+    --foreground: hsl(0, 0%, 83%);
+    --card: hsl(0, 0%, 10%);
+    --card-foreground: hsl(0, 0%, 83%);
+    --popover: hsl(0, 0%, 15%);
+    --popover-foreground: hsl(0, 0%, 83%);
+    --primary: hsl(223, 55%, 40%);
+    --primary-foreground: hsl(0, 0%, 83%);
+    --secondary: hsl(0, 0%, 15%);
+    --secondary-foreground: hsl(0, 0%, 90%);
+    --muted: hsl(0, 0%, 15%);
+    --muted-foreground: hsl(0, 0%, 64%);
+    --accent: hsl(0, 0%, 25%);
+    --accent-foreground: hsl(0, 0%, 83%);
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
+    --destructive-foreground: 0 85.7% 97.3%;
+    --border: hsl(0, 0%, 25%);
+    --input: hsl(0, 0%, 25%);
+    --ring: hsl(221, 59%, 63%);
+    --scrollbar-thumb: hsl(0, 0%, 32%);
   }
 }
 
@@ -56,4 +58,85 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+body {
+  font-family: "Inter", sans-serif;
+}
+
+.tiptap pre {
+  font-size: 14px;
+}
+
+.tiptap li * {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.tiptap ul[data-type="taskList"] {
+  list-style-type: none;
+}
+
+.tiptap ul[data-type="taskList"] li {
+  position: relative;
+}
+
+.tiptap ul[data-type="taskList"] li label {
+  position: absolute;
+  left: -1.25rem;
+}
+
+.tiptap ul[data-type="taskList"] li label input {
+  width: 1rem;
+  height: 1.75rem;
+}
+
+.tiptap ul[data-type="taskList"] li div * {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.tiptap blockquote p:first-of-type::before {
+  content: "";
+}
+
+.tiptap blockquote p:last-of-type::after {
+  content: "";
+}
+
+.tiptap a {
+  cursor: pointer;
+}
+
+/* Give a remote user a caret */
+.collaboration-cursor__caret {
+  border-left: 1px solid #0d0d0d;
+  border-right: 1px solid #0d0d0d;
+  margin-left: -1px;
+  margin-right: -1px;
+  pointer-events: none;
+  position: relative;
+  word-break: normal;
+}
+
+/* Render the username above the caret */
+.collaboration-cursor__label {
+  border-radius: 3px 3px 3px 0;
+  color: #0d0d0d;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  left: -1px;
+  line-height: normal;
+  padding: 0.1rem 0.3rem;
+  position: absolute;
+  top: -1.4em;
+  user-select: none;
+  white-space: nowrap;
+}
+
+/* Editor placeholder */
+.is-empty::before {
+  content: attr(data-placeholder);
+  @apply pointer-events-none float-left h-0 text-muted-foreground;
 }

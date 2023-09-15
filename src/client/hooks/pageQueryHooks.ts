@@ -50,16 +50,13 @@ export const useDeletedPagesQuery = () => {
   });
 };
 
-export const useFavouritePagesQuery = () => {
+export const useStarredPagesQuery = () => {
   return useQuery({
-    queryKey: ["favouritePages"],
+    queryKey: ["starredPages"],
     queryFn: async () => {
-      const response = await fetch("/api/pages/favourite");
+      const response = await fetch("/api/pages/starred");
       if (!response.ok)
-        throw new HTTPError(
-          "Failed to fetch favourited pages",
-          response.status,
-        );
+        throw new HTTPError("Failed to fetch starred pages", response.status);
       const json: PageListResponse = await response.json();
       return json;
     },
@@ -122,10 +119,10 @@ export const useUpdatePageMutation = (queryClient: QueryClient) => {
       id: string;
       pageName?: string;
       parentId?: string | null;
-      isFavourite?: boolean;
+      isStarred?: boolean;
       accessedAt?: string;
     }) => {
-      const { id, pageName, parentId, isFavourite, accessedAt } = variables;
+      const { id, pageName, parentId, isStarred, accessedAt } = variables;
 
       const response = await fetch(`/api/pages/${id}`, {
         method: "PATCH",
@@ -135,7 +132,7 @@ export const useUpdatePageMutation = (queryClient: QueryClient) => {
         body: JSON.stringify({
           pageName,
           parentId,
-          isFavourite,
+          isStarred,
           accessedAt,
         }),
       });
@@ -146,7 +143,7 @@ export const useUpdatePageMutation = (queryClient: QueryClient) => {
     },
     onSuccess: ({ id }) => {
       queryClient.invalidateQueries({ queryKey: ["pageList"] });
-      queryClient.invalidateQueries({ queryKey: ["favouritePages"] });
+      queryClient.invalidateQueries({ queryKey: ["starredPages"] });
       queryClient.invalidateQueries({ queryKey: ["page", id] });
     },
   });
@@ -171,7 +168,7 @@ export const useDeletePageMutation = (queryClient: QueryClient) => {
     },
     onSuccess: ({ id }) => {
       queryClient.invalidateQueries({ queryKey: ["pageList"] });
-      queryClient.invalidateQueries({ queryKey: ["favouritePages"] });
+      queryClient.invalidateQueries({ queryKey: ["starredPages"] });
       queryClient.invalidateQueries({ queryKey: ["deletedPages"] });
       queryClient.invalidateQueries({ queryKey: ["page", id] });
     },
@@ -218,7 +215,7 @@ export const useUndoDeletePageMutation = (queryClient: QueryClient) => {
     },
     onSuccess: ({ id }) => {
       queryClient.invalidateQueries({ queryKey: ["pageList"] });
-      queryClient.invalidateQueries({ queryKey: ["favouritePages"] });
+      queryClient.invalidateQueries({ queryKey: ["starredPages"] });
       queryClient.invalidateQueries({ queryKey: ["deletedPages"] });
       queryClient.invalidateQueries({ queryKey: ["page", id] });
     },

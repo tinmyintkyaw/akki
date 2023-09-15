@@ -4,7 +4,7 @@ export type PageResponse = {
   pageName: string;
   parentId: string;
   parentPageName: string;
-  isFavourite: boolean;
+  isStarred: boolean;
   createdAt: Date;
   modifiedAt: Date;
   accessedAt: Date;

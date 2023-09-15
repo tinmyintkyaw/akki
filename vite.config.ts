@@ -18,11 +18,6 @@ export default defineConfig({
         target: "http://localhost:3300",
         changeOrigin: true,
       },
-      "/editor": {
-        target: "http://localhost:3300",
-        changeOrigin: true,
-        ws: true,
-      },
     },
   },
   resolve: {

@@ -17,7 +17,7 @@ export const useSession = (): {
     queryKey: ["session"],
     queryFn: sessionQueryFn,
     retry: false,
-    refetchInterval: 5 * 60 * 1000,
+    // refetchInterval: 5 * 60 * 1000,
   });
 
   return {
