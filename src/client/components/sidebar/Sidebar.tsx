@@ -1,22 +1,20 @@
-import { useQueryClient } from "@tanstack/react-query";
-import clsx from "clsx";
-import { FC, useContext, useState } from "react";
-
-import { PanelLeftClose, Plus, SquareAsterisk } from "lucide-react";
-
 import DeletedPages from "@/components/sidebar/DeletedPages";
-import FavouritePageTree from "@/components/tree-views/FavouritePageTree";
 import PageTree from "@/components/tree-views/PageTree";
+import StarredPageTree from "@/components/tree-views/StarredPageTree";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { SidebarContext } from "@/contexts/SidebarContext";
 import {
   useCreatePageMutation,
   usePageListQuery,
 } from "@/hooks/pageQueryHooks";
-import { Button } from "../ui/button";
-import { ScrollArea } from "../ui/scroll-area";
-import { SidebarContext } from "@/contexts/SidebarContext";
+import { useQueryClient } from "@tanstack/react-query";
+import clsx from "clsx";
+import { PanelLeftClose, Plus, SquareAsterisk } from "lucide-react";
+import { useContext, useState } from "react";
 
 const Sidebar = () => {
-  const [isFavouritesOpen, setIsFavouritesOpen] = useState(true);
+  const [isStarredOpen, setIsStarredOpen] = useState(true);
 
   const sidebarContext = useContext(SidebarContext);
   const queryClient = useQueryClient();
@@ -48,19 +46,19 @@ const Sidebar = () => {
           <Button
             variant={"ghost"}
             size={"default"}
-            onClick={() => setIsFavouritesOpen((prev) => !prev)}
-            className="mb-1 h-7"
+            onClick={() => setIsStarredOpen((prev) => !prev)}
+            className="mb-1 h-7 px-2"
           >
             <span className="w-full text-start text-[13px] font-medium text-muted-foreground">
               Starred
             </span>
           </Button>
 
-          {isFavouritesOpen && <FavouritePageTree />}
+          {isStarredOpen && <StarredPageTree />}
         </div>
 
         <div className="px-3 pb-2 pt-1">
-          <Button variant={"ghost"} size={"default"} className="mb-1 h-7">
+          <Button variant={"ghost"} size={"default"} className="mb-1 h-7 px-2">
             <span className="w-full text-start text-[13px] font-medium text-muted-foreground">
               Pages
             </span>
