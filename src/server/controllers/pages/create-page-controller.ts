@@ -1,26 +1,21 @@
 import prisma from "@/db/prisma-client.js";
 import { typesenseClient } from "@/index.js";
-import typesenseDocument from "@/types/typesense-document.js";
+import typesenseDocument from "@/shared/types/typesense-document.js";
 import { pageSelect } from "@/utils/prisma-page-select.js";
 import { transformPageResponseData } from "@/utils/transform-response-data.js";
 import { RequestHandler } from "express";
-import { matchedData, validationResult } from "express-validator";
+import * as Y from "yjs";
 
 const createPageController: RequestHandler = async (req, res, next) => {
   if (!res.locals.session) return res.sendStatus(401);
-
-  const result = validationResult(req);
-  if (!result.isEmpty()) return res.status(400).json(result.mapped());
-
-  const payload = matchedData(req);
 
   try {
     const newPage = await prisma.page.create({
       data: {
         userId: res.locals.session.user.userId,
-        pageName: payload.pageName,
-        parentId: payload.parentId,
-        // ydoc: Buffer.from(Y.encodeStateAsUpdate(new Y.Doc())),
+        pageName: req.body.pageName,
+        parentId: req.body.parentId,
+        ydoc: Buffer.from(Y.encodeStateAsUpdate(new Y.Doc())),
         textContent: "",
       },
       select: pageSelect,
@@ -33,7 +28,7 @@ const createPageController: RequestHandler = async (req, res, next) => {
       textContent: "",
       createdAt: newPage.createdAt.getTime(),
       modifiedAt: newPage.modifiedAt.getTime(),
-      isFavourite: newPage.isFavourite,
+      isStarred: newPage.isStarred,
     };
 
     await typesenseClient
@@ -47,8 +42,6 @@ const createPageController: RequestHandler = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-
-  return res.status(200).json(matchedData(req));
 };
 
 export default createPageController;

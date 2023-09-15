@@ -9,22 +9,22 @@ const typesenseCollectionSchema: CollectionCreateSchema = {
       facet: true,
     },
     {
-      name: "pageTextContent",
+      name: "textContent",
       type: "string",
       facet: false,
     },
     {
-      name: "pageCreatedAt",
+      name: "createdAt",
       type: "int64",
       facet: true,
     },
     {
-      name: "pageModifiedAt",
+      name: "modifiedAt",
       type: "int64",
       facet: true,
     },
     {
-      name: "isFavourite",
+      name: "isStarred",
       type: "bool",
       facet: true,
     },

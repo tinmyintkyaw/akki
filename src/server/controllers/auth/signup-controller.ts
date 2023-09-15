@@ -3,7 +3,7 @@ import { auth } from "@/lucia.js";
 import { RequestHandler } from "express";
 
 const signupController: RequestHandler = async (req, res) => {
-  const { username, password } = req.body;
+  const { username, name, password } = req.body;
 
   if (typeof username !== "string" || typeof password !== "string")
     return res.sendStatus(400);
@@ -16,7 +16,7 @@ const signupController: RequestHandler = async (req, res) => {
         password,
       },
       attributes: {
-        // name: "",
+        name,
         username,
       },
     });

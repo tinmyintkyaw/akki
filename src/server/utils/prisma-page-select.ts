@@ -3,7 +3,7 @@ import { Prisma } from "@prisma/client";
 export const pageSelect = {
   id: true,
   pageName: true,
-  isFavourite: true,
+  isStarred: true,
   createdAt: true,
   accessedAt: true,
   modifiedAt: true,
@@ -43,7 +43,7 @@ export const pageSelectWithTextContent = {
       id: true,
       pageName: true,
       userId: true,
-      isFavourite: true,
+      isStarred: true,
       textContent: true,
       createdAt: true,
       modifiedAt: true,

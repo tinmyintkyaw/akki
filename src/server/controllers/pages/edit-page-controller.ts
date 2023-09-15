@@ -1,10 +1,9 @@
 import prisma from "@/db/prisma-client.js";
 import { typesenseClient } from "@/index.js";
-import typesenseDocument from "@/types/typesense-document.js";
+import typesenseDocument from "@/shared/types/typesense-document.js";
 import { pageSelectWithTextContent } from "@/utils/prisma-page-select.js";
 import { transformPageResponseData } from "@/utils/transform-response-data.js";
 import { Request, RequestHandler } from "express";
-import { matchedData, validationResult } from "express-validator";
 
 const editPageController: RequestHandler = async (
   req: Request<{ pageId: string }>,
@@ -12,14 +11,6 @@ const editPageController: RequestHandler = async (
   next,
 ) => {
   if (!res.locals.session) return res.sendStatus(401);
-
-  const result = validationResult(req);
-  if (!result.isEmpty()) return res.status(400).json(result.mapped());
-
-  const payload = matchedData(req, {
-    includeOptionals: true,
-    onlyValidData: true,
-  });
 
   try {
     const updatedPage = await prisma.page.update({
@@ -30,13 +21,15 @@ const editPageController: RequestHandler = async (
         },
       },
       data: {
-        pageName: payload.pageName,
-        parentId: payload.parentId,
+        pageName: req.body.pageName,
+        parentId: req.body.parentId,
         modifiedAt: new Date(),
-        isFavourite: payload.isFavourite,
-        isDeleted: payload.isDeleted,
-        deletedAt: payload.isDeleted ? new Date() : undefined,
-        accessedAt: new Date(Date.parse(payload.accessedAt)),
+        isStarred: req.body.isStarred,
+        isDeleted: req.body.isDeleted,
+        deletedAt: req.body.isDeleted ? new Date() : undefined,
+        accessedAt: req.body.accessedAt
+          ? new Date(Date.parse(req.body.accessedAt))
+          : undefined,
       },
       select: pageSelectWithTextContent,
     });
@@ -44,11 +37,11 @@ const editPageController: RequestHandler = async (
     await prisma.page.updateMany({
       where: {
         userId: res.locals.session.user.userId,
-        parentId: payload.pageId,
+        parentId: req.body.pageId,
       },
       data: {
-        isDeleted: payload.isDeleted,
-        deletedAt: payload.isDeleted ? new Date() : undefined,
+        isDeleted: req.body.isDeleted,
+        deletedAt: req.body.isDeleted ? new Date() : undefined,
       },
     });
 
@@ -60,45 +53,49 @@ const editPageController: RequestHandler = async (
       textContent: updatedPage.textContent,
       createdAt: updatedPage.createdAt.getTime(),
       modifiedAt: updatedPage.modifiedAt.getTime(),
-      isFavourite: updatedPage.isFavourite,
+      isStarred: updatedPage.isStarred,
     };
 
     await typesenseClient
       .collections("pages")
       .documents()
-      .upsert(typesensePage);
+      .update(typesensePage);
 
-    if (updatedPage.isDeleted) {
-      await typesenseClient
-        .collections("pages")
-        .documents(updatedPage.id)
-        .delete();
+    if (typeof req.body.isDeleted !== "undefined") {
+      if (req.body.isDeleted) {
+        await typesenseClient
+          .collections("pages")
+          .documents(updatedPage.id)
+          .delete();
 
-      updatedPage.childPages.forEach(async (page) => {
-        await typesenseClient.collections("pages").documents(page.id).delete();
-      });
-    } else {
-      await typesenseClient
-        .collections("pages")
-        .documents()
-        .upsert(typesensePage);
+        updatedPage.childPages.forEach(async (page) => {
+          await typesenseClient
+            .collections("pages")
+            .documents(page.id)
+            .delete();
+        });
+      } else {
+        await typesenseClient
+          .collections("pages")
+          .documents()
+          .upsert(typesensePage);
 
-      const typesensePageList: typesenseDocument[] = updatedPage.childPages.map(
-        (page) => ({
-          id: page.id,
-          userId: page.userId,
-          pageName: page.pageName,
-          textContent: page.textContent,
-          createdAt: page.createdAt.getTime(),
-          modifiedAt: page.modifiedAt.getTime(),
-          isFavourite: page.isFavourite,
-        }),
-      );
+        const typesensePageList: typesenseDocument[] =
+          updatedPage.childPages.map((page) => ({
+            id: page.id,
+            userId: page.userId,
+            pageName: page.pageName,
+            textContent: page.textContent,
+            createdAt: page.createdAt.getTime(),
+            modifiedAt: page.modifiedAt.getTime(),
+            isStarred: page.isStarred,
+          }));
 
-      await typesenseClient
-        .collections("pages")
-        .documents()
-        .createMany(typesensePageList);
+        await typesenseClient
+          .collections("pages")
+          .documents()
+          .import(typesensePageList);
+      }
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

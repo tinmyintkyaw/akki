@@ -12,8 +12,6 @@ const googleSignInController: RequestHandler = async (_req, res, next) => {
       maxAge: 60 * 1000,
     });
 
-    console.log(url.toString());
-
     return res.status(302).setHeader("Location", url.toString()).end();
   } catch (error) {
     console.error(error);

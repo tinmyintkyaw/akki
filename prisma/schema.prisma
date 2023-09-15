@@ -48,7 +48,7 @@ model Page {
   pageName    String
   ydoc        Bytes?
   textContent String
-  isFavourite Boolean   @default(false)
+  isStarred   Boolean   @default(false)
   createdAt   DateTime  @default(now())
   modifiedAt  DateTime  @default(now())
   accessedAt  DateTime  @default(now())

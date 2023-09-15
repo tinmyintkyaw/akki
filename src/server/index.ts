@@ -11,7 +11,7 @@ const { app } = expressWebsockets(express());
 export const typesenseClient = initTypesenseClient(
   process.env.TYPESENSE_HOST,
   parseInt(process.env.TYPESENSE_PORT),
-  process.env.TYPESENSE_API_KEY
+  process.env.TYPESENSE_API_KEY,
 );
 
 app.use(express.urlencoded({ extended: true }));
@@ -20,7 +20,6 @@ app.use(express.json());
 app.use("/api", apiRouter);
 
 app.ws("/editor", (websocket, req) => {
-  console.log(req.hostname);
   hocuspocusServer.handleConnection(websocket, req);
 });
 

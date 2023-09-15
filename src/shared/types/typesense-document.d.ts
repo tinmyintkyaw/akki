@@ -4,7 +4,7 @@ type typesenseDocument = {
   textContent: string;
   createdAt: number;
   modifiedAt: number;
-  isFavourite: boolean;
+  isStarred: boolean;
   userId: string;
 };
 

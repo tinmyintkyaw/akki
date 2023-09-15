@@ -1,6 +1,6 @@
 import prisma from "@/db/prisma-client.js";
 import { typesenseClient } from "@/index.js";
-import typesenseDocument from "@/types/typesense-document.js";
+import typesenseDocument from "@/shared/types/typesense-document";
 import { storePayload } from "@hocuspocus/server";
 import { TiptapTransformer } from "@hocuspocus/transformer";
 import Image from "@tiptap/extension-image";
@@ -52,7 +52,7 @@ const storePageHandler = async (data: storePayload) => {
     textContent: dbPage.textContent,
     createdAt: dbPage.createdAt.getTime(),
     modifiedAt: dbPage.modifiedAt.getTime(),
-    isFavourite: dbPage.isFavourite,
+    isStarred: dbPage.isStarred,
   };
 
   await typesenseClient.collections("pages").documents().upsert(typesensePage);

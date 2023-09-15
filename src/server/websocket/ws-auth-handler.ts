@@ -3,7 +3,7 @@ import { onAuthenticatePayload } from "@hocuspocus/server";
 
 const websocketAuthHandler = async (
   data: onAuthenticatePayload,
-  lastCheckedTimestamps: Map<string, number>
+  lastCheckedTimestamps: Map<string, number>,
 ) => {
   const multiplayerSession = await prisma.session.findUniqueOrThrow({
     where: {

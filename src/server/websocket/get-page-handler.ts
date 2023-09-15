@@ -1,5 +1,6 @@
 import prisma from "@/db/prisma-client.js";
 import { fetchPayload } from "@hocuspocus/server";
+import * as Y from "yjs";
 
 const getPageHandler = async (data: fetchPayload) => {
   const page = await prisma.page.findUniqueOrThrow({
@@ -11,7 +12,7 @@ const getPageHandler = async (data: fetchPayload) => {
     },
   });
 
-  if (!page.ydoc) throw new Error();
+  if (!page.ydoc) return Buffer.from(Y.encodeStateAsUpdate(new Y.Doc()));
 
   return page.ydoc;
 };

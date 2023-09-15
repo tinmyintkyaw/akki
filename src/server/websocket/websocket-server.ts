@@ -10,12 +10,12 @@ let lastCheckedTimestamps = new Map<string, number>();
 
 const hocuspocusServer = Server.configure({
   async onAuthenticate(data) {
-    return await websocketAuthHandler(data, lastCheckedTimestamps);
+    return websocketAuthHandler(data, lastCheckedTimestamps);
   },
 
-  async beforeHandleMessage(data) {
-    return await messageHandler(data, lastCheckedTimestamps);
-  },
+  // async beforeHandleMessage(data) {
+  //   return messageHandler(data, lastCheckedTimestamps);
+  // },
 
   extensions: [
     new Database({

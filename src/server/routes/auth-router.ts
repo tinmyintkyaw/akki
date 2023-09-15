@@ -7,9 +7,24 @@ import signOutController from "@/controllers/auth/signout-controller.js";
 import signupController from "@/controllers/auth/signup-controller.js";
 import checkIfSignedIn from "@/middlewares/check-signin.js";
 import checkIfSignedOut from "@/middlewares/check-signout.js";
+import addFormats from "ajv-formats";
 import express from "express";
+import { AllowedSchema, Validator } from "express-json-validator-middleware";
 
 const authRouter = express.Router();
+
+const validator = new Validator({});
+addFormats(validator.ajv, { formats: ["password"] });
+
+export const createPagePayloadSchema: AllowedSchema = {
+  type: "object",
+  properties: {
+    username: { type: "string" },
+    name: { type: "string" },
+    password: { type: "string", format: "password" },
+  },
+  required: ["username", "name", "password"],
+};
 
 authRouter.post("/signup/username", checkIfSignedOut, signupController);
 
@@ -20,7 +35,7 @@ authRouter.get("/signin/github", checkIfSignedOut, githubSignInController);
 authRouter.get(
   "/signin/github/callback",
   checkIfSignedOut,
-  githubSignInCallbackController
+  githubSignInCallbackController,
 );
 
 authRouter.get("/signin/google", checkIfSignedOut, googleSignInController);
@@ -28,7 +43,7 @@ authRouter.get("/signin/google", checkIfSignedOut, googleSignInController);
 authRouter.get(
   "/signin/google/callback",
   checkIfSignedOut,
-  googleSignInCallbackController
+  googleSignInCallbackController,
 );
 
 authRouter.post("/signout", checkIfSignedIn, signOutController);

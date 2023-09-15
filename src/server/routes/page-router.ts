@@ -7,16 +7,25 @@ import getPageListController from "@/controllers/pages/get-page-list-controller.
 import getRecentPageListController from "@/controllers/pages/recent-page-list-controller.js";
 import getStarredPageListController from "@/controllers/pages/starred-page-list-controller.js";
 import {
-  validateCreatePageBody,
-  validateEditPageBody,
-} from "@/middlewares/validate-req-body.js";
+  createPagePayloadSchema,
+  editPagePayloadSchema,
+} from "@/middlewares/page-router-payload-schema";
+import addFormats from "ajv-formats";
 import express from "express";
+import { Validator } from "express-json-validator-middleware";
+
+const validator = new Validator({});
+addFormats(validator.ajv, { formats: ["date-time"] });
 
 const pageRouter = express.Router();
 
 pageRouter.get("/", getPageListController);
 
-pageRouter.post("/", validateCreatePageBody, createPageController);
+pageRouter.post(
+  "/",
+  validator.validate({ body: createPagePayloadSchema }),
+  createPageController,
+);
 
 pageRouter.get("/recent", getRecentPageListController);
 
@@ -28,6 +37,10 @@ pageRouter.get("/:pageId", getPageController);
 
 pageRouter.delete("/:pageId", deletePageController);
 
-pageRouter.patch("/:pageId", validateEditPageBody, editPageController);
+pageRouter.patch(
+  "/:pageId",
+  validator.validate({ body: editPagePayloadSchema }),
+  editPageController,
+);
 
 export default pageRouter;

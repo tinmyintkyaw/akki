@@ -12,7 +12,7 @@ const getStarredPageListController: RequestHandler = async (req, res, next) => {
       where: {
         userId: userId,
         isDeleted: false,
-        isFavourite: true,
+        isStarred: true,
       },
       select: pageSelect,
       orderBy: {
