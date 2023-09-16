@@ -1,7 +1,7 @@
 import { Database } from "@hocuspocus/extension-database";
 import { Server } from "@hocuspocus/server";
 import getPageHandler from "./get-page-handler.js";
-import messageHandler from "./message-handler.js";
+// import messageHandler from "./message-handler.js";
 import storePageHandler from "./store-page-handler.js";
 import websocketAuthHandler from "./ws-auth-handler.js";
 

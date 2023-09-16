@@ -18,7 +18,7 @@ const storePageHandler = async (data: storePayload) => {
   const { default: json } = await TiptapTransformer.fromYdoc(data.document);
 
   if (!isJSONContent(json)) throw new Error("Invalid JSON");
-  if (!json.content) throw new Error("Invalid content");
+  // if (!json.content) throw new Error("Invalid content");
 
   const textContent = generateText(json, [
     StarterKit.configure({
