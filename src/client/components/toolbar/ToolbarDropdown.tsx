@@ -39,6 +39,7 @@ import {
   Trash,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
+import { Theme } from "@/components/theme-provider";
 
 interface ToolbarDropdownProps {
   children: React.ReactNode;
@@ -51,7 +52,7 @@ const ToolbarDropdown: React.FC<ToolbarDropdownProps> = (props) => {
   const params = useParams();
   const navigate = useNavigate();
   const pageQuery = usePageQuery(params.pageId ?? "");
-  const toggleFavouriteMutation = useUpdatePageMutation(queryClient);
+  const toggleStarredMutation = useUpdatePageMutation(queryClient);
   const deletePageMutation = useDeletePageMutation(queryClient);
   const undoDeletePageMutation = useUndoDeletePageMutation(queryClient);
 
@@ -65,7 +66,7 @@ const ToolbarDropdown: React.FC<ToolbarDropdownProps> = (props) => {
             <>
               <DropdownMenuItem
                 onClick={() =>
-                  toggleFavouriteMutation.mutate({
+                  toggleStarredMutation.mutate({
                     id: params.pageId ?? "",
                     isStarred: !pageQuery.data.isStarred,
                   })
@@ -125,8 +126,13 @@ const ToolbarDropdown: React.FC<ToolbarDropdownProps> = (props) => {
 
             <DropdownMenuSubContent>
               <DropdownMenuRadioGroup
-                value={theme.toString()}
-                onValueChange={(value) => setTheme(value)}
+                value={theme}
+                onValueChange={(value) => {
+                  function isTheme(theme: string): theme is Theme {
+                    return (theme as Theme) !== undefined;
+                  }
+                  if (isTheme(value)) setTheme(value);
+                }}
               >
                 <DropdownMenuRadioItem value="light">
                   <span>Light</span>

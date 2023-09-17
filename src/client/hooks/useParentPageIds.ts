@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { usePageListQuery } from "./pageQueryHooks";
+import { usePageListQuery } from "@/hooks/pageQueryHooks";
 import { PageResponse } from "@/types/queryResponse";
 
 const getParentPageIds = (

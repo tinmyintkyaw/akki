@@ -1,5 +1,4 @@
 import Sidebar from "@/components/sidebar/Sidebar";
-import Toolbar from "@/components/toolbar/Toolbar";
 import { SidebarContext } from "@/contexts/SidebarContext";
 import useInstantSearchClient from "@/hooks/useInstantSearchClient";
 import { useSession } from "@/hooks/useSession";
@@ -38,7 +37,6 @@ export default function Layout() {
             )}
 
             <Allotment.Pane>
-              <Toolbar />
               <Outlet />
             </Allotment.Pane>
           </Allotment>

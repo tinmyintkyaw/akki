@@ -7,7 +7,7 @@ import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
-import { JSONContent, generateText } from "@tiptap/react";
+import { JSONContent, generateText } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 
 const isJSONContent = (json: unknown): json is JSONContent => {
@@ -17,7 +17,7 @@ const isJSONContent = (json: unknown): json is JSONContent => {
 const storePageHandler = async (data: storePayload) => {
   const { default: json } = await TiptapTransformer.fromYdoc(data.document);
 
-  if (!isJSONContent(json)) throw new Error("Invalid JSON");
+  // if (!isJSONContent(json)) throw new Error("Invalid JSON");
   // if (!json.content) throw new Error("Invalid content");
 
   const textContent = generateText(json, [

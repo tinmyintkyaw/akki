@@ -1,7 +1,4 @@
-import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { Trash2, Undo } from "lucide-react";
-
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,14 +6,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
-  useRecentPagesQuery,
   useDeletedPagesQuery,
   usePermanentlyDeletePageMutation,
   useUndoDeletePageMutation,
 } from "@/hooks/pageQueryHooks";
+import { useQueryClient } from "@tanstack/react-query";
+import { Trash2, Undo } from "lucide-react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const DeletedPages: React.FC = () => {
@@ -24,7 +22,6 @@ const DeletedPages: React.FC = () => {
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const recentPagesQuery = useRecentPagesQuery();
   const deletedPagesQuery = useDeletedPagesQuery();
   const undoDeletePageMutation = useUndoDeletePageMutation(queryClient);
   const permanentlyDeletePageMutation =
@@ -72,7 +69,7 @@ const DeletedPages: React.FC = () => {
                 <Button
                   variant={"ghost"}
                   size={"icon"}
-                  onClick={(e) => {
+                  onClick={() => {
                     undoDeletePageMutation.mutate({ id: page.id });
                     setIsOpen(false);
                   }}

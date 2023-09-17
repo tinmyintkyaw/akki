@@ -2,16 +2,15 @@ import SearchComboBox from "@/components/search/SearchComboBox";
 import ToolbarDropdown from "@/components/toolbar/ToolbarDropdown";
 import { Button } from "@/components/ui/button";
 import { SidebarContext } from "@/contexts/SidebarContext";
-import { usePageQuery } from "@/hooks/pageQueryHooks";
 import { MoreHorizontal, PanelLeftOpen, Search } from "lucide-react";
 import { useContext } from "react";
-import { useParams } from "react-router-dom";
 
-function Toolbar() {
+interface ToolbarProps {
+  title: string;
+}
+
+function Toolbar(props: ToolbarProps) {
   const sidebarContext = useContext(SidebarContext);
-
-  const params = useParams();
-  const pageQuery = usePageQuery(params.pageId ?? "");
 
   return (
     <div
@@ -29,15 +28,9 @@ function Toolbar() {
         </Button>
       )}
 
-      {pageQuery.isError && <div className="mx-2">Error</div>}
-
-      {pageQuery.data && (
-        <Button variant={"ghost"} size={"default"} className="justify-start">
-          <span className="line-clamp-1 text-start">
-            {pageQuery.data.pageName}
-          </span>
-        </Button>
-      )}
+      <Button variant={"ghost"} size={"default"} className="justify-start">
+        <span className="line-clamp-1 text-start">{props.title}</span>
+      </Button>
 
       <div className="flex-grow" />
 

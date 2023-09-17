@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { HTMLProps } from "react";
 
 interface ItemsContainerProps {

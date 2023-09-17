@@ -116,6 +116,9 @@ dependencies:
   '@tiptap/extension-text':
     specifier: ^2.1.7
     version: 2.1.8(@tiptap/core@2.1.8)
+  '@tiptap/html':
+    specifier: ^2.1.10
+    version: 2.1.10(@tiptap/core@2.1.8)(@tiptap/pm@2.1.8)
   '@tiptap/pm':
     specifier: ^2.1.7
     version: 2.1.8
@@ -2509,6 +2512,17 @@ packages:
       '@tiptap/core': 2.1.8(@tiptap/pm@2.1.8)
     dev: false
 
+  /@tiptap/html@2.1.10(@tiptap/core@2.1.8)(@tiptap/pm@2.1.8):
+    resolution: {integrity: sha512-o8x/vG4HUVG/vT6zlZ0iwyG9ZQoTZNAaLuOflDGNPPS/SUYYelJIVuCXdn1tAhnyJOj6Mf6rO8gvGpCOeyfKog==}
+    peerDependencies:
+      '@tiptap/core': ^2.0.0
+      '@tiptap/pm': ^2.0.0
+    dependencies:
+      '@tiptap/core': 2.1.8(@tiptap/pm@2.1.8)
+      '@tiptap/pm': 2.1.8
+      zeed-dom: 0.9.26
+    dev: false
+
   /@tiptap/pm@2.1.8:
     resolution: {integrity: sha512-H3NGAu5xdH1PpXa6OQlvecaWJIZR/9tVkc1mdpLanvG7mW85DuY+5fC36Xnv9SPMVcO3zWXS6Ii4os6HbdP6bQ==}
     dependencies:
@@ -3302,6 +3316,11 @@ packages:
       shebang-command: 2.0.0
       which: 2.0.2
     dev: true
+
+  /css-what@6.1.0:
+    resolution: {integrity: sha512-HTUrgRJ7r4dsZKU6GjmpfRK1O76h97Z8MfS1G0FozR+oF2kG6Vfe8JE6zwrkbxigziPHinCJ+gCPjA9EaBDtRw==}
+    engines: {node: '>= 6'}
+    dev: false
 
   /cssesc@3.0.0:
     resolution: {integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==}
@@ -5835,3 +5854,10 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
     dev: true
+
+  /zeed-dom@0.9.26:
+    resolution: {integrity: sha512-HWjX8rA3Y/RI32zby3KIN1D+mgskce+She4K7kRyyx62OiVxJ5FnYm8vWq0YVAja3Tf2S1M0XAc6O2lRFcMgcQ==}
+    engines: {node: '>=14.13.1'}
+    dependencies:
+      css-what: 6.1.0
+    dev: false
