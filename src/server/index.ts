@@ -3,8 +3,13 @@ import checkFirstStart from "@/utils/check-first-start.js";
 import initTypesenseClient from "@/utils/init-typesense-client.js";
 import hocuspocusServer from "@/websocket/websocket-server.js";
 import { Prisma } from "@prisma/client";
-import express from "express";
+import express, { ErrorRequestHandler } from "express";
 import expressWebsockets from "express-ws";
+
+const errorHandler: ErrorRequestHandler = (error, _req, res) => {
+  console.error(error);
+  res.sendStatus(500);
+};
 
 const { app } = expressWebsockets(express());
 
@@ -22,6 +27,8 @@ app.use("/api", apiRouter);
 app.ws("/editor", (websocket, req) => {
   hocuspocusServer.handleConnection(websocket, req);
 });
+
+app.use(errorHandler);
 
 checkFirstStart()
   .then(() => {
