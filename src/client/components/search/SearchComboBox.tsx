@@ -103,6 +103,7 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
               value={input}
               onValueChange={(value) => setInput(value)}
               onFocus={() => refine(input)}
+              className="h-12"
             />
             <CommandList className="max-h-[calc(100vh-80px)] overflow-hidden md:max-h-[50vh]">
               {hits.length === 0 && (
