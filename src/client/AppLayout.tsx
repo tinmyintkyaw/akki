@@ -21,7 +21,7 @@ export default function Layout() {
   }, [navigate, status]);
 
   return (
-    <main className="flex h-screen w-screen">
+    <main className="h-screen w-screen">
       {status === "authenticated" && (
         <InstantSearch searchClient={instantSearchClient} indexName="pages">
           <Allotment proportionalLayout={false}>

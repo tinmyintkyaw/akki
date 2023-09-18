@@ -1,12 +1,10 @@
 import RightPaneError from "@/RightPaneError";
 import DeletedPageBanner from "@/components/editor/DeletedPageBanner";
-// import Editor from "@/components/editor/Editor";
 import Toolbar from "@/components/toolbar/Toolbar";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import useMultiplayerProvider from "@/hooks/editor/useMultiplayerProvider";
 import { usePageQuery } from "@/hooks/pageQueryHooks";
 import clsx from "clsx";
-import { useEffect, lazy, Suspense } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 const Editor = lazy(() => import("@/components/editor/Editor"));
@@ -35,10 +33,9 @@ export default function RightPane() {
             <DeletedPageBanner pageId={pageQuery.data.id} />
           )}
 
-          <ScrollArea
-            type="auto"
+          <div
             className={clsx(
-              "h-[calc(100vh-3rem)] w-full",
+              "scrollbar-thin h-[calc(100vh-3rem)] overflow-y-auto",
               pageQuery.data.isDeleted && "h-[calc(100vh-6rem)]",
             )}
           >
@@ -47,7 +44,7 @@ export default function RightPane() {
                 <Editor provider={multiplayerProvider.provider} />
               </Suspense>
             )}
-          </ScrollArea>
+          </div>
         </>
       )}
     </>
