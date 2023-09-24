@@ -25,16 +25,15 @@ export default function Layout() {
       {status === "authenticated" && (
         <InstantSearch searchClient={instantSearchClient} indexName="pages">
           <Allotment proportionalLayout={false}>
-            {sidebarContext.isSidebarOpen && (
-              <Allotment.Pane
-                minSize={250}
-                preferredSize={350}
-                maxSize={600}
-                priority={LayoutPriority.Low}
-              >
-                <Sidebar />
-              </Allotment.Pane>
-            )}
+            <Allotment.Pane
+              minSize={250}
+              preferredSize={350}
+              maxSize={600}
+              priority={LayoutPriority.Low}
+              visible={sidebarContext.isSidebarOpen}
+            >
+              <Sidebar />
+            </Allotment.Pane>
 
             <Allotment.Pane>
               <Outlet />
