@@ -1,4 +1,4 @@
-import { NodeViewWrapper, NodeViewContent } from "@tiptap/react";
+import { NodeViewContent, NodeViewWrapper } from "@tiptap/react";
 // import { Combobox } from "@headlessui/react";
 // import * as Popover from "@radix-ui/react-popover";
 // import * as Select from "@radix-ui/react-select";
@@ -21,9 +21,11 @@ export default function CodeBlockWrapper() {
   //   })
   //   .filter((lang): lang is Language => !!lang);
 
+  // const { resolvedTheme } = useTheme();
+
   return (
-    <NodeViewWrapper className="my-2">
-      <div className="not-prose my-1 w-full rounded bg-muted px-3 py-2">
+    <NodeViewWrapper className="hljs my-2 rounded">
+      <div className="not-prose my-1 w-full px-3 py-2">
         <NodeViewContent as="pre" className="w-full px-1" />
       </div>
     </NodeViewWrapper>

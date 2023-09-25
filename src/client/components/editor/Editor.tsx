@@ -7,7 +7,8 @@ import { EditorContent } from "@tiptap/react";
 import clsx from "clsx";
 import { useParams } from "react-router-dom";
 
-import "@/assets/intellij-light.css";
+import "@/styles/atom-one-light.css";
+import "@/styles/atom-one-dark.css";
 
 interface EditorProps {
   // ydoc: Y.Doc;

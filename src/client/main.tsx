@@ -1,7 +1,7 @@
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { SidebarContextProvider } from "@/contexts/SidebarContext";
-import "@/index.css";
+import "@/styles/index.css";
 import queryClient from "@/queryClient";
 import router from "@/router";
 import { QueryClientProvider } from "@tanstack/react-query";
