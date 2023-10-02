@@ -76,10 +76,12 @@ const useContentEditor = (provider: HocuspocusProvider) => {
 
     onCreate({ editor }) {
       // set last accessed time for recent pages feature
-      updatePageMutation.mutate({
-        id: params.pageId ?? "",
-        accessedAt: new Date(Date.now()).toISOString(),
-      });
+      if (pageQuery.data && !pageQuery.data.isDeleted) {
+        updatePageMutation.mutate({
+          id: params.pageId ?? "",
+          accessedAt: new Date(Date.now()).toISOString(),
+        });
+      }
 
       // set pageId for later access from prose-mirror extensions
       editor.storage.doc.pageId = pageQuery.data?.id;

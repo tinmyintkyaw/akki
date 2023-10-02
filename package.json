@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently 'vite' 'pnpm run dev:server'",
-    "dev:server": "tsx watch --clear-screen=false --tsconfig src/server/tsconfig.json src/server/index.ts",
+    "dev:server": "dotenv -e .env.development -- tsx watch --clear-screen=false --tsconfig src/server/tsconfig.json src/server/index.ts",
     "build": "pnpm run build:client && pnpm run build:server",
     "build:client": "tsc && vite build",
     "build:server": "esbuild src/server/index.ts --bundle --minify --platform=node --tsconfig=src/server/tsconfig.json --outfile=./dist/server/index.cjs",
@@ -60,6 +60,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "cmdk": "^0.2.0",
+    "dotenv-cli": "^7.3.0",
     "express": "^4.18.2",
     "express-json-validator-middleware": "^3.0.1",
     "express-ws": "^5.0.2",

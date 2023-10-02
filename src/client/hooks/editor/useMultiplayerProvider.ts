@@ -2,7 +2,10 @@ import { HocuspocusProvider, WebSocketStatus } from "@hocuspocus/provider";
 import { useEffect, useRef, useState } from "react";
 import * as Y from "yjs";
 
-const MULTIPLAYER_URL = "ws://localhost:3300/editor";
+const MULTIPLAYER_URL = (() => {
+  const protocol = location.protocol === "http:" ? "ws:" : "wss:";
+  return `${protocol}//${location.host}/api/editor`;
+})();
 
 const useMultiplayerProvider = (pageId: string) => {
   const provider = useRef<HocuspocusProvider>();

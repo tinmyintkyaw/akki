@@ -4,19 +4,12 @@ import TypesenseInstantsearchAdapter, {
   TypesenseInstantsearchAdapterOptions,
 } from "typesense-instantsearch-adapter";
 
-// TODO: dynamically get url from the server
-const TYPESENSE_HOST = "localhost";
-const TYPESENSE_PROTOCOL = "http";
-const TYPESENSE_PORT = 8108;
-
 const typesenseAdapterOptions: TypesenseInstantsearchAdapterOptions = {
   server: {
     apiKey: "",
     nodes: [
       {
-        host: TYPESENSE_HOST,
-        port: TYPESENSE_PORT,
-        protocol: TYPESENSE_PROTOCOL,
+        url: `/api/search`,
       },
     ],
   },
