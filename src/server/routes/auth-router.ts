@@ -16,19 +16,20 @@ const authRouter = express.Router();
 const validator = new Validator({});
 addFormats(validator.ajv, { formats: ["password"] });
 
-export const createPagePayloadSchema: AllowedSchema = {
-  type: "object",
-  properties: {
-    username: { type: "string" },
-    name: { type: "string" },
-    password: { type: "string", format: "password" },
-  },
-  required: ["username", "name", "password"],
-};
+// export const createUserPayloadSchema: AllowedSchema = {
+//   type: "object",
+//   properties: {
+//     username: { type: "string" },
+//     name: { type: "string" },
+//     password: { type: "string", format: "password" },
+//   },
+//   required: ["username", "name", "password"],
+// };
 
-authRouter.post("/signup/username", checkIfSignedOut, signupController);
+// authRouter.post("/signup/username", checkIfSignedOut, signupController);
 
-authRouter.post("/signin/username", checkIfSignedOut, signInController);
+process.env.DEMO_MODE === "true" &&
+  authRouter.post("/signin/username", checkIfSignedOut, signInController);
 
 authRouter.get("/signin/github", checkIfSignedOut, githubSignInController);
 
