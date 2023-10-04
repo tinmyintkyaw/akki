@@ -5,15 +5,16 @@ import path from "path";
 const getFileController: RequestHandler = async (
   req: Request<{ fileId: string }>,
   res,
-  next
+  next,
 ) => {
   if (res.locals.session) return res.sendStatus(401);
 
   try {
     const filePath = path.join(
-      process.env.UPLOAD_DIR,
+      process.cwd(),
+      "uploads",
       res.locals.session.user.userId,
-      req.params.fileId
+      req.params.fileId,
     );
 
     fs.statSync(filePath);

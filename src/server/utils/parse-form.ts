@@ -5,12 +5,13 @@ import path from "path";
 
 const parseForm = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<{ fields: formidable.Fields; files: formidable.Files }> => {
   return new Promise((resolve, reject) => {
     const uploadDir = path.join(
-      process.env.UPLOAD_DIR,
-      res.locals.session.user.userId
+      process.cwd(),
+      "uploads",
+      res.locals.session.user.userId,
     );
 
     try {
