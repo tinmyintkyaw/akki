@@ -9,8 +9,16 @@ import hocuspocusServer from "@/websocket/websocket-server.js";
 import { Prisma } from "@prisma/client";
 import express, { ErrorRequestHandler } from "express";
 import expressWebsockets from "express-ws";
+import { rateLimit } from "express-rate-limit";
 
 const { app } = expressWebsockets(express());
+
+const rateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 100,
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+});
 
 export const typesenseClient = initTypesenseClient(
   process.env.TYPESENSE_HOST,
@@ -20,6 +28,7 @@ export const typesenseClient = initTypesenseClient(
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(rateLimiter);
 
 app.use(authRouter);
 
