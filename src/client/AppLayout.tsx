@@ -13,7 +13,7 @@ export default function Layout() {
   const instantSearchClient = useInstantSearchClient();
 
   return (
-    <main className="h-screen w-screen">
+    <main className="h-[100dvh] w-screen">
       <InstantSearch searchClient={instantSearchClient} indexName="pages">
         <Allotment proportionalLayout={false}>
           <Allotment.Pane
