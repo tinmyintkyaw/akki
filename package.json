@@ -13,6 +13,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource-variable/inter": "^5.0.13",
     "@headlessui/react": "^1.7.17",
     "@hocuspocus/extension-database": "^2.5.0",
     "@hocuspocus/provider": "^2.5.0",
