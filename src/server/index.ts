@@ -8,14 +8,22 @@ import initTypesenseClient from "@/utils/init-typesense-client.js";
 import hocuspocusServer from "@/websocket/websocket-server.js";
 import { Prisma } from "@prisma/client";
 import express, { ErrorRequestHandler } from "express";
-import expressWebsockets from "express-ws";
 import { rateLimit } from "express-rate-limit";
+import expressWebsockets from "express-ws";
 
 const { app } = expressWebsockets(express());
 
-const rateLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
+const globalRateLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000,
   limit: 100,
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+});
+
+const sessionRateLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000,
+  limit: 100,
+  keyGenerator: async (_req, res) => res.locals.session.sessionId,
   standardHeaders: "draft-7",
   legacyHeaders: false,
 });
@@ -28,14 +36,13 @@ export const typesenseClient = initTypesenseClient(
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(rateLimiter);
 
-app.use(authRouter);
+app.use(globalRateLimiter, authRouter);
 
-app.get("/health", (_req, res) => res.sendStatus(200));
-app.get("/session", sessionController);
-app.use("/pages", checkIfSignedIn, pageRouter);
-app.use("/files", checkIfSignedIn, fileRouter);
+app.get("/health", globalRateLimiter, (_req, res) => res.sendStatus(200));
+app.get("/session", globalRateLimiter, sessionController);
+app.use("/pages", checkIfSignedIn, sessionRateLimiter, pageRouter);
+app.use("/files", checkIfSignedIn, sessionRateLimiter, fileRouter);
 
 app.ws("/editor", (websocket, req) => {
   hocuspocusServer.handleConnection(websocket, req);
