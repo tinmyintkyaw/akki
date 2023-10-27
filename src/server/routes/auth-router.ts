@@ -4,7 +4,7 @@ import googleSignInCallbackController from "@/controllers/auth/google/google-sig
 import googleSignInController from "@/controllers/auth/google/google-signin.js";
 import signInController from "@/controllers/auth/signin-controller.js";
 import signOutController from "@/controllers/auth/signout-controller.js";
-import signupController from "@/controllers/auth/signup-controller.js";
+// import signupController from "@/controllers/auth/signup-controller.js";
 import checkIfSignedIn from "@/middlewares/check-signin.js";
 import checkIfSignedOut from "@/middlewares/check-signout.js";
 import addFormats from "ajv-formats";
@@ -28,8 +28,27 @@ addFormats(validator.ajv, { formats: ["password"] });
 
 // authRouter.post("/signup/username", checkIfSignedOut, signupController);
 
-process.env.DEMO_MODE === "true" &&
-  authRouter.post("/signin/username", checkIfSignedOut, signInController);
+const signinPayloadSchema: AllowedSchema = {
+  type: "object",
+  properties: {
+    username: {
+      type: "string",
+    },
+    password: {
+      type: "string",
+      format: "password",
+    },
+  },
+  required: ["username", "password"],
+};
+
+parseInt(process.env.DEMO_MODE) === 1 &&
+  authRouter.post(
+    "/signin/username",
+    checkIfSignedOut,
+    validator.validate({ body: signinPayloadSchema }),
+    signInController,
+  );
 
 authRouter.get("/signin/github", checkIfSignedOut, githubSignInController);
 
