@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/command";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import typesenseDocument from "@/shared/types/typesense-document";
+import TypesenseDocument from "@/shared/types/typesense-document";
 import { useQueryClient } from "@tanstack/react-query";
 import { ArrowDownUp, CornerDownLeft } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
@@ -19,23 +19,6 @@ import {
   useSearchBox,
 } from "react-instantsearch";
 import { useNavigate } from "react-router-dom";
-
-type HighlightResult = {
-  value: string;
-  matchLevel: string;
-  matchedWords: string[];
-};
-
-type SnippetResult = {
-  value: string;
-  matchLevel: string;
-  matchedWords: string[];
-};
-
-type MyHitType = typesenseDocument & {
-  _snippetResult: Record<string, SnippetResult>;
-  _highlightResult: Record<string, HighlightResult>;
-};
 
 type SearchComboBoxProps = {
   children: ReactNode;
@@ -49,7 +32,7 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
   const queryClient = useQueryClient();
   const instantSearch = useInstantSearch({ catchError: true });
   const { refine, clear } = useSearchBox();
-  const { hits } = useHits<MyHitType>();
+  const { hits } = useHits<TypesenseDocument>();
 
   // Open with keyboard shortcut
   useEffect(() => {
@@ -124,26 +107,21 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
                       }}
                     >
                       <div className="w-full text-[15px] font-medium">
-                        {hit._highlightResult?.pageName.matchedWords.length >
-                        0 ? (
-                          <Highlight
-                            attribute={"pageName"}
-                            hit={hit}
-                            className=""
-                            highlightedTagName={"strong"}
-                            classNames={{
-                              highlighted: "text-gray-950 dark:text-gray-100",
-                              nonHighlighted:
-                                "text-gray-800 dark:text-gray-400",
-                            }}
-                          />
-                        ) : (
-                          <span className="">{hit.pageName}</span>
-                        )}
+                        <Highlight
+                          attribute={"pageName"}
+                          hit={hit}
+                          className=""
+                          highlightedTagName={"strong"}
+                          classNames={{
+                            highlighted: "text-gray-950 dark:text-gray-100",
+                            nonHighlighted: "text-gray-800 dark:text-gray-200",
+                          }}
+                        />
                       </div>
 
                       <div className="mt-1 w-full text-sm text-accent-foreground">
-                        {instantSearch.indexUiState.query &&
+                        {
+                          // @ts-expect-error matchedWords will always be of type string[]
                           hit._snippetResult?.textContent.matchedWords.length >
                             0 && (
                             <Snippet
@@ -157,7 +135,8 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
                                   "text-gray-800 dark:text-gray-400",
                               }}
                             />
-                          )}
+                          )
+                        }
                       </div>
                     </CommandItem>
                   );

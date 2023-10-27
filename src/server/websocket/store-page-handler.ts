@@ -1,6 +1,6 @@
 import prisma from "@/db/prisma-client.js";
 import { typesenseClient } from "@/index.js";
-import typesenseDocument from "@/shared/types/typesense-document";
+import TypesenseDocument from "@/shared/types/typesense-document";
 import { storePayload } from "@hocuspocus/server";
 import { TiptapTransformer } from "@hocuspocus/transformer";
 import Image from "@tiptap/extension-image";
@@ -45,7 +45,7 @@ const storePageHandler = async (data: storePayload) => {
   });
 
   // Update typesense index
-  const typesensePage: typesenseDocument = {
+  const typesensePage: TypesenseDocument = {
     id: dbPage.id,
     userId: dbPage.userId,
     pageName: dbPage.pageName,

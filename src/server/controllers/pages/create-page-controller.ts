@@ -1,6 +1,6 @@
 import prisma from "@/db/prisma-client.js";
 import { typesenseClient } from "@/index.js";
-import typesenseDocument from "@/shared/types/typesense-document.js";
+import TypesenseDocument from "@/shared/types/typesense-document.js";
 import { pageSelect } from "@/utils/prisma-page-select.js";
 import { transformPageResponseData } from "@/utils/transform-response-data.js";
 import { TiptapTransformer } from "@hocuspocus/transformer";
@@ -44,7 +44,7 @@ const createPageController: RequestHandler = async (req, res, next) => {
       select: pageSelect,
     });
 
-    const typesensePage: typesenseDocument = {
+    const typesensePage: TypesenseDocument = {
       id: newPage.id,
       userId: newPage.userId,
       pageName: newPage.pageName,

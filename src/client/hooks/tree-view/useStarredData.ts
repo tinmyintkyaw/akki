@@ -7,7 +7,9 @@ const useStarredTreeData = () => {
   const starredPageListQuery = useStarredPagesQuery();
 
   const starredPageListMap = useMemo(() => {
-    if (starredPageListQuery.isLoading || starredPageListQuery.isError) return;
+    if (starredPageListQuery.isLoading || starredPageListQuery.isError)
+      return null;
+
     return new Map(
       starredPageListQuery.data.map((page) => [
         page.id,

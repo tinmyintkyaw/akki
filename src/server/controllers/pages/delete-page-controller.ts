@@ -8,7 +8,7 @@ import { typesenseClient } from "@/index.js";
 const deletePageController: RequestHandler = async (
   req: Request<{ pageId: string }>,
   res,
-  next
+  next,
 ) => {
   if (!res.locals.session) return res.sendStatus(401);
 
@@ -24,8 +24,9 @@ const deletePageController: RequestHandler = async (
     });
 
     const uploadDir = path.join(
-      process.env.UPLOAD_DIR,
-      res.locals.session.user.userId
+      process.cwd(),
+      "uploads",
+      res.locals.session.user.userId,
     );
 
     deletedPage.files.forEach(async (file) => {

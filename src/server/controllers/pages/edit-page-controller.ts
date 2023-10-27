@@ -1,6 +1,6 @@
 import prisma from "@/db/prisma-client.js";
 import { typesenseClient } from "@/index.js";
-import typesenseDocument from "@/shared/types/typesense-document.js";
+import TypesenseDocument from "@/shared/types/typesense-document.js";
 import { pageSelectWithTextContent } from "@/utils/prisma-page-select.js";
 import { transformPageResponseData } from "@/utils/transform-response-data.js";
 import { Request, RequestHandler } from "express";
@@ -46,7 +46,7 @@ const editPageController: RequestHandler = async (
     });
 
     /* Update pages in typesense */
-    const typesensePage: typesenseDocument = {
+    const typesensePage: TypesenseDocument = {
       id: updatedPage.id,
       userId: updatedPage.userId,
       pageName: updatedPage.pageName,

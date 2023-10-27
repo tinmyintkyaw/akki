@@ -1,4 +1,4 @@
-type typesenseDocument = {
+type TypesenseDocument = {
   id: string;
   pageName: string;
   textContent: string;
@@ -8,4 +8,4 @@ type typesenseDocument = {
   userId: string;
 };
 
-export default typesenseDocument;
+export default TypesenseDocument;
