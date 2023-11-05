@@ -13,6 +13,7 @@ import { ArrowDownUp, CornerDownLeft } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
 import {
   Highlight,
+  Hits,
   Snippet,
   useHits,
   useInstantSearch,
@@ -94,8 +95,8 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
               )}
 
               <ScrollArea className="h-[calc(100vh-80px)] w-full md:h-[50vh]">
-                {hits.map((hit) => {
-                  return (
+                <Hits
+                  hitComponent={({ hit }) => (
                     <CommandItem
                       key={hit.objectID}
                       value={hit.objectID}
@@ -139,8 +140,8 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
                         }
                       </div>
                     </CommandItem>
-                  );
-                })}
+                  )}
+                />
               </ScrollArea>
             </CommandList>
 

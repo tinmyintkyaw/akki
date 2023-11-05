@@ -1,4 +1,4 @@
-import { useSession } from "@/hooks/useSession";
+import useSearchKeyQuery from "@/hooks/useSearchKeyQuery";
 import { useEffect, useMemo } from "react";
 import TypesenseInstantsearchAdapter, {
   TypesenseInstantsearchAdapterOptions,
@@ -12,6 +12,7 @@ const typesenseAdapterOptions: TypesenseInstantsearchAdapterOptions = {
         url: `/api/search`,
       },
     ],
+    sendApiKeyAsQueryParam: false,
   },
   additionalSearchParameters: {
     query_by: "pageName,textContent",
@@ -19,7 +20,7 @@ const typesenseAdapterOptions: TypesenseInstantsearchAdapterOptions = {
 };
 
 const useInstantSearchClient = () => {
-  const { session } = useSession();
+  const searchKeyQuery = useSearchKeyQuery();
 
   const instantSearchAdapter = useMemo(
     () => new TypesenseInstantsearchAdapter(typesenseAdapterOptions),
@@ -27,16 +28,21 @@ const useInstantSearchClient = () => {
   );
 
   useEffect(() => {
-    if (!session) return;
+    if (searchKeyQuery.isLoading || searchKeyQuery.isError) return;
 
     instantSearchAdapter.updateConfiguration({
       ...typesenseAdapterOptions,
       server: {
         ...typesenseAdapterOptions.server,
-        apiKey: session.searchKey,
+        apiKey: searchKeyQuery.data.searchKey,
       },
     });
-  }, [instantSearchAdapter, session]);
+  }, [
+    instantSearchAdapter,
+    searchKeyQuery.data,
+    searchKeyQuery.isError,
+    searchKeyQuery.isLoading,
+  ]);
 
   return instantSearchAdapter.searchClient;
 };
