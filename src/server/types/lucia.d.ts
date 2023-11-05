@@ -9,7 +9,8 @@ declare namespace Lucia {
     email_verified?: boolean;
   };
   type DatabaseSessionAttributes = {
-    editorKey: string;
+    editorKey?: string;
+    editorKeyExpires?: Date;
     typesenseKeyId: string;
     typesenseKeyValue: string;
   };

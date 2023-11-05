@@ -22,7 +22,7 @@ const useMultiplayerProvider = (pageId: string) => {
       url: MULTIPLAYER_URL,
       document: new Y.Doc(),
       token: async () => {
-        const res = await fetch("/api/session");
+        const res = await fetch("/api/keys/editor");
         if (!res.ok) return "";
         const { editorKey } = await res.json();
         return editorKey as string;

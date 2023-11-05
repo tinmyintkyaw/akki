@@ -203,6 +203,9 @@ dependencies:
   react-router-dom:
     specifier: ^6.17.0
     version: 6.17.0(react-dom@18.2.0)(react@18.2.0)
+  request-ip:
+    specifier: ^3.3.0
+    version: 3.3.0
   sort-by:
     specifier: ^1.2.0
     version: 1.2.0
@@ -259,6 +262,9 @@ devDependencies:
   '@types/react-dom':
     specifier: ^18.2.14
     version: 18.2.14
+  '@types/request-ip':
+    specifier: ^0.0.40
+    version: 0.0.40
   '@typescript-eslint/eslint-plugin':
     specifier: ^6.8.0
     version: 6.8.0(@typescript-eslint/parser@6.8.0)(eslint@8.51.0)(typescript@5.2.2)
@@ -2725,6 +2731,12 @@ packages:
       '@types/scheduler': 0.16.5
       csstype: 3.1.2
 
+  /@types/request-ip@0.0.40:
+    resolution: {integrity: sha512-3pBKLRLlE5YwVWp2hQRqv6dOXWkoE3bEt+EXHTVd8Q3XNnIWFJx+VC2Dy8+DAnBI9MmSqHSljUZPeuTBMvsNYg==}
+    dependencies:
+      '@types/node': 20.8.7
+    dev: true
+
   /@types/scheduler@0.16.5:
     resolution: {integrity: sha512-s/FPdYRmZR8SjLWGMCuax7r3qCWQw9QKHzXVukAuuIJkXkDRwp+Pu5LMIVFi0Fxbav35WURicYr8u1QsoybnQw==}
 
@@ -5156,6 +5168,10 @@ packages:
 
   /remove-accents@0.4.2:
     resolution: {integrity: sha512-7pXIJqJOq5tFgG1A2Zxti3Ht8jJF337m4sowbuHsW30ZnkQFnDzy9qBNhgzX8ZLW4+UBcXiiR7SwR6pokHsxiA==}
+
+  /request-ip@3.3.0:
+    resolution: {integrity: sha512-cA6Xh6e0fDBBBwH77SLJaJPBmD3nWVAcF9/XAcsrIHdjhFzFiB5aNQFytdjCGPezU3ROwrR11IddKAM08vohxA==}
+    dev: false
 
   /require-directory@2.1.1:
     resolution: {integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==}

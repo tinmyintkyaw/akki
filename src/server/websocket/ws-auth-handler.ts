@@ -9,8 +9,14 @@ const websocketAuthHandler = async (
     where: {
       editorKey: data.token,
     },
-    select: { user_id: true },
+    select: { user_id: true, editorKeyExpires: true, editorKeyReqIp: true },
   });
+
+  if (multiplayerSession.editorKeyReqIp !== data.context.clientIp)
+    throw new Error("IP addresses does not match");
+
+  if (multiplayerSession.editorKeyExpires.getDate() > Date.now())
+    throw new Error("Key expired");
 
   await prisma.page.findUniqueOrThrow({
     where: {
@@ -18,6 +24,17 @@ const websocketAuthHandler = async (
         userId: multiplayerSession.user_id,
         id: data.documentName,
       },
+    },
+  });
+
+  // auth key for websocket connection is single use only
+  await prisma.session.update({
+    where: {
+      editorKey: data.token,
+    },
+    data: {
+      editorKey: null,
+      editorKeyExpires: null,
     },
   });
 
