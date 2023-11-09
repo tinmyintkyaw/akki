@@ -1,6 +1,10 @@
 import sessionController from "@/controllers/session-controller";
 import checkIfSignedIn from "@/middlewares/check-signin";
 import errorHandler from "@/middlewares/error-handler";
+import {
+  globalRateLimiter,
+  sessionRateLimiter,
+} from "@/middlewares/rate-limiters";
 import authRouter from "@/routes/auth-router";
 import fileRouter from "@/routes/file-router";
 import keyRouter from "@/routes/key-router";
@@ -11,27 +15,11 @@ import hocuspocusServer from "@/websocket/websocket-server.js";
 import { Prisma } from "@prisma/client";
 import express from "express";
 import asyncHandler from "express-async-handler";
-import { rateLimit } from "express-rate-limit";
 import expressWebsockets from "express-ws";
 import helmet from "helmet";
 import requestIp from "request-ip";
 
 const { app } = expressWebsockets(express());
-
-const globalRateLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000,
-  limit: 100,
-  standardHeaders: "draft-7",
-  legacyHeaders: false,
-});
-
-const sessionRateLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000,
-  limit: 100,
-  keyGenerator: async (_req, res) => res.locals.session.sessionId,
-  standardHeaders: "draft-7",
-  legacyHeaders: false,
-});
 
 export const typesenseClient = initTypesenseClient(
   process.env.TYPESENSE_HOST,
