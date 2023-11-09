@@ -9,6 +9,7 @@ import initTypesenseClient from "@/utils/init-typesense-client.js";
 import hocuspocusServer from "@/websocket/websocket-server.js";
 import { Prisma } from "@prisma/client";
 import express, { ErrorRequestHandler } from "express";
+import asyncHandler from "express-async-handler";
 import { rateLimit } from "express-rate-limit";
 import expressWebsockets from "express-ws";
 import { LuciaError } from "lucia";
@@ -43,7 +44,7 @@ app.use(express.json());
 app.use(globalRateLimiter, authRouter);
 
 app.get("/health", globalRateLimiter, (_req, res) => res.sendStatus(200));
-app.get("/session", globalRateLimiter, sessionController);
+app.get("/session", globalRateLimiter, asyncHandler(sessionController));
 app.use("/pages", checkIfSignedIn, sessionRateLimiter, pageRouter);
 app.use("/files", checkIfSignedIn, sessionRateLimiter, fileRouter);
 app.use("/keys", checkIfSignedIn, sessionRateLimiter, keyRouter);
