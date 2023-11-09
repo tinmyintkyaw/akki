@@ -1,4 +1,4 @@
-import prisma from "@/db/prisma-client.js";
+import prisma from "@/configs/prisma-client-config";
 import { beforeHandleMessagePayload } from "@hocuspocus/server";
 
 const sessionValidateInterval = 10 * 60 * 1000;
@@ -6,7 +6,7 @@ const jitter = Math.floor(Math.random() * 5000);
 
 const messageHandler = async (
   data: beforeHandleMessagePayload,
-  lastCheckedTimestamps: Map<string, number>
+  lastCheckedTimestamps: Map<string, number>,
 ) => {
   const sessionTimestamp = lastCheckedTimestamps.get(data.context.sessionId);
   if (!sessionTimestamp) throw new Error();

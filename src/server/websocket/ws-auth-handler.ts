@@ -1,4 +1,4 @@
-import prisma from "@/db/prisma-client.js";
+import prisma from "@/configs/prisma-client-config";
 import { onAuthenticatePayload } from "@hocuspocus/server";
 
 const websocketAuthHandler = async (

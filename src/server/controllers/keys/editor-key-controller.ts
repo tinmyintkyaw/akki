@@ -1,4 +1,4 @@
-import prisma from "@/db/prisma-client";
+import prisma from "@/configs/prisma-client-config";
 import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";
 import requestIp from "request-ip";

@@ -1,4 +1,4 @@
-import prisma from "@/db/prisma-client.js";
+import prisma from "@/configs/prisma-client-config";
 import { fetchPayload } from "@hocuspocus/server";
 import * as Y from "yjs";
 

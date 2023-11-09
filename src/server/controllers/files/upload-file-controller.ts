@@ -1,4 +1,4 @@
-import prisma from "@/db/prisma-client.js";
+import prisma from "@/configs/prisma-client-config";
 import parseForm from "@/utils/parse-form.js";
 import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";

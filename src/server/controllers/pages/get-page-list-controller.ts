@@ -1,4 +1,4 @@
-import prisma from "@/db/prisma-client.js";
+import prisma from "@/configs/prisma-client-config";
 import { pageSelect } from "@/utils/prisma-page-select.js";
 import { transformPageListResponseData } from "@/utils/transform-response-data.js";
 import { RequestHandler } from "express";

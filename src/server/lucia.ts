@@ -1,5 +1,5 @@
-import prismaClient from "@/db/prisma-client";
-import { prisma } from "@lucia-auth/adapter-prisma";
+import prisma from "@/configs/prisma-client-config";
+import { prisma as prismaAdapter } from "@lucia-auth/adapter-prisma";
 import { github, google } from "@lucia-auth/oauth/providers";
 import { lucia } from "lucia";
 import { express } from "lucia/middleware";
@@ -9,7 +9,7 @@ export const auth = lucia({
   // env: process.env.NODE_ENV === "development" ? "DEV" : "PROD",
   env: "DEV",
   middleware: express(),
-  adapter: prisma(prismaClient),
+  adapter: prismaAdapter(prisma),
 
   // TODO: setup CSRF protection in dev mode
   csrfProtection: false,

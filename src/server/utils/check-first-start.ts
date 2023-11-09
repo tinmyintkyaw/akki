@@ -1,4 +1,4 @@
-import prisma from "@/db/prisma-client.js";
+import prisma from "@/configs/prisma-client-config";
 import { typesenseClient } from "@/index.js";
 import { auth } from "@/lucia.js";
 import typesenseCollectionSchema from "./typesense-collection-schema.js";
