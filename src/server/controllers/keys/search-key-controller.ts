@@ -1,4 +1,4 @@
-import { typesenseClient } from "@/index";
+import typesenseClient from "@/configs/typesense-client-config";
 import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";
 

@@ -1,4 +1,4 @@
-import { typesenseClient } from "@/index.js";
+import typesenseClient from "@/configs/typesense-client-config";
 import { auth } from "@/lucia.js";
 import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";

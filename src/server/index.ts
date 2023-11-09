@@ -10,7 +10,6 @@ import fileRouter from "@/routes/file-router";
 import keyRouter from "@/routes/key-router";
 import pageRouter from "@/routes/page-router";
 import checkFirstStart from "@/utils/check-first-start.js";
-import initTypesenseClient from "@/utils/init-typesense-client.js";
 import hocuspocusServer from "@/websocket/websocket-server.js";
 import { Prisma } from "@prisma/client";
 import express from "express";
@@ -20,12 +19,6 @@ import helmet from "helmet";
 import requestIp from "request-ip";
 
 const { app } = expressWebsockets(express());
-
-export const typesenseClient = initTypesenseClient(
-  process.env.TYPESENSE_HOST,
-  parseInt(process.env.TYPESENSE_PORT),
-  process.env.TYPESENSE_API_KEY,
-);
 
 app.use(helmet());
 app.use(express.urlencoded({ extended: true }));

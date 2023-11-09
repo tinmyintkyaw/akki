@@ -1,5 +1,5 @@
 import prisma from "@/configs/prisma-client-config";
-import { typesenseClient } from "@/index.js";
+import typesenseClient from "@/configs/typesense-client-config";
 import TypesenseDocument from "@/shared/types/typesense-document.js";
 import { pageSelectWithTextContent } from "@/utils/prisma-page-select.js";
 import { transformPageResponseData } from "@/utils/transform-response-data.js";

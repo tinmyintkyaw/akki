@@ -1,5 +1,5 @@
 import prisma from "@/configs/prisma-client-config";
-import { typesenseClient } from "@/index.js";
+import typesenseClient from "@/configs/typesense-client-config";
 import { auth } from "@/lucia.js";
 import typesenseCollectionSchema from "./typesense-collection-schema.js";
 
