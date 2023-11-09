@@ -1,5 +1,6 @@
 import prisma from "@/db/prisma-client";
 import { RequestHandler } from "express";
+import asyncHandler from "express-async-handler";
 import requestIp from "request-ip";
 
 const editorKeyController: RequestHandler = async (req, res) => {
@@ -19,4 +20,4 @@ const editorKeyController: RequestHandler = async (req, res) => {
   return res.status(200).json({ editorKey: updatedSession.editorKey });
 };
 
-export default editorKeyController;
+export default asyncHandler(editorKeyController);

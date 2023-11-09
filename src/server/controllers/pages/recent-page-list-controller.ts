@@ -1,8 +1,9 @@
 import prisma from "@/db/prisma-client.js";
 import { pageSelect } from "@/utils/prisma-page-select.js";
 import { RequestHandler } from "express";
+import asyncHandler from "express-async-handler";
 
-const getRecentPageListController: RequestHandler = async (req, res) => {
+const getRecentPageListController: RequestHandler = async (_req, res) => {
   if (!res.locals.session) return res.sendStatus(401);
 
   const { userId } = res.locals.session.user;
@@ -33,4 +34,4 @@ const getRecentPageListController: RequestHandler = async (req, res) => {
   return res.status(200).json(response);
 };
 
-export default getRecentPageListController;
+export default asyncHandler(getRecentPageListController);

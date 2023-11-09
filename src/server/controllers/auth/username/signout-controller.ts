@@ -1,6 +1,7 @@
-import { RequestHandler } from "express";
-import { auth } from "@/lucia.js";
 import { typesenseClient } from "@/index.js";
+import { auth } from "@/lucia.js";
+import { RequestHandler } from "express";
+import asyncHandler from "express-async-handler";
 
 const signOutController: RequestHandler = async (req, res) => {
   const authRequest = auth.handleRequest(req, res);
@@ -14,4 +15,4 @@ const signOutController: RequestHandler = async (req, res) => {
   return res.sendStatus(302);
 };
 
-export default signOutController;
+export default asyncHandler(signOutController);

@@ -1,5 +1,6 @@
-import { RequestHandler } from "express";
 import { auth } from "@/lucia.js";
+import { RequestHandler } from "express";
+import asyncHandler from "express-async-handler";
 
 const checkIfSignedIn: RequestHandler = async (req, res, next) => {
   const authRequest = auth.handleRequest(req, res);
@@ -11,4 +12,4 @@ const checkIfSignedIn: RequestHandler = async (req, res, next) => {
   next();
 };
 
-export default checkIfSignedIn;
+export default asyncHandler(checkIfSignedIn);

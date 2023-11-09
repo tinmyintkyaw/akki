@@ -1,6 +1,7 @@
 import prisma from "@/db/prisma-client.js";
 import parseForm from "@/utils/parse-form.js";
 import { RequestHandler } from "express";
+import asyncHandler from "express-async-handler";
 
 const uploadFileController: RequestHandler = async (req, res) => {
   const { fields, files } = await parseForm(req, res);
@@ -22,4 +23,4 @@ const uploadFileController: RequestHandler = async (req, res) => {
   return res.status(200).json({ url });
 };
 
-export default uploadFileController;
+export default asyncHandler(uploadFileController);

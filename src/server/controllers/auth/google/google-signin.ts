@@ -1,5 +1,6 @@
 import { googleAuth } from "@/lucia.js";
 import { RequestHandler } from "express";
+import asyncHandler from "express-async-handler";
 
 const googleSignInController: RequestHandler = async (_req, res, next) => {
   try {
@@ -18,4 +19,4 @@ const googleSignInController: RequestHandler = async (_req, res, next) => {
   }
 };
 
-export default googleSignInController;
+export default asyncHandler(googleSignInController);

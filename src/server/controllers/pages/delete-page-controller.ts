@@ -2,6 +2,7 @@ import prisma from "@/db/prisma-client.js";
 import { typesenseClient } from "@/index.js";
 import { pageSelect } from "@/utils/prisma-page-select.js";
 import { RequestHandler } from "express";
+import asyncHandler from "express-async-handler";
 import {
   ContainerTypes,
   ValidatedRequest,
@@ -51,4 +52,4 @@ const deletePageController: RequestHandler = async (
   return res.sendStatus(204);
 };
 
-export default deletePageController;
+export default asyncHandler(deletePageController);

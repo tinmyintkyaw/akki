@@ -4,6 +4,7 @@ import TypesenseDocument from "@/shared/types/typesense-document.js";
 import { pageSelectWithTextContent } from "@/utils/prisma-page-select.js";
 import { transformPageResponseData } from "@/utils/transform-response-data.js";
 import { RequestHandler } from "express";
+import asyncHandler from "express-async-handler";
 import {
   ContainerTypes,
   ValidatedRequest,
@@ -124,4 +125,4 @@ const editPageController: RequestHandler = async (
   return res.status(200).json(response);
 };
 
-export default editPageController;
+export default asyncHandler(editPageController);

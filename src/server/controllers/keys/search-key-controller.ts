@@ -1,5 +1,6 @@
 import { typesenseClient } from "@/index";
 import { RequestHandler } from "express";
+import asyncHandler from "express-async-handler";
 
 const generateScopedSearchKey = (
   typesenseKey: string,
@@ -12,7 +13,7 @@ const generateScopedSearchKey = (
   });
 };
 
-export const searchKeyController: RequestHandler = async (req, res) => {
+const searchKeyReqController: RequestHandler = async (_req, res) => {
   if (!res.locals.session) throw new Error();
 
   const scopedSearchKey = generateScopedSearchKey(
@@ -24,3 +25,5 @@ export const searchKeyController: RequestHandler = async (req, res) => {
     searchKey: scopedSearchKey,
   });
 };
+
+export default asyncHandler(searchKeyReqController);

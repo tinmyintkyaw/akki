@@ -11,6 +11,7 @@ import TaskList from "@tiptap/extension-task-list";
 import { generateJSON } from "@tiptap/html";
 import StarterKit from "@tiptap/starter-kit";
 import { RequestHandler } from "express";
+import asyncHandler from "express-async-handler";
 import {
   ContainerTypes,
   ValidatedRequest,
@@ -75,4 +76,4 @@ const createPageController: RequestHandler = async (
   return res.status(201).json(response);
 };
 
-export default createPageController;
+export default asyncHandler(createPageController);

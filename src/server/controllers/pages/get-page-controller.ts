@@ -2,6 +2,7 @@ import prisma from "@/db/prisma-client.js";
 import { pageSelect } from "@/utils/prisma-page-select.js";
 import { transformPageResponseData } from "@/utils/transform-response-data.js";
 import { RequestHandler } from "express";
+import asyncHandler from "express-async-handler";
 import {
   ContainerTypes,
   ValidatedRequest,
@@ -37,4 +38,4 @@ const getPageController: RequestHandler = async (
   return res.status(200).json(response);
 };
 
-export default getPageController;
+export default asyncHandler(getPageController);

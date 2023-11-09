@@ -1,6 +1,7 @@
 import { auth } from "@/lucia.js";
 import SessionResponse from "@/shared/types/session-response.js";
 import { RequestHandler } from "express";
+import asyncHandler from "express-async-handler";
 
 const sessionController: RequestHandler = async (req, res) => {
   const authRequest = auth.handleRequest(req, res);
@@ -16,4 +17,4 @@ const sessionController: RequestHandler = async (req, res) => {
   return res.status(200).json(sessionResponse);
 };
 
-export default sessionController;
+export default asyncHandler(sessionController);

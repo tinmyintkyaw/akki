@@ -1,4 +1,5 @@
 import { Request, RequestHandler } from "express";
+import asyncHandler from "express-async-handler";
 import fs from "fs";
 import path from "path";
 
@@ -22,4 +23,4 @@ const getFileController: RequestHandler = async (
   return res.send(fileBuffer);
 };
 
-export default getFileController;
+export default asyncHandler(getFileController);
