@@ -7,13 +7,10 @@ import { express } from "lucia/middleware";
 import "lucia/polyfill/node";
 
 export const auth = lucia({
-  // env: envVars.NODE_ENV === "development" ? "DEV" : "PROD",
-  env: "DEV",
+  env: envVars.NODE_ENV === "development" ? "DEV" : "PROD",
   middleware: express(),
   adapter: prismaAdapter(prisma),
-
-  // TODO: setup CSRF protection in dev mode
-  csrfProtection: false,
+  csrfProtection: true,
 
   getUserAttributes(databaseUser) {
     return {
