@@ -9,9 +9,8 @@ import authRouter from "@/routes/auth-router";
 import fileRouter from "@/routes/file-router";
 import keyRouter from "@/routes/key-router";
 import pageRouter from "@/routes/page-router";
-import checkFirstStart from "@/utils/check-first-start.js";
+import runStartupTasks from "@/utils/run-startup-tasks";
 import hocuspocusServer from "@/websocket/websocket-server.js";
-import { Prisma } from "@prisma/client";
 import express from "express";
 import asyncHandler from "express-async-handler";
 import expressWebsockets from "express-ws";
@@ -40,15 +39,12 @@ app.use("/*", (_req, res) => res.sendStatus(501));
 
 app.use(errorHandler);
 
-checkFirstStart()
+runStartupTasks()
   .then(() => {
     app.listen(3300, async () => {
       console.log("Listening on port 3300");
     });
   })
-  .catch((error) => {
-    if (error instanceof Prisma.PrismaClientInitializationError) {
-      console.log("Cannot connect to DB");
-    }
+  .catch(() => {
     process.exit(1);
   });
