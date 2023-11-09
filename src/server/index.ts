@@ -13,6 +13,7 @@ import express from "express";
 import asyncHandler from "express-async-handler";
 import { rateLimit } from "express-rate-limit";
 import expressWebsockets from "express-ws";
+import helmet from "helmet";
 import requestIp from "request-ip";
 
 const { app } = expressWebsockets(express());
@@ -38,6 +39,7 @@ export const typesenseClient = initTypesenseClient(
   process.env.TYPESENSE_API_KEY,
 );
 
+app.use(helmet());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
