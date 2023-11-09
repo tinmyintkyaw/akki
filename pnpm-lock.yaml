@@ -152,6 +152,9 @@ dependencies:
   express:
     specifier: ^4.18.2
     version: 4.18.2
+  express-async-handler:
+    specifier: ^1.2.0
+    version: 1.2.0
   express-joi-validation:
     specifier: ^5.0.1
     version: 5.0.1(joi@17.11.0)
@@ -3729,6 +3732,10 @@ packages:
 
   /eventemitter3@5.0.1:
     resolution: {integrity: sha512-GWkBvjiSZK87ELrYOSESUYeVIc9mvLLf/nXalMOS5dYrgZq9o5OVkbZAVM06CVxYsCwH9BDZFPlQTlPA1j4ahA==}
+    dev: false
+
+  /express-async-handler@1.2.0:
+    resolution: {integrity: sha512-rCSVtPXRmQSW8rmik/AIb2P0op6l7r1fMW538yyvTMltCO4xQEWMmobfrIxN2V1/mVrgxB8Az3reYF6yUZw37w==}
     dev: false
 
   /express-joi-validation@5.0.1(joi@17.11.0):

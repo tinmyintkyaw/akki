@@ -38,49 +38,41 @@ const defaultTiptapExtensions = [
 const createPageController: RequestHandler = async (
   req: ValidatedRequest<CreatePageReqSchema>,
   res,
-  next,
 ) => {
   if (!res.locals.session) return res.sendStatus(401);
 
-  try {
-    const newYDoc = TiptapTransformer.toYdoc(
-      generateJSON("<p></p>", defaultTiptapExtensions),
-      "default",
-      defaultTiptapExtensions,
-    );
+  const newYDoc = TiptapTransformer.toYdoc(
+    generateJSON("<p></p>", defaultTiptapExtensions),
+    "default",
+    defaultTiptapExtensions,
+  );
 
-    const newPage = await prisma.page.create({
-      data: {
-        userId: res.locals.session.user.userId,
-        pageName: req.body.pageName,
-        parentId: req.body.parentId,
-        ydoc: Buffer.from(Y.encodeStateAsUpdate(newYDoc)),
-        textContent: "",
-      },
-      select: pageSelect,
-    });
-
-    const typesensePage: TypesenseDocument = {
-      id: newPage.id,
-      userId: newPage.userId,
-      pageName: newPage.pageName,
+  const newPage = await prisma.page.create({
+    data: {
+      userId: res.locals.session.user.userId,
+      pageName: req.body.pageName,
+      parentId: req.body.parentId,
+      ydoc: Buffer.from(Y.encodeStateAsUpdate(newYDoc)),
       textContent: "",
-      createdAt: newPage.createdAt.getTime(),
-      modifiedAt: newPage.modifiedAt.getTime(),
-      isStarred: newPage.isStarred,
-    };
+    },
+    select: pageSelect,
+  });
 
-    await typesenseClient
-      .collections("pages")
-      .documents()
-      .create(typesensePage);
+  const typesensePage: TypesenseDocument = {
+    id: newPage.id,
+    userId: newPage.userId,
+    pageName: newPage.pageName,
+    textContent: "",
+    createdAt: newPage.createdAt.getTime(),
+    modifiedAt: newPage.modifiedAt.getTime(),
+    isStarred: newPage.isStarred,
+  };
 
-    const response = transformPageResponseData(newPage);
+  await typesenseClient.collections("pages").documents().create(typesensePage);
 
-    return res.status(201).json(response);
-  } catch (error) {
-    next(error);
-  }
+  const response = transformPageResponseData(newPage);
+
+  return res.status(201).json(response);
 };
 
 export default createPageController;
