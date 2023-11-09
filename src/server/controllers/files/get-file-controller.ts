@@ -5,26 +5,21 @@ import path from "path";
 const getFileController: RequestHandler = async (
   req: Request<{ fileId: string }>,
   res,
-  next,
 ) => {
   if (res.locals.session) return res.sendStatus(401);
 
-  try {
-    const filePath = path.join(
-      process.cwd(),
-      "uploads",
-      res.locals.session.user.userId,
-      req.params.fileId,
-    );
+  const filePath = path.join(
+    process.cwd(),
+    "uploads",
+    res.locals.session.user.userId,
+    req.params.fileId,
+  );
 
-    fs.statSync(filePath);
+  fs.statSync(filePath);
 
-    const fileBuffer = fs.readFileSync(filePath);
+  const fileBuffer = fs.readFileSync(filePath);
 
-    return res.send(fileBuffer);
-  } catch (error) {
-    next(error);
-  }
+  return res.send(fileBuffer);
 };
 
 export default getFileController;

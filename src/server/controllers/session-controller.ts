@@ -11,8 +11,6 @@ const sessionController: RequestHandler = async (req, res) => {
   res.setHeader("Cache-Control", "no-cache");
 
   const sessionResponse: SessionResponse = {
-    editorKey: session.editorKey,
-    searchKey: session.searchKey,
     user: { ...session.user },
   };
   return res.status(200).json(sessionResponse);
