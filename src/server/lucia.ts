@@ -1,3 +1,4 @@
+import envVars from "@/configs/env-config";
 import prisma from "@/configs/prisma-client-config";
 import { prisma as prismaAdapter } from "@lucia-auth/adapter-prisma";
 import { github, google } from "@lucia-auth/oauth/providers";
@@ -6,7 +7,7 @@ import { express } from "lucia/middleware";
 import "lucia/polyfill/node";
 
 export const auth = lucia({
-  // env: process.env.NODE_ENV === "development" ? "DEV" : "PROD",
+  // env: envVars.NODE_ENV === "development" ? "DEV" : "PROD",
   env: "DEV",
   middleware: express(),
   adapter: prismaAdapter(prisma),
@@ -32,9 +33,9 @@ export const auth = lucia({
 });
 
 export const googleAuth = google(auth, {
-  clientId: process.env.GOOGLE_CLIENT_ID ?? "",
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
-  redirectUri: `http://localhost:3000/api/signin/google/callback`,
+  clientId: envVars.GOOGLE_CLIENT_ID,
+  clientSecret: envVars.GOOGLE_CLIENT_SECRET,
+  redirectUri: envVars.GOOGLE_REDIRECT_URI,
   scope: [
     "https://www.googleapis.com/auth/userinfo.email",
     "https://www.googleapis.com/auth/userinfo.profile",
@@ -43,8 +44,8 @@ export const googleAuth = google(auth, {
 });
 
 export const githubAuth = github(auth, {
-  clientId: process.env.GITHUB_CLIENT_ID ?? "",
-  clientSecret: process.env.GITHUB_CLIENT_SECRET ?? "",
+  clientId: envVars.GITHUB_CLIENT_ID,
+  clientSecret: envVars.GITHUB_CLIENT_SECRET,
 });
 
 export type Auth = typeof auth;

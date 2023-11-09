@@ -1,3 +1,4 @@
+import envVars from "@/configs/env-config";
 import prisma from "@/configs/prisma-client-config";
 import typesenseClient from "@/configs/typesense-client-config";
 import { auth } from "@/lucia";
@@ -46,7 +47,7 @@ const removeDemoUser = async () => {
 };
 
 async function checkDemoMode() {
-  if (parseInt(process.env.DEMO_MODE) === 1) {
+  if (envVars.DEMO_MODE) {
     console.log("Demo mode detected - creating a new demo user");
     await createDemoUser();
   } else {

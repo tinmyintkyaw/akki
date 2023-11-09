@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently 'vite' 'npm run dev:server'",
-    "dev:server": "dotenv -e .env.development -- tsx watch --clear-screen=false --tsconfig src/server/tsconfig.json src/server/index.ts",
+    "dev:server": "NODE_ENV=development dotenv -e .env.development -- tsx watch --clear-screen=false --tsconfig src/server/tsconfig.json src/server/index.ts",
     "build": "npm run build:client && npm run build:server",
     "build:client": "tsc && vite build",
     "build:server": "node build-server.js",

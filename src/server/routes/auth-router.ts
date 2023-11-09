@@ -1,3 +1,4 @@
+import envVars from "@/configs/env-config";
 import githubSignInController from "@/controllers/auth/github/github-signin";
 import githubSignInCallbackController from "@/controllers/auth/github/github-signin-callback";
 import googleSignInController from "@/controllers/auth/google/google-signin";
@@ -22,7 +23,7 @@ const validator = createValidator();
 //   signupController,
 // );
 
-parseInt(process.env.DEMO_MODE) === 1 &&
+envVars.DEMO_MODE &&
   authRouter.post(
     "/signin/username",
     checkIfSignedOut,

@@ -1,14 +1,15 @@
+import envVars from "@/configs/env-config";
 import Typesense from "typesense";
 
 const typesenseClient = new Typesense.Client({
   nodes: [
     {
-      host: process.env.TYPESENSE_HOST,
-      port: parseInt(process.env.TYPESENSE_PORT),
+      host: envVars.TYPESENSE_HOST,
+      port: envVars.TYPESENSE_PORT,
       protocol: "http",
     },
   ],
-  apiKey: process.env.TYPESENSE_API_KEY,
+  apiKey: envVars.TYPESENSE_API_KEY,
 });
 
 export default typesenseClient;
