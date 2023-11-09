@@ -1,5 +1,6 @@
 import sessionController from "@/controllers/session-controller";
 import checkIfSignedIn from "@/middlewares/check-signin";
+import errorHandler from "@/middlewares/error-handler";
 import authRouter from "@/routes/auth-router";
 import fileRouter from "@/routes/file-router";
 import keyRouter from "@/routes/key-router";
@@ -8,11 +9,10 @@ import checkFirstStart from "@/utils/check-first-start.js";
 import initTypesenseClient from "@/utils/init-typesense-client.js";
 import hocuspocusServer from "@/websocket/websocket-server.js";
 import { Prisma } from "@prisma/client";
-import express, { ErrorRequestHandler } from "express";
+import express from "express";
 import asyncHandler from "express-async-handler";
 import { rateLimit } from "express-rate-limit";
 import expressWebsockets from "express-ws";
-import { LuciaError } from "lucia";
 import requestIp from "request-ip";
 
 const { app } = expressWebsockets(express());
@@ -41,10 +41,9 @@ export const typesenseClient = initTypesenseClient(
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use(globalRateLimiter, authRouter);
-
 app.get("/health", globalRateLimiter, (_req, res) => res.sendStatus(200));
 app.get("/session", globalRateLimiter, asyncHandler(sessionController));
+app.use(globalRateLimiter, authRouter);
 app.use("/pages", checkIfSignedIn, sessionRateLimiter, pageRouter);
 app.use("/files", checkIfSignedIn, sessionRateLimiter, fileRouter);
 app.use("/keys", checkIfSignedIn, sessionRateLimiter, keyRouter);
@@ -55,18 +54,6 @@ app.ws("/editor", (websocket, req) => {
 });
 
 app.use("/*", (_req, res) => res.sendStatus(501));
-
-// TODO: Implement proper error handler
-const errorHandler: ErrorRequestHandler = (error, _req, res) => {
-  if (
-    error instanceof LuciaError &&
-    (error.message === "AUTH_INVALID_KEY_ID" ||
-      error.message === "AUTH_INVALID_PASSWORD")
-  ) {
-    return res.sendStatus(401);
-  }
-  return res.sendStatus(500);
-};
 
 app.use(errorHandler);
 
