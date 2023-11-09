@@ -1,52 +1,32 @@
-import githubSignInCallbackController from "@/controllers/auth/github/github-signin-callback.js";
-import githubSignInController from "@/controllers/auth/github/github-signin.js";
-import googleSignInCallbackController from "@/controllers/auth/google/google-signin-callback.js";
-import googleSignInController from "@/controllers/auth/google/google-signin.js";
-import signInController from "@/controllers/auth/signin-controller.js";
-import signOutController from "@/controllers/auth/signout-controller.js";
-// import signupController from "@/controllers/auth/signup-controller.js";
-import checkIfSignedIn from "@/middlewares/check-signin.js";
-import checkIfSignedOut from "@/middlewares/check-signout.js";
-import addFormats from "ajv-formats";
+import githubSignInController from "@/controllers/auth/github/github-signin";
+import githubSignInCallbackController from "@/controllers/auth/github/github-signin-callback";
+import googleSignInController from "@/controllers/auth/google/google-signin";
+import googleSignInCallbackController from "@/controllers/auth/google/google-signin-callback";
+import signInController from "@/controllers/auth/username/signin-controller.js";
+import signOutController from "@/controllers/auth/username/signout-controller";
+// import signupController from "@/controllers/auth/username/signup-controller";
+import checkIfSignedIn from "@/middlewares/check-signin";
+import checkIfSignedOut from "@/middlewares/check-signout";
+import { usernameSigninPayloadSchema } from "@/validations/auth-validation-schemas";
 import express from "express";
-import { AllowedSchema, Validator } from "express-json-validator-middleware";
+import { createValidator } from "express-joi-validation";
 
 const authRouter = express.Router();
+const validator = createValidator();
 
-const validator = new Validator({});
-addFormats(validator.ajv, { formats: ["password"] });
-
-// export const createUserPayloadSchema: AllowedSchema = {
-//   type: "object",
-//   properties: {
-//     username: { type: "string" },
-//     name: { type: "string" },
-//     password: { type: "string", format: "password" },
-//   },
-//   required: ["username", "name", "password"],
-// };
-
-// authRouter.post("/signup/username", checkIfSignedOut, signupController);
-
-const signinPayloadSchema: AllowedSchema = {
-  type: "object",
-  properties: {
-    username: {
-      type: "string",
-    },
-    password: {
-      type: "string",
-      format: "password",
-    },
-  },
-  required: ["username", "password"],
-};
+// Username signups are disabled for now
+// authRouter.post(
+//   "/signup/username",
+//   checkIfSignedOut,
+//   validator.body(usernameSignupPayloadSchema),
+//   signupController,
+// );
 
 parseInt(process.env.DEMO_MODE) === 1 &&
   authRouter.post(
     "/signin/username",
     checkIfSignedOut,
-    validator.validate({ body: signinPayloadSchema }),
+    validator.body(usernameSigninPayloadSchema),
     signInController,
   );
 

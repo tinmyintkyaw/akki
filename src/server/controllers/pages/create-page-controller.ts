@@ -11,7 +11,19 @@ import TaskList from "@tiptap/extension-task-list";
 import { generateJSON } from "@tiptap/html";
 import StarterKit from "@tiptap/starter-kit";
 import { RequestHandler } from "express";
+import {
+  ContainerTypes,
+  ValidatedRequest,
+  ValidatedRequestSchema,
+} from "express-joi-validation";
 import * as Y from "yjs";
+
+interface CreatePageReqSchema extends ValidatedRequestSchema {
+  [ContainerTypes.Body]: {
+    pageName: string;
+    parentId: string;
+  };
+}
 
 const defaultTiptapExtensions = [
   StarterKit.configure({
@@ -23,7 +35,11 @@ const defaultTiptapExtensions = [
   Image,
 ];
 
-const createPageController: RequestHandler = async (req, res, next) => {
+const createPageController: RequestHandler = async (
+  req: ValidatedRequest<CreatePageReqSchema>,
+  res,
+  next,
+) => {
   if (!res.locals.session) return res.sendStatus(401);
 
   try {

@@ -3,10 +3,28 @@ import { typesenseClient } from "@/index.js";
 import TypesenseDocument from "@/shared/types/typesense-document.js";
 import { pageSelectWithTextContent } from "@/utils/prisma-page-select.js";
 import { transformPageResponseData } from "@/utils/transform-response-data.js";
-import { Request, RequestHandler } from "express";
+import { RequestHandler } from "express";
+import {
+  ContainerTypes,
+  ValidatedRequest,
+  ValidatedRequestSchema,
+} from "express-joi-validation";
+
+interface EditPageReqSchema extends ValidatedRequestSchema {
+  [ContainerTypes.Params]: {
+    pageId: string;
+  };
+  [ContainerTypes.Body]: {
+    pageName?: string;
+    parentId?: string;
+    isStarred?: boolean;
+    isDeleted?: boolean;
+    accessedAt?: string;
+  };
+}
 
 const editPageController: RequestHandler = async (
-  req: Request<{ pageId: string }>,
+  req: ValidatedRequest<EditPageReqSchema>,
   res,
   next,
 ) => {
@@ -61,7 +79,7 @@ const editPageController: RequestHandler = async (
         await typesenseClient
           .collections("pages")
           .documents()
-          .update(typesensePage);
+          .update(typesensePage, {});
         break;
 
       case true:

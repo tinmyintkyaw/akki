@@ -1,12 +1,23 @@
 import prisma from "@/db/prisma-client.js";
-import { pageSelect } from "@/utils/prisma-page-select.js";
-import { Request, RequestHandler } from "express";
-import path from "path";
-import fs from "fs";
 import { typesenseClient } from "@/index.js";
+import { pageSelect } from "@/utils/prisma-page-select.js";
+import { RequestHandler } from "express";
+import {
+  ContainerTypes,
+  ValidatedRequest,
+  ValidatedRequestSchema,
+} from "express-joi-validation";
+import fs from "fs";
+import path from "path";
+
+interface DeletePageReqSchema extends ValidatedRequestSchema {
+  [ContainerTypes.Params]: {
+    pageId: string;
+  };
+}
 
 const deletePageController: RequestHandler = async (
-  req: Request<{ pageId: string }>,
+  req: ValidatedRequest<DeletePageReqSchema>,
   res,
   next,
 ) => {

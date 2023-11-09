@@ -1,9 +1,25 @@
 import { typesenseClient } from "@/index.js";
 import { auth } from "@/lucia.js";
 import { RequestHandler } from "express";
+import {
+  ContainerTypes,
+  ValidatedRequest,
+  ValidatedRequestSchema,
+} from "express-joi-validation";
 import { LuciaError } from "lucia";
 
-const signInController: RequestHandler = async (req, res) => {
+interface UsernameSigninReqSchema extends ValidatedRequestSchema {
+  [ContainerTypes.Body]: {
+    username: string;
+    password: string;
+  };
+}
+
+const signInController: RequestHandler = async (
+  req: ValidatedRequest<UsernameSigninReqSchema>,
+  res,
+  next,
+) => {
   const { username, password } = req.body;
 
   if (typeof username !== "string" || typeof password !== "string")
@@ -16,11 +32,7 @@ const signInController: RequestHandler = async (req, res) => {
       collections: ["pages"],
     });
 
-    const key = await auth.useKey(
-      "username",
-      username.toLocaleLowerCase(),
-      password
-    );
+    const key = await auth.useKey("username", username, password);
 
     const session = await auth.createSession({
       userId: key.userId,
@@ -43,8 +55,7 @@ const signInController: RequestHandler = async (req, res) => {
     ) {
       return res.sendStatus(401);
     }
-
-    return res.sendStatus(500);
+    next(error);
   }
 };
 

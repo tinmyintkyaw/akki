@@ -9,21 +9,19 @@ import getStarredPageListController from "@/controllers/pages/starred-page-list-
 import {
   createPagePayloadSchema,
   editPagePayloadSchema,
-} from "@/middlewares/page-router-payload-schema";
-import addFormats from "ajv-formats";
+  pageIdAsParamsSchema,
+} from "@/validations/page-validation-schemas";
 import express from "express";
-import { Validator } from "express-json-validator-middleware";
-
-const validator = new Validator({});
-addFormats(validator.ajv, { formats: ["date-time"] });
+import { createValidator } from "express-joi-validation";
 
 const pageRouter = express.Router();
+const validator = createValidator();
 
 pageRouter.get("/", getPageListController);
 
 pageRouter.post(
   "/",
-  validator.validate({ body: createPagePayloadSchema }),
+  validator.body(createPagePayloadSchema),
   createPageController,
 );
 
@@ -33,13 +31,22 @@ pageRouter.get("/deleted", getDeletedPageListController);
 
 pageRouter.get("/starred", getStarredPageListController);
 
-pageRouter.get("/:pageId", getPageController);
+pageRouter.get(
+  "/:pageId",
+  validator.params(pageIdAsParamsSchema),
+  getPageController,
+);
 
-pageRouter.delete("/:pageId", deletePageController);
+pageRouter.delete(
+  "/:pageId",
+  validator.params(pageIdAsParamsSchema),
+  deletePageController,
+);
 
 pageRouter.patch(
   "/:pageId",
-  validator.validate({ body: editPagePayloadSchema }),
+  validator.params(pageIdAsParamsSchema),
+  validator.body(editPagePayloadSchema),
   editPageController,
 );
 

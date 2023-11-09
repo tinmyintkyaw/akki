@@ -1,8 +1,25 @@
 import { typesenseClient } from "@/index.js";
 import { auth } from "@/lucia.js";
 import { RequestHandler } from "express";
+import {
+  ContainerTypes,
+  ValidatedRequest,
+  ValidatedRequestSchema,
+} from "express-joi-validation";
 
-const signupController: RequestHandler = async (req, res) => {
+interface UsernameSignupReqSchema extends ValidatedRequestSchema {
+  [ContainerTypes.Body]: {
+    username: string;
+    name: string;
+    password: string;
+  };
+}
+
+const signupController: RequestHandler = async (
+  req: ValidatedRequest<UsernameSignupReqSchema>,
+  res,
+  next,
+) => {
   const { username, name, password } = req.body;
 
   if (typeof username !== "string" || typeof password !== "string")
@@ -12,7 +29,7 @@ const signupController: RequestHandler = async (req, res) => {
     const user = await auth.createUser({
       key: {
         providerId: "username",
-        providerUserId: username.toLocaleLowerCase(),
+        providerUserId: username,
         password,
       },
       attributes: {
@@ -42,8 +59,7 @@ const signupController: RequestHandler = async (req, res) => {
 
     return res.status(302).setHeader("Location", "/").end();
   } catch (error) {
-    console.error(error);
-    return res.sendStatus(500);
+    next(error);
   }
 };
 

@@ -14,7 +14,6 @@ const googleSignInController: RequestHandler = async (_req, res, next) => {
 
     return res.status(302).setHeader("Location", url.toString()).end();
   } catch (error) {
-    console.error(error);
     next(error);
   }
 };

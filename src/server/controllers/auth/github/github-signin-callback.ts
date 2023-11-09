@@ -6,7 +6,7 @@ import { parseCookie } from "lucia/utils";
 const githubSignInCallbackController: RequestHandler = async (
   req,
   res,
-  next
+  next,
 ) => {
   const cookies = parseCookie(req.headers.cookie ?? "");
   const storedState = cookies.github_oauth_state;
@@ -65,7 +65,6 @@ const githubSignInCallbackController: RequestHandler = async (
 
     return res.status(302).setHeader("Location", "/").end();
   } catch (error) {
-    console.error(error);
     next(error);
   }
 };

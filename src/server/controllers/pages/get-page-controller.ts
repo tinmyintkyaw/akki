@@ -1,10 +1,21 @@
 import prisma from "@/db/prisma-client.js";
 import { pageSelect } from "@/utils/prisma-page-select.js";
 import { transformPageResponseData } from "@/utils/transform-response-data.js";
-import { Request, RequestHandler } from "express";
+import { RequestHandler } from "express";
+import {
+  ContainerTypes,
+  ValidatedRequest,
+  ValidatedRequestSchema,
+} from "express-joi-validation";
+
+interface GetPageReqSchema extends ValidatedRequestSchema {
+  [ContainerTypes.Params]: {
+    pageId: string;
+  };
+}
 
 const getPageController: RequestHandler = async (
-  req: Request<{ pageId: string }>,
+  req: ValidatedRequest<GetPageReqSchema>,
   res,
   next,
 ) => {
