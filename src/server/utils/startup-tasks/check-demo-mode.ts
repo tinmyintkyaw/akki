@@ -1,4 +1,5 @@
 import envVars from "@/configs/env-config";
+import logger from "@/configs/logger-config";
 import prisma from "@/configs/prisma-client-config";
 import typesenseClient from "@/configs/typesense-client-config";
 import { auth } from "@/lucia";
@@ -23,9 +24,9 @@ const createDemoUser = async () => {
       collections: ["pages"],
     });
 
-    console.log("Created demo user");
+    logger.info("Created demo user");
   } catch (error) {
-    console.error("Error creating a demo user");
+    logger.error("Error creating a demo user");
     process.exit(1);
   }
 };
@@ -38,17 +39,17 @@ const removeDemoUser = async () => {
 
     if (!demoUser) return;
 
-    console.log("Existing demo user detected, removing...");
+    logger.info("Existing demo user detected, removing...");
     await auth.deleteUser(demoUser.id);
   } catch (error) {
-    console.error("Error deleting demo user");
+    logger.error("Error deleting demo user");
     process.exit(1);
   }
 };
 
 async function checkDemoMode() {
   if (envVars.DEMO_MODE) {
-    console.log("Demo mode detected - creating a new demo user");
+    logger.info("Demo mode detected - creating a new demo user");
     await createDemoUser();
   } else {
     await removeDemoUser();

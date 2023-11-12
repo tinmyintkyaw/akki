@@ -1,3 +1,4 @@
+import logger from "@/configs/logger-config";
 import prisma from "@/configs/prisma-client-config";
 import { Prisma } from "@prisma/client";
 
@@ -6,7 +7,7 @@ async function checkDBConnection() {
     await prisma.$connect();
   } catch (error) {
     if (error instanceof Prisma.PrismaClientInitializationError) {
-      console.log("Cannot connect to DB");
+      logger.error("Cannot connect to DB");
     }
     process.exit(1);
   }

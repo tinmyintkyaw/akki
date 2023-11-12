@@ -1,3 +1,4 @@
+import logger from "@/configs/logger-config";
 import sessionController from "@/controllers/session-controller";
 import checkIfSignedIn from "@/middlewares/check-signin";
 import errorHandler from "@/middlewares/error-handler";
@@ -42,7 +43,7 @@ app.use(errorHandler);
 runStartupTasks()
   .then(() => {
     app.listen(3300, async () => {
-      console.log("Listening on port 3300");
+      logger.info("Listening on port 3300");
     });
   })
   .catch(() => {
