@@ -11,7 +11,7 @@ import fileRouter from "@/routes/file-router";
 import keyRouter from "@/routes/key-router";
 import pageRouter from "@/routes/page-router";
 import runStartupTasks from "@/utils/run-startup-tasks";
-import hocuspocusServer from "@/websocket/websocket-server.js";
+import hocuspocusServer from "@/websocket/websocket-server";
 import express from "express";
 import asyncHandler from "express-async-handler";
 import expressWebsockets from "express-ws";

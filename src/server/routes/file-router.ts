@@ -1,5 +1,5 @@
-import getFileController from "@/controllers/files/get-file-controller.js";
-import uploadFileController from "@/controllers/files/upload-file-controller.js";
+import getFileController from "@/controllers/files/get-file-controller";
+import uploadFileController from "@/controllers/files/upload-file-controller";
 import express from "express";
 import asyncHandler from "express-async-handler";
 

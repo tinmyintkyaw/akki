@@ -1,4 +1,4 @@
-import { CollectionCreateSchema } from "typesense/lib/Typesense/Collections.js";
+import { CollectionCreateSchema } from "typesense/lib/Typesense/Collections";
 
 const typesenseCollectionSchema: CollectionCreateSchema = {
   name: "pages",

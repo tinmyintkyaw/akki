@@ -1,5 +1,5 @@
 import typesenseClient from "@/configs/typesense-client-config";
-import { auth, googleAuth } from "@/lucia.js";
+import { auth, googleAuth } from "@/configs/lucia-config";
 import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";
 import { parseCookie } from "lucia/utils";

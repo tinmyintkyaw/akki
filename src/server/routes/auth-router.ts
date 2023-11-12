@@ -3,7 +3,7 @@ import githubSignInController from "@/controllers/auth/github/github-signin";
 import githubSignInCallbackController from "@/controllers/auth/github/github-signin-callback";
 import googleSignInController from "@/controllers/auth/google/google-signin";
 import googleSignInCallbackController from "@/controllers/auth/google/google-signin-callback";
-import signInController from "@/controllers/auth/username/signin-controller.js";
+import signInController from "@/controllers/auth/username/signin-controller";
 import signOutController from "@/controllers/auth/username/signout-controller";
 // import signupController from "@/controllers/auth/username/signup-controller";
 import checkIfSignedIn from "@/middlewares/check-signin";

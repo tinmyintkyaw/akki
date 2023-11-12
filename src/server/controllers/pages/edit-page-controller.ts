@@ -1,8 +1,8 @@
 import prisma from "@/configs/prisma-client-config";
 import typesenseClient from "@/configs/typesense-client-config";
-import TypesenseDocument from "@/shared/types/typesense-document.js";
-import { pageSelectWithTextContent } from "@/utils/prisma-page-select.js";
-import { transformPageResponseData } from "@/utils/transform-response-data.js";
+import TypesenseDocument from "@/shared/types/typesense-document";
+import { pageSelectWithTextContent } from "@/utils/prisma-page-select";
+import { transformPageResponseData } from "@/utils/transform-response-data";
 import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";
 import {

@@ -1,4 +1,4 @@
-import { auth } from "@/lucia.js";
+import { auth } from "@/configs/lucia-config";
 import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";
 

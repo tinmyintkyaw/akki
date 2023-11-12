@@ -1,4 +1,4 @@
-import { pageSelect } from "@/utils/prisma-page-select.js";
+import { pageSelect } from "@/utils/prisma-page-select";
 import { Prisma } from "@prisma/client";
 
 type PageGetPayload = Prisma.PageGetPayload<{

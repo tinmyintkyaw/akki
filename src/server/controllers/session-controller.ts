@@ -1,5 +1,5 @@
-import { auth } from "@/lucia.js";
-import SessionResponse from "@/shared/types/session-response.js";
+import { auth } from "@/configs/lucia-config";
+import SessionResponse from "@/shared/types/session-response";
 import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";
 

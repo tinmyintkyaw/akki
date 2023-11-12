@@ -1,4 +1,4 @@
-import { googleAuth } from "@/lucia.js";
+import { googleAuth } from "@/configs/lucia-config";
 import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";
 

@@ -1,8 +1,8 @@
 import envVars from "@/configs/env-config";
 import logger from "@/configs/logger-config";
+import { auth } from "@/configs/lucia-config";
 import prisma from "@/configs/prisma-client-config";
 import typesenseClient from "@/configs/typesense-client-config";
-import { auth } from "@/lucia";
 
 const createDemoUser = async () => {
   try {

@@ -1,8 +1,8 @@
 import prisma from "@/configs/prisma-client-config";
 import typesenseClient from "@/configs/typesense-client-config";
-import TypesenseDocument from "@/shared/types/typesense-document.js";
-import { pageSelect } from "@/utils/prisma-page-select.js";
-import { transformPageResponseData } from "@/utils/transform-response-data.js";
+import TypesenseDocument from "@/shared/types/typesense-document";
+import { pageSelect } from "@/utils/prisma-page-select";
+import { transformPageResponseData } from "@/utils/transform-response-data";
 import { TiptapTransformer } from "@hocuspocus/transformer";
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";

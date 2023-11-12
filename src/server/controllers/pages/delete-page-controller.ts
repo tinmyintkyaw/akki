@@ -1,6 +1,6 @@
 import prisma from "@/configs/prisma-client-config";
 import typesenseClient from "@/configs/typesense-client-config";
-import { pageSelect } from "@/utils/prisma-page-select.js";
+import { pageSelect } from "@/utils/prisma-page-select";
 import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";
 import {

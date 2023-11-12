@@ -1,6 +1,6 @@
 import prisma from "@/configs/prisma-client-config";
-import { pageSelect } from "@/utils/prisma-page-select.js";
-import { transformPageListResponseData } from "@/utils/transform-response-data.js";
+import { pageSelect } from "@/utils/prisma-page-select";
+import { transformPageListResponseData } from "@/utils/transform-response-data";
 import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";
 
