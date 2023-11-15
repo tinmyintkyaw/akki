@@ -1,3 +1,4 @@
+import redisClient from "@/configs/ioredis-config";
 import prisma from "@/configs/prisma-client-config";
 import { onAuthenticatePayload } from "@hocuspocus/server";
 
@@ -5,43 +6,31 @@ const websocketAuthHandler = async (
   data: onAuthenticatePayload,
   lastCheckedTimestamps: Map<string, number>,
 ) => {
-  const multiplayerSession = await prisma.session.findUniqueOrThrow({
-    where: {
-      editorKey: data.token,
-    },
-    select: { user_id: true, editorKeyExpires: true, editorKeyReqIp: true },
-  });
+  const multiplayerSession = JSON.parse(
+    await redisClient.get(`editor:${data.token}`),
+  );
 
   if (multiplayerSession.editorKeyReqIp !== data.context.clientIp)
     throw new Error("IP addresses does not match");
 
-  if (multiplayerSession.editorKeyExpires.getDate() > Date.now())
+  if (new Date(multiplayerSession.editorKeyExpires).getDate() > Date.now())
     throw new Error("Key expired");
 
   await prisma.page.findUniqueOrThrow({
     where: {
       id_userId: {
-        userId: multiplayerSession.user_id,
+        userId: multiplayerSession.userId,
         id: data.documentName,
       },
     },
   });
 
-  // auth key for websocket connection is single use only
-  await prisma.session.update({
-    where: {
-      editorKey: data.token,
-    },
-    data: {
-      editorKey: null,
-      editorKeyExpires: null,
-    },
-  });
+  await redisClient.del(`editor:${data.token}`);
 
   lastCheckedTimestamps.set(data.token, Date.now());
 
   return {
-    userId: multiplayerSession.user_id,
+    userId: multiplayerSession.userId,
     token: data.token,
   };
 };
