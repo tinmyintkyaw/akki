@@ -1,6 +1,8 @@
 import envVars from "@/configs/env-config";
+import redisClient from "@/configs/ioredis-config";
 import prisma from "@/configs/prisma-client-config";
 import { prisma as prismaAdapter } from "@lucia-auth/adapter-prisma";
+import { ioredis } from "@lucia-auth/adapter-session-redis";
 import { github, google } from "@lucia-auth/oauth/providers";
 import { lucia } from "lucia";
 import { express } from "lucia/middleware";
@@ -9,7 +11,7 @@ import "lucia/polyfill/node";
 export const auth = lucia({
   env: envVars.NODE_ENV === "development" ? "DEV" : "PROD",
   middleware: express(),
-  adapter: prismaAdapter(prisma),
+  adapter: { user: prismaAdapter(prisma), session: ioredis(redisClient) },
   csrfProtection: true,
 
   getUserAttributes(databaseUser) {
@@ -21,10 +23,9 @@ export const auth = lucia({
       emailVerified: databaseUser.email_verified,
     };
   },
-  getSessionAttributes(dbSession) {
+  getSessionAttributes(databaseSession) {
     return {
-      typesenseKeyId: dbSession.typesenseKeyId,
-      typesenseKeyValue: dbSession.typesenseKeyValue,
+      scopedSearchKey: databaseSession.scoped_search_key,
     };
   },
 });

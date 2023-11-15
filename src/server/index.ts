@@ -6,6 +6,7 @@ import {
   globalRateLimiter,
   sessionRateLimiter,
 } from "@/middlewares/rate-limiters";
+import searchProxy from "@/middlewares/search-proxy";
 import authRouter from "@/routes/auth-router";
 import fileRouter from "@/routes/file-router";
 import keyRouter from "@/routes/key-router";
@@ -23,13 +24,15 @@ const { app } = expressWebsockets(express());
 app.use(helmet());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(globalRateLimiter);
 
-app.get("/health", globalRateLimiter, (_req, res) => res.sendStatus(200));
-app.get("/session", globalRateLimiter, asyncHandler(sessionController));
-app.use(globalRateLimiter, authRouter);
+app.get("/health", (_req, res) => res.sendStatus(200));
+app.get("/session", asyncHandler(sessionController));
+app.use(authRouter);
 app.use("/pages", checkIfSignedIn, sessionRateLimiter, pageRouter);
 app.use("/files", checkIfSignedIn, sessionRateLimiter, fileRouter);
 app.use("/keys", checkIfSignedIn, sessionRateLimiter, keyRouter);
+app.use("/search", checkIfSignedIn, sessionRateLimiter, searchProxy);
 
 app.ws("/editor", (websocket, req) => {
   const clientIp = requestIp.getClientIp(req);

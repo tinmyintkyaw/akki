@@ -53,6 +53,8 @@ const envValidationSchema = Joi.object({
   TYPESENSE_PORT: Joi.number().default(8108),
   TYPESENSE_API_KEY: Joi.string().trim().required(),
 
+  REDIS_PASSWORD: Joi.string().trim().required(),
+
   //   Demo mode
   DEMO_MODE: Joi.boolean().default(false),
 }).unknown();

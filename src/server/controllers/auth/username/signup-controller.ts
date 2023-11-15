@@ -1,5 +1,5 @@
-import typesenseClient from "@/configs/typesense-client-config";
 import { auth } from "@/configs/lucia-config";
+import createSession from "@/utils/create-session";
 import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";
 import {
@@ -37,21 +37,7 @@ const signupController: RequestHandler = async (
     },
   });
 
-  // Generate new typesense key for every new session
-  const newTypesenseKey = await typesenseClient.keys().create({
-    description: `search-only key for user:${username}`,
-    actions: ["documents:search"],
-    collections: ["pages"],
-  });
-
-  const session = await auth.createSession({
-    userId: user.userId,
-    attributes: {
-      editorKey: crypto.randomUUID(),
-      typesenseKeyId: newTypesenseKey.id.toString(),
-      typesenseKeyValue: newTypesenseKey.value,
-    },
-  });
+  const session = await createSession(user.userId);
 
   const authRequest = auth.handleRequest(req, res);
   authRequest.setSession(session);

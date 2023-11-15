@@ -8,32 +8,16 @@ datasource db {
 }
 
 model User {
-  id             String    @id @unique
+  id             String   @id @unique
   name           String
-  username       String?   @unique
+  username       String?  @unique
   image          String?
-  email          String?   @unique
+  email          String?  @unique
   email_verified Boolean?
-  auth_session   Session[]
   key            Key[]
   Page           Page[]
   File           File[]
   Setting        Setting?
-}
-
-model Session {
-  id                String    @id @unique
-  user_id           String
-  active_expires    BigInt
-  idle_expires      BigInt
-  user              User      @relation(references: [id], fields: [user_id], onDelete: Cascade)
-  editorKey         String?   @unique
-  editorKeyExpires  DateTime?
-  editorKeyReqIp    String?
-  typesenseKeyId    String
-  typesenseKeyValue String
-
-  @@index([user_id])
 }
 
 model Key {
@@ -82,4 +66,10 @@ model Setting {
   editorWidth Int    @default(0)
   user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      String @unique
+}
+
+model GlobalVariables {
+  id               Int    @id
+  search_key_id    String
+  search_key_value String
 }

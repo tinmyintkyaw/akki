@@ -18,6 +18,8 @@ interface ProcessEnv {
   TYPESENSE_PORT: number;
   TYPESENSE_API_KEY: string;
 
+  REDIS_PASSWORD: string;
+
   DEMO_MODE: boolean;
 }
 
