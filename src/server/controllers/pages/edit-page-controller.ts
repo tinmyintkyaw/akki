@@ -73,33 +73,27 @@ const editPageController: RequestHandler = async (
     isStarred: updatedPage.isStarred,
   };
 
-  switch (req.body.isDeleted) {
-    case undefined:
-      await typesenseClient
-        .collections("pages")
-        .documents()
-        .update(typesensePage, {});
-      break;
+  if (req.body.isDeleted === undefined) {
+    await typesenseClient
+      .collections("pages")
+      .documents()
+      .update(typesensePage, {});
+  } else if (req.body.isDeleted) {
+    await typesenseClient
+      .collections("pages")
+      .documents(updatedPage.id)
+      .delete();
 
-    case true:
-      await typesenseClient
-        .collections("pages")
-        .documents(updatedPage.id)
-        .delete();
+    updatedPage.childPages.forEach(async (page) => {
+      await typesenseClient.collections("pages").documents(page.id).delete();
+    });
+  } else {
+    await typesenseClient
+      .collections("pages")
+      .documents()
+      .upsert(typesensePage);
 
-      updatedPage.childPages.forEach(async (page) => {
-        await typesenseClient.collections("pages").documents(page.id).delete();
-      });
-      break;
-
-    case false:
-      await typesenseClient
-        .collections("pages")
-        .documents()
-        .upsert(typesensePage);
-
-      if (updatedPage.childPages.length === 0) break;
-
+    if (updatedPage.childPages.length > 0) {
       await typesenseClient
         .collections("pages")
         .documents()
@@ -114,7 +108,7 @@ const editPageController: RequestHandler = async (
             isStarred: page.isStarred,
           })),
         );
-      break;
+    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
