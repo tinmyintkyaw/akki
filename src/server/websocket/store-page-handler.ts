@@ -40,7 +40,6 @@ const storePageHandler = async (data: storePayload) => {
     data: {
       ydoc: data.state,
       modifiedAt: new Date(),
-      textContent: textContent,
     },
   });
 
@@ -49,7 +48,7 @@ const storePageHandler = async (data: storePayload) => {
     id: dbPage.id,
     userId: dbPage.userId,
     pageName: dbPage.pageName,
-    textContent: dbPage.textContent,
+    textContent: textContent,
     createdAt: dbPage.createdAt.getTime(),
     modifiedAt: dbPage.modifiedAt.getTime(),
     isStarred: dbPage.isStarred,

@@ -1,7 +1,7 @@
 type TypesenseDocument = {
   id: string;
   pageName: string;
-  textContent: string;
+  textContent?: string;
   createdAt: number;
   modifiedAt: number;
   isStarred: boolean;

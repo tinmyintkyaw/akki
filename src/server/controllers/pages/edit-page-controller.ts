@@ -1,7 +1,7 @@
 import prisma from "@/configs/prisma-client-config";
 import typesenseClient from "@/configs/typesense-client-config";
 import TypesenseDocument from "@/shared/types/typesense-document";
-import { pageSelectWithTextContent } from "@/utils/prisma-page-select";
+import { pageSelect } from "@/utils/prisma-page-select";
 import { transformPageResponseData } from "@/utils/transform-response-data";
 import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";
@@ -48,7 +48,7 @@ const editPageController: RequestHandler = async (
         ? new Date(Date.parse(req.body.accessedAt))
         : undefined,
     },
-    select: pageSelectWithTextContent,
+    select: pageSelect,
   });
 
   await prisma.page.updateMany({
@@ -67,7 +67,6 @@ const editPageController: RequestHandler = async (
     id: updatedPage.id,
     userId: updatedPage.userId,
     pageName: updatedPage.pageName,
-    textContent: updatedPage.textContent,
     createdAt: updatedPage.createdAt.getTime(),
     modifiedAt: updatedPage.modifiedAt.getTime(),
     isStarred: updatedPage.isStarred,
@@ -102,7 +101,6 @@ const editPageController: RequestHandler = async (
             id: page.id,
             userId: page.userId,
             pageName: page.pageName,
-            textContent: page.textContent,
             createdAt: page.createdAt.getTime(),
             modifiedAt: page.modifiedAt.getTime(),
             isStarred: page.isStarred,
@@ -111,10 +109,7 @@ const editPageController: RequestHandler = async (
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { textContent, ...stripped } = updatedPage;
-
-  const response = transformPageResponseData(stripped);
+  const response = transformPageResponseData(updatedPage);
 
   return res.status(200).json(response);
 };
