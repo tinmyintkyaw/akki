@@ -5,8 +5,8 @@ import * as Y from "yjs";
 const getPageHandler = async (data: fetchPayload) => {
   const page = await prisma.page.findUniqueOrThrow({
     where: {
-      id_userId: {
-        userId: data.context.userId,
+      id_user_id: {
+        user_id: data.context.userId,
         id: data.documentName,
       },
     },

@@ -1,5 +1,6 @@
 import prisma from "@/configs/prisma-client-config";
 import { pageSelect } from "@/utils/prisma-page-select";
+import { transformPageListResponseData } from "@/utils/transform-response-data";
 import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";
 
@@ -10,26 +11,17 @@ const getRecentPageListController: RequestHandler = async (_req, res) => {
 
   const recentPageList = await prisma.page.findMany({
     where: {
-      userId: userId,
-      isDeleted: false,
+      user_id: userId,
+      is_deleted: false,
     },
     orderBy: {
-      accessedAt: "desc",
+      accessed_at: "desc",
     },
     take: 10,
     select: pageSelect,
   });
 
-  const response = recentPageList.map((page) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { Page, ...response } = {
-      ...page,
-      childPages: page.childPages.map((page) => page.id),
-      parentPageName: page.Page ? page.Page.pageName : null,
-    };
-
-    return response;
-  });
+  const response = transformPageListResponseData(recentPageList);
 
   return res.status(200).json(response);
 };

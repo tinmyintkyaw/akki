@@ -18,8 +18,8 @@ const websocketAuthHandler = async (
 
   await prisma.page.findUniqueOrThrow({
     where: {
-      id_userId: {
-        userId: multiplayerSession.userId,
+      id_user_id: {
+        user_id: multiplayerSession.userId,
         id: data.documentName,
       },
     },

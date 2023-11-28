@@ -32,19 +32,19 @@ const editPageController: RequestHandler = async (
 
   const updatedPage = await prisma.page.update({
     where: {
-      id_userId: {
-        userId: res.locals.session.user.userId,
+      id_user_id: {
+        user_id: res.locals.session.user.userId,
         id: req.params.pageId,
       },
     },
     data: {
-      pageName: req.body.pageName,
-      parentId: req.body.parentId,
-      modifiedAt: new Date(),
-      isStarred: req.body.isStarred,
-      isDeleted: req.body.isDeleted,
-      deletedAt: req.body.isDeleted ? new Date() : null,
-      accessedAt: req.body.accessedAt
+      page_name: req.body.pageName,
+      parent_id: req.body.parentId,
+      modified_at: new Date(),
+      is_starred: req.body.isStarred,
+      is_deleted: req.body.isDeleted,
+      deleted_at: req.body.isDeleted ? new Date() : null,
+      accessed_at: req.body.accessedAt
         ? new Date(Date.parse(req.body.accessedAt))
         : undefined,
     },
@@ -53,23 +53,23 @@ const editPageController: RequestHandler = async (
 
   await prisma.page.updateMany({
     where: {
-      userId: res.locals.session.user.userId,
-      parentId: req.params.pageId,
+      user_id: res.locals.session.user.userId,
+      parent_id: req.params.pageId,
     },
     data: {
-      isDeleted: req.body.isDeleted,
-      deletedAt: req.body.isDeleted ? new Date() : null,
+      is_deleted: req.body.isDeleted,
+      deleted_at: req.body.isDeleted ? new Date() : null,
     },
   });
 
   /* Update pages in typesense */
   const typesensePage: TypesenseDocument = {
     id: updatedPage.id,
-    userId: updatedPage.userId,
-    pageName: updatedPage.pageName,
-    createdAt: updatedPage.createdAt.getTime(),
-    modifiedAt: updatedPage.modifiedAt.getTime(),
-    isStarred: updatedPage.isStarred,
+    userId: updatedPage.user_id,
+    pageName: updatedPage.page_name,
+    createdAt: updatedPage.created_at.getTime(),
+    modifiedAt: updatedPage.modified_at.getTime(),
+    isStarred: updatedPage.is_starred,
   };
 
   if (req.body.isDeleted === undefined) {
@@ -83,7 +83,7 @@ const editPageController: RequestHandler = async (
       .documents(updatedPage.id)
       .delete();
 
-    updatedPage.childPages.forEach(async (page) => {
+    updatedPage.child_pages.forEach(async (page) => {
       await typesenseClient.collections("pages").documents(page.id).delete();
     });
   } else {
@@ -92,18 +92,18 @@ const editPageController: RequestHandler = async (
       .documents()
       .upsert(typesensePage);
 
-    if (updatedPage.childPages.length > 0) {
+    if (updatedPage.child_pages.length > 0) {
       await typesenseClient
         .collections("pages")
         .documents()
         .import(
-          updatedPage.childPages.map((page) => ({
+          updatedPage.child_pages.map((page) => ({
             id: page.id,
-            userId: page.userId,
-            pageName: page.pageName,
-            createdAt: page.createdAt.getTime(),
-            modifiedAt: page.modifiedAt.getTime(),
-            isStarred: page.isStarred,
+            userId: page.user_id,
+            pageName: page.page_name,
+            createdAt: page.created_at.getTime(),
+            modifiedAt: page.modified_at.getTime(),
+            isStarred: page.is_starred,
           })),
         );
     }

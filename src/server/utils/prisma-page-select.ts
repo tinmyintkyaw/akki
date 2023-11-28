@@ -2,40 +2,40 @@ import { Prisma } from "@prisma/client";
 
 export const pageSelect = {
   id: true,
-  pageName: true,
-  isStarred: true,
-  createdAt: true,
-  accessedAt: true,
-  modifiedAt: true,
-  userId: true,
-  isDeleted: true,
-  deletedAt: true,
-  parentId: true,
-  childPages: {
+  page_name: true,
+  is_starred: true,
+  created_at: true,
+  accessed_at: true,
+  modified_at: true,
+  user_id: true,
+  is_deleted: true,
+  deleted_at: true,
+  parent_id: true,
+  child_pages: {
     where: {
-      isDeleted: false,
+      is_deleted: false,
     },
     select: {
       id: true,
-      pageName: true,
-      userId: true,
-      isStarred: true,
-      createdAt: true,
-      modifiedAt: true,
+      page_name: true,
+      user_id: true,
+      is_starred: true,
+      created_at: true,
+      modified_at: true,
     },
     orderBy: {
-      createdAt: "asc",
+      created_at: "asc",
     },
   },
   files: {
     select: {
       id: true,
-      fileName: true,
+      file_name: true,
     },
   },
-  Page: {
+  page: {
     select: {
-      pageName: true,
+      page_name: true,
     },
   },
 } satisfies Prisma.PageSelect;

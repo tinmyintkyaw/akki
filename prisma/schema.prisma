@@ -30,42 +30,42 @@ model Key {
 }
 
 model Page {
-  id          String    @id @default(cuid())
-  pageName    String
-  ydoc        Bytes?
-  textContent String
-  isStarred   Boolean   @default(false)
-  createdAt   DateTime  @default(now())
-  modifiedAt  DateTime  @default(now())
-  accessedAt  DateTime  @default(now())
-  isDeleted   Boolean   @default(false)
-  deletedAt   DateTime?
-  files       File[]
-  userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  parentId    String?
-  childPages  Page[]    @relation(name: "childPages")
-  Page        Page?     @relation(name: "childPages", fields: [parentId], references: [id])
+  id           String    @id @default(cuid())
+  page_name    String
+  ydoc         Bytes?
+  text_content String
+  is_starred   Boolean   @default(false)
+  created_at   DateTime  @default(now())
+  modified_at  DateTime  @default(now())
+  accessed_at  DateTime  @default(now())
+  is_deleted   Boolean   @default(false)
+  deleted_at   DateTime?
+  user_id      String
+  user         User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  parent_id    String?
+  files        File[]
+  child_pages  Page[]    @relation(name: "childPages")
+  page         Page?     @relation(name: "childPages", fields: [parent_id], references: [id])
 
-  @@unique([id, userId])
+  @@unique([id, user_id])
 }
 
 model File {
-  id       String @id @default(cuid())
-  fileName String @unique
-  userId   String
-  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  pageId   String
-  page     Page   @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  id        String @id @default(cuid())
+  file_name String @unique
+  user_id   String
+  user      User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  page_id   String
+  page      Page   @relation(fields: [page_id], references: [id], onDelete: Cascade)
 
-  @@unique([id, userId, pageId])
+  @@unique([id, user_id, page_id])
 }
 
 model Setting {
-  id          String @id @default(cuid())
-  editorWidth Int    @default(0)
-  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      String @unique
+  id           String @id @default(cuid())
+  editor_width Int    @default(0)
+  user         User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id      String @unique
 }
 
 model GlobalVariables {

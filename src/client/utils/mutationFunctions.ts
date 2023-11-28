@@ -1,4 +1,4 @@
-import { PageResponse } from "@/types/queryResponse";
+import { PageResponse } from "@/shared/types/queryResponse";
 
 export class HTTPError extends Error {
   status: number;

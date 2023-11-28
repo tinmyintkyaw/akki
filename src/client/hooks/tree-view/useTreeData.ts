@@ -1,5 +1,5 @@
 import { usePageListQuery } from "@/hooks/pageQueryHooks";
-import { PageResponse } from "@/types/queryResponse";
+import { PageResponse } from "@/shared/types/queryResponse";
 import { useMemo } from "react";
 import { ExplicitDataSource } from "react-complex-tree";
 

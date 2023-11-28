@@ -50,23 +50,23 @@ const createPageController: RequestHandler = async (
 
   const newPage = await prisma.page.create({
     data: {
-      userId: res.locals.session.user.userId,
-      pageName: req.body.pageName,
-      parentId: req.body.parentId,
+      user_id: res.locals.session.user.userId,
+      page_name: req.body.pageName,
+      parent_id: req.body.parentId,
       ydoc: Buffer.from(Y.encodeStateAsUpdate(newYDoc)),
-      textContent: "",
+      text_content: "",
     },
     select: pageSelect,
   });
 
   const typesensePage: TypesenseDocument = {
     id: newPage.id,
-    userId: newPage.userId,
-    pageName: newPage.pageName,
+    userId: newPage.user_id,
+    pageName: newPage.page_name,
     textContent: "",
-    createdAt: newPage.createdAt.getTime(),
-    modifiedAt: newPage.modifiedAt.getTime(),
-    isStarred: newPage.isStarred,
+    createdAt: newPage.created_at.getTime(),
+    modifiedAt: newPage.modified_at.getTime(),
+    isStarred: newPage.is_starred,
   };
 
   await typesenseClient.collections("pages").documents().create(typesensePage);

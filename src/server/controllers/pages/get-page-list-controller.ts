@@ -11,12 +11,12 @@ const getPageListController: RequestHandler = async (req, res) => {
 
   const pagesList = await prisma.page.findMany({
     where: {
-      userId: userId,
-      isDeleted: false,
+      user_id: userId,
+      is_deleted: false,
     },
     select: pageSelect,
     orderBy: {
-      createdAt: "asc",
+      created_at: "asc",
     },
   });
 

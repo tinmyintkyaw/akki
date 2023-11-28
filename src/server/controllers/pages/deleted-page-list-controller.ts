@@ -11,12 +11,12 @@ const getDeletedPageListController: RequestHandler = async (_req, res) => {
 
   const deletedPageList = await prisma.page.findMany({
     where: {
-      userId: userId,
-      isDeleted: true,
+      user_id: userId,
+      is_deleted: true,
     },
     select: pageSelect,
     orderBy: {
-      createdAt: "asc",
+      created_at: "asc",
     },
   });
 

@@ -3,11 +3,11 @@ import typesenseClient from "@/configs/typesense-client-config";
 import TypesenseDocument from "@/shared/types/typesense-document";
 import { storePayload } from "@hocuspocus/server";
 import { TiptapTransformer } from "@hocuspocus/transformer";
+import { JSONContent, generateText } from "@tiptap/core";
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
-import { JSONContent, generateText } from "@tiptap/core";
 import StarterKit from "@tiptap/starter-kit";
 
 const isJSONContent = (json: unknown): json is JSONContent => {
@@ -32,26 +32,26 @@ const storePageHandler = async (data: storePayload) => {
 
   const dbPage = await prisma.page.update({
     where: {
-      id_userId: {
-        userId: data.context.userId,
+      id_user_id: {
+        user_id: data.context.userId,
         id: data.documentName,
       },
     },
     data: {
       ydoc: data.state,
-      modifiedAt: new Date(),
+      modified_at: new Date(),
     },
   });
 
   // Update typesense index
   const typesensePage: TypesenseDocument = {
     id: dbPage.id,
-    userId: dbPage.userId,
-    pageName: dbPage.pageName,
+    userId: dbPage.user_id,
+    pageName: dbPage.page_name,
     textContent: textContent,
-    createdAt: dbPage.createdAt.getTime(),
-    modifiedAt: dbPage.modifiedAt.getTime(),
-    isStarred: dbPage.isStarred,
+    createdAt: dbPage.created_at.getTime(),
+    modifiedAt: dbPage.modified_at.getTime(),
+    isStarred: dbPage.is_starred,
   };
 
   await typesenseClient.collections("pages").documents().upsert(typesensePage);

@@ -25,8 +25,8 @@ const deletePageController: RequestHandler = async (
 
   const deletedPage = await prisma.page.delete({
     where: {
-      id_userId: {
-        userId: res.locals.session.user.userId,
+      id_user_id: {
+        user_id: res.locals.session.user.userId,
         id: req.params.pageId,
       },
     },
@@ -40,12 +40,12 @@ const deletePageController: RequestHandler = async (
   );
 
   deletedPage.files.forEach(async (file) => {
-    fs.rmSync(path.join(uploadDir, file.fileName));
+    fs.rmSync(path.join(uploadDir, file.file_name));
   });
 
   await typesenseClient.collections("pages").documents(deletedPage.id).delete();
 
-  deletedPage.childPages.forEach(async (page) => {
+  deletedPage.child_pages.forEach(async (page) => {
     await typesenseClient.collections("pages").documents(page.id).delete();
   });
 

@@ -12,9 +12,9 @@ const uploadFileController: RequestHandler = async (req, res) => {
 
   await prisma.file.create({
     data: {
-      userId: res.locals.session.user.userId,
-      pageId: fields.pageId[0],
-      fileName: fileName,
+      user_id: res.locals.session.user.userId,
+      page_id: fields.pageId[0],
+      file_name: fileName,
     },
   });
 

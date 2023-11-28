@@ -1,5 +1,6 @@
 import prisma from "@/configs/prisma-client-config";
 import { pageSelect } from "@/utils/prisma-page-select";
+import { transformPageListResponseData } from "@/utils/transform-response-data";
 import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";
 
@@ -10,26 +11,17 @@ const getStarredPageListController: RequestHandler = async (_req, res) => {
 
   const starredPageList = await prisma.page.findMany({
     where: {
-      userId: userId,
-      isDeleted: false,
-      isStarred: true,
+      user_id: userId,
+      is_deleted: false,
+      is_starred: true,
     },
     select: pageSelect,
     orderBy: {
-      createdAt: "asc",
+      created_at: "asc",
     },
   });
 
-  const response = starredPageList.map((page) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { Page, ...response } = {
-      ...page,
-      childPages: page.childPages.map((page) => page.id),
-      parentPageName: page.Page ? page.Page.pageName : null,
-    };
-
-    return response;
-  });
+  const response = transformPageListResponseData(starredPageList);
 
   return res.status(200).json(response);
 };

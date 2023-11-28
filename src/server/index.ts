@@ -14,7 +14,6 @@ import pageRouter from "@/routes/page-router";
 import runStartupTasks from "@/utils/run-startup-tasks";
 import hocuspocusServer from "@/websocket/websocket-server";
 import express from "express";
-import asyncHandler from "express-async-handler";
 import expressWebsockets from "express-ws";
 import helmet from "helmet";
 import requestIp from "request-ip";
@@ -27,7 +26,7 @@ app.use(express.json());
 app.use(globalRateLimiter);
 
 app.get("/health", (_req, res) => res.sendStatus(200));
-app.get("/session", asyncHandler(sessionController));
+app.get("/session", sessionController);
 app.use(authRouter);
 app.use("/pages", checkIfSignedIn, sessionRateLimiter, pageRouter);
 app.use("/files", checkIfSignedIn, sessionRateLimiter, fileRouter);

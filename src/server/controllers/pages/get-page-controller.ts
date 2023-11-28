@@ -23,8 +23,8 @@ const getPageController: RequestHandler = async (
 
   const page = await prisma.page.findUnique({
     where: {
-      id_userId: {
-        userId: res.locals.session.user.userId,
+      id_user_id: {
+        user_id: res.locals.session.user.userId,
         id: req.params.pageId,
       },
     },
