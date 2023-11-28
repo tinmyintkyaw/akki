@@ -33,7 +33,7 @@ COPY --from=builder --chown=nodejs:nodejs /app/dist/server .
 USER nodejs
 
 ENTRYPOINT [ "./docker-entrypoint.sh" ]
-CMD node index.js
+CMD node index.cjs
 
 
 # Caddy

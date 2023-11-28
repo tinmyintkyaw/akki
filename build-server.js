@@ -8,7 +8,7 @@ import { copy } from "esbuild-plugin-copy";
     minify: true,
     platform: "node",
     tsconfig: "./src/server/tsconfig.json",
-    outfile: "./dist/server/index.js",
+    outfile: "./dist/server/index.cjs",
     logLevel: "info",
     plugins: [
       copy({
