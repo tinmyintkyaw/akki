@@ -1,15 +1,14 @@
-import RightPaneError from "@/RightPaneError";
 import DeletedPageBanner from "@/components/editor/DeletedPageBanner";
-import Toolbar from "@/components/toolbar/Toolbar";
+import PageNotFound from "@/components/error/PageNotFound";
 import useMultiplayerProvider from "@/hooks/editor/useMultiplayerProvider";
 import { usePageQuery } from "@/hooks/pageQueryHooks";
 import clsx from "clsx";
 import { Suspense, lazy, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-const Editor = lazy(() => import("@/components/editor/Editor"));
+const EditorComponent = lazy(() => import("@/components/editor/Editor"));
 
-export default function RightPane() {
+export default function EditorLayout() {
   const params = useParams();
   const pageQuery = usePageQuery(params.pageId ?? "");
   const multiplayerProvider = useMultiplayerProvider(params.pageId ?? "");
@@ -21,11 +20,7 @@ export default function RightPane() {
 
   return (
     <>
-      <Toolbar
-        title={pageQuery.data ? pageQuery.data.pageName : "Loading..."}
-      />
-
-      {!pageQuery.isLoading && pageQuery.isError && <RightPaneError />}
+      {!pageQuery.isLoading && pageQuery.isError && <PageNotFound />}
 
       {!pageQuery.isLoading && !pageQuery.isError && (
         <>
@@ -35,13 +30,13 @@ export default function RightPane() {
 
           <div
             className={clsx(
-              "scrollbar-thin h-[calc(100vh-3rem)] overflow-y-auto",
+              "h-[calc(100vh-3rem)] overflow-y-auto scrollbar-thin",
               pageQuery.data.isDeleted && "h-[calc(100vh-6rem)]",
             )}
           >
             {multiplayerProvider.provider && multiplayerProvider.isReady && (
               <Suspense>
-                <Editor provider={multiplayerProvider.provider} />
+                <EditorComponent provider={multiplayerProvider.provider} />
               </Suspense>
             )}
           </div>

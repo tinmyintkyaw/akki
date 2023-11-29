@@ -1,8 +1,8 @@
-import AppLayout from "@/AppLayout";
-import Index from "@/Index";
-import GlobalError from "@/components/GlobalError";
+import AppLayout from "@/components/AppLayout";
+import EditorLayout from "@/components/EditorLayout";
+import IndecPage from "@/components/IndexPage";
+// import GlobalError from "@/components/error/GlobalError";
 import Protected from "@/components/Protected";
-import RightPane from "@/components/RightPane";
 import Signin from "@/components/Signin";
 import {
   Route,
@@ -12,7 +12,7 @@ import {
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" errorElement={<GlobalError />}>
+    <Route path="/">
       <Route path="/signin" element={<Signin />} />
 
       <Route
@@ -23,8 +23,8 @@ const router = createBrowserRouter(
           </Protected>
         }
       >
-        <Route index element={<Index />} />
-        <Route path="/:pageId" element={<RightPane />} />
+        <Route index element={<IndecPage />} />
+        <Route path="/:pageId" element={<EditorLayout />} />
       </Route>
     </Route>,
   ),

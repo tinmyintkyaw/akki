@@ -7,6 +7,7 @@ import { InstantSearch } from "react-instantsearch";
 import { Outlet } from "react-router-dom";
 
 import "allotment/dist/style.css";
+import Toolbar from "@/components/toolbar/Toolbar";
 
 export default function Layout() {
   const sidebarContext = useContext(SidebarContext);
@@ -27,6 +28,7 @@ export default function Layout() {
           </Allotment.Pane>
 
           <Allotment.Pane>
+            <Toolbar />
             <Outlet />
           </Allotment.Pane>
         </Allotment>

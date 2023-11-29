@@ -2,15 +2,16 @@ import SearchComboBox from "@/components/search/SearchComboBox";
 import ToolbarDropdown from "@/components/toolbar/ToolbarDropdown";
 import { Button } from "@/components/ui/button";
 import { SidebarContext } from "@/contexts/SidebarContext";
+import { usePageQuery, useRecentPagesQuery } from "@/hooks/pageQueryHooks";
 import { MoreHorizontal, PanelLeftOpen, Search } from "lucide-react";
 import { useContext } from "react";
+import { useParams } from "react-router-dom";
 
-interface ToolbarProps {
-  title: string;
-}
-
-function Toolbar(props: ToolbarProps) {
+function Toolbar() {
   const sidebarContext = useContext(SidebarContext);
+  const params = useParams();
+  const pageQuery = usePageQuery(params.pageId ?? "");
+  const recentPageListQuery = useRecentPagesQuery();
 
   return (
     <div
@@ -29,7 +30,15 @@ function Toolbar(props: ToolbarProps) {
       )}
 
       <Button variant={"ghost"} size={"default"} className="justify-start">
-        <span className="line-clamp-1 text-start">{props.title}</span>
+        <span className="line-clamp-1 text-start">
+          {pageQuery.data
+            ? pageQuery.data.pageName
+            : pageQuery.error?.status === 404
+            ? "Page Not Found"
+            : recentPageListQuery.data?.length === 0
+            ? "No Pages"
+            : ""}
+        </span>
       </Button>
 
       <div className="flex-grow" />
