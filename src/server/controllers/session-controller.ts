@@ -8,11 +8,10 @@ const sessionController: RequestHandler = async (req, res) => {
     const authRequest = auth.handleRequest(req, res);
     const session = await authRequest.validate();
 
-    res.setHeader("Cache-Control", "no-cache");
-
     const sessionResponse: SessionResponse = {
       user: { ...session.user },
     };
+
     return res.status(200).json(sessionResponse);
   } catch (error) {
     return res.sendStatus(401);

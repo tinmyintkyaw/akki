@@ -4,18 +4,11 @@ import asyncHandler from "express-async-handler";
 
 const checkIfSignedOut: RequestHandler = async (req, res, next) => {
   const authRequest = auth.handleRequest(req, res);
-  authRequest
-    .validate()
-    .then(() => res.status(302).setHeader("Location", "/").end())
-    .catch(() => next());
+  const session = await authRequest.validate();
 
-  // try {
-  //   const authRequest = auth.handleRequest(req, res);
-  //   await authRequest.validate();
-  //   return res.status(302).setHeader("Location", "/").end();
-  // } catch (error) {
-  //   next();
-  // }
+  if (!session) return next();
+
+  return res.status(302).setHeader("Location", "/").end();
 };
 
 export default asyncHandler(checkIfSignedOut);

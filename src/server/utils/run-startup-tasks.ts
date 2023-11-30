@@ -1,6 +1,6 @@
 import checkDBConnection from "@/utils/startup-tasks/check-db-connection";
 import checkDemoMode from "@/utils/startup-tasks/check-demo-mode";
-import checkTypesenseDB from "@/utils/startup-tasks/check-typesense-db";
+import checkMellisearchDB from "@/utils/startup-tasks/check-meilisearch-db";
 import setDefaultSearchKey from "@/utils/startup-tasks/set-default-search-key";
 import validateEnvVariables from "@/utils/startup-tasks/validate-env-variables";
 
@@ -10,7 +10,7 @@ const runStartupTasks = async () => {
 
     await checkDBConnection();
 
-    await checkTypesenseDB();
+    await checkMellisearchDB();
 
     await checkDemoMode();
 

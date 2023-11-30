@@ -1,6 +1,6 @@
+import meilisearchClient from "@/configs/meilisearch-client-config";
 import prisma from "@/configs/prisma-client-config";
-import typesenseClient from "@/configs/typesense-client-config";
-import TypesenseDocument from "@/shared/types/typesense-document";
+import MeilisearchPage from "@/shared/types/meilisearch-page";
 import { storePayload } from "@hocuspocus/server";
 import { TiptapTransformer } from "@hocuspocus/transformer";
 import { JSONContent, generateText } from "@tiptap/core";
@@ -43,8 +43,8 @@ const storePageHandler = async (data: storePayload) => {
     },
   });
 
-  // Update typesense index
-  const typesensePage: TypesenseDocument = {
+  // Update meilisearch index
+  const meilisearchPage: MeilisearchPage = {
     id: dbPage.id,
     userId: dbPage.user_id,
     pageName: dbPage.page_name,
@@ -54,7 +54,7 @@ const storePageHandler = async (data: storePayload) => {
     isStarred: dbPage.is_starred,
   };
 
-  await typesenseClient.collections("pages").documents().upsert(typesensePage);
+  await meilisearchClient.index("pages").updateDocuments([meilisearchPage]);
 
   // data.document.broadcastStateless("synced!");
 };

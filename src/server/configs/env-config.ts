@@ -14,9 +14,9 @@ interface ProcessEnv {
   GITHUB_CLIENT_ID: string;
   GITHUB_CLIENT_SECRET: string;
 
-  TYPESENSE_HOST: string;
-  TYPESENSE_PORT: number;
-  TYPESENSE_API_KEY: string;
+  MEILI_HOST: string;
+  MEILI_PORT: number;
+  MEILI_MASTER_KEY: string;
 
   REDIS_PASSWORD: string;
 

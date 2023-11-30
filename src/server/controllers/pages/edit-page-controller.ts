@@ -1,6 +1,6 @@
+import meilisearchClient from "@/configs/meilisearch-client-config";
 import prisma from "@/configs/prisma-client-config";
-import typesenseClient from "@/configs/typesense-client-config";
-import TypesenseDocument from "@/shared/types/typesense-document";
+import MeilisearchPage from "@/shared/types/meilisearch-page";
 import { pageSelect } from "@/utils/prisma-page-select";
 import { transformPageResponseData } from "@/utils/transform-response-data";
 import { RequestHandler } from "express";
@@ -62,50 +62,31 @@ const editPageController: RequestHandler = async (
     },
   });
 
-  /* Update pages in typesense */
-  const typesensePage: TypesenseDocument = {
+  /* Update pages in meilisearch */
+  const meilisearchPage: MeilisearchPage = {
     id: updatedPage.id,
     userId: updatedPage.user_id,
     pageName: updatedPage.page_name,
     createdAt: updatedPage.created_at.getTime(),
     modifiedAt: updatedPage.modified_at.getTime(),
     isStarred: updatedPage.is_starred,
+    isDeleted: updatedPage.is_deleted,
   };
 
-  if (req.body.isDeleted === undefined) {
-    await typesenseClient
-      .collections("pages")
-      .documents()
-      .update(typesensePage, {});
-  } else if (req.body.isDeleted) {
-    await typesenseClient
-      .collections("pages")
-      .documents(updatedPage.id)
-      .delete();
+  await meilisearchClient.index("pages").updateDocuments([meilisearchPage]);
 
-    updatedPage.child_pages.forEach(async (page) => {
-      await typesenseClient.collections("pages").documents(page.id).delete();
-    });
-  } else {
-    await typesenseClient
-      .collections("pages")
-      .documents()
-      .upsert(typesensePage);
+  if (req.body.isDeleted !== undefined) {
+    const childPageIds = updatedPage.child_pages.map((page) => page.id);
 
     if (updatedPage.child_pages.length > 0) {
-      await typesenseClient
-        .collections("pages")
-        .documents()
-        .import(
-          updatedPage.child_pages.map((page) => ({
-            id: page.id,
-            userId: page.user_id,
-            pageName: page.page_name,
-            createdAt: page.created_at.getTime(),
-            modifiedAt: page.modified_at.getTime(),
-            isStarred: page.is_starred,
-          })),
-        );
+      const childPagesToUpdate = childPageIds.map((id) => ({
+        id: id,
+        isDeleted: updatedPage.is_deleted,
+      }));
+
+      await meilisearchClient
+        .index("pages")
+        .updateDocumentsInBatches(childPagesToUpdate, 10);
     }
   }
 

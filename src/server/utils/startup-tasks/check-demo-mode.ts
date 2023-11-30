@@ -2,7 +2,6 @@ import envVars from "@/configs/env-config";
 import logger from "@/configs/logger-config";
 import { auth } from "@/configs/lucia-config";
 import prisma from "@/configs/prisma-client-config";
-import typesenseClient from "@/configs/typesense-client-config";
 
 const createDemoUser = async () => {
   try {
@@ -16,12 +15,6 @@ const createDemoUser = async () => {
         name: "Demo User",
         username: "demo",
       },
-    });
-
-    await typesenseClient.keys().create({
-      description: `search-only key for demo user`,
-      actions: ["documents:search"],
-      collections: ["pages"],
     });
 
     logger.info("Created demo user");

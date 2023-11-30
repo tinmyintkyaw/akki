@@ -1,5 +1,5 @@
+import meilisearchClient from "@/configs/meilisearch-client-config";
 import prisma from "@/configs/prisma-client-config";
-import typesenseClient from "@/configs/typesense-client-config";
 import { pageSelect } from "@/utils/prisma-page-select";
 import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";
@@ -43,11 +43,13 @@ const deletePageController: RequestHandler = async (
     fs.rmSync(path.join(uploadDir, file.file_name));
   });
 
-  await typesenseClient.collections("pages").documents(deletedPage.id).delete();
+  await meilisearchClient.index("pages").deleteDocument(deletedPage.id);
 
-  deletedPage.child_pages.forEach(async (page) => {
-    await typesenseClient.collections("pages").documents(page.id).delete();
-  });
+  if (deletedPage.child_pages.length > 0) {
+    await meilisearchClient
+      .index("pages")
+      .deleteDocuments(deletedPage.child_pages.map((page) => page.id));
+  }
 
   return res.sendStatus(204);
 };

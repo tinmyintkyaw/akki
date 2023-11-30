@@ -31,7 +31,13 @@ app.use(authRouter);
 app.use("/pages", checkIfSignedIn, sessionRateLimiter, pageRouter);
 app.use("/files", checkIfSignedIn, sessionRateLimiter, fileRouter);
 app.use("/keys", checkIfSignedIn, sessionRateLimiter, keyRouter);
-app.use("/search", checkIfSignedIn, sessionRateLimiter, searchProxy);
+
+app.use(
+  "/search/multi-search",
+  checkIfSignedIn,
+  sessionRateLimiter,
+  searchProxy,
+);
 
 app.ws("/editor", (websocket, req) => {
   const clientIp = requestIp.getClientIp(req);

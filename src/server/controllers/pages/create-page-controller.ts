@@ -1,6 +1,6 @@
+import meilisearchClient from "@/configs/meilisearch-client-config";
 import prisma from "@/configs/prisma-client-config";
-import typesenseClient from "@/configs/typesense-client-config";
-import TypesenseDocument from "@/shared/types/typesense-document";
+import MeilisearchPage from "@/shared/types/meilisearch-page";
 import { pageSelect } from "@/utils/prisma-page-select";
 import { transformPageResponseData } from "@/utils/transform-response-data";
 import { TiptapTransformer } from "@hocuspocus/transformer";
@@ -59,7 +59,7 @@ const createPageController: RequestHandler = async (
     select: pageSelect,
   });
 
-  const typesensePage: TypesenseDocument = {
+  const meilisearchPage: MeilisearchPage = {
     id: newPage.id,
     userId: newPage.user_id,
     pageName: newPage.page_name,
@@ -67,9 +67,10 @@ const createPageController: RequestHandler = async (
     createdAt: newPage.created_at.getTime(),
     modifiedAt: newPage.modified_at.getTime(),
     isStarred: newPage.is_starred,
+    isDeleted: newPage.is_deleted,
   };
 
-  await typesenseClient.collections("pages").documents().create(typesensePage);
+  await meilisearchClient.index("pages").addDocuments([meilisearchPage]);
 
   const response = transformPageResponseData(newPage);
 

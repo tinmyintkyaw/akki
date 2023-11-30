@@ -48,10 +48,10 @@ const envValidationSchema = Joi.object({
       then: Joi.required(),
     }),
 
-  //   Typesense client config
-  TYPESENSE_HOST: Joi.string().trim().default("localhost"),
-  TYPESENSE_PORT: Joi.number().default(8108),
-  TYPESENSE_API_KEY: Joi.string().trim().required(),
+  //   Meilisearch client config
+  MEILI_HOST: Joi.string().trim().default("localhost"),
+  MEILI_PORT: Joi.number().default(8108),
+  MEILI_MASTER_KEY: Joi.string().trim().required(),
 
   REDIS_PASSWORD: Joi.string().trim().required(),
 
