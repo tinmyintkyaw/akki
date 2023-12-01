@@ -7,16 +7,14 @@ import {
 } from "@/components/ui/command";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import TypesenseDocument from "@/shared/types/typesense-document";
-import { useQueryClient } from "@tanstack/react-query";
+import MeilisearchPage from "@/shared/types/meilisearch-page";
 import { ArrowDownUp, CornerDownLeft } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
 import {
+  Configure,
   Highlight,
-  Hits,
   Snippet,
   useHits,
-  useInstantSearch,
   useSearchBox,
 } from "react-instantsearch";
 import { useNavigate } from "react-router-dom";
@@ -26,14 +24,12 @@ type SearchComboBoxProps = {
 };
 
 export default function SearchComboBox(props: SearchComboBoxProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [input, setInput] = useState("");
-
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
-  const instantSearch = useInstantSearch({ catchError: true });
-  const { refine, clear } = useSearchBox();
-  const { hits } = useHits<TypesenseDocument>();
+  const { refine } = useSearchBox();
+  const { hits } = useHits<MeilisearchPage>();
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchFilters] = useState("isDeleted=false");
 
   // Open with keyboard shortcut
   useEffect(() => {
@@ -47,34 +43,19 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  // Debounce Typesense search queries, not sure if it's necessary
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      refine(input);
-    }, 20);
-    return () => clearTimeout(timeout);
-  }, [input, refine]);
-
-  // refetch key on expiry
-  useEffect(() => {
-    if (instantSearch.status !== "error") return;
-
-    const timeout = setTimeout(() => {
-      queryClient.invalidateQueries({ queryKey: ["searchAPIKey"] });
-    }, 3000);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [instantSearch.status, queryClient]);
-
   return (
     <>
+      <Configure
+        attributesToHighlight={["pageName", "textContent"]}
+        attributesToSnippet={["textContent:20"]}
+        attributesToRetrieve={["id", "pageName"]}
+        filters={searchFilters}
+      />
+
       <Dialog
         open={isOpen}
         onOpenChange={() => {
-          clear();
-          setInput(""); // reset search query on close
+          refine("");
           setIsOpen((prev) => !prev);
         }}
       >
@@ -84,9 +65,7 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
           <Command shouldFilter={false}>
             <CommandInput
               placeholder="Search..."
-              value={input}
-              onValueChange={(value) => setInput(value)}
-              onFocus={() => refine(input)}
+              onValueChange={(value) => refine(value)}
               className="h-12"
             />
             <CommandList className="max-h-[calc(100vh-80px)] overflow-hidden md:max-h-[50vh]">
@@ -95,53 +74,43 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
               )}
 
               <ScrollArea className="h-[calc(100vh-80px)] w-full md:h-[50vh]">
-                <Hits
-                  hitComponent={({ hit }) => (
-                    <CommandItem
-                      key={hit.objectID}
-                      value={hit.objectID}
-                      className="flex w-full flex-col px-4 py-3"
-                      onSelect={(value) => {
-                        navigate(`/${value}`);
-                        clear();
-                        setIsOpen((prev) => !prev);
-                      }}
-                    >
-                      <div className="w-full text-[15px] font-medium">
-                        <Highlight
-                          attribute={"pageName"}
-                          hit={hit}
-                          className=""
-                          highlightedTagName={"strong"}
-                          classNames={{
-                            highlighted: "text-gray-950 dark:text-gray-100",
-                            nonHighlighted: "text-gray-800 dark:text-gray-200",
-                          }}
-                        />
-                      </div>
+                {hits.map((hit) => (
+                  <CommandItem
+                    key={hit.objectID}
+                    value={hit.objectID}
+                    className="flex w-full flex-col gap-1 rounded-none px-4 py-3"
+                    onSelect={(value) => {
+                      navigate(`/${value}`);
+                      setIsOpen((prev) => !prev);
+                    }}
+                  >
+                    <div className="w-full text-[15px] font-medium">
+                      <Highlight
+                        attribute={"pageName"}
+                        hit={hit}
+                        className="line-clamp-2"
+                        highlightedTagName={"strong"}
+                        classNames={{
+                          highlighted: "text-gray-950 dark:text-gray-100",
+                          nonHighlighted: "text-gray-800 dark:text-gray-200",
+                        }}
+                      />
+                    </div>
 
-                      <div className="mt-1 w-full text-sm text-accent-foreground">
-                        {
-                          // @ts-expect-error matchedWords will always be of type string[]
-                          hit._snippetResult?.textContent.matchedWords.length >
-                            0 && (
-                            <Snippet
-                              attribute={"textContent"}
-                              hit={hit}
-                              highlightedTagName={"strong"}
-                              className="mt-2"
-                              classNames={{
-                                highlighted: "text-gray-950 dark:text-gray-100",
-                                nonHighlighted:
-                                  "text-gray-800 dark:text-gray-400",
-                              }}
-                            />
-                          )
-                        }
-                      </div>
-                    </CommandItem>
-                  )}
-                />
+                    <div className="w-full text-sm font-medium">
+                      <Snippet
+                        attribute={"textContent"}
+                        hit={hit}
+                        highlightedTagName={"strong"}
+                        className="line-clamp-2"
+                        classNames={{
+                          highlighted: "text-gray-950 dark:text-gray-100",
+                          nonHighlighted: "text-gray-800 dark:text-gray-400",
+                        }}
+                      />
+                    </div>
+                  </CommandItem>
+                ))}
               </ScrollArea>
             </CommandList>
 

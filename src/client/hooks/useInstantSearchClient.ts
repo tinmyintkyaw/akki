@@ -1,30 +1,12 @@
+import { instantMeiliSearch } from "@meilisearch/instant-meilisearch";
 import { useMemo } from "react";
-import TypesenseInstantsearchAdapter, {
-  TypesenseInstantsearchAdapterOptions,
-} from "typesense-instantsearch-adapter";
-
-const typesenseAdapterOptions: TypesenseInstantsearchAdapterOptions = {
-  server: {
-    apiKey: "",
-    nodes: [
-      {
-        url: `/api/search`,
-      },
-    ],
-    sendApiKeyAsQueryParam: false,
-  },
-  additionalSearchParameters: {
-    query_by: "pageName,textContent",
-  },
-};
 
 const useInstantSearchClient = () => {
-  const instantSearchAdapter = useMemo(
-    () => new TypesenseInstantsearchAdapter(typesenseAdapterOptions),
+  const instantMeilisearchClient = useMemo(
+    () => instantMeiliSearch(`${window.location.host}/api/search`, ""),
     [],
   );
-
-  return instantSearchAdapter.searchClient;
+  return instantMeilisearchClient;
 };
 
 export default useInstantSearchClient;
