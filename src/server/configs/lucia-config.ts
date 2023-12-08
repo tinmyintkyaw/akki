@@ -12,7 +12,7 @@ export const auth = lucia({
   env: envVars.NODE_ENV === "development" ? "DEV" : "PROD",
   middleware: express(),
   adapter: { user: prismaAdapter(prisma), session: ioredis(redisClient) },
-  csrfProtection: true,
+  csrfProtection: envVars.NODE_ENV === "development" ? false : true,
 
   getUserAttributes(databaseUser) {
     return {
