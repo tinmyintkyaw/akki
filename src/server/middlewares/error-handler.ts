@@ -2,7 +2,8 @@ import logger from "@/configs/logger-config";
 import { ErrorRequestHandler } from "express";
 import { LuciaError } from "lucia";
 
-const errorHandler: ErrorRequestHandler = (error, _req, res) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
   if (error instanceof Error) logger.error(error.message);
   if (
     error instanceof LuciaError &&
@@ -12,6 +13,7 @@ const errorHandler: ErrorRequestHandler = (error, _req, res) => {
     return res.sendStatus(401);
   }
 
+  logger.error("An error occured");
   return res.sendStatus(500);
 };
 
