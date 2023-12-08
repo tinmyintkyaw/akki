@@ -90,6 +90,7 @@
     "tailwind-merge": "^1.14.0",
     "tailwind-scrollbar": "^3.0.5",
     "tailwindcss-animate": "^1.0.7",
+    "tailwindcss-radix": "^2.8.0",
     "winston": "^3.11.0",
     "y-indexeddb": "^9.0.11",
     "y-prosemirror": "^1.2.1",

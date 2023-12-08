@@ -77,5 +77,6 @@ module.exports = {
     require("tailwindcss-animate"),
     require("@tailwindcss/typography"),
     require("tailwind-scrollbar"),
+    require("tailwindcss-radix"),
   ],
 };

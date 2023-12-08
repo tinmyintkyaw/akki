@@ -1,6 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContentNoPortal,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { BubbleMenu, Editor, isTextSelection } from "@tiptap/react";
-import { Menu } from "@headlessui/react";
 import clsx from "clsx";
 import {
   Bold,
@@ -21,13 +26,7 @@ import {
   Strikethrough,
   TextQuote,
 } from "lucide-react";
-
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
+import { useEffect, useMemo, useState } from "react";
 
 type TextConvertCommand = {
   id: string;
@@ -113,7 +112,6 @@ export default function SelectMenu(props: { editor: Editor }) {
     ];
   }, [props.editor]);
 
-  const [show, setShow] = useState(false);
   const [selected, setSelected] = useState(commands[8]);
 
   // Detect node type for currently selected text
@@ -161,125 +159,103 @@ export default function SelectMenu(props: { editor: Editor }) {
         return true;
       }}
       tippyOptions={{
-        duration: 300,
         zIndex: 50,
       }}
       className="flex max-w-md select-none rounded border bg-popover text-sm text-popover-foreground shadow-lg drop-shadow-lg transition-all"
     >
-      {commands && selected && (
-        <>
-          <Popover open={show} onOpenChange={setShow}>
-            <PopoverTrigger asChild>
-              <Button
-                variant={"ghost"}
-                size={"default"}
-                className={clsx("h-8 w-56 rounded px-2")}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant={"ghost"}
+            size={"default"}
+            className="group relative h-8 w-56 rounded px-2"
+          >
+            <selected.displayIcon className="h-4 w-4" />
+
+            <span className="mx-2 flex-grow truncate text-start align-middle">
+              {selected.displayName}
+            </span>
+
+            <ChevronRight className="group-radix-state-open:rotate-90 h-4 w-4 transition-transform" />
+          </Button>
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContentNoPortal
+          // stop radix from moving the focus to the trigger on close
+          onCloseAutoFocus={() => props.editor.commands.focus()}
+          className="w-radix-dropdown-menu-trigger-width"
+        >
+          {commands.map((command) => {
+            const Icon = command.displayIcon;
+            return (
+              <DropdownMenuItem
+                onClick={command.commandFn}
+                className="flex h-8 w-full items-center rounded px-2 py-1 hover:bg-accent"
               >
-                <selected.displayIcon className="h-4 w-4" />
+                <Icon className="h-4 w-4" />
+
                 <span className="mx-2 flex-grow truncate text-start align-middle">
-                  {selected.displayName}
+                  {command.displayName}
                 </span>
-                <ChevronRight
-                  className={clsx(
-                    "h-4 w-4 transition-transform",
-                    show && "rotate-90",
-                  )}
-                />
-              </Button>
-            </PopoverTrigger>
 
-            <PopoverContent className="w-56 p-0">
-              <Menu>
-                <Menu.Items
-                  static
-                  className="flex w-full flex-col outline-none"
-                >
-                  {commands.map((command) => {
-                    const Icon = command.displayIcon;
+                {command.id === selected.id && (
+                  <Check className="h-4 w-4" strokeWidth={3} />
+                )}
+              </DropdownMenuItem>
+            );
+          })}
+        </DropdownMenuContentNoPortal>
+      </DropdownMenu>
 
-                    return (
-                      <Menu.Item key={command.id}>
-                        {({ active }) => (
-                          <Button
-                            variant={"ghost"}
-                            size={"default"}
-                            onClick={command.commandFn}
-                            className={clsx(
-                              "h-8 w-full rounded px-2",
-                              active && "bg-accent",
-                            )}
-                          >
-                            <Icon className="h-4 w-4" />
-                            <span className="mx-2 flex-grow truncate text-start align-middle">
-                              {command.displayName}
-                            </span>
-                            {command.id === selected.id && (
-                              <Check className="h-4 w-4" strokeWidth={3} />
-                            )}
-                          </Button>
-                        )}
-                      </Menu.Item>
-                    );
-                  })}
-                </Menu.Items>
-              </Menu>
-            </PopoverContent>
-          </Popover>
+      {/* TODO: tweak how indicators are shown when marks are active */}
+      <Button
+        variant={"ghost"}
+        size={"icon"}
+        onClick={() => props.editor.chain().focus().toggleBold().run()}
+        className={clsx(
+          "flex h-8 w-8 items-center justify-center rounded",
+          props.editor.isActive("bold") && "text-sky-700 hover:text-sky-700",
+        )}
+      >
+        <Bold className="h-4 w-4" strokeWidth={3} />
+      </Button>
 
-          {/* TODO: tweak how indicators are shown when marks are active */}
-          <Button
-            variant={"ghost"}
-            size={"icon"}
-            onClick={() => props.editor.chain().focus().toggleBold().run()}
-            className={clsx(
-              "flex h-8 w-8 items-center justify-center rounded",
-              props.editor.isActive("bold") &&
-                "text-sky-700 hover:text-sky-700",
-            )}
-          >
-            <Bold className="h-4 w-4" strokeWidth={3} />
-          </Button>
+      <Button
+        variant={"ghost"}
+        size={"icon"}
+        onClick={() => props.editor.chain().focus().toggleItalic().run()}
+        className={clsx(
+          "flex h-8 w-8 items-center justify-center rounded",
+          props.editor.isActive("italic") && "text-sky-700 hover:text-sky-700",
+        )}
+      >
+        <Italic className="h-4 w-4" strokeWidth={3} />
+      </Button>
 
-          <Button
-            variant={"ghost"}
-            size={"icon"}
-            onClick={() => props.editor.chain().focus().toggleItalic().run()}
-            className={clsx(
-              "flex h-8 w-8 items-center justify-center rounded",
-              props.editor.isActive("italic") &&
-                "text-sky-700 hover:text-sky-700",
-            )}
-          >
-            <Italic className="h-4 w-4" strokeWidth={3} />
-          </Button>
+      <Button
+        variant={"ghost"}
+        size={"icon"}
+        onClick={() => props.editor.chain().focus().toggleStrike().run()}
+        className={clsx(
+          "flex h-8 w-8 items-center justify-center rounded",
+          props.editor.isActive("strikethrough") &&
+            "text-sky-700 hover:text-sky-700",
+        )}
+      >
+        <Strikethrough className="h-4 w-4" strokeWidth={3} />
+      </Button>
 
-          <Button
-            variant={"ghost"}
-            size={"icon"}
-            onClick={() => props.editor.chain().focus().toggleStrike().run()}
-            className={clsx(
-              "flex h-8 w-8 items-center justify-center rounded",
-              props.editor.isActive("strikethrough") &&
-                "text-sky-700 hover:text-sky-700",
-            )}
-          >
-            <Strikethrough className="h-4 w-4" strokeWidth={3} />
-          </Button>
-
-          <Button
-            variant={"ghost"}
-            size={"icon"}
-            onClick={() => props.editor.chain().focus().toggleCode().run()}
-            className={clsx(
-              "flex h-8 w-8 items-center justify-center rounded",
-              props.editor.isActive("code") &&
-                "text-sky-700 hover:text-sky-700",
-            )}
-          >
-            <Code className="h-4 w-4" strokeWidth={3} />
-          </Button>
-        </>
-      )}
+      <Button
+        variant={"ghost"}
+        size={"icon"}
+        onClick={() => props.editor.chain().focus().toggleCode().run()}
+        className={clsx(
+          "flex h-8 w-8 items-center justify-center rounded",
+          props.editor.isActive("code") && "text-sky-700 hover:text-sky-700",
+        )}
+      >
+        <Code className="h-4 w-4" strokeWidth={3} />
+      </Button>
     </BubbleMenu>
   );
 }
