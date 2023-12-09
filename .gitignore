@@ -23,6 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 
+uploads/*
+
 # Environment
 .env
 .env.development

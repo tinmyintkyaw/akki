@@ -52,7 +52,7 @@ model Page {
 
 model File {
   id        String @id @default(cuid())
-  file_name String @unique
+  file_name String
   user_id   String
   user      User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
   page_id   String

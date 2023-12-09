@@ -1,24 +1,24 @@
 import prisma from "@/configs/prisma-client-config";
-import parseForm from "@/utils/parse-form";
 import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";
+import path from "path";
 
 const uploadFileController: RequestHandler = async (req, res) => {
-  const { fields, files } = await parseForm(req, res);
-
-  if (!fields.pageId || !files.file) return res.sendStatus(500);
-
-  const fileName = files.file[0].newFilename;
+  const pageId = req.body.pageId;
+  const fileUID = path.parse(req.file.filename).name;
+  const userId = res.locals.session.user.userId;
+  const originalName = req.file.originalname;
 
   await prisma.file.create({
     data: {
-      user_id: res.locals.session.user.userId,
-      page_id: fields.pageId[0],
-      file_name: fileName,
+      id: fileUID,
+      user_id: userId,
+      page_id: pageId,
+      file_name: originalName,
     },
   });
 
-  const url = `${req.headers.host}/api/files/${fileName}`;
+  const url = `${req.headers.host}/api/files/${req.file.filename}`;
 
   return res.status(200).json({ url });
 };

@@ -2,7 +2,7 @@ import Image from "@tiptap/extension-image";
 import { Plugin } from "@tiptap/pm/state";
 
 const uploadImage = async (formData: FormData) => {
-  const res = await fetch("/api/images/upload", {
+  const res = await fetch("/api/files", {
     method: "POST",
     body: formData,
   });
@@ -58,6 +58,7 @@ const CustomImageBackend = Image.extend({
           },
 
           handlePaste(view, event) {
+            console.log("paste event");
             const items = Array.from(event.clipboardData?.items || []);
 
             for (const item of items) {

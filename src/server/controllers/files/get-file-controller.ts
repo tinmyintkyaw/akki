@@ -7,8 +7,6 @@ const getFileController: RequestHandler = async (
   req: Request<{ fileId: string }>,
   res,
 ) => {
-  if (res.locals.session) return res.sendStatus(401);
-
   const filePath = path.join(
     process.cwd(),
     "uploads",
@@ -18,9 +16,7 @@ const getFileController: RequestHandler = async (
 
   fs.statSync(filePath);
 
-  const fileBuffer = fs.readFileSync(filePath);
-
-  return res.send(fileBuffer);
+  return res.sendFile(filePath);
 };
 
 export default asyncHandler(getFileController);
