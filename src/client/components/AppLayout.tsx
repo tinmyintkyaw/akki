@@ -1,17 +1,17 @@
 import Sidebar from "@/components/sidebar/Sidebar";
-import { SidebarContext } from "@/contexts/SidebarContext";
 import useInstantSearchClient from "@/hooks/useInstantSearchClient";
+import useStore from "@/zustand/store";
 import { Allotment, LayoutPriority } from "allotment";
-import { useContext } from "react";
 import { InstantSearch } from "react-instantsearch";
 import { Outlet } from "react-router-dom";
 
-import "allotment/dist/style.css";
 import Toolbar from "@/components/toolbar/Toolbar";
+import "allotment/dist/style.css";
 
 export default function Layout() {
-  const sidebarContext = useContext(SidebarContext);
   const instantSearchClient = useInstantSearchClient();
+
+  const isSidebarOpen = useStore((state) => state.isSidebarOpen);
 
   return (
     <main className="h-[100dvh] w-screen">
@@ -22,7 +22,7 @@ export default function Layout() {
             preferredSize={350}
             maxSize={600}
             priority={LayoutPriority.Low}
-            visible={sidebarContext.isSidebarOpen}
+            visible={isSidebarOpen}
           >
             <Sidebar />
           </Allotment.Pane>

@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently 'vite' 'npm run dev:server'",
+    "dev:client": "vite",
     "dev:server": "NODE_ENV=development dotenv -e .env.development -- tsx watch --clear-screen=false --tsconfig src/server/tsconfig.json src/server/index.ts",
+    "server": "NODE_ENV=production dotenv -e .env -- node dist/server/index.cjs",
     "build": "npm run build:client && npm run build:server",
     "build:client": "tsc && vite build",
     "build:server": "node build-server.js",
@@ -70,6 +72,7 @@
     "express-ws": "^5.0.2",
     "helmet": "^7.1.0",
     "http-proxy-middleware": "^2.0.6",
+    "instantsearch.js": "^4.62.0",
     "ioredis": "^5.3.2",
     "joi": "^17.11.0",
     "localforage": "^1.10.0",
@@ -94,7 +97,8 @@
     "winston": "^3.11.0",
     "y-indexeddb": "^9.0.11",
     "y-prosemirror": "^1.2.1",
-    "yjs": "^13.6.8"
+    "yjs": "^13.6.8",
+    "zustand": "^4.4.7"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.10",

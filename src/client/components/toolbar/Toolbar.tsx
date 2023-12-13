@@ -1,28 +1,29 @@
 import SearchComboBox from "@/components/search/SearchComboBox";
 import ToolbarDropdown from "@/components/toolbar/ToolbarDropdown";
 import { Button } from "@/components/ui/button";
-import { SidebarContext } from "@/contexts/SidebarContext";
 import { usePageQuery, useRecentPagesQuery } from "@/hooks/pageQueryHooks";
+import useStore from "@/zustand/store";
 import { MoreHorizontal, PanelLeftOpen, Search } from "lucide-react";
-import { useContext } from "react";
 import { useParams } from "react-router-dom";
 
 function Toolbar() {
-  const sidebarContext = useContext(SidebarContext);
   const params = useParams();
   const pageQuery = usePageQuery(params.pageId ?? "");
   const recentPageListQuery = useRecentPagesQuery();
+
+  const isSidebarOpen = useStore((state) => state.isSidebarOpen);
+  const toggleSidebarOpen = useStore((state) => state.toggleSidebarOpen);
 
   return (
     <div
       id="editor-toolbar"
       className="inline-flex h-12 w-full select-none items-center gap-2 border-b border-border bg-background px-2 text-foreground"
     >
-      {!sidebarContext.isSidebarOpen && (
+      {!isSidebarOpen && (
         <Button
           variant={"ghost"}
           size={"icon"}
-          onClick={sidebarContext.toggleSidebarOpen}
+          onClick={toggleSidebarOpen}
           className="flex-shrink-0"
         >
           <PanelLeftOpen className="h-5 w-5" />

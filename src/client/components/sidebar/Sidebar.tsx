@@ -3,23 +3,24 @@ import PageTree from "@/components/tree-views/PageTree";
 import StarredPageTree from "@/components/tree-views/StarredPageTree";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { SidebarContext } from "@/contexts/SidebarContext";
 import {
   useCreatePageMutation,
   usePageListQuery,
 } from "@/hooks/pageQueryHooks";
+import useStore from "@/zustand/store";
 import { useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import { PanelLeftClose, Plus, SquareAsterisk } from "lucide-react";
-import { useContext, useState } from "react";
+import { useState } from "react";
 
 const Sidebar = () => {
   const [isStarredOpen, setIsStarredOpen] = useState(true);
 
-  const sidebarContext = useContext(SidebarContext);
   const queryClient = useQueryClient();
   const pageListQuery = usePageListQuery();
   const createPageMutation = useCreatePageMutation(queryClient);
+
+  const toggleSidebarOpen = useStore((state) => state.toggleSidebarOpen);
 
   return (
     <aside className="bg-muted">
@@ -29,11 +30,7 @@ const Sidebar = () => {
           <h1>Project Potion</h1>
         </header>
 
-        <Button
-          variant={"ghost"}
-          size={"icon"}
-          onClick={sidebarContext.toggleSidebarOpen}
-        >
+        <Button variant={"ghost"} size={"icon"} onClick={toggleSidebarOpen}>
           <PanelLeftClose className="h-5 w-5" />
         </Button>
       </div>
