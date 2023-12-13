@@ -16,7 +16,7 @@ export default function Layout() {
   return (
     <main className="h-[100dvh] w-screen">
       <InstantSearch searchClient={instantSearchClient} indexName="pages">
-        <Allotment proportionalLayout={false}>
+        <Allotment proportionalLayout={false} separator={false}>
           <Allotment.Pane
             minSize={250}
             preferredSize={350}
