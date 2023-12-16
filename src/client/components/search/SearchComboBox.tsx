@@ -1,137 +1,137 @@
+import DefaultCommandItem from "@/components/search/DefaultCommandItem";
+import NestedCommandItem from "@/components/search/NestedCommandItems";
 import {
   Command,
   CommandEmpty,
   CommandInput,
-  CommandItem,
   CommandList,
 } from "@/components/ui/command";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import useTransformHits from "@/hooks/useTransformHits";
 import MeilisearchPage from "@/shared/types/meilisearch-page";
+import useStore from "@/zustand/store";
+import { Hit } from "instantsearch.js";
 import { ArrowDownUp, CornerDownLeft } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
-import {
-  Configure,
-  Highlight,
-  Snippet,
-  useHits,
-  useSearchBox,
-} from "react-instantsearch";
-import { useNavigate } from "react-router-dom";
+import { Configure, useHits, useSearchBox } from "react-instantsearch";
 
 type SearchComboBoxProps = {
   children: ReactNode;
 };
 
 export default function SearchComboBox(props: SearchComboBoxProps) {
-  const navigate = useNavigate();
+  const isCmdPaletteOpen = useStore((state) => state.isCmdPaletteOpen);
+  const setIsCmdPaletteOpen = useStore((state) => state.setIsCmdPaletteOpen);
+
   const { refine } = useSearchBox();
   const { hits } = useHits<MeilisearchPage>();
+  const transformedHits = useTransformHits(hits);
 
-  const [isOpen, setIsOpen] = useState(false);
   const [searchFilters] = useState("isDeleted=false");
+  const [detailHit, setDetailHit] = useState<Hit<MeilisearchPage> | null>(null);
 
   // Open with keyboard shortcut
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       if ((event.ctrlKey || event.metaKey) && event.key === "p") {
         event.preventDefault();
-        setIsOpen((prev) => !prev);
+        setIsCmdPaletteOpen(!isCmdPaletteOpen);
       }
     }
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [isCmdPaletteOpen, setIsCmdPaletteOpen]);
+
+  useEffect(() => {
+    const hit = transformedHits.find((hit) => hit.id === detailHit?.id);
+    hit && setDetailHit(hit);
+  }, [detailHit?.id, transformedHits]);
 
   return (
-    <>
+    <Dialog
+      open={isCmdPaletteOpen}
+      onOpenChange={(isOpen) => {
+        refine("");
+        setDetailHit(null);
+        setIsCmdPaletteOpen(isOpen);
+      }}
+    >
       <Configure
-        attributesToHighlight={["pageName", "textContent"]}
-        attributesToSnippet={["textContent:20"]}
+        attributesToHighlight={["pageName", "textContent.text"]}
+        attributesToSnippet={["textContent:10"]}
         attributesToRetrieve={["id", "pageName"]}
         filters={searchFilters}
       />
+      <DialogTrigger asChild>{props.children}</DialogTrigger>
 
-      <Dialog
-        open={isOpen}
-        onOpenChange={() => {
+      <DialogContent
+        onCloseAutoFocus={(e) => {
+          e.preventDefault();
           refine("");
-          setIsOpen((prev) => !prev);
+          setDetailHit(null);
         }}
+        className="p-0"
       >
-        <DialogTrigger asChild>{props.children}</DialogTrigger>
+        <Command
+          shouldFilter={false}
+          loop={true}
+          onKeyDown={(e) => {
+            if (e.key === "Escape" && detailHit) {
+              e.preventDefault();
+              setDetailHit(null);
+            }
+          }}
+        >
+          <CommandInput
+            placeholder="Search..."
+            onValueChange={(value) => refine(value)}
+            className="h-12"
+          />
+          <CommandList className="max-h-[calc(100vh-80px)] overflow-hidden md:max-h-[50vh]">
+            {transformedHits.length === 0 && (
+              <CommandEmpty>No Results Found</CommandEmpty>
+            )}
 
-        <DialogContent className="p-0">
-          <Command shouldFilter={false}>
-            <CommandInput
-              placeholder="Search..."
-              onValueChange={(value) => refine(value)}
-              className="h-12"
-            />
-            <CommandList className="max-h-[calc(100vh-80px)] overflow-hidden md:max-h-[50vh]">
-              {hits.length === 0 && (
-                <CommandEmpty>No Results Found</CommandEmpty>
-              )}
-
-              <ScrollArea className="h-[calc(100vh-80px)] w-full md:h-[50vh]">
-                {hits.map((hit) => (
-                  <CommandItem
-                    key={hit.objectID}
-                    value={hit.objectID}
-                    className="flex w-full flex-col gap-1 rounded-none px-4 py-3"
-                    onSelect={(value) => {
-                      navigate(`/${value}`);
-                      setIsOpen((prev) => !prev);
-                    }}
-                  >
-                    <div className="w-full text-[15px] font-medium">
-                      <Highlight
-                        attribute={"pageName"}
-                        hit={hit}
-                        className="line-clamp-2"
-                        highlightedTagName={"strong"}
-                        classNames={{
-                          highlighted: "text-gray-950 dark:text-gray-100",
-                          nonHighlighted: "text-gray-800 dark:text-gray-200",
-                        }}
-                      />
-                    </div>
-
-                    <div className="w-full text-sm font-medium">
-                      <Snippet
-                        attribute={"textContent"}
-                        hit={hit}
-                        highlightedTagName={"strong"}
-                        className="line-clamp-2"
-                        classNames={{
-                          highlighted: "text-gray-950 dark:text-gray-100",
-                          nonHighlighted: "text-gray-800 dark:text-gray-400",
-                        }}
-                      />
-                    </div>
-                  </CommandItem>
+            <ScrollArea className="h-[calc(100vh-80px)] w-full md:h-[50vh]">
+              {!detailHit &&
+                transformedHits.map((hit, index) => (
+                  <DefaultCommandItem
+                    key={index}
+                    hit={hit}
+                    index={index}
+                    transformedHits={transformedHits}
+                    setDetailHit={setDetailHit}
+                  />
                 ))}
-              </ScrollArea>
-            </CommandList>
 
-            {/* Keyboard Hints */}
-            <div className="flex h-8 select-none items-center gap-4 border-t-2 px-3">
-              <li className="flex h-full flex-row items-center gap-1">
-                <ArrowDownUp className="h-3 w-3" />
-                <p className="text-xs text-foreground">Select</p>
-              </li>
-              <li className="flex h-full flex-row items-center gap-1">
-                <CornerDownLeft className="h-3 w-3" />
-                <p className="text-xs text-foreground">Open</p>
-              </li>
-              <li className="flex h-full flex-row items-center gap-1">
-                <p className="text-xs font-medium">Esc</p>
-                <p className="text-xs text-foreground">Dismiss</p>
-              </li>
-            </div>
-          </Command>
-        </DialogContent>
-      </Dialog>
-    </>
+              {detailHit && (
+                <NestedCommandItem
+                  hit={detailHit}
+                  transformedHits={transformedHits}
+                  setDetailHit={setDetailHit}
+                />
+              )}
+            </ScrollArea>
+          </CommandList>
+
+          {/* Keyboard Hints */}
+          <div className="flex h-8 select-none items-center gap-4 border-t-2 px-3">
+            <li className="flex h-full flex-row items-center gap-1">
+              <ArrowDownUp className="h-3 w-3" />
+              <p className="text-xs text-foreground">Select</p>
+            </li>
+            <li className="flex h-full flex-row items-center gap-1">
+              <CornerDownLeft className="h-3 w-3" />
+              <p className="text-xs text-foreground">Open</p>
+            </li>
+            <li className="flex h-full flex-row items-center gap-1">
+              <p className="text-xs font-medium">Esc</p>
+              <p className="text-xs text-foreground">Dismiss</p>
+            </li>
+          </div>
+        </Command>
+      </DialogContent>
+    </Dialog>
   );
 }

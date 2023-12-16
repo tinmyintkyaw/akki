@@ -3,33 +3,53 @@ import prisma from "@/configs/prisma-client-config";
 import MeilisearchPage from "@/shared/types/meilisearch-page";
 import { storePayload } from "@hocuspocus/server";
 import { TiptapTransformer } from "@hocuspocus/transformer";
-import { JSONContent, generateText } from "@tiptap/core";
+import { JSONContent, getSchema } from "@tiptap/core";
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
 import StarterKit from "@tiptap/starter-kit";
 
+import { Node } from "@tiptap/pm/model";
+import { flatten } from "prosemirror-utils";
+
 const isJSONContent = (json: unknown): json is JSONContent => {
   return (json as JSONContent) !== undefined;
 };
 
+const pmSchema = getSchema([
+  StarterKit.configure({
+    history: false,
+  }),
+  Link,
+  TaskList,
+  TaskItem.configure({ nested: true }),
+  Image,
+]);
+
 const storePageHandler = async (data: storePayload) => {
   try {
-    const { default: json } = await TiptapTransformer.fromYdoc(data.document);
+    const { default: pmJSON } = await TiptapTransformer.fromYdoc(data.document);
 
-    if (!isJSONContent(json)) throw new Error("Invalid JSON");
-    if (!json.content) throw new Error("Invalid content");
+    if (!isJSONContent(pmJSON)) throw new Error("Invalid JSON");
+    if (!pmJSON.content) throw new Error("Invalid content");
 
-    const textContent = generateText(json, [
-      StarterKit.configure({
-        history: false,
-      }),
-      Link,
-      TaskList,
-      TaskItem.configure({ nested: true }),
-      Image,
-    ]);
+    const pmDoc = Node.fromJSON(pmSchema, pmJSON);
+    const flattenedDoc = flatten(pmDoc);
+
+    // same as calling Array.map() and then using Array.filter(var => var)
+    const textContentObj = flattenedDoc.flatMap((node) => {
+      if (node.node.text) {
+        return [
+          {
+            pos: node.pos,
+            text: node.node.text,
+          },
+        ];
+      } else {
+        return [];
+      }
+    });
 
     const dbPage = await prisma.page.update({
       where: {
@@ -49,7 +69,7 @@ const storePageHandler = async (data: storePayload) => {
       id: dbPage.id,
       userId: dbPage.user_id,
       pageName: dbPage.page_name,
-      textContent: textContent,
+      textContent: textContentObj,
       createdAt: dbPage.created_at.getTime(),
       modifiedAt: dbPage.modified_at.getTime(),
       isStarred: dbPage.is_starred,

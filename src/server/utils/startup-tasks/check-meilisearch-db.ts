@@ -23,6 +23,10 @@ async function checkMellisearchDB() {
     await meilisearchClient
       .index("pages")
       .updateFilterableAttributes(["userId", "isDeleted", "isStarred"]);
+
+    await meilisearchClient
+      .index("pages")
+      .updateSearchableAttributes(["pageName", "textContent.text"]);
   } catch (error) {
     process.exit(1);
   }

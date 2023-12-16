@@ -63,7 +63,7 @@ const createPageController: RequestHandler = async (
     id: newPage.id,
     userId: newPage.user_id,
     pageName: newPage.page_name,
-    textContent: "",
+    textContent: [],
     createdAt: newPage.created_at.getTime(),
     modifiedAt: newPage.modified_at.getTime(),
     isStarred: newPage.is_starred,

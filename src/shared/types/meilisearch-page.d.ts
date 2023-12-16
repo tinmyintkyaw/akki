@@ -2,7 +2,10 @@ type MeilisearchPage = {
   id: string;
   userId?: string;
   pageName?: string;
-  textContent?: string;
+  textContent?: {
+    pos: number;
+    text: string;
+  }[];
   createdAt?: number;
   modifiedAt?: number;
   isStarred?: boolean;

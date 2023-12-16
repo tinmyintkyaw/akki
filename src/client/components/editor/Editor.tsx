@@ -9,6 +9,8 @@ import { useParams } from "react-router-dom";
 
 import "@/styles/atom-one-light.css";
 import "@/styles/atom-one-dark.css";
+import { useEffect } from "react";
+import useStore from "@/zustand/store";
 
 interface EditorProps {
   // ydoc: Y.Doc;
@@ -21,6 +23,27 @@ const Editor = (props: EditorProps) => {
 
   const titleEditor = useTitleEditor();
   const contentEditor = useContentEditor(props.provider);
+
+  const editorCursor = useStore((state) => state.editorCursor);
+  const isCmdPaletteOpen = useStore((state) => state.isCmdPaletteOpen);
+  const setEditorCursor = useStore((state) => state.setEditorCursor);
+
+  useEffect(() => {
+    if (contentEditor && !isCmdPaletteOpen && editorCursor) {
+      const canFocus = contentEditor.can().focus(editorCursor);
+      if (canFocus) {
+        contentEditor.commands.focus(editorCursor, { scrollIntoView: true });
+      }
+      setEditorCursor(null);
+    }
+  }, [contentEditor, editorCursor, isCmdPaletteOpen, setEditorCursor]);
+
+  useEffect(() => {
+    return () => {
+      titleEditor?.destroy();
+      contentEditor?.destroy();
+    };
+  }, [contentEditor, titleEditor]);
 
   return (
     <>
