@@ -1,5 +1,6 @@
+import useStore from "@/zustand/store";
 import { HocuspocusProvider, WebSocketStatus } from "@hocuspocus/provider";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import * as Y from "yjs";
 
 const MULTIPLAYER_URL = (() => {
@@ -10,11 +11,11 @@ const MULTIPLAYER_URL = (() => {
 const useMultiplayerProvider = (pageId: string) => {
   const provider = useRef<HocuspocusProvider>();
 
-  const [isAuthenticated, setisAuthenticated] = useState(false);
-  const [isReady, setIsReady] = useState(false);
-  const [status, setStatus] = useState<WebSocketStatus>(
-    WebSocketStatus.Disconnected,
+  const setIsAuthenticated = useStore((state) => state.setIsWSAuthenticated);
+  const setWSConnectionStatus = useStore(
+    (state) => state.setWSConnectionStatus,
   );
+  const setIsSynced = useStore((state) => state.setIsWSSynced);
 
   useEffect(() => {
     provider.current = new HocuspocusProvider({
@@ -27,37 +28,35 @@ const useMultiplayerProvider = (pageId: string) => {
         const { editorKey } = await res.json();
         return editorKey as string;
       },
+
       onStatus({ status }) {
-        setStatus(status);
+        setWSConnectionStatus(status);
       },
       onAuthenticated() {
-        setisAuthenticated(true);
-        setIsReady(true);
+        setIsAuthenticated(true);
       },
       onAuthenticationFailed() {
-        setisAuthenticated(false);
-        setIsReady(false);
+        setIsAuthenticated(false);
       },
       // Event fired on initial successful sync of Y.js document
       // and to React know when to re-render the editor
       onSynced() {
-        setIsReady(true);
+        setIsSynced(true);
       },
       onDestroy() {
-        setIsReady(false);
+        setIsAuthenticated(false);
+        setIsSynced(false);
+        setWSConnectionStatus(WebSocketStatus.Disconnected);
       },
     });
 
     return () => {
       provider.current?.destroy();
     };
-  }, [pageId]);
+  }, [pageId, setIsAuthenticated, setWSConnectionStatus, setIsSynced]);
 
   return {
     provider: provider.current,
-    isAuthenticated,
-    isReady,
-    status,
   };
 };
 

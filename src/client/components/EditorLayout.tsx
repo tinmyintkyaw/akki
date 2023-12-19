@@ -2,6 +2,8 @@ import DeletedPageBanner from "@/components/editor/DeletedPageBanner";
 import PageNotFound from "@/components/error/PageNotFound";
 import useMultiplayerProvider from "@/hooks/editor/useMultiplayerProvider";
 import { usePageQuery } from "@/hooks/pageQueryHooks";
+import useStore from "@/zustand/store";
+import { WebSocketStatus } from "@hocuspocus/provider";
 import clsx from "clsx";
 import { Suspense, lazy, useEffect } from "react";
 import { useParams } from "react-router-dom";
@@ -12,6 +14,10 @@ export default function EditorLayout() {
   const params = useParams();
   const pageQuery = usePageQuery(params.pageId ?? "");
   const multiplayerProvider = useMultiplayerProvider(params.pageId ?? "");
+
+  const isAuthenticated = useStore((state) => state.isWSAuthenticated);
+  const wsConnectionStatus = useStore((state) => state.wsConnectionStatus);
+  const isSynced = useStore((state) => state.isWSSynced);
 
   useEffect(() => {
     if (pageQuery.isLoading || pageQuery.isError) return;
@@ -34,11 +40,14 @@ export default function EditorLayout() {
               pageQuery.data.isDeleted && "h-[calc(100vh-6rem)]",
             )}
           >
-            {multiplayerProvider.provider && multiplayerProvider.isReady && (
-              <Suspense>
-                <EditorComponent provider={multiplayerProvider.provider} />
-              </Suspense>
-            )}
+            {multiplayerProvider.provider &&
+              wsConnectionStatus === WebSocketStatus.Connected &&
+              isSynced &&
+              isAuthenticated && (
+                <Suspense>
+                  <EditorComponent provider={multiplayerProvider.provider} />
+                </Suspense>
+              )}
           </div>
         </>
       )}

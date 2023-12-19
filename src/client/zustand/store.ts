@@ -1,15 +1,28 @@
+import { WebSocketStatus } from "@hocuspocus/provider";
 import { create } from "zustand";
+
+type EditorSelection = {
+  start: number;
+  end: number;
+  pageChanged: boolean;
+};
 
 type State = {
   isSidebarOpen: boolean;
   isCmdPaletteOpen: boolean;
-  editorCursor: number | null;
+  editorSelection: EditorSelection | null;
+  isWSAuthenticated: boolean;
+  isWSSynced: boolean;
+  wsConnectionStatus: WebSocketStatus;
 };
 
 type Actions = {
   toggleSidebarOpen: () => void;
   setIsCmdPaletteOpen: (isOpen: boolean) => void;
-  setEditorCursor: (cursor: number | null) => void;
+  setEditorSelection: (selection: EditorSelection | null) => void;
+  setIsWSAuthenticated: (isAuthenticated: boolean) => void;
+  setIsWSSynced: (isSynced: boolean) => void;
+  setWSConnectionStatus: (status: WebSocketStatus) => void;
 };
 
 const useStore = create<State & Actions>((set) => ({
@@ -20,8 +33,24 @@ const useStore = create<State & Actions>((set) => ({
   isCmdPaletteOpen: false,
   setIsCmdPaletteOpen: (isOpen) => set(() => ({ isCmdPaletteOpen: isOpen })),
 
-  editorCursor: null,
-  setEditorCursor: (cursor) => set(() => ({ editorCursor: cursor })),
+  editorSelection: null,
+  setEditorSelection: (selection) =>
+    set(() => ({ editorSelection: selection })),
+
+  wsConnectionStatus: WebSocketStatus.Disconnected,
+  setWSConnectionStatus(status) {
+    set(() => ({ wsConnectionStatus: status }));
+  },
+
+  isWSAuthenticated: false,
+  setIsWSAuthenticated(isAuthenticated) {
+    set(() => ({ isWSAuthenticated: isAuthenticated }));
+  },
+
+  isWSSynced: false,
+  setIsWSSynced(isSynced) {
+    set(() => ({ isWSSynced: isSynced }));
+  },
 }));
 
 export default useStore;
