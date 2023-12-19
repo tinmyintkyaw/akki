@@ -4,6 +4,7 @@ import CustomCodeBlock from "@/tiptap/CustomCodeBlock";
 import CustomDocument from "@/tiptap/CustomDocument";
 import CustomHeading from "@/tiptap/CustomHeading";
 import CustomImageFrontend from "@/tiptap/CustomImageFrontend";
+import useStore from "@/zustand/store";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 import { useQueryClient } from "@tanstack/react-query";
 import Collaboration from "@tiptap/extension-collaboration";
@@ -25,6 +26,10 @@ const useContentEditor = (provider: HocuspocusProvider) => {
   const queryClient = useQueryClient();
   const pageQuery = usePageQuery(params.pageId ?? "");
   const updatePageMutation = useUpdatePageMutation(queryClient);
+
+  const editorCursor = useStore((state) => state.editorSelection);
+  const isCmdPaletteOpen = useStore((state) => state.isCmdPaletteOpen);
+  const setEditorCursor = useStore((state) => state.setEditorSelection);
 
   return useEditor({
     extensions: [
@@ -85,6 +90,26 @@ const useContentEditor = (provider: HocuspocusProvider) => {
 
       // set pageId for later access from prose-mirror extensions
       editor.storage.doc.pageId = pageQuery.data?.id;
+    },
+
+    onUpdate({ editor }) {
+      if (isCmdPaletteOpen || !editorCursor || !editorCursor.pageChanged)
+        return;
+
+      const { start, end } = editorCursor;
+
+      const canFocus = editor.can().focus(editorCursor.start);
+      const canSelect = editor.can().setTextSelection({ from: start, to: end });
+
+      if (canFocus && canSelect) {
+        editor
+          .chain()
+          .focus(editorCursor.start, { scrollIntoView: true })
+          .setTextSelection({ from: start, to: end })
+          .run();
+
+        setEditorCursor(null);
+      }
     },
   });
 };

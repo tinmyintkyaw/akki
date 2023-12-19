@@ -3,7 +3,8 @@ type MeilisearchPage = {
   userId?: string;
   pageName?: string;
   textContent?: {
-    pos: number;
+    posStart: number;
+    posEnd: number;
     text: string;
   }[];
   createdAt?: number;

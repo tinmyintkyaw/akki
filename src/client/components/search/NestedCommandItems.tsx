@@ -5,7 +5,7 @@ import { Hit, HitAttributeSnippetResult } from "instantsearch.js";
 import { getHighlightedParts } from "instantsearch.js/es/lib/utils";
 import { ChevronLeft, CornerDownLeft, Text } from "lucide-react";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface DefaultCommandItemProps {
   hit: Hit<MeilisearchPage>;
@@ -16,9 +16,10 @@ interface DefaultCommandItemProps {
 function NestedCommandItem(props: DefaultCommandItemProps) {
   const { hit, setDetailHit } = props;
   const navigate = useNavigate();
+  const params = useParams();
 
   const setIsCmdPaletteOpen = useStore((store) => store.setIsCmdPaletteOpen);
-  const setEditorCursor = useStore((store) => store.setEditorCursor);
+  const setEditorCursor = useStore((store) => store.setEditorSelection);
 
   const textContent = hit._snippetResult
     ?.textContent as HitAttributeSnippetResult[];
@@ -46,8 +47,13 @@ function NestedCommandItem(props: DefaultCommandItemProps) {
           className="flex w-full items-center gap-2 rounded-none px-4 py-3"
           onSelect={() => {
             navigate(`/${hit.id}`);
-            // @ts-expect-error TODO: typings for snippetResult
-            setEditorCursor(item.pos.value);
+            setEditorCursor({
+              // @ts-expect-error TODO: typings for snippetResult
+              start: item.posStart.value,
+              // @ts-expect-error TODO: typings for snippetResult
+              end: item.posEnd.value,
+              pageChanged: hit.id === params.pageId ? false : true,
+            });
             setIsCmdPaletteOpen(false);
           }}
         >

@@ -2,15 +2,15 @@ import SelectMenu from "@/components/editor/SelectMenu";
 import useContentEditor from "@/hooks/editor/useContentEditor";
 import useTitleEditor from "@/hooks/editor/useTitleEditor";
 import { usePageQuery } from "@/hooks/pageQueryHooks";
+import useStore from "@/zustand/store";
 import { HocuspocusProvider } from "@hocuspocus/provider";
 import { EditorContent } from "@tiptap/react";
 import clsx from "clsx";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-import "@/styles/atom-one-light.css";
 import "@/styles/atom-one-dark.css";
-import { useEffect } from "react";
-import useStore from "@/zustand/store";
+import "@/styles/atom-one-light.css";
 
 interface EditorProps {
   // ydoc: Y.Doc;
@@ -24,20 +24,39 @@ const Editor = (props: EditorProps) => {
   const titleEditor = useTitleEditor();
   const contentEditor = useContentEditor(props.provider);
 
-  const editorCursor = useStore((state) => state.editorCursor);
+  const editorCursor = useStore((state) => state.editorSelection);
   const isCmdPaletteOpen = useStore((state) => state.isCmdPaletteOpen);
-  const setEditorCursor = useStore((state) => state.setEditorCursor);
+  const setEditorCursor = useStore((state) => state.setEditorSelection);
 
   useEffect(() => {
-    if (contentEditor && !isCmdPaletteOpen && editorCursor) {
-      const canFocus = contentEditor.can().focus(editorCursor);
-      if (canFocus) {
-        contentEditor.commands.focus(editorCursor, { scrollIntoView: true });
+    if (
+      !contentEditor ||
+      isCmdPaletteOpen ||
+      !editorCursor ||
+      editorCursor.pageChanged
+    )
+      return;
+
+    const { start, end } = editorCursor;
+
+    queueMicrotask(() => {
+      const canFocus = contentEditor.can().focus(start);
+      const canSelect = contentEditor
+        .can()
+        .setTextSelection({ from: start, to: end });
+
+      if (canFocus && canSelect) {
+        contentEditor
+          .chain()
+          .focus(start, { scrollIntoView: true })
+          .setTextSelection({ from: start, to: end })
+          .run();
+        setEditorCursor(null);
       }
-      setEditorCursor(null);
-    }
+    });
   }, [contentEditor, editorCursor, isCmdPaletteOpen, setEditorCursor]);
 
+  // Cleanup editors on component unmount
   useEffect(() => {
     return () => {
       titleEditor?.destroy();

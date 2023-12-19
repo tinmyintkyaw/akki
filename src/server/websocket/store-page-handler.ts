@@ -42,7 +42,8 @@ const storePageHandler = async (data: storePayload) => {
       if (node.node.text) {
         return [
           {
-            pos: node.pos,
+            posStart: node.pos,
+            posEnd: node.pos + node.node.nodeSize,
             text: node.node.text,
           },
         ];
