@@ -1,0 +1,142 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: hsl(0, 0%, 98%);
+    --foreground: hsl(0, 0%, 4%);
+    --card: hsl(0, 0%, 98%);
+    --card-foreground: hsl(0, 0%, 4%);
+    --popover: hsl(0, 0%, 98%);
+    --popover-foreground: hsl(0, 0%, 4%);
+    --primary: hsl(221, 59%, 87%);
+    --primary-foreground: hsl(0, 0%, 97%);
+    --secondary: hsl(0, 0%, 96%);
+    --secondary-foreground: hsl(0, 0%, 25%);
+    --muted: hsl(0, 0%, 96%);
+    --muted-foreground: hsl(0, 0%, 32%);
+    --accent: hsl(0, 0%, 90%);
+    --accent-foreground: hsl(0, 0%, 4%);
+    --destructive: hsl(359, 69%, 74%);
+    --destructive-foreground: hsl(0, 100%, 97%);
+    --border: hsl(0, 0%, 83%);
+    --input: hsl(0, 0%, 83%);
+    --ring: hsl(221, 59%, 63%);
+    --radius: 0.5rem;
+    --scrollbar-thumb: hsl(0, 0%, 64%);
+  }
+
+  .dark {
+    --background: hsl(0, 0%, 10%);
+    --foreground: hsl(0, 0%, 83%);
+    --card: hsl(0, 0%, 10%);
+    --card-foreground: hsl(0, 0%, 83%);
+    --popover: hsl(0, 0%, 15%);
+    --popover-foreground: hsl(0, 0%, 83%);
+    --primary: hsl(223, 55%, 40%);
+    --primary-foreground: hsl(0, 0%, 83%);
+    --secondary: hsl(0, 0%, 15%);
+    --secondary-foreground: hsl(0, 0%, 90%);
+    --muted: hsl(0, 0%, 15%);
+    --muted-foreground: hsl(0, 0%, 64%);
+    --accent: hsl(0, 0%, 25%);
+    --accent-foreground: hsl(0, 0%, 83%);
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 85.7% 97.3%;
+    --border: hsl(0, 0%, 25%);
+    --input: hsl(0, 0%, 25%);
+    --ring: hsl(221, 59%, 63%);
+    --scrollbar-thumb: hsl(0, 0%, 32%);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+body {
+  font-family: "Inter Variable", sans-serif;
+}
+
+.tiptap pre {
+  font-size: 14px;
+}
+
+.tiptap li * {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.tiptap ul[data-type="taskList"] {
+  list-style-type: none;
+}
+
+.tiptap ul[data-type="taskList"] li {
+  position: relative;
+}
+
+.tiptap ul[data-type="taskList"] li label {
+  position: absolute;
+  left: -1.25rem;
+}
+
+.tiptap ul[data-type="taskList"] li label input {
+  width: 1rem;
+  height: 1.75rem;
+}
+
+.tiptap ul[data-type="taskList"] li div * {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.tiptap blockquote p:first-of-type::before {
+  content: "";
+}
+
+.tiptap blockquote p:last-of-type::after {
+  content: "";
+}
+
+.tiptap a {
+  cursor: pointer;
+}
+
+/* Give a remote user a caret */
+.collaboration-cursor__caret {
+  border-left: 1px solid #0d0d0d;
+  border-right: 1px solid #0d0d0d;
+  margin-left: -1px;
+  margin-right: -1px;
+  pointer-events: none;
+  position: relative;
+  word-break: normal;
+}
+
+/* Render the username above the caret */
+.collaboration-cursor__label {
+  border-radius: 3px 3px 3px 0;
+  color: #0d0d0d;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  left: -1px;
+  line-height: normal;
+  padding: 0.1rem 0.3rem;
+  position: absolute;
+  top: -1.4em;
+  user-select: none;
+  white-space: nowrap;
+}
+
+/* Editor placeholder */
+.is-empty::before {
+  content: attr(data-placeholder);
+  @apply pointer-events-none float-left h-0 text-muted-foreground;
+}

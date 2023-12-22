@@ -1,22 +1,38 @@
 version: "3"
 
 services:
-  app:
-    container_name: app
+  caddy:
+    container_name: caddy
     build:
       context: .
       dockerfile: Dockerfile
-      target: app
+      target: caddy
     restart: unless-stopped
     ports:
-      - "3000:3000"
-      - "3300:3300"
-    env_file:
-      - .env.production.local
-    volumes:
-      - web-uploads:/app/uploads
+      - 80:80
+      - 443:443
+      - 443:443/udp
     networks:
       - app-network
+    volumes:
+      - caddy-data:/data
+      - caddy-config:/config
+
+  api:
+    container_name: api
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: api
+    restart: unless-stopped
+    ports:
+      - 3300:3300
+    networks:
+      - app-network
+    volumes:
+      - web-uploads:/app/uploads
+    env_file:
+      - .env
     depends_on:
       postgres:
         condition: service_healthy
@@ -44,15 +60,15 @@ services:
 
   typesense:
     container_name: typesense
-    image: typesense/typesense:0.24.0
+    image: typesense/typesense:0.25.1
     restart: unless-stopped
     ports:
       - "8108:8108"
     environment:
       TYPESENSE_DATA_DIR: "/data"
-      TYPESENSE_ENABLE_CORS: "true"
+      # TYPESENSE_ENABLE_CORS: "true"
     env_file:
-      - .env.production.local
+      - .env
     volumes:
       - typesense-data:/data
     networks:
@@ -71,12 +87,13 @@ services:
         condition: service_healthy
 
 volumes:
-  web-uploads:
-    name: web-uploads
   postgres-data:
     name: postgres-data
   typesense-data:
     name: typesense-data
+  caddy-data:
+  caddy-config:
+  web-uploads:
 
 networks:
   app-network:

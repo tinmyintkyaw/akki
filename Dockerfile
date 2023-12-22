@@ -1,61 +1,42 @@
 FROM node:18-alpine AS base
 
-# Install dependencies
 FROM base AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat
 
 WORKDIR /app
-
-# Install dependencies based on the preferred package manager
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-RUN \
-    if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-    elif [ -f package-lock.json ]; then npm ci; \
-    elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i; \
-    else echo "Lockfile not found." && exit 1; \
-    fi
+COPY package.json .
+COPY pnpm-lock.yaml .
+COPY prisma .
+RUN npm install -g pnpm && pnpm i
+RUN npm exec prisma generate
 
 
-# Rebuild the source code only when needed
 FROM base AS builder
+
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+
 COPY . .
-RUN npx prisma generate
-RUN yarn build
+COPY --from=deps /app/node_modules node_modules
+RUN ls
+RUN npm run build
 
 
 # App
-FROM base AS app
-
-RUN apk add --no-cache supervisor
+FROM base AS api
 
 WORKDIR /app
-
 ENV NODE_ENV=production
-
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nodejs -u 1001
-
-# Next.js server
-COPY --from=builder --chown=nodejs:nodejs /app/.next/standalone ./web
-COPY --from=builder --chown=nodejs:nodejs /app/.next/static ./web/.next/static
-COPY --from=builder /app/public ./web/public
-
-# Multiplayer server
-COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist
-
-# setup prisma for migrations
-COPY --chown=nodejs:nodejs prisma ./prisma
-RUN npm i prisma
-
-COPY --chown=nodejs:nodejs ./docker-entrypoint.sh ./
-RUN chmod +x docker-entrypoint.sh
-
-COPY --chown=nodejs:nodejs supervisord.conf ./
-
+COPY --from=builder --chown=nodejs:nodejs /app/dist/server .
 USER nodejs
 
 ENTRYPOINT [ "./docker-entrypoint.sh" ]
-CMD supervisord -c ./supervisord.conf
+CMD node index.cjs
+
+
+# Caddy
+FROM caddy:2.7-alpine AS caddy
+COPY ./Caddyfile /etc/caddy/Caddyfile
+COPY --from=builder /app/dist/client /srv
