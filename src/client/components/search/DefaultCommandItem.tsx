@@ -52,6 +52,7 @@ function DefaultCommandItem(props: DefaultCommandItemProps) {
         </div>
 
         {Array.isArray(hit._snippetResult?.textContent) &&
+          // @ts-expect-error TODO: fix typings
           hit._snippetResult.textContent.length >= 1 && (
             <div className="w-full pl-6 text-sm font-medium">
               <p className="line-clamp-2">

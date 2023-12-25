@@ -176,7 +176,7 @@ export default function SelectMenu(props: { editor: Editor }) {
               {selected.displayName}
             </span>
 
-            <ChevronRight className="group-radix-state-open:rotate-90 h-4 w-4 transition-transform" />
+            <ChevronRight className="h-4 w-4 transition-transform group-radix-state-open:rotate-90" />
           </Button>
         </DropdownMenuTrigger>
 
@@ -189,6 +189,7 @@ export default function SelectMenu(props: { editor: Editor }) {
             const Icon = command.displayIcon;
             return (
               <DropdownMenuItem
+                key={command.id}
                 onClick={command.commandFn}
                 className="flex h-8 w-full items-center rounded px-2 py-1 hover:bg-accent"
               >
