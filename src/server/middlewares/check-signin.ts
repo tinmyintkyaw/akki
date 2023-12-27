@@ -1,6 +1,7 @@
 import { auth } from "@/configs/lucia-config";
 import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";
+import { LuciaError } from "lucia";
 
 const checkIfSignedIn: RequestHandler = async (req, res, next) => {
   try {
@@ -13,7 +14,11 @@ const checkIfSignedIn: RequestHandler = async (req, res, next) => {
 
     next();
   } catch (error) {
-    return res.status(401).setHeader("Location", "/signin").end();
+    if (error instanceof LuciaError) {
+      return res.status(401).setHeader("Location", "/signin").end();
+    } else {
+      next(error);
+    }
   }
 };
 
