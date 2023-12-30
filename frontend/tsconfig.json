@@ -6,27 +6,20 @@
     "module": "ESNext",
     "skipLibCheck": true,
 
-    "moduleResolution": "Node",
+    /* Bundler mode */
+    "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "esModuleInterop": true,
     "jsx": "react-jsx",
 
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-
-    /* Path aliases */
-    "baseUrl": "./",
-    "paths": {
-      "@/*": ["./src/client/*"],
-      "@/shared/*": ["./src/shared/*"]
-    }
+    "noFallthroughCasesInSwitch": true
   },
-  "include": ["src/client", "src/client/vite-env.d.ts"],
-  "exclude": ["src/server"],
+  "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
