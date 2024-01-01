@@ -37,6 +37,7 @@
     "pg": "^8.11.3",
     "prosemirror-utils": "1.2.1-0",
     "request-ip": "^3.3.0",
+    "ulidx": "^2.2.1",
     "validator": "^13.11.0",
     "winston": "^3.11.0",
     "zod": "^3.22.4"
