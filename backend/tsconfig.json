@@ -7,7 +7,6 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
-    "sourceMap": true,
     "strict": true,
 
     /* Path aliases */
