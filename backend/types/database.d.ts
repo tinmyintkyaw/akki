@@ -12,7 +12,7 @@ export interface Database {
   page: PageTable;
   file: FileTable;
   setting: SettingTable;
-  globalVariable: GlobalVariableTable;
+  global_variable: GlobalVariableTable;
 }
 
 export interface UserTable {
@@ -58,8 +58,8 @@ export interface SettingTable {
 
 export interface GlobalVariableTable {
   id: Generated<number>;
-  search_key_id: string | null;
-  search_key_value: string | null;
+  search_key_id: string;
+  search_key_value: string;
 }
 
 export type User = Selectable<UserTable>;

@@ -68,8 +68,8 @@ export async function up(db: Kysely<unknown>): Promise<void> {
   await db.schema
     .createTable("global_variable")
     .addColumn("id", "serial", (col) => col.notNull().primaryKey())
-    .addColumn("search_key_id", "text")
-    .addColumn("search_key_value", "text")
+    .addColumn("search_key_id", "text", (col) => col.notNull())
+    .addColumn("search_key_value", "text", (col) => col.notNull())
     .execute();
 
   // GIST index on ltree column for performance
