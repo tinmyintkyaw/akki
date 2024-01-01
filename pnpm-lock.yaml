@@ -59,6 +59,9 @@ importers:
       express-rate-limit:
         specifier: ^7.1.5
         version: 7.1.5(express@4.18.2)
+      express-slow-down:
+        specifier: ^2.0.1
+        version: 2.0.1(express@4.18.2)
       express-ws:
         specifier: ^5.0.2
         version: 5.0.2(express@4.18.2)
@@ -3650,6 +3653,16 @@ packages:
       express: 4 || 5 || ^5.0.0-beta.1
     dependencies:
       express: 4.18.2
+    dev: false
+
+  /express-slow-down@2.0.1(express@4.18.2):
+    resolution: {integrity: sha512-zRogSZhNXJYKDBekhgFfFXGrOngH7Fub7Mx2g8OQ4RUBwSJP/3TVEKMgSGR/WlneT0mJ6NBUnidHhIELGVPe3w==}
+    engines: {node: '>= 16'}
+    peerDependencies:
+      express: '>= 4'
+    dependencies:
+      express: 4.18.2
+      express-rate-limit: 7.1.5(express@4.18.2)
     dev: false
 
   /express-ws@5.0.2(express@4.18.2):
