@@ -1,10 +1,9 @@
 import { Request, RequestHandler } from "express";
-import { ParamsDictionary } from "express-serve-static-core";
 import { z } from "zod";
 
 interface RequestSchema {
-  params?: z.AnyZodObject;
-  body?: z.AnyZodObject;
+  params?: z.ZodTypeAny;
+  body?: z.ZodTypeAny;
 }
 
 /**
@@ -13,14 +12,19 @@ interface RequestSchema {
  * @template ParamsSchema - Zod schema for req.params.
  * @template BodySchema - Zod schema for req.body.
  */
-interface TypedRequest<T extends RequestSchema> extends Request {
-  body: T["body"] extends z.AnyZodObject
-    ? z.infer<T["body"]>
-    : Record<string, unknown>;
-  params: T["params"] extends z.AnyZodObject
-    ? z.infer<T["params"]>
-    : ParamsDictionary;
-}
+
+interface TypedRequest<Params extends z.ZodTypeAny, Body extends z.ZodTypeAny>
+  extends Request<z.infer<Params>, never, z.infer<Body>> {}
+
+interface TypedRequestHandler<
+  Params extends z.ZodTypeAny,
+  Body extends z.ZodTypeAny,
+> extends RequestHandler<
+    z.infer<Params>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    any,
+    z.infer<Body>
+  > {}
 
 /**
  * Creates a request validator middleware, uses Zod under the hood.
@@ -45,4 +49,9 @@ const createRequestValidator = (schema: RequestSchema) => {
   return middleware;
 };
 
-export { RequestSchema, TypedRequest, createRequestValidator };
+export {
+  RequestSchema,
+  TypedRequest,
+  TypedRequestHandler,
+  createRequestValidator,
+};
