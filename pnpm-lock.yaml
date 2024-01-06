@@ -47,6 +47,30 @@ importers:
       '@lucia-auth/oauth':
         specifier: ^3.5.0
         version: 3.5.0(lucia@2.7.6)
+      '@tiptap/core':
+        specifier: ^2.1.13
+        version: 2.1.13(@tiptap/pm@2.1.13)
+      '@tiptap/extension-image':
+        specifier: ^2.1.13
+        version: 2.1.13(@tiptap/core@2.1.13)
+      '@tiptap/extension-link':
+        specifier: ^2.1.13
+        version: 2.1.13(@tiptap/core@2.1.13)(@tiptap/pm@2.1.13)
+      '@tiptap/extension-task-item':
+        specifier: ^2.1.13
+        version: 2.1.13(@tiptap/core@2.1.13)(@tiptap/pm@2.1.13)
+      '@tiptap/extension-task-list':
+        specifier: ^2.1.13
+        version: 2.1.13(@tiptap/core@2.1.13)
+      '@tiptap/html':
+        specifier: ^2.1.13
+        version: 2.1.13(@tiptap/core@2.1.13)(@tiptap/pm@2.1.13)
+      '@tiptap/pm':
+        specifier: ^2.1.13
+        version: 2.1.13
+      '@tiptap/starter-kit':
+        specifier: ^2.1.13
+        version: 2.1.13(@tiptap/pm@2.1.13)
       dotenv:
         specifier: ^16.3.1
         version: 16.3.1
@@ -89,9 +113,6 @@ importers:
       pg:
         specifier: ^8.11.3
         version: 8.11.3
-      prosemirror-utils:
-        specifier: 1.2.1-0
-        version: 1.2.1-0(prosemirror-model@1.19.4)(prosemirror-state@1.4.3)
       request-ip:
         specifier: ^3.3.0
         version: 3.3.0
@@ -104,10 +125,16 @@ importers:
       winston:
         specifier: ^3.11.0
         version: 3.11.0
+      yjs:
+        specifier: ^13.6.10
+        version: 13.6.10
       zod:
         specifier: ^3.22.4
         version: 3.22.4
     devDependencies:
+      '@project/shared-types':
+        specifier: workspace:*
+        version: link:../packages/shared-types
       '@types/express':
         specifier: ^4.17.21
         version: 4.17.21
@@ -376,6 +403,12 @@ importers:
       vite:
         specifier: ^5.0.8
         version: 5.0.10
+
+  packages/shared-types:
+    devDependencies:
+      typescript:
+        specifier: ^5.2.2
+        version: 5.3.3
 
 packages:
 
@@ -5102,16 +5135,6 @@ packages:
     resolution: {integrity: sha512-BaSBsIMv52F1BVVMvOmp1yzD3u65uC3HTzCBQV1WDPqJRQ2LuHKcyfn0jwqodo8sR9vVzMzZyI+Dal5W9E6a9A==}
     dependencies:
       prosemirror-model: 1.19.4
-    dev: false
-
-  /prosemirror-utils@1.2.1-0(prosemirror-model@1.19.4)(prosemirror-state@1.4.3):
-    resolution: {integrity: sha512-YJNjxSAFhV+w7/nKfLU4SJ0sYEHDJuaIvIxp6V1DgrVFSBBksnvHZTGPVmKGYEnbTqr0kG8HXqopNKPoQtT+3A==}
-    peerDependencies:
-      prosemirror-model: ^1.19.2
-      prosemirror-state: ^1.4.3
-    dependencies:
-      prosemirror-model: 1.19.4
-      prosemirror-state: 1.4.3
     dev: false
 
   /prosemirror-view@1.32.7:
