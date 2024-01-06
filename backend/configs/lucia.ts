@@ -6,13 +6,12 @@ import { ioredis } from "@lucia-auth/adapter-session-redis";
 import { github, google } from "@lucia-auth/oauth/providers";
 import { lucia } from "lucia";
 import { express } from "lucia/middleware";
+import "lucia/polyfill/node";
 
 const {
   NODE_ENV,
-  GITHUB_OAUTH_ENABLED,
   GITHUB_CLIENT_ID,
   GITHUB_CLIENT_SECRET,
-  GOOGLE_OAUTH_ENABLED,
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
   GOOGLE_REDIRECT_URI,
@@ -48,26 +47,20 @@ export const auth = lucia({
   },
 });
 
-export const githubAuth =
-  GITHUB_OAUTH_ENABLED === "true"
-    ? github(auth, {
-        clientId: GITHUB_CLIENT_ID,
-        clientSecret: GITHUB_CLIENT_SECRET,
-      })
-    : null;
+export const githubAuth = github(auth, {
+  clientId: GITHUB_CLIENT_ID,
+  clientSecret: GITHUB_CLIENT_SECRET,
+});
 
-export const googleAuth =
-  GOOGLE_OAUTH_ENABLED === "true"
-    ? google(auth, {
-        clientId: GOOGLE_CLIENT_ID,
-        clientSecret: GOOGLE_CLIENT_SECRET,
-        redirectUri: GOOGLE_REDIRECT_URI,
-        scope: [
-          "https://www.googleapis.com/auth/userinfo.email",
-          "https://www.googleapis.com/auth/userinfo.profile",
-          "openid",
-        ],
-      })
-    : null;
+export const googleAuth = google(auth, {
+  clientId: GOOGLE_CLIENT_ID,
+  clientSecret: GOOGLE_CLIENT_SECRET,
+  redirectUri: GOOGLE_REDIRECT_URI,
+  scope: [
+    "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/userinfo.profile",
+    "openid",
+  ],
+});
 
 export type Auth = typeof auth;

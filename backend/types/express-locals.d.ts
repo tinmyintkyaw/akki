@@ -1,7 +1,9 @@
+import { Session } from "lucia";
+
 declare global {
   namespace Express {
-    interface Locals {}
+    interface Locals {
+      session: Session;
+    }
   }
 }
-
-export {};

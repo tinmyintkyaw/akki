@@ -37,14 +37,15 @@ export interface PageTable {
   ydoc: Buffer;
   is_starred: ColumnType<boolean, boolean | undefined, boolean | undefined>;
   created_at: ColumnType<Date, never, never>;
-  modified_at: ColumnType<Date, never, never>;
-  accessed_at: ColumnType<Date, never, never>;
+  modified_at: Date;
+  accessed_at: Date;
   deleted_at: Date | null;
   user_id: string;
 }
 
 export interface FileTable {
   id: string;
+  extension: string;
   file_name: string;
   user_id: string;
   page_id: string;
