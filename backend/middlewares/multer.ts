@@ -1,41 +1,38 @@
 import fs, { Stats } from "fs";
 import multer from "multer";
 import path from "path";
+import { ulid } from "ulidx";
 
-const multerMiddleware = (userId: string) => {
-  const multerStorage = multer.diskStorage({
-    destination: (req, _file, callback) => {
-      const uploadDir = path.join(process.cwd(), "uploads", userId);
+const multerStorage = multer.diskStorage({
+  destination: (req, _file, callback) => {
+    if (!req.res) throw new Error();
 
-      let stat: Stats | null = null;
+    const userId = req.res?.locals.session.user.userId;
+    const uploadDir = path.join(process.cwd(), "uploads", userId);
 
-      try {
-        stat = fs.statSync(uploadDir);
-      } catch (error) {
-        fs.mkdirSync(uploadDir);
-      }
+    let stat: Stats | null = null;
 
-      if (stat && !stat.isDirectory)
-        throw new Error("Directory cannot be created");
+    try {
+      stat = fs.statSync(uploadDir);
+    } catch (error) {
+      fs.mkdirSync(uploadDir);
+    }
 
-      callback(null, uploadDir);
-    },
+    if (stat && !stat.isDirectory)
+      throw new Error("Directory cannot be created");
 
-    filename: (_req, file, callback) => {
-      callback(
-        null,
-        `${crypto.randomUUID()}${path.extname(file.originalname)}`,
-      );
-    },
-  });
+    callback(null, uploadDir);
+  },
 
-  return multer({
-    storage: multerStorage,
-    limits: {
-      fieldNameSize: 100,
-      fileSize: 5 * 1024 * 1024,
-    },
-  });
-};
+  filename: (_req, file, callback) => {
+    callback(null, `${ulid()}${path.extname(file.originalname)}`);
+  },
+});
 
-export { multerMiddleware };
+export const multerMiddleware = multer({
+  storage: multerStorage,
+  limits: {
+    fieldNameSize: 100,
+    fileSize: 5 * 1024 * 1024,
+  },
+});

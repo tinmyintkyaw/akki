@@ -1,11 +1,6 @@
 import { Request, RequestHandler } from "express";
 import { z } from "zod";
 
-interface RequestSchema {
-  params?: z.ZodTypeAny;
-  body?: z.ZodTypeAny;
-}
-
 /**
  * Express Request validated with validator middleware
  *
@@ -26,12 +21,17 @@ interface TypedRequestHandler<
     z.infer<Body>
   > {}
 
+interface RequestSchema {
+  params?: z.ZodTypeAny;
+  body?: z.ZodTypeAny;
+}
+
 /**
  * Creates a request validator middleware, uses Zod under the hood.
  * @param schemas @type {ValidatorSchemas}
  * @returns @type {RequestHandler}
  */
-const createRequestValidator = (schema: RequestSchema) => {
+const requestValidator = (schema: RequestSchema) => {
   const middleware: RequestHandler = (req, res, next) => {
     const { params: paramsSchema, body: bodySchema } = schema;
     try {
@@ -49,9 +49,4 @@ const createRequestValidator = (schema: RequestSchema) => {
   return middleware;
 };
 
-export {
-  RequestSchema,
-  TypedRequest,
-  TypedRequestHandler,
-  createRequestValidator,
-};
+export { RequestSchema, TypedRequest, TypedRequestHandler, requestValidator };

@@ -1,31 +1,37 @@
-import { RequestSchema } from "@/middlewares/request-validator.js";
 import { z } from "zod";
 
-const pageIdAsParamsSchema = z.object({
+export const pageIdAsParamsSchema = z.object({
   pageId: z.string().ulid(),
 });
 
-const updatePagePayloadSchema = z
+export type PageIdAsParamsSchema = typeof pageIdAsParamsSchema;
+
+export const updatePagePayloadSchema = z
   .object({
     pageName: z.string().trim().min(1),
     parentId: z.string().ulid().nullable(),
     isStarred: z.boolean(),
-    deletedAt: z.string().datetime().nullable(),
-    accessedAt: z.string().datetime(),
+    deletedAt: z
+      .string()
+      .datetime()
+      .nullable()
+      .transform((val) => (val ? new Date(val) : null)),
+    // accessedAt: z
+    //   .string()
+    //   .datetime()
+    //   .transform((val) => (val ? new Date(val) : null)),
+    // modifiedAt: z
+    //   .string()
+    //   .datetime()
+    //   .transform((val) => (val ? new Date(val) : null)),
   })
   .partial();
 
-const createPagePayloadSchema = z.object({
+export type UpdatePagePayloadSchema = typeof updatePagePayloadSchema;
+
+export const createPagePayload = z.object({
   pageName: z.string().trim().min(1),
   parentId: z.string().ulid().nullable(),
 });
 
-export const updatePageSchema: RequestSchema = {
-  params: pageIdAsParamsSchema,
-  body: updatePagePayloadSchema,
-};
-
-export const createPageSchema: RequestSchema = {
-  params: pageIdAsParamsSchema,
-  body: createPagePayloadSchema,
-};
+export type CreatePagePayloadSchema = typeof createPagePayload;

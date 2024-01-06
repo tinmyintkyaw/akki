@@ -11,9 +11,9 @@ const googleOAuthEnvVarsSchema = z.discriminatedUnion("GOOGLE_OAUTH_ENABLED", [
   }),
   z.object({
     GOOGLE_OAUTH_ENABLED: z.enum(["false"]),
-    GOOGLE_CLIENT_ID: z.undefined(),
-    GOOGLE_CLIENT_SECRET: z.string().optional(),
-    GOOGLE_REDIRECT_URI: z.string().optional(),
+    GOOGLE_CLIENT_ID: z.string().default(""),
+    GOOGLE_CLIENT_SECRET: z.string().default(""),
+    GOOGLE_REDIRECT_URI: z.string().default(""),
   }),
 ]);
 
@@ -25,8 +25,8 @@ const githubOAuthEnvVarsSchema = z.discriminatedUnion("GITHUB_OAUTH_ENABLED", [
   }),
   z.object({
     GITHUB_OAUTH_ENABLED: z.enum(["false"]),
-    GITHUB_CLIENT_ID: z.string().optional(),
-    GITHUB_CLIENT_SECRET: z.string().optional(),
+    GITHUB_CLIENT_ID: z.string().default(""),
+    GITHUB_CLIENT_SECRET: z.string().default(""),
   }),
 ]);
 
