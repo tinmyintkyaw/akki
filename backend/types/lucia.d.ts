@@ -8,7 +8,4 @@ declare namespace Lucia {
     email?: string;
     email_verified?: boolean;
   };
-  type DatabaseSessionAttributes = {
-    scoped_search_key: string;
-  };
 }

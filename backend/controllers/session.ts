@@ -10,9 +10,7 @@ const requestHandler: RequestHandler = async (req, res) => {
 
     if (!session) return res.sendStatus(401);
 
-    const response: SessionResponse = {
-      user: { ...session.user },
-    };
+    const response: SessionResponse = { user: { ...session.user } };
 
     return res.status(200).json(response);
   } catch (error) {

@@ -9,8 +9,8 @@ import {
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import useTransformHits from "@/hooks/useTransformHits";
-import MeilisearchPage from "@/shared/types/meilisearch-page";
 import useStore from "@/zustand/store";
+import { MeilisearchPage } from "@project/shared-types";
 import { Hit } from "instantsearch.js";
 import { ArrowDownUp, CornerDownLeft } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
@@ -28,7 +28,7 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
   const { hits } = useHits<MeilisearchPage>();
   const transformedHits = useTransformHits(hits);
 
-  const [searchFilters] = useState("isDeleted=false");
+  const [searchFilters] = useState("deletedAt=false");
   const [detailHit, setDetailHit] = useState<Hit<MeilisearchPage> | null>(null);
 
   // Open with keyboard shortcut
@@ -119,15 +119,15 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
           <div className="flex h-8 select-none items-center gap-4 border-t-2 px-3">
             <li className="flex h-full flex-row items-center gap-1">
               <ArrowDownUp className="h-3 w-3" />
-              <p className="text-xs text-foreground">Select</p>
+              <p className="text-foreground text-xs">Select</p>
             </li>
             <li className="flex h-full flex-row items-center gap-1">
               <CornerDownLeft className="h-3 w-3" />
-              <p className="text-xs text-foreground">Open</p>
+              <p className="text-foreground text-xs">Open</p>
             </li>
             <li className="flex h-full flex-row items-center gap-1">
               <p className="text-xs font-medium">Esc</p>
-              <p className="text-xs text-foreground">Dismiss</p>
+              <p className="text-foreground text-xs">Dismiss</p>
             </li>
           </div>
         </Command>

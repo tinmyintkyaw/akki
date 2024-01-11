@@ -1,4 +1,3 @@
-import { editorTokenController } from "@/controllers/editor-token.js";
 import { hocuspocusHandler } from "@/controllers/hocuspocus.js";
 import { sessionController } from "@/controllers/session.js";
 import { checkIfSignedIn } from "@/middlewares/check-signed-in.js";
@@ -7,7 +6,6 @@ import {
   globalRateLimiter,
   sessionRateLimiter,
 } from "@/middlewares/rate-limit.js";
-import { searchProxy } from "@/middlewares/search-proxy.js";
 import { authRouter } from "@/routes/auth-router.js";
 import fileRouter from "@/routes/file-router.js";
 import { pageRouter } from "@/routes/page-router.js";
@@ -28,21 +26,7 @@ app.get("/session", sessionController);
 app.use("/pages", checkIfSignedIn, sessionRateLimiter, pageRouter);
 app.use("/files", checkIfSignedIn, sessionRateLimiter, fileRouter);
 
-app.get(
-  "/editor/token",
-  checkIfSignedIn,
-  sessionRateLimiter,
-  editorTokenController,
-);
-
 app.ws("/editor", hocuspocusHandler);
-
-app.use(
-  "/search/multi-search",
-  checkIfSignedIn,
-  sessionRateLimiter,
-  searchProxy,
-);
 
 app.use("/*", (_req, res) => res.sendStatus(501));
 

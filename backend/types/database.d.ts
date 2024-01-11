@@ -37,8 +37,8 @@ export interface PageTable {
   ydoc: Buffer;
   is_starred: ColumnType<boolean, boolean | undefined, boolean | undefined>;
   created_at: ColumnType<Date, never, never>;
-  modified_at: Date;
-  accessed_at: Date;
+  modified_at: ColumnType<Date, never, Date>;
+  accessed_at: ColumnType<Date, never, Date>;
   deleted_at: Date | null;
   user_id: string;
 }

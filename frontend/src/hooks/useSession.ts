@@ -1,4 +1,4 @@
-import SessionResponse from "@/shared/types/session-response";
+import { SessionResponse } from "@project/shared-types";
 import { useQuery } from "@tanstack/react-query";
 
 export const sessionQueryFn = async () => {
@@ -24,12 +24,12 @@ export const useSession = (): {
     status: sessionQuery.isLoading
       ? "loading"
       : sessionQuery.isSuccess
-      ? "authenticated"
-      : "unauthenticated",
+        ? "authenticated"
+        : "unauthenticated",
     session: sessionQuery.isLoading
       ? undefined
       : sessionQuery.isSuccess
-      ? sessionQuery.data.session
-      : null,
+        ? sessionQuery.data.session
+        : null,
   };
 };

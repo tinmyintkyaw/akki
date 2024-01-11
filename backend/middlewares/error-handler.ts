@@ -1,3 +1,4 @@
+import { parsedProcessEnv } from "@/configs/env-variables.js";
 import { logger } from "@/configs/logger.js";
 import { ErrorRequestHandler } from "express";
 import { LuciaError } from "lucia";
@@ -20,7 +21,11 @@ const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
 
   if (error instanceof ZodError) {
     logger.debug("Validation Error");
-    return res.status(400).json({ error });
+    if (parsedProcessEnv.NODE_ENV === "development") {
+      return res.status(400).json({ error });
+    } else {
+      return res.status(400);
+    }
   }
 
   return res.sendStatus(500);

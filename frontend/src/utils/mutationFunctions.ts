@@ -1,4 +1,4 @@
-import { PageResponse } from "@/shared/types/queryResponse";
+import { PageResponse } from "@project/shared-types";
 
 export class HTTPError extends Error {
   status: number;
@@ -62,7 +62,7 @@ export const deletePage = async (variables: { id: string }) => {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      isDeleted: true,
+      deletedAt: new Date().toISOString(),
     }),
   });
   if (!response.ok)
@@ -88,7 +88,7 @@ export const undoDeletePage = async (variables: { id: string }) => {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ isDeleted: false }),
+    body: JSON.stringify({ deletedAt: null }),
   });
   if (!response.ok)
     throw new HTTPError("Failed to revert delete page", response.status);

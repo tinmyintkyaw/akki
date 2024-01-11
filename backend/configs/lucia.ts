@@ -40,11 +40,6 @@ export const auth = lucia({
       emailVerified: databaseUser.email_verified,
     };
   },
-  getSessionAttributes(databaseSession) {
-    return {
-      scopedSearchKey: databaseSession.scoped_search_key,
-    };
-  },
 });
 
 export const githubAuth = github(auth, {

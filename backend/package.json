@@ -37,7 +37,6 @@
     "express-slow-down": "^2.0.1",
     "express-ws": "^5.0.2",
     "helmet": "^7.1.0",
-    "http-proxy-middleware": "^2.0.6",
     "ioredis": "^5.3.2",
     "kysely": "^0.26.3",
     "lucia": "^2.7.6",
