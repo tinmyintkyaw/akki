@@ -12,5 +12,5 @@ export type MeilisearchPage = {
   isStarred?: boolean;
   createdAt?: number;
   modifiedAt?: number;
-  deletedAt?: number | null;
+  deletedAt?: number | false;
 };

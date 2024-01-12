@@ -20,7 +20,7 @@ export const websocketAuthHandler = async (
   await db
     .selectFrom("page")
     .where("id", "=", data.documentName)
-    .where("user_id", "=", data.context.userId)
+    .where("user_id", "=", multiplayerSession.userId)
     .executeTakeFirstOrThrow();
 
   await redisClient.del(`editor:${data.token}`);

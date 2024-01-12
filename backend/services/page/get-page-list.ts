@@ -54,10 +54,24 @@ export const getPageList = async (userId: string) => {
 export const getRecentPageList = async (userId: string) => {
   const recentPageList = await db
     .selectFrom("page")
-    .select(["id", "page_name", "user_id"])
+    .select(selectArray)
     .where("user_id", "=", userId)
     .where("deleted_at", "is", null)
     .orderBy("accessed_at desc")
+    .limit(10)
+    .execute();
+
+  return recentPageList;
+};
+
+export const getStarredPageList = async (userId: string) => {
+  const recentPageList = await db
+    .selectFrom("page")
+    .select(selectArray)
+    .where("user_id", "=", userId)
+    .where("deleted_at", "is", null)
+    .where("is_starred", "is", true)
+    .orderBy("created_at asc")
     .limit(10)
     .execute();
 

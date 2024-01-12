@@ -28,7 +28,7 @@ export const updatePage = async (
 
     const meilisearchPageList: MeilisearchPage[] = result.map((page) => ({
       id: page.id,
-      deletedAt: page.deleted_at ? page.deleted_at.getTime() : null,
+      deletedAt: page.deleted_at ? page.deleted_at.getTime() : false,
       modifiedAt: page.modified_at.getTime(),
     }));
     await meilisearchClient.index("pages").updateDocuments(meilisearchPageList);

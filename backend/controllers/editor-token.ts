@@ -9,13 +9,13 @@ const requestHandler: RequestHandler = async (req, res) => {
 
   if (!clientIp) return res.sendStatus(400);
 
-  const token = await createWSAuthToken(
+  const editorToken = await createWSAuthToken(
     session.user.userId,
     session.sessionId,
     clientIp,
   );
 
-  return res.status(200).json(token);
+  return res.status(200).json({ editorToken });
 };
 
 export const editorTokenController = asyncHandler(requestHandler);

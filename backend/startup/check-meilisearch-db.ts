@@ -28,7 +28,7 @@ async function checkMellisearchDB() {
   try {
     await meilisearchClient
       .index("pages")
-      .updateFilterableAttributes(["userId", "isDeleted", "isStarred"]);
+      .updateFilterableAttributes(["userId", "deletedAt", "isStarred"]);
 
     await meilisearchClient
       .index("pages")

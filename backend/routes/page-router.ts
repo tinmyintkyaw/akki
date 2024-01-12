@@ -3,20 +3,22 @@ import { deletePageController } from "@/controllers/page/delete-page.js";
 import { getDeletedPageListController } from "@/controllers/page/get-deleted-page-list.js";
 import { getPageListController } from "@/controllers/page/get-page-list.js";
 import { getPageController } from "@/controllers/page/get-page.js";
+import { getRecentPageListController } from "@/controllers/page/get-recent-page-list.js";
 import { updatePageController } from "@/controllers/page/update-page.js";
 import { requestValidator } from "@/middlewares/request-validator.js";
 import {
   pageIdAsParamsSchema,
   updatePagePayloadSchema,
 } from "@/schemas/page-schema.js";
+import { getStarredPageListController } from "@/services/page/get-starred-page-list.js";
 import express from "express";
 
 const pageRouter = express.Router();
 
 pageRouter.get("/", getPageListController);
-
 pageRouter.post("/", createPageController);
-
+pageRouter.get("/starred", getStarredPageListController);
+pageRouter.get("/recent", getRecentPageListController);
 pageRouter.get("/deleted", getDeletedPageListController);
 
 pageRouter.get(

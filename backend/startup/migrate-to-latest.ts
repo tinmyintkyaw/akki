@@ -5,6 +5,7 @@ async function migrateToLatest() {
   logger.info("Running migrations, if any");
 
   const { error, results } = await migrator.migrateToLatest();
+  // const { error, results } = await migrator.migrateTo(NO_MIGRATIONS);
 
   results?.forEach((it) => {
     if (it.status === "Success") {
@@ -16,6 +17,7 @@ async function migrateToLatest() {
 
   if (error) {
     logger.error("Failed to migrate");
+    console.error(error);
     process.exit(1);
   }
 }

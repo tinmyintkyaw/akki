@@ -3,6 +3,8 @@ import { githubSigninController } from "@/controllers/auth/github-signin.js";
 import { googleOauthCallbackController } from "@/controllers/auth/google-oauth-callback.js";
 import { googleSignInController } from "@/controllers/auth/google-signin.js";
 import { signOutController } from "@/controllers/auth/signout.js";
+import { editorTokenController } from "@/controllers/editor-token.js";
+import { searchTokenController } from "@/controllers/search-token.js";
 import { checkIfSignedIn } from "@/middlewares/check-signed-in.js";
 import { checkIfSignedOut } from "@/middlewares/check-signed-out.js";
 import express from "express";
@@ -26,5 +28,8 @@ authRouter.get(
 );
 
 authRouter.post("/signout", checkIfSignedIn, signOutController);
+
+authRouter.get("/auth/editor/token", checkIfSignedIn, editorTokenController);
+authRouter.get("/auth/search/token", checkIfSignedIn, searchTokenController);
 
 export { authRouter };
