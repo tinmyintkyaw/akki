@@ -1,12 +1,12 @@
-import * as React from "react";
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import {
   CheckIcon,
   ChevronRightIcon,
   DotFilledIcon,
 } from "@radix-ui/react-icons";
+import * as React from "react";
 
-import { cn } from "@/utils";
+import { cn } from "@/utils/cn";
 
 const DropdownMenu = DropdownMenuPrimitive.Root;
 
@@ -203,19 +203,19 @@ DropdownMenuShortcut.displayName = "DropdownMenuShortcut";
 
 export {
   DropdownMenu,
-  DropdownMenuTrigger,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuContentNoPortal,
+  DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuCheckboxItem,
-  DropdownMenuRadioItem,
   DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
-  DropdownMenuGroup,
-  DropdownMenuPortal,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
-  DropdownMenuRadioGroup,
+  DropdownMenuTrigger,
 };
