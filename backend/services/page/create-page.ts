@@ -19,7 +19,7 @@ export const createPage = async (
   pageName: string | undefined,
   userId: string,
 ) => {
-  const newPageId = ulid();
+  const newPageId = ulid().toLowerCase();
   const newYDoc = TiptapTransformer.toYdoc(
     generateJSON("<p></p>", defaultTiptapExtensions),
     "default",
@@ -51,7 +51,7 @@ export const createPage = async (
     isStarred: newPage.is_starred,
     createdAt: newPage.created_at.getTime(),
     modifiedAt: newPage.modified_at.getTime(),
-    deletedAt: newPage.deleted_at ? newPage.deleted_at.getTime() : null,
+    deletedAt: newPage.deleted_at ? newPage.deleted_at.getTime() : false,
   };
 
   await meilisearchClient.index("pages").addDocuments([meilisearchPage]);

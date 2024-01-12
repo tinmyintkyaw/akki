@@ -37,7 +37,7 @@ export const deletePage = async (pageId: string, userId: string) => {
 
   // Delete all the files related to the page
   deletedPage.forEach(async (page) => {
-    await meilisearchClient.index("page").deleteDocument(page.id);
+    await meilisearchClient.index("pages").deleteDocument(page.id);
     if (page.files) {
       page.files.forEach(async ({ id, extension }) => {
         const filePath = path.join(
