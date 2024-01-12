@@ -20,7 +20,7 @@ export default function EditorLayout() {
   const isSynced = useStore((state) => state.isWSSynced);
 
   useEffect(() => {
-    if (pageQuery.isLoading || pageQuery.isError) return;
+    if (pageQuery.isLoading || pageQuery.isError || !pageQuery.data) return;
     document.title = pageQuery.data.pageName;
   }, [pageQuery.data, pageQuery.isError, pageQuery.isLoading]);
 
@@ -28,16 +28,16 @@ export default function EditorLayout() {
     <>
       {!pageQuery.isLoading && pageQuery.isError && <PageNotFound />}
 
-      {!pageQuery.isLoading && !pageQuery.isError && (
+      {!pageQuery.isLoading && !pageQuery.isError && pageQuery.data && (
         <>
-          {pageQuery.data.isDeleted && (
+          {pageQuery.data.deletedAt !== null && (
             <DeletedPageBanner pageId={pageQuery.data.id} />
           )}
 
           <div
             className={clsx(
-              "h-[calc(100vh-3rem)] overflow-y-auto scrollbar-thin",
-              pageQuery.data.isDeleted && "h-[calc(100vh-6rem)]",
+              "scrollbar-thin h-[calc(100vh-3rem)] overflow-y-auto",
+              pageQuery.data.deletedAt === null && "h-[calc(100vh-6rem)]",
             )}
           >
             {multiplayerProvider.provider &&

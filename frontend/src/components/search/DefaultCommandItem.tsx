@@ -1,6 +1,6 @@
 import { CommandItem } from "@/components/ui/command";
-import MeilisearchPage from "@/shared/types/meilisearch-page";
 import useStore from "@/zustand/store";
+import { MeilisearchPage } from "@project/shared-types";
 import { Hit } from "instantsearch.js";
 import { getHighlightedParts } from "instantsearch.js/es/lib/utils";
 import { ChevronRight, CornerDownLeft, FileText } from "lucide-react";
@@ -52,7 +52,6 @@ function DefaultCommandItem(props: DefaultCommandItemProps) {
         </div>
 
         {Array.isArray(hit._snippetResult?.textContent) &&
-          // @ts-expect-error TODO: fix typings
           hit._snippetResult.textContent.length >= 1 && (
             <div className="w-full pl-6 text-sm font-medium">
               <p className="line-clamp-2">

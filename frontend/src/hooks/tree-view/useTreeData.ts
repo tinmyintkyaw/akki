@@ -1,38 +1,33 @@
 import { usePageListQuery } from "@/hooks/pageQueryHooks";
-import { PageResponse } from "@/shared/types/queryResponse";
+import { PageResponse } from "@project/shared-types";
 import { useMemo } from "react";
 import { ExplicitDataSource } from "react-complex-tree";
 
 export const useTreeData = () => {
   const pageListQuery = usePageListQuery();
 
-  const pageListMap = useMemo(() => {
-    if (pageListQuery.isLoading || pageListQuery.isError) return null;
-    return new Map(
+  return useMemo(() => {
+    if (pageListQuery.isLoading || pageListQuery.isError || !pageListQuery.data)
+      return null;
+
+    const pageListMap = new Map(
       pageListQuery.data.map((page) => [
         page.id,
         {
           index: page.id,
           // isFolder: page.childPages.length > 0 ? true : false,
           isFolder: true,
-          children: page.childPages,
-          data: (() => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { id, childPages, userId, ...data } = page;
-            return data;
-          })(),
+          children: page.children ? page.children : [],
+          data: page,
         },
       ]),
     );
-  }, [pageListQuery.data, pageListQuery.isError, pageListQuery.isLoading]);
-
-  return useMemo(() => {
-    if (!pageListMap) return null;
 
     const childPageIds: string[] = [];
 
     pageListMap.forEach((page) => {
-      if (page.data.parentId === null) childPageIds.push(page.index);
+      const pathArray = page.data.path.split(".");
+      if (pathArray.length <= 1) childPageIds.push(page.index);
     });
 
     const treeData: ExplicitDataSource<PageResponse> = {
@@ -50,5 +45,5 @@ export const useTreeData = () => {
     };
 
     return treeData;
-  }, [pageListMap]);
+  }, [pageListQuery.data, pageListQuery.isError, pageListQuery.isLoading]);
 };

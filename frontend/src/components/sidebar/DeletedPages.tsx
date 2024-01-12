@@ -62,7 +62,7 @@ const DeletedPages: React.FC = () => {
                     </span>
                   </div>
                   <span className="flex-grow select-none text-start text-xs text-muted-foreground">
-                    {page.parentPageName}
+                    {page.path.split(".")[-1]}
                   </span>
                 </div>
 

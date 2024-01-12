@@ -1,4 +1,3 @@
-import { usePageQuery, useUpdatePageMutation } from "@/hooks/pageQueryHooks";
 import { useSession } from "@/hooks/useSession";
 import CustomCodeBlock from "@/tiptap/CustomCodeBlock";
 import CustomDocument from "@/tiptap/CustomDocument";
@@ -6,7 +5,6 @@ import CustomHeading from "@/tiptap/CustomHeading";
 import CustomImageFrontend from "@/tiptap/CustomImageFrontend";
 import useStore from "@/zustand/store";
 import { HocuspocusProvider } from "@hocuspocus/provider";
-import { useQueryClient } from "@tanstack/react-query";
 import Collaboration from "@tiptap/extension-collaboration";
 import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 import Link from "@tiptap/extension-link";
@@ -16,16 +14,11 @@ import TaskList from "@tiptap/extension-task-list";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { common, createLowlight } from "lowlight";
-import { useParams } from "react-router-dom";
 
 const lowlight = createLowlight(common);
 
 const useContentEditor = (provider: HocuspocusProvider) => {
   const { session } = useSession();
-  const params = useParams();
-  const queryClient = useQueryClient();
-  const pageQuery = usePageQuery(params.pageId ?? "");
-  const updatePageMutation = useUpdatePageMutation(queryClient);
 
   const editorCursor = useStore((state) => state.editorSelection);
   const isCmdPaletteOpen = useStore((state) => state.isCmdPaletteOpen);
@@ -77,19 +70,6 @@ const useContentEditor = (provider: HocuspocusProvider) => {
       attributes: {
         class: "outline-none",
       },
-    },
-
-    onCreate({ editor }) {
-      // set last accessed time for recent pages feature
-      if (pageQuery.data && !pageQuery.data.isDeleted) {
-        updatePageMutation.mutate({
-          id: params.pageId ?? "",
-          accessedAt: new Date(Date.now()).toISOString(),
-        });
-      }
-
-      // set pageId for later access from prose-mirror extensions
-      editor.storage.doc.pageId = pageQuery.data?.id;
     },
 
     onUpdate({ editor }) {

@@ -1,3 +1,12 @@
+import customInteractionMode from "@/components/tree-views/CustomInteractionMode";
+import ItemArrow from "@/components/tree-views/ItemArrow";
+import ItemRenameInput from "@/components/tree-views/ItemRenameInput";
+import ItemTitle from "@/components/tree-views/ItemTitle";
+import ItemsContainer from "@/components/tree-views/ItemsContainer";
+import TreeContainer from "@/components/tree-views/TreeContainer";
+import TreeItem from "@/components/tree-views/TreeItem";
+import { useUpdatePageMutation } from "@/hooks/pageQueryHooks";
+import useStarredTreeData from "@/hooks/tree-view/useStarredData";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -6,26 +15,13 @@ import {
   TreeItemIndex,
   TreeRef,
 } from "react-complex-tree";
-
-import { usePageQuery, useUpdatePageMutation } from "@/hooks/pageQueryHooks";
-import useStarredTreeData from "@/hooks/tree-view/useStarredData";
-
-import customInteractionMode from "@/components/tree-views/CustomInteractionMode";
-import ItemArrow from "@/components/tree-views/ItemArrow";
-import ItemRenameInput from "@/components/tree-views/ItemRenameInput";
-import ItemTitle from "@/components/tree-views/ItemTitle";
-import ItemsContainer from "@/components/tree-views/ItemsContainer";
-import TreeContainer from "@/components/tree-views/TreeContainer";
-import TreeItem from "@/components/tree-views/TreeItem";
+import { useNavigate } from "react-router-dom";
 
 import "react-complex-tree/lib/style-modern.css";
-import { useNavigate, useParams } from "react-router-dom";
 
-const StarredTree: React.FC = () => {
+const StarredPageTree: React.FC = () => {
   const navigate = useNavigate();
-  const params = useParams();
   const queryClient = useQueryClient();
-  const pageQuery = usePageQuery(params.pageId ?? "");
 
   const updatePageMutation = useUpdatePageMutation(queryClient);
 
@@ -39,16 +35,6 @@ const StarredTree: React.FC = () => {
   const [pageToRename, setPageToRename] = useState<TreeItemIndex>("");
 
   const starredTreeRef = useRef<TreeRef>(null);
-
-  // Automatically expand the collection current page is in
-  useEffect(() => {
-    if (pageQuery.isLoading || pageQuery.isError) return;
-
-    const { parentId } = pageQuery.data;
-    if (!parentId) return;
-
-    setExpandedItems((prev) => [...prev, parentId]);
-  }, [pageQuery.data, pageQuery.isError, pageQuery.isLoading]);
 
   // This effect is required to make React Complex Tree handle focus management
   // on rename input when rename action is initiated from context menu
@@ -109,6 +95,7 @@ const StarredTree: React.FC = () => {
               setSelectedItems={setSelectedItems}
               setIsRenaming={setIsRenaming}
               setPageToRename={setPageToRename}
+              canAddPage={false}
             />
           )}
         >
@@ -124,4 +111,4 @@ const StarredTree: React.FC = () => {
   );
 };
 
-export default StarredTree;
+export default StarredPageTree;

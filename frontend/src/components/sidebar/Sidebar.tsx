@@ -46,7 +46,7 @@ const Sidebar = () => {
             onClick={() => setIsStarredOpen((prev) => !prev)}
             className="mb-1 h-7 px-2"
           >
-            <span className="w-full text-start text-[13px] font-medium text-muted-foreground">
+            <span className="text-muted-foreground w-full text-start text-[13px] font-medium">
               Starred
             </span>
           </Button>
@@ -56,7 +56,7 @@ const Sidebar = () => {
 
         <div className="px-3 pb-2 pt-1">
           <Button variant={"ghost"} size={"default"} className="mb-1 h-7 px-2">
-            <span className="w-full text-start text-[13px] font-medium text-muted-foreground">
+            <span className="text-muted-foreground w-full text-start text-[13px] font-medium">
               Pages
             </span>
           </Button>
@@ -64,14 +64,14 @@ const Sidebar = () => {
           {pageListQuery.data && pageListQuery.data.length >= 1 ? (
             <PageTree />
           ) : (
-            <p className="ml-2 w-full text-[13px] text-muted-foreground">
+            <p className="text-muted-foreground ml-2 w-full text-[13px]">
               No Pages
             </p>
           )}
         </div>
       </ScrollArea>
 
-      <div className="border-t-2 border-border px-3 py-3">
+      <div className="border-border border-t-2 px-3 py-3">
         <Button
           variant={"ghost"}
           className="w-full justify-start"

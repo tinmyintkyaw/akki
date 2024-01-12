@@ -70,7 +70,7 @@ const Editor = (props: EditorProps) => {
         <EditorContent
           editor={titleEditor}
           className={clsx(
-            "prose mx-auto bg-background px-8 pt-12 text-foreground dark:prose-invert",
+            "prose bg-background text-foreground dark:prose-invert mx-auto px-8 pt-12",
             "max-w-3xl",
           )}
         />
@@ -79,7 +79,7 @@ const Editor = (props: EditorProps) => {
       {contentEditor && (
         <EditorContent
           className={clsx(
-            "prose mx-auto bg-background px-8 pb-8 text-foreground dark:prose-invert",
+            "prose bg-background text-foreground dark:prose-invert mx-auto px-8 pb-8",
             "max-w-3xl",
           )}
           editor={contentEditor}

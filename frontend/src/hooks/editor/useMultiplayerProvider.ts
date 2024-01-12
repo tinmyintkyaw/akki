@@ -23,10 +23,10 @@ const useMultiplayerProvider = (pageId: string) => {
       url: MULTIPLAYER_URL,
       document: new Y.Doc(),
       token: async () => {
-        const res = await fetch("/api/keys/editor");
+        const res = await fetch("/api/auth/editor/token");
         if (!res.ok) return "";
-        const { editorKey } = await res.json();
-        return editorKey as string;
+        const { editorToken } = await res.json();
+        return editorToken as string;
       },
 
       onStatus({ status }) {

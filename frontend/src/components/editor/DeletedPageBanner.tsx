@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
-import React, { useCallback } from "react";
 import {
   usePermanentlyDeletePageMutation,
   useUndoDeletePageMutation,
 } from "@/hooks/pageQueryHooks";
 import { useQueryClient } from "@tanstack/react-query";
+import React, { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 const DeletedPageBanner: React.FC<{ pageId: string }> = (props) => {

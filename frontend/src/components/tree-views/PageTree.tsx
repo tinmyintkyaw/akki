@@ -7,7 +7,6 @@ import TreeContainer from "@/components/tree-views/TreeContainer";
 import TreeItem from "@/components/tree-views/TreeItem";
 import { usePageQuery, useUpdatePageMutation } from "@/hooks/pageQueryHooks";
 import { useTreeData } from "@/hooks/tree-view/useTreeData";
-import useParentPageIds from "@/hooks/useParentPageIds";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -16,8 +15,9 @@ import {
   TreeItemIndex,
   TreeRef,
 } from "react-complex-tree";
-import "react-complex-tree/lib/style-modern.css";
 import { useNavigate, useParams } from "react-router-dom";
+
+import "react-complex-tree/lib/style-modern.css";
 
 const PageTree: React.FC = () => {
   const navigate = useNavigate();
@@ -28,9 +28,6 @@ const PageTree: React.FC = () => {
   const updatePageMutation = useUpdatePageMutation(queryClient);
 
   const treeData = useTreeData();
-  const parentPageIds = useParentPageIds(
-    pageQuery.data ? pageQuery.data.id : "",
-  );
 
   const [focusedItem, setFocusedItem] = useState<TreeItemIndex>("");
   const [expandedItems, setExpandedItems] = useState<TreeItemIndex[]>([]);
@@ -43,9 +40,10 @@ const PageTree: React.FC = () => {
 
   // Automatically expand the parents of the current page
   useEffect(() => {
-    if (!parentPageIds) return;
+    if (pageQuery.isLoading || pageQuery.isError || !pageQuery.data) return;
+    const parentPageIds = pageQuery.data.path.split(".");
     setExpandedItems((prev) => [...prev, ...parentPageIds]);
-  }, [parentPageIds]);
+  }, [pageQuery.data, pageQuery.isError, pageQuery.isLoading]);
 
   // This effect is required to make React Complex Tree handle focus management
   // on rename input when rename action is initiated from context menu
@@ -118,6 +116,7 @@ const PageTree: React.FC = () => {
               setSelectedItems={setSelectedItems}
               setIsRenaming={setIsRenaming}
               setPageToRename={setPageToRename}
+              canAddPage={true}
             />
           )}
         >

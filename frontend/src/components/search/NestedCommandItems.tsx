@@ -1,6 +1,6 @@
 import { CommandItem, CommandShortcut } from "@/components/ui/command";
-import MeilisearchPage from "@/shared/types/meilisearch-page";
 import useStore from "@/zustand/store";
+import { MeilisearchPage } from "@project/shared-types";
 import { Hit, HitAttributeSnippetResult } from "instantsearch.js";
 import { getHighlightedParts } from "instantsearch.js/es/lib/utils";
 import { ChevronLeft, CornerDownLeft, Text } from "lucide-react";
@@ -84,7 +84,7 @@ function NestedCommandItem(props: DefaultCommandItemProps) {
             </p>
           </div>
 
-          <CornerDownLeft className="h-3 w-3 text-muted-foreground" />
+          <CornerDownLeft className="text-muted-foreground h-3 w-3" />
         </CommandItem>
       ))}
     </>

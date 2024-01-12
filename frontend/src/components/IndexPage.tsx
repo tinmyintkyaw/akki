@@ -7,7 +7,11 @@ export default function IndexPage() {
 
   if (recentPageListQuery.isLoading) return <></>;
 
-  if (!recentPageListQuery.isError && recentPageListQuery.data.length > 0) {
+  if (
+    !recentPageListQuery.isError &&
+    recentPageListQuery.data &&
+    recentPageListQuery.data.length > 0
+  ) {
     return <Navigate to={`/${recentPageListQuery.data[0].id}`} />;
   } else {
     return <EmptyPageList />;

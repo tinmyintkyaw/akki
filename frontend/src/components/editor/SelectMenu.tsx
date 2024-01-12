@@ -161,7 +161,7 @@ export default function SelectMenu(props: { editor: Editor }) {
       tippyOptions={{
         zIndex: 50,
       }}
-      className="flex max-w-md select-none rounded border bg-popover text-sm text-popover-foreground shadow-lg drop-shadow-lg transition-all"
+      className="bg-popover text-popover-foreground flex max-w-md select-none rounded border text-sm shadow-lg drop-shadow-lg transition-all"
     >
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -176,7 +176,7 @@ export default function SelectMenu(props: { editor: Editor }) {
               {selected.displayName}
             </span>
 
-            <ChevronRight className="h-4 w-4 transition-transform group-radix-state-open:rotate-90" />
+            <ChevronRight className="group-radix-state-open:rotate-90 h-4 w-4 transition-transform" />
           </Button>
         </DropdownMenuTrigger>
 
@@ -191,7 +191,7 @@ export default function SelectMenu(props: { editor: Editor }) {
               <DropdownMenuItem
                 key={command.id}
                 onClick={command.commandFn}
-                className="flex h-8 w-full items-center rounded px-2 py-1 hover:bg-accent"
+                className="hover:bg-accent flex h-8 w-full items-center rounded px-2 py-1"
               >
                 <Icon className="h-4 w-4" />
 
