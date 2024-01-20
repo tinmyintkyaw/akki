@@ -1,5 +1,8 @@
 {
   "files.associations": {
     "*.css": "tailwindcss" // Removes Unknown at rule @tailwindcss(unknownAtRules) eslint warning
+  },
+  "search.exclude": {
+    "dist/**/*.js": true
   }
 }

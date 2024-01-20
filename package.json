@@ -7,7 +7,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "frontend": "pnpm --filter frontend",
-    "backend": "pnpm --filter backend"
+    "backend": "pnpm --filter backend",
+    "dev": "pnpm -r --parellel dev",
+    "build": "pnpm -r --parellel build"
   },
   "keywords": [],
   "author": "",

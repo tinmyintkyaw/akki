@@ -1,0 +1,18 @@
+:3000 {
+	# Serve frondend bundle
+	handle /* {
+		root * srv
+		file_server
+		try_files {path} /index.html
+	}
+
+	# proxy meilisearch
+	handle_path /api/search/* {
+		reverse_proxy localhost:7700
+	}
+
+	# proxy CRUD API
+	handle_path /api/* {
+		reverse_proxy localhost:3300
+	}
+}

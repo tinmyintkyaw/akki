@@ -1,0 +1,106 @@
+version: "3"
+
+services:
+  caddy:
+    container_name: caddy
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: caddy
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+      - 443:443/udp
+    networks:
+      - app-network
+    volumes:
+      - caddy-data:/data
+      - caddy-config:/config
+
+  api:
+    container_name: api
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: api
+    restart: unless-stopped
+    ports:
+      - 3300:3300
+    networks:
+      - app-network
+    volumes:
+      - web-uploads:/app/uploads
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      meilisearch:
+        condition: service_healthy
+
+  postgres:
+    container_name: postgres-dev
+    image: postgres:15
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    env_file:
+      - .env.development
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./postgres-config.conf:/etc/postgresql/postgresql.conf
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    container_name: redis-dev
+    image: redis:alpine
+    restart: unless-stopped
+    ports:
+      - 6379:6379
+    command: /bin/sh -c "redis-server --requirepass $$REDIS_PASSWORD"
+    env_file:
+      - .env.development
+    volumes:
+      - redis-data:/data
+    networks:
+      - app-network
+
+  meilisearch:
+    container_name: meilisearch-dev
+    image: getmeili/meilisearch:v1.5
+    restart: unless-stopped
+    ports:
+      - "7700:7700"
+    env_file:
+      - .env.development
+    volumes:
+      - meilisearch-data:/meili_data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7700"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres-data:
+  meilisearch-data:
+  redis-data:
+  caddy-config:
+  caddy-data:
+  web-uploads:
+
+networks:
+  app-network:
+    name: app-network
