@@ -63,4 +63,4 @@ services:
 volumes:
   postgres-dev-data:
   meilisearch-dev-data:
-  redis-data:
+  redis-dev-data:
