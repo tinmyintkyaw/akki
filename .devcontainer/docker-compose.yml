@@ -16,26 +16,17 @@ services:
     container_name: postgres-dev
     image: postgres:15
     restart: unless-stopped
-    ports:
-      - 5432:5432
     volumes:
       - postgres-dev-data:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
       POSTGRES_DB: postgres
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   redis:
     container_name: redis-dev
     image: redis:alpine
     restart: unless-stopped
-    ports:
-      - 6379:6379
     command: /bin/sh -c "redis-server --requirepass $$REDIS_PASSWORD"
     environment:
       REDIS_PASSWORD: "redis"
@@ -47,18 +38,11 @@ services:
     container_name: meilisearch-dev
     image: getmeili/meilisearch:v1.5
     restart: unless-stopped
-    ports:
-      - 7700:7700
     environment:
       MEILI_MASTER_KEY: "meilisearch_master_key"
     volumes:
       - meilisearch-dev-data:/meili_data
     network_mode: service:db
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:7700"]
-      interval: 1m30s
-      timeout: 5s
-      retries: 5
 
 volumes:
   postgres-dev-data:
