@@ -36,8 +36,8 @@ export default function EditorLayout() {
 
           <div
             className={clsx(
-              "scrollbar-thin h-[calc(100vh-3rem)] overflow-y-auto",
-              pageQuery.data.deletedAt === null && "h-[calc(100vh-6rem)]",
+              "h-[calc(100vh-3rem)] overflow-y-auto scrollbar-thin",
+              pageQuery.data.deletedAt && "h-[calc(100vh-6rem)]",
             )}
           >
             {multiplayerProvider.provider &&

@@ -1,10 +1,10 @@
+import { usePageQuery, useUpdatePageMutation } from "@/hooks/pageQueryHooks";
+import { useQueryClient } from "@tanstack/react-query";
 import Document from "@tiptap/extension-document";
 import Heading from "@tiptap/extension-heading";
 import Text from "@tiptap/extension-text";
 import { useEditor } from "@tiptap/react";
 import { useEffect, useState } from "react";
-import { usePageQuery, useUpdatePageMutation } from "../pageQueryHooks";
-import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 
 const useTitleEditor = () => {
@@ -44,7 +44,7 @@ const useTitleEditor = () => {
 
   // Sync remote data with editor content, only when not editing
   useEffect(() => {
-    if (pageQuery.isLoading || pageQuery.isError) return;
+    if (pageQuery.isLoading || pageQuery.isError || !pageQuery.data) return;
     if (!titleEditor) return;
     if (titleEditor.isFocused) return;
 

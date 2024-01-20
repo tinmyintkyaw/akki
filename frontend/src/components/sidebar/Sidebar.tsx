@@ -23,7 +23,7 @@ const Sidebar = () => {
   const toggleSidebarOpen = useStore((state) => state.toggleSidebarOpen);
 
   return (
-    <aside className="bg-muted">
+    <aside className="border-r border-border bg-muted">
       <div className="flex h-12 select-none flex-row items-center justify-between gap-2 px-3">
         <header className="ml-2 flex flex-row justify-start">
           <SquareAsterisk className="mr-2 h-6 w-6" />
@@ -46,7 +46,7 @@ const Sidebar = () => {
             onClick={() => setIsStarredOpen((prev) => !prev)}
             className="mb-1 h-7 px-2"
           >
-            <span className="text-muted-foreground w-full text-start text-[13px] font-medium">
+            <span className="w-full text-start text-[13px] font-medium text-muted-foreground">
               Starred
             </span>
           </Button>
@@ -56,7 +56,7 @@ const Sidebar = () => {
 
         <div className="px-3 pb-2 pt-1">
           <Button variant={"ghost"} size={"default"} className="mb-1 h-7 px-2">
-            <span className="text-muted-foreground w-full text-start text-[13px] font-medium">
+            <span className="w-full text-start text-[13px] font-medium text-muted-foreground">
               Pages
             </span>
           </Button>
@@ -64,14 +64,14 @@ const Sidebar = () => {
           {pageListQuery.data && pageListQuery.data.length >= 1 ? (
             <PageTree />
           ) : (
-            <p className="text-muted-foreground ml-2 w-full text-[13px]">
+            <p className="ml-2 w-full text-[13px] text-muted-foreground">
               No Pages
             </p>
           )}
         </div>
       </ScrollArea>
 
-      <div className="border-border border-t-2 px-3 py-3">
+      <div className="border-t-2 border-border px-3 py-3">
         <Button
           variant={"ghost"}
           className="w-full justify-start"
