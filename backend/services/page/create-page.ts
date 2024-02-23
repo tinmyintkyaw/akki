@@ -48,6 +48,7 @@ export const createPage = async (
     id: newPage.id,
     userId: newPage.user_id,
     pageName: newPage.page_name,
+    textContent: [],
     isStarred: newPage.is_starred,
     createdAt: newPage.created_at.getTime(),
     modifiedAt: newPage.modified_at.getTime(),
