@@ -29,9 +29,7 @@ interface ItemProps {
   arrow: React.ReactNode;
   context: TreeItemRenderContext;
   selectedItems: TreeItemIndex[];
-  setSelectedItems: React.Dispatch<React.SetStateAction<TreeItemIndex[]>>;
-  expandedItems: TreeItemIndex[];
-  setExpandedItems: React.Dispatch<React.SetStateAction<TreeItemIndex[]>>;
+  addExpandedItems: (newItems: TreeItemIndex[]) => void;
   setIsRenaming: React.Dispatch<React.SetStateAction<boolean>>;
   setPageToRename: React.Dispatch<React.SetStateAction<TreeItemIndex>>;
   canAddPage: boolean;
@@ -45,7 +43,7 @@ const TreeItem: React.FC<ItemProps> = (props) => {
     title,
     item,
     depth,
-    setExpandedItems,
+    addExpandedItems,
     setIsRenaming,
     setPageToRename,
   } = props;
@@ -91,7 +89,7 @@ const TreeItem: React.FC<ItemProps> = (props) => {
                     pageName: "Untitled",
                     parentId: item.index.toString(),
                   });
-                  setExpandedItems((prev) => [...prev, item.index.toString()]);
+                  addExpandedItems([item.index]);
                 }}
                 className="ml-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded text-accent-foreground opacity-0 group-hover:opacity-100 hover:bg-neutral-300 dark:hover:bg-neutral-600"
               >
@@ -118,7 +116,7 @@ const TreeItem: React.FC<ItemProps> = (props) => {
                     const { path } = data;
                     const parentId = path.split(".")[-2];
                     if (!parentId) return;
-                    setExpandedItems((prev) => [...prev, parentId]);
+                    addExpandedItems([parentId]);
                   },
                 },
               );

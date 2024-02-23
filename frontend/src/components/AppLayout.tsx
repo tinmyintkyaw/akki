@@ -1,12 +1,11 @@
 import Sidebar from "@/components/sidebar/Sidebar";
+import Toolbar from "@/components/toolbar/Toolbar";
 import useInstantSearchClient from "@/hooks/useInstantSearchClient";
 import useStore from "@/zustand/store";
 import { Allotment, LayoutPriority } from "allotment";
+import "allotment/dist/style.css";
 import { InstantSearch } from "react-instantsearch";
 import { Outlet } from "react-router-dom";
-
-import Toolbar from "@/components/toolbar/Toolbar";
-import "allotment/dist/style.css";
 
 export default function Layout() {
   const instantSearchClient = useInstantSearchClient();

@@ -11,16 +11,17 @@ import useStore from "@/zustand/store";
 import { useQueryClient } from "@tanstack/react-query";
 import clsx from "clsx";
 import { PanelLeftClose, Plus, SquareAsterisk } from "lucide-react";
-import { useState } from "react";
 
 const Sidebar = () => {
-  const [isStarredOpen, setIsStarredOpen] = useState(true);
-
   const queryClient = useQueryClient();
   const pageListQuery = usePageListQuery();
   const createPageMutation = useCreatePageMutation(queryClient);
 
-  const toggleSidebarOpen = useStore((state) => state.toggleSidebarOpen);
+  const toggleSidebarOpen = useStore((state) => state.toggleStarredSectionOpen);
+  const isStarredSectionOpen = useStore((state) => state.isStarredSectionOpen);
+  const toggleStarredSectionOpen = useStore(
+    (state) => state.toggleStarredSectionOpen,
+  );
 
   return (
     <aside className="border-r border-border bg-muted">
@@ -43,7 +44,7 @@ const Sidebar = () => {
           <Button
             variant={"ghost"}
             size={"default"}
-            onClick={() => setIsStarredOpen((prev) => !prev)}
+            onClick={toggleStarredSectionOpen}
             className="mb-1 h-7 px-2"
           >
             <span className="w-full text-start text-[13px] font-medium text-muted-foreground">
@@ -51,7 +52,7 @@ const Sidebar = () => {
             </span>
           </Button>
 
-          {isStarredOpen && <StarredPageTree />}
+          {isStarredSectionOpen && <StarredPageTree />}
         </div>
 
         <div className="px-3 pb-2 pt-1">

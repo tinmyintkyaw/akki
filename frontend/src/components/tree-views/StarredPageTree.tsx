@@ -89,10 +89,8 @@ const StarredPageTree: React.FC = () => {
           renderItem={(props) => (
             <TreeItem
               {...props}
-              expandedItems={expandedItems}
               selectedItems={selectedItems}
-              setExpandedItems={setExpandedItems}
-              setSelectedItems={setSelectedItems}
+              addExpandedItems={setExpandedItems}
               setIsRenaming={setIsRenaming}
               setPageToRename={setPageToRename}
               canAddPage={false}

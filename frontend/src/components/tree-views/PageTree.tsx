@@ -17,6 +17,7 @@ import {
 } from "react-complex-tree";
 import { useNavigate, useParams } from "react-router-dom";
 
+import useStore from "@/zustand/store";
 import "react-complex-tree/lib/style-modern.css";
 
 const PageTree: React.FC = () => {
@@ -29,9 +30,15 @@ const PageTree: React.FC = () => {
 
   const treeData = useTreeData();
 
-  const [focusedItem, setFocusedItem] = useState<TreeItemIndex>("");
-  const [expandedItems, setExpandedItems] = useState<TreeItemIndex[]>([]);
-  const [selectedItems, setSelectedItems] = useState<TreeItemIndex[]>([]);
+  const focusedItem = useStore((state) => state.pageTreeFocusedItem);
+  const selectedItems = useStore((state) => state.pageTreeSelectedItems);
+  const expandedItems = useStore((state) => state.pageTreeExpandedItems);
+  const setFocusedItem = useStore((state) => state.setPageTreeFocusedItem);
+  const setSelectedItems = useStore((state) => state.setPageTreeSelectedItems);
+  const addExpandedItems = useStore((state) => state.addPageTreeExpandedItems);
+  const removeExpandedItems = useStore(
+    (state) => state.removePageTreeExpandedItems,
+  );
 
   const [isRenaming, setIsRenaming] = useState(false);
   const [pageToRename, setPageToRename] = useState<TreeItemIndex>("");
@@ -42,8 +49,13 @@ const PageTree: React.FC = () => {
   useEffect(() => {
     if (pageQuery.isLoading || pageQuery.isError || !pageQuery.data) return;
     const parentPageIds = pageQuery.data.path.split(".");
-    setExpandedItems((prev) => [...prev, ...parentPageIds]);
-  }, [pageQuery.data, pageQuery.isError, pageQuery.isLoading]);
+    addExpandedItems(parentPageIds);
+  }, [
+    addExpandedItems,
+    pageQuery.data,
+    pageQuery.isError,
+    pageQuery.isLoading,
+  ]);
 
   // This effect is required to make React Complex Tree handle focus management
   // on rename input when rename action is initiated from context menu
@@ -68,19 +80,9 @@ const PageTree: React.FC = () => {
           canSearch={false}
           defaultInteractionMode={customInteractionMode}
           onFocusItem={(item) => setFocusedItem(item.index)}
-          onExpandItem={(item) =>
-            setExpandedItems([...expandedItems, item.index])
-          }
-          onCollapseItem={(item) =>
-            setExpandedItems(
-              expandedItems.filter(
-                (expandedItemIndex) => expandedItemIndex !== item.index,
-              ),
-            )
-          }
-          onSelectItems={(items) => {
-            setSelectedItems(items);
-          }}
+          onExpandItem={(item) => addExpandedItems([item.index])}
+          onCollapseItem={(item) => removeExpandedItems([item.index])}
+          onSelectItems={(items) => setSelectedItems(items)}
           onRenameItem={(item, newName) => {
             setIsRenaming(true);
             updatePageMutation.mutate({
@@ -110,10 +112,8 @@ const PageTree: React.FC = () => {
           renderItem={(props) => (
             <TreeItem
               {...props}
-              expandedItems={expandedItems}
               selectedItems={selectedItems}
-              setExpandedItems={setExpandedItems}
-              setSelectedItems={setSelectedItems}
+              addExpandedItems={addExpandedItems}
               setIsRenaming={setIsRenaming}
               setPageToRename={setPageToRename}
               canAddPage={true}

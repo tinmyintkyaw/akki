@@ -9,30 +9,32 @@ const useTransformHits = (hits: Hit<MeilisearchPage>[]) => {
   useEffect(() => {
     if (hits.length <= 0) return;
 
-    const prunedHits = hits.map((hit) => {
-      const textContentSnippet = hit._snippetResult?.textContent as {
-        text: HitAttributeSnippetResult;
-      }[];
+    const prunedHits = hits
+      // .filter((hit) => !!hit._snippetResult && !!hit._snippetResult.textContent)
+      .map((hit) => {
+        const textContentSnippet = hit._snippetResult?.textContent as {
+          text: HitAttributeSnippetResult;
+        }[];
 
-      const prunedTextContentSnippet = textContentSnippet?.filter((item) =>
-        getHighlightedParts(item.text.value).some(
-          (value) => value.isHighlighted,
-        ),
-      );
+        const prunedTextContentSnippet = textContentSnippet.filter((item) =>
+          getHighlightedParts(item.text.value).some(
+            (value) => value.isHighlighted,
+          ),
+        );
 
-      const unescapedSnippets = prunedTextContentSnippet.map((item) => ({
-        ...item,
-        text: { ...item.text, value: unescape(item.text.value) },
-      }));
+        const unescapedSnippets = prunedTextContentSnippet.map((item) => ({
+          ...item,
+          text: { ...item.text, value: unescape(item.text.value) },
+        }));
 
-      return {
-        ...hit,
-        _snippetResult: {
-          ...hit._snippetResult,
-          textContent: unescapedSnippets,
-        },
-      };
-    });
+        return {
+          ...hit,
+          _snippetResult: {
+            ...hit._snippetResult,
+            textContent: unescapedSnippets,
+          },
+        };
+      });
 
     setTransformedHits(prunedHits);
   }, [hits]);
