@@ -1,6 +1,6 @@
-import { parsedProcessEnv } from "@/configs/env-variables.js";
 import { redisClient } from "@/configs/ioredis.js";
-import { pool } from "@/configs/kysely.js";
+import { pool } from "@/db/kysely.js";
+import { parsedProcessEnv } from "@/validation/env-vars-validator.js";
 import { pg } from "@lucia-auth/adapter-postgresql";
 import { ioredis } from "@lucia-auth/adapter-session-redis";
 import { github, google } from "@lucia-auth/oauth/providers";

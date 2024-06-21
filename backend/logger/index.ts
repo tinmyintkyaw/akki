@@ -1,4 +1,4 @@
-import { parsedProcessEnv } from "@/env-vars/env-variables.js";
+import { parsedProcessEnv } from "@/validation/env-vars-validator.js";
 import winston from "winston";
 
 const logger = winston.createLogger({

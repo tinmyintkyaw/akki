@@ -1,4 +1,4 @@
-import { parsedProcessEnv } from "@/configs/env-variables.js";
+import { parsedProcessEnv } from "@/validation/env-vars-validator.js";
 import { Redis } from "ioredis";
 
 const redisClient = new Redis({

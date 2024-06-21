@@ -1,23 +1,20 @@
+import { authRouter } from "@/auth/auth-router.js";
+import { checkIfSignedIn } from "@/auth/check-signed-in.js";
+import { sessionController } from "@/auth/session.js";
 import { hocuspocusHandler } from "@/collaboration/hocuspocus.js";
 import { redisClient } from "@/configs/ioredis.js";
-import { sessionController } from "@/controllers/session.js";
-import { parsedProcessEnv } from "@/env-vars/env-variables.js";
 import { logger } from "@/logger/index.js";
-import { checkIfSignedIn } from "@/middlewares/check-signed-in.js";
 import { errorHandler } from "@/middlewares/error-handler.js";
-import {
-  globalRateLimiter,
-  sessionRateLimiter,
-} from "@/middlewares/rate-limit.js";
-import { authRouter } from "@/routes/auth-router.js";
-import fileRouter from "@/routes/file-router.js";
-import { pageRouter } from "@/routes/page-router.js";
+import { pageRouter } from "@/pages/page-router.js";
+import { globalRateLimiter, sessionRateLimiter } from "@/rate-limit/index.js";
 import { meilisearchClient } from "@/search/meilisearch.js";
 import { checkDBConnection } from "@/startup/check-db-connection.js";
 import { checkDemoMode } from "@/startup/check-demo-mode.js";
 import { checkMellisearchDB } from "@/startup/check-meilisearch-db.js";
 import { commitMeilisearchCredentialsToRedis } from "@/startup/commit-meilisearch-key-to-redis.js";
 import { migrateToLatest } from "@/startup/migrate-to-latest.js";
+import fileRouter from "@/uploads/file-router.js";
+import { parsedProcessEnv } from "@/validation/env-vars-validator.js";
 import express from "express";
 import expressWebsockets from "express-ws";
 import helmet from "helmet";
@@ -55,7 +52,7 @@ app.use(
     const searchToken = meilisearchClient.generateTenantToken(
       defaultSearchKeyId,
       {
-        pages: { filter: `userId = ${res.locals.session.user.userId}` },
+        pages: { filter: `userId = ${res.locals.session.userId}` },
       },
       {
         apiKey: defaultSearchKeyValue,

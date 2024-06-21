@@ -12,7 +12,8 @@ const useInstantSearchClient = () => {
       const json: { searchToken: string } = await response.json();
       return json.searchToken;
     },
-    staleTime: 59 * 60 * 1000,
+    // staleTime: 59 * 60 * 1000,
+    refetchInterval: 10 * 1000,
     refetchOnMount: false,
     refetchOnReconnect: false,
     refetchOnWindowFocus: false,
@@ -20,7 +21,7 @@ const useInstantSearchClient = () => {
 
   const instantMeilisearchClient = useMemo(
     () =>
-      instantMeiliSearch(`${window.location.host}/api/search`, () => {
+      instantMeiliSearch(`${window.location.host}/api/test`, () => {
         if (
           searchTokenQuery.isLoading ||
           searchTokenQuery.isError ||

@@ -1,5 +1,5 @@
-import { parsedProcessEnv } from "@/env-vars/env-variables.js";
 import { Database } from "@/types/database.js";
+import { parsedProcessEnv } from "@/validation/env-vars-validator.js";
 import { Kysely, PostgresDialect } from "kysely";
 import postgres from "pg";
 

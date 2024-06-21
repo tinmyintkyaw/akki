@@ -1,7 +1,7 @@
 import { auth } from "@/configs/lucia.js";
 import { db } from "@/db/kysely.js";
-import { parsedProcessEnv } from "@/env-vars/env-variables.js";
 import { logger } from "@/logger/index.js";
+import { parsedProcessEnv } from "@/validation/env-vars-validator.js";
 
 const createDemoUser = async () => {
   try {

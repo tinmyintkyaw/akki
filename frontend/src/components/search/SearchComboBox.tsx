@@ -14,7 +14,12 @@ import { MeilisearchPage } from "@project/shared-types";
 import { Hit } from "instantsearch.js";
 import { ArrowDownUp, CornerDownLeft } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
-import { Configure, useHits, useSearchBox } from "react-instantsearch";
+import {
+  Configure,
+  useHits,
+  useInstantSearch,
+  useSearchBox,
+} from "react-instantsearch";
 
 type SearchComboBoxProps = {
   children: ReactNode;
@@ -47,6 +52,10 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
     const hit = transformedHits.find((hit) => hit.id === detailHit?.id);
     hit && setDetailHit(hit);
   }, [detailHit?.id, transformedHits]);
+
+  const instantSearch = useInstantSearch();
+
+  useEffect(() => console.log(instantSearch), [instantSearch]);
 
   return (
     <Dialog
@@ -119,15 +128,15 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
           <div className="flex h-8 select-none items-center gap-4 border-t-2 px-3">
             <li className="flex h-full flex-row items-center gap-1">
               <ArrowDownUp className="h-3 w-3" />
-              <p className="text-foreground text-xs">Select</p>
+              <p className="text-xs text-foreground">Select</p>
             </li>
             <li className="flex h-full flex-row items-center gap-1">
               <CornerDownLeft className="h-3 w-3" />
-              <p className="text-foreground text-xs">Open</p>
+              <p className="text-xs text-foreground">Open</p>
             </li>
             <li className="flex h-full flex-row items-center gap-1">
               <p className="text-xs font-medium">Esc</p>
-              <p className="text-foreground text-xs">Dismiss</p>
+              <p className="text-xs text-foreground">Dismiss</p>
             </li>
           </div>
         </Command>

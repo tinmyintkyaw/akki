@@ -1,5 +1,5 @@
-import { parsedProcessEnv } from "@/configs/env-variables.js";
 import { googleAuth } from "@/configs/lucia.js";
+import { parsedProcessEnv } from "@/validation/env-vars-validator.js";
 import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";
 
