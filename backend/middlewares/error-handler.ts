@@ -1,5 +1,5 @@
-import { parsedProcessEnv } from "@/configs/env-variables.js";
-import { logger } from "@/configs/logger.js";
+import { parsedProcessEnv } from "@/env-vars/env-variables.js";
+import { logger } from "@/logger/index.js";
 import { ErrorRequestHandler } from "express";
 import { LuciaError } from "lucia";
 import { ZodError } from "zod";

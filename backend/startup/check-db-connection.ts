@@ -1,5 +1,5 @@
-import { pool } from "@/configs/kysely.js";
-import { logger } from "@/configs/logger.js";
+import { pool } from "@/db/kysely.js";
+import { logger } from "@/logger/index.js";
 
 export async function checkDBConnection() {
   try {

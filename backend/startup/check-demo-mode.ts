@@ -1,7 +1,7 @@
-import { parsedProcessEnv } from "@/configs/env-variables.js";
-import { db } from "@/configs/kysely.js";
-import { logger } from "@/configs/logger.js";
 import { auth } from "@/configs/lucia.js";
+import { db } from "@/db/kysely.js";
+import { parsedProcessEnv } from "@/env-vars/env-variables.js";
+import { logger } from "@/logger/index.js";
 
 const createDemoUser = async () => {
   try {

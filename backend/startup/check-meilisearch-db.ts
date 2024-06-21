@@ -1,5 +1,5 @@
-import { logger } from "@/configs/logger.js";
-import { meilisearchClient } from "@/configs/meilisearch.js";
+import { logger } from "@/logger/index.js";
+import { meilisearchClient } from "@/search/meilisearch.js";
 import { MeiliSearchApiError } from "meilisearch";
 
 async function checkMellisearchDB() {

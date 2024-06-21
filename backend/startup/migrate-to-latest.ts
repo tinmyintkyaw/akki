@@ -1,5 +1,5 @@
-import { logger } from "@/configs/logger.js";
-import { migrator } from "@/configs/migrator.js";
+import { migrator } from "@/db/migrator.js";
+import { logger } from "@/logger/index.js";
 
 async function migrateToLatest() {
   logger.info("Running migrations, if any");

@@ -1,7 +1,7 @@
 import { redisClient } from "@/configs/ioredis.js";
-import { db } from "@/configs/kysely.js";
-import { logger } from "@/configs/logger.js";
-import { meilisearchClient } from "@/configs/meilisearch.js";
+import { db } from "@/db/kysely.js";
+import { logger } from "@/logger/index.js";
+import { meilisearchClient } from "@/search/meilisearch.js";
 
 const addSearchKeyToRedis = async (keyID: string, keyValue: string) => {
   await redisClient.set("search:keyId", keyID);

@@ -1,4 +1,4 @@
-import { db } from "@/configs/kysely.js";
+import { db } from "@/db/kysely.js";
 import { promises as fs } from "fs";
 import { FileMigrationProvider, Migrator } from "kysely";
 import * as path from "path";
@@ -8,7 +8,7 @@ const migrator = new Migrator({
   provider: new FileMigrationProvider({
     fs,
     path,
-    migrationFolder: path.join(process.cwd(), "migrations"),
+    migrationFolder: path.join(process.cwd(), "db", "migrations"),
   }),
 });
 

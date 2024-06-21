@@ -1,4 +1,4 @@
-import { parsedProcessEnv } from "@/configs/env-variables.js";
+import { parsedProcessEnv } from "@/env-vars/env-variables.js";
 import winston from "winston";
 
 const logger = winston.createLogger({

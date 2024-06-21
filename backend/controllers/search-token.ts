@@ -1,5 +1,5 @@
 import { redisClient } from "@/configs/ioredis.js";
-import { meilisearchClient } from "@/configs/meilisearch.js";
+import { meilisearchClient } from "@/search/meilisearch.js";
 import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";
 

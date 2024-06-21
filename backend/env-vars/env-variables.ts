@@ -1,4 +1,4 @@
-import { envVarsSchema } from "@/schemas/env-vars-schema.js";
+import { envVarsSchema } from "@/env-vars/schema.js";
 import dotenv from "dotenv";
 
 if (process.env.NODE_ENV === "development") {

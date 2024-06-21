@@ -1,4 +1,4 @@
-import { parsedProcessEnv } from "@/configs/env-variables.js";
+import { parsedProcessEnv } from "@/env-vars/env-variables.js";
 import { Meilisearch } from "meilisearch";
 
 const { MEILI_HOST, MEILI_PORT, MEILI_MASTER_KEY } = parsedProcessEnv;
