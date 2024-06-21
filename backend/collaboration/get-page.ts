@@ -1,4 +1,4 @@
-import { db } from "@/configs/kysely.js";
+import { db } from "@/db/kysely.js";
 import { fetchPayload } from "@hocuspocus/server";
 
 export const getPageHandler = async (data: fetchPayload) => {

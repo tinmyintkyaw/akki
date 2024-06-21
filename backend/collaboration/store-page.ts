@@ -1,6 +1,6 @@
-import { db } from "@/configs/kysely.js";
-import { meilisearchClient } from "@/configs/meilisearch.js";
-import { ydocToTextContent } from "@/services/ws/ydoc-to-text-content.js";
+import { ydocToTextContent } from "@/collaboration/ydoc-to-text-content.js";
+import { db } from "@/db/kysely.js";
+import { meilisearchClient } from "@/search/meilisearch.js";
 import { storePayload } from "@hocuspocus/server";
 import { MeilisearchPage } from "@project/shared-types";
 

@@ -1,5 +1,5 @@
 import { redisClient } from "@/configs/ioredis.js";
-import { db } from "@/configs/kysely.js";
+import { db } from "@/db/kysely.js";
 import { onAuthenticatePayload } from "@hocuspocus/server";
 
 export const websocketAuthHandler = async (

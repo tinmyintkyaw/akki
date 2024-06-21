@@ -1,4 +1,4 @@
-import { createWSAuthToken } from "@/services/ws/create-auth-token.js";
+import { createWSAuthToken } from "@/collaboration/create-auth-token.js";
 import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";
 import requestIp from "request-ip";
@@ -10,8 +10,8 @@ const requestHandler: RequestHandler = async (req, res) => {
   if (!clientIp) return res.sendStatus(400);
 
   const editorToken = await createWSAuthToken(
-    session.user.userId,
-    session.sessionId,
+    session.userId,
+    session.id,
     clientIp,
   );
 
