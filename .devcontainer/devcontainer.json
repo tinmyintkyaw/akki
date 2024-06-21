@@ -7,13 +7,30 @@
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 
   "features": {
-    "ghcr.io/devcontainers/features/node:1": {},
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+    "ghcr.io/devcontainers/features/node:1": {}
   },
 
-  "forwardPorts": [3000, 5432, 7700, 6379],
-
   "postCreateCommand": "pnpm -r install --frozen-lockfile",
+
+  "forwardPorts": [3200, 3300, 5432, 7700, 6379],
+
+  "portsAttributes": {
+    "3200": {
+      "label": "Frontend"
+    },
+    "3300": {
+      "label": "Backend"
+    },
+    "5432": {
+      "label": "Postgres"
+    },
+    "6379": {
+      "label": "Redis"
+    },
+    "7700": {
+      "label": "Meilisearch"
+    }
+  },
 
   "customizations": {
     "vscode": {
@@ -27,7 +44,4 @@
       ]
     }
   }
-
-  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-  // "remoteUser": "root"
 }
