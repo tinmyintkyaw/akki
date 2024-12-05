@@ -1,7 +1,6 @@
 import { logger } from "@/logger/index.js";
 import { parsedProcessEnv } from "@/validation/env-vars-validator.js";
 import { ErrorRequestHandler } from "express";
-import { LuciaError } from "lucia";
 import { ZodError } from "zod";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -11,13 +10,13 @@ const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
     console.error(error);
   }
 
-  if (
-    error instanceof LuciaError &&
-    (error.message === "AUTH_INVALID_KEY_ID" ||
-      error.message === "AUTH_INVALID_PASSWORD")
-  ) {
-    return res.sendStatus(401);
-  }
+  // if (
+  //   error instanceof LuciaError &&
+  //   (error.message === "AUTH_INVALID_KEY_ID" ||
+  //     error.message === "AUTH_INVALID_PASSWORD")
+  // ) {
+  //   return res.sendStatus(401);
+  // }
 
   if (error instanceof ZodError) {
     logger.debug("Validation Error");
