@@ -5,26 +5,60 @@ export async function up(db: Kysely<unknown>): Promise<void> {
 
   await db.schema
     .createTable("user")
-    .addColumn("id", "char(26)", (col) => col.notNull().primaryKey())
+    .addColumn("id", "text", (col) => col.notNull().primaryKey())
     .addColumn("name", "text", (col) => col.notNull())
-    .addColumn("username", "text", (col) => col.unique())
+    .addColumn("email", "text", (col) => col.notNull())
+    .addColumn("email_verified", "boolean", (col) => col.notNull())
     .addColumn("image", "text")
-    .addColumn("email", "text")
-    .addColumn("email_verified", "boolean")
+    .addColumn("created_at", "timestamptz", (col) => col.notNull())
+    .addColumn("updated_at", "timestamptz", (col) => col.notNull())
     .execute();
 
   await db.schema
-    .createTable("key")
+    .createTable("session")
     .addColumn("id", "text", (col) => col.notNull().primaryKey())
-    .addColumn("hashed_password", "text")
-    .addColumn("user_id", "char(26)", (col) =>
+    .addColumn("token", "text", (col) => col.notNull())
+    .addColumn("expires_at", "timestamptz", (col) => col.notNull())
+    .addColumn("ip_address", "text")
+    .addColumn("user_agent", "text")
+    .addColumn("created_at", "timestamptz", (col) => col.notNull())
+    .addColumn("updated_at", "timestamptz", (col) => col.notNull())
+    .addColumn("user_id", "text", (col) =>
       col.notNull().references("user.id").onDelete("cascade"),
     )
     .execute();
 
   await db.schema
+    .createTable("account")
+    .addColumn("id", "text", (col) => col.notNull().primaryKey())
+    .addColumn("account_id", "text", (col) => col.notNull())
+    .addColumn("provider_id", "text", (col) => col.notNull())
+    .addColumn("access_token", "text")
+    .addColumn("refresh_token", "text")
+    .addColumn("access_token_expires_at", "timestamptz")
+    .addColumn("refresh_token_expires_at", "timestamptz")
+    .addColumn("scope", "text")
+    .addColumn("password", "text")
+    .addColumn("created_at", "timestamptz", (col) => col.notNull())
+    .addColumn("updated_at", "timestamptz", (col) => col.notNull())
+    .addColumn("user_id", "text", (col) =>
+      col.notNull().references("user.id").onDelete("cascade"),
+    )
+    .execute();
+
+  await db.schema
+    .createTable("verification")
+    .addColumn("id", "text", (col) => col.notNull().primaryKey())
+    .addColumn("identifier", "text", (col) => col.notNull())
+    .addColumn("value", "text", (col) => col.notNull())
+    .addColumn("expires_at", "timestamptz", (col) => col.notNull())
+    .addColumn("created_at", "timestamptz", (col) => col.notNull())
+    .addColumn("updated_at", "timestamptz", (col) => col.notNull())
+    .execute();
+
+  await db.schema
     .createTable("page")
-    .addColumn("id", "char(26)", (col) => col.notNull().primaryKey())
+    .addColumn("id", "text", (col) => col.notNull().primaryKey())
     .addColumn("page_name", "text", (col) => col.notNull())
     .addColumn("path", sql`ltree`, (col) => col.notNull())
     .addColumn("ydoc", "bytea", (col) => col.notNull())
@@ -39,29 +73,29 @@ export async function up(db: Kysely<unknown>): Promise<void> {
       col.notNull().defaultTo(sql`now()`),
     )
     .addColumn("deleted_at", "timestamptz", (col) => col.defaultTo(null))
-    .addColumn("user_id", "char(26)", (col) =>
+    .addColumn("user_id", "text", (col) =>
       col.notNull().references("user.id").onDelete("cascade"),
     )
     .execute();
 
   await db.schema
     .createTable("file")
-    .addColumn("id", "char(26)", (col) => col.notNull().primaryKey())
+    .addColumn("id", "text", (col) => col.notNull().primaryKey())
     .addColumn("file_name", "text", (col) => col.notNull())
     .addColumn("extension", "text", (col) => col.notNull())
-    .addColumn("user_id", "char(26)", (col) =>
+    .addColumn("user_id", "text", (col) =>
       col.notNull().references("user.id").onDelete("cascade"),
     )
-    .addColumn("page_id", "char(26)", (col) =>
+    .addColumn("page_id", "text", (col) =>
       col.notNull().references("page.id").onDelete("cascade"),
     )
     .execute();
 
   await db.schema
     .createTable("setting")
-    .addColumn("id", "char(26)", (col) => col.notNull().primaryKey())
+    .addColumn("id", "text", (col) => col.notNull().primaryKey())
     .addColumn("editor_width", "integer", (col) => col.notNull())
-    .addColumn("user_id", "char(26)", (col) =>
+    .addColumn("user_id", "text", (col) =>
       col.notNull().references("user.id").onDelete("cascade"),
     )
     .execute();
@@ -84,7 +118,9 @@ export async function up(db: Kysely<unknown>): Promise<void> {
 
 export async function down(db: Kysely<unknown>): Promise<void> {
   await db.schema.dropTable("user").cascade().execute();
-  await db.schema.dropTable("key").cascade().execute();
+  await db.schema.dropTable("session").cascade().execute();
+  await db.schema.dropTable("account").cascade().execute();
+  await db.schema.dropTable("verification").cascade().execute();
   await db.schema.dropTable("page").cascade().execute();
   await db.schema.dropTable("file").cascade().execute();
   await db.schema.dropTable("setting").cascade().execute();
