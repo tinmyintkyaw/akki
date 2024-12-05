@@ -3,10 +3,10 @@ import { fetchPayload } from "@hocuspocus/server";
 
 export const getPageHandler = async (data: fetchPayload) => {
   const page = await db
-    .selectFrom("page")
+    .selectFrom("Page")
     .select("ydoc")
     .where("id", "=", data.documentName)
-    .where("user_id", "=", data.context.userId)
+    .where("userId", "=", data.context.userId)
     .executeTakeFirstOrThrow();
 
   return page.ydoc;

@@ -4,11 +4,11 @@ type PageSelect = Array<keyof Omit<Page, "ydoc">>;
 
 export const selectArray: PageSelect = [
   "id",
-  "page_name",
-  "is_starred",
+  "pageName",
+  "isStarred",
   "path",
-  "accessed_at",
-  "created_at",
-  "deleted_at",
-  "modified_at",
+  "accessedAt",
+  "createdAt",
+  "deletedAt",
+  "modifiedAt",
 ];

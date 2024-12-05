@@ -24,15 +24,16 @@ export const transformPageListForClient = (
   pageList: PageListFromDBQuery,
 ): PageListResponse => {
   return pageList.map((page) => ({
-    id: page.id,
-    pageName: page.page_name,
-    path: page.path,
+    ...page,
     children: page.children ? page.children : undefined,
-    isStarred: page.is_starred,
-    createdAt: page.created_at,
-    accessedAt: page.accessed_at,
-    modifiedAt: page.modified_at,
-    deletedAt: page.deleted_at,
-    userId: page.user_id,
+    // id: page.id,
+    // pageName: page.page_name,
+    // path: page.path,
+    // isStarred: page.is_starred,
+    // createdAt: page.created_at,
+    // accessedAt: page.accessed_at,
+    // modifiedAt: page.modified_at,
+    // deletedAt: page.deleted_at,
+    // userId: page.user_id,
   }));
 };

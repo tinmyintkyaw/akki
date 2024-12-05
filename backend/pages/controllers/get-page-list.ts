@@ -1,12 +1,11 @@
 import { db } from "@/db/kysely.js";
 import { selectArray } from "@/pages/utils/page-select.js";
-import { transformPageListForClient } from "@/pages/utils/transform-for-client.js";
 import { RequestHandler } from "express";
 import asyncHandler from "express-async-handler";
 import { sql } from "kysely";
 
 const requestHandler: RequestHandler = async (req, res) => {
-  const { userId } = res.locals.session;
+  const { user } = res.locals.session;
 
   /**
    * Equivalent SQL
@@ -34,10 +33,10 @@ const requestHandler: RequestHandler = async (req, res) => {
    */
 
   const pageList = await db
-    .selectFrom("page")
+    .selectFrom("Page")
     .select(({ selectFrom }) => [
       ...selectArray,
-      selectFrom("page as page2")
+      selectFrom("Page as page2")
         .select(({ fn }) => [
           fn.agg<string[]>("array_agg", ["page2.id"]).as("children"),
         ])
@@ -48,13 +47,12 @@ const requestHandler: RequestHandler = async (req, res) => {
         )
         .as("children"),
     ])
-    .where("user_id", "=", userId)
-    .where("deleted_at", "is", null)
-    .orderBy("created_at asc")
+    .where("userId", "=", user.id)
+    .where("deletedAt", "is", null)
+    .orderBy("createdAt")
     .execute();
 
-  const response = transformPageListForClient(pageList);
-  return res.status(200).json(response);
+  return res.status(200).json(pageList);
 };
 
 export const getPageListController = asyncHandler(requestHandler);

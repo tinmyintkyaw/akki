@@ -1,5 +1,4 @@
 import { db } from "@/db/kysely.js";
-import { transformPageForClient } from "@/pages/utils/transform-for-client.js";
 import { meilisearchClient } from "@/search/meilisearch.js";
 import { TypedRequestHandler } from "@/validation/request-validator.js";
 import { CreatePagePayloadSchema } from "@/validation/schemas/page-schema.js";
@@ -24,7 +23,7 @@ type CreatePageControllerType = TypedRequestHandler<
 const defaultTiptapExtensions = [StarterKit, Link, TaskList, TaskItem, Image];
 
 const requestHandler: CreatePageControllerType = async (req, res) => {
-  const { userId } = res.locals.session;
+  const { user } = res.locals.session;
   const body = req.body;
 
   // const newPage = await createPage(body.parentId, body.pageName, userId);
@@ -36,38 +35,35 @@ const requestHandler: CreatePageControllerType = async (req, res) => {
   );
 
   const newPage = await db
-    .insertInto("page")
+    .insertInto("Page")
     .values(({ selectFrom }) => ({
       id: newPageId,
-      user_id: userId,
-      page_name: body.pageName,
+      userId: user.id,
+      pageName: body.pageName,
       ydoc: Buffer.from(Y.encodeStateAsUpdate(newYDoc)),
       path: body.parentId
-        ? selectFrom("page as parent")
+        ? selectFrom("Page as parent")
             .select(sql<string>`parent.path || ${newPageId}`.as("path"))
             .where("id", "=", body.parentId)
         : newPageId,
-      accessed_at: new Date(),
-      modified_at: new Date(),
     }))
     .returningAll()
     .executeTakeFirstOrThrow();
 
   const meilisearchPage: MeilisearchPage = {
     id: newPage.id,
-    userId: newPage.user_id,
-    pageName: newPage.page_name,
+    userId: newPage.userId,
+    pageName: newPage.pageName,
     textContent: [],
-    isStarred: newPage.is_starred,
-    createdAt: newPage.created_at.getTime(),
-    modifiedAt: newPage.modified_at.getTime(),
-    deletedAt: newPage.deleted_at ? newPage.deleted_at.getTime() : false,
+    isStarred: newPage.isStarred,
+    createdAt: newPage.createdAt.getTime(),
+    modifiedAt: newPage.modifiedAt.getTime(),
+    deletedAt: newPage.deletedAt ? newPage.deletedAt.getTime() : false,
   };
 
   await meilisearchClient.index("pages").addDocuments([meilisearchPage]);
 
-  const response = transformPageForClient(newPage);
-  return res.status(200).json(response);
+  return res.status(200).json(newPage);
 };
 
 export const createPageController = asyncHandler(requestHandler);

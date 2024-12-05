@@ -14,18 +14,18 @@ type DeletePageControllerType = TypedRequestHandler<
 >;
 
 const requestHandler: DeletePageControllerType = async (req, res) => {
-  const { userId } = res.locals.session;
+  const { user } = res.locals.session;
 
   const deletedPage = await db
     .with("pages_to_delete", (db) =>
       db
-        .selectFrom("page")
-        .leftJoin("file", "file.page_id", "page.id")
+        .selectFrom("Page")
+        .leftJoin("File", "File.pageId", "Page.id")
         .select((eb) => [
-          "page.id",
+          "Page.id",
           eb
             .case()
-            .when(eb.fn.count("file.id"), ">", 0)
+            .when(eb.fn.count("File.id"), ">", 0)
             .then(
               sql<
                 Pick<File, "id" | "extension">[]
@@ -36,12 +36,12 @@ const requestHandler: DeletePageControllerType = async (req, res) => {
             .as("files"),
         ])
         .where(sql`page.path ~ ('*.' || ${req.params.pageId} || '.*')::lquery`)
-        .where("page.user_id", "=", userId)
-        .groupBy(["page.id"]),
+        .where("Page.userId", "=", user.id)
+        .groupBy(["Page.id"]),
     )
-    .deleteFrom("page")
+    .deleteFrom("Page")
     .using("pages_to_delete")
-    .where("page.id", "=", (eb) => eb.ref("pages_to_delete.id"))
+    .where("Page.id", "=", (eb) => eb.ref("pages_to_delete.id"))
     .returningAll()
     .execute();
 
@@ -51,7 +51,7 @@ const requestHandler: DeletePageControllerType = async (req, res) => {
     if (page.files) {
       page.files.forEach(async ({ id, extension }) => {
         const filePath = path.join(
-          (process.cwd(), "uploads", userId, `${id}.${extension}`),
+          (process.cwd(), "uploads", user.id, `${id}.${extension}`),
         );
         await fs.rm(filePath);
       });
