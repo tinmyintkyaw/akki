@@ -8,23 +8,23 @@ const requestHandler: RequestHandler = async (req, res) => {
 
   const pageId = req.body.pageId;
   const fileUID = path.parse(req.file.filename).name;
-  const userId = res.locals.session.userId;
+  const userId = res.locals.session.user.id;
   const originalName = req.file.originalname;
 
   const parsedFileName = path.parse(fileUID);
   const file = await db
-    .insertInto("file")
+    .insertInto("File")
     .values({
       id: parsedFileName.name,
       extension: parsedFileName.ext,
-      file_name: originalName,
-      page_id: pageId,
-      user_id: userId,
+      fileName: originalName,
+      pageId: pageId,
+      userId: userId,
     })
     .returningAll()
     .executeTakeFirstOrThrow();
 
-  const url = `${req.headers.host}/api/files/${file.file_name}.${file.extension}`;
+  const url = `${req.headers.host}/api/files/${file.fileName}.${file.extension}`;
 
   return res.status(200).json({ url });
 };
