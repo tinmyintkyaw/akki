@@ -1,4 +1,4 @@
-import { useSession } from "@/hooks/useSession";
+import { authClient } from "@/authClient";
 import CustomCodeBlock from "@/tiptap/CustomCodeBlock";
 import CustomDocument from "@/tiptap/CustomDocument";
 import CustomHeading from "@/tiptap/CustomHeading";
@@ -18,7 +18,7 @@ import { common, createLowlight } from "lowlight";
 const lowlight = createLowlight(common);
 
 const useContentEditor = (provider: HocuspocusProvider) => {
-  const { session } = useSession();
+  const session = authClient.useSession();
 
   const editorCursor = useStore((state) => state.editorSelection);
   const isCmdPaletteOpen = useStore((state) => state.isCmdPaletteOpen);
@@ -62,7 +62,7 @@ const useContentEditor = (provider: HocuspocusProvider) => {
       CollaborationCursor.configure({
         provider: provider,
         user: {
-          name: session?.user.name,
+          name: session.data ? session.data.user.name : "Anonymous",
         },
       }),
     ],
