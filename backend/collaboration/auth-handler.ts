@@ -1,34 +1,18 @@
-import { redisClient } from "@/configs/ioredis.js";
-import { db } from "@/db/kysely.js";
+import { auth } from "@/auth/better-auth.js";
 import { onAuthenticatePayload } from "@hocuspocus/server";
+import { fromNodeHeaders } from "better-auth/node";
 
 export const websocketAuthHandler = async (
   data: onAuthenticatePayload,
   lastCheckedTimestamps: Map<string, number>,
 ) => {
-  const redisSession = await redisClient.get(`editor:${data.token}`);
-  if (!redisSession) throw new Error("Invalid token");
+  const session = await auth.api.getSession({
+    headers: fromNodeHeaders(data.requestHeaders),
+  });
 
-  const multiplayerSession = JSON.parse(redisSession);
-
-  if (multiplayerSession.editorKeyReqIp !== data.context.clientIp)
-    throw new Error("IP addresses does not match");
-
-  if (new Date(multiplayerSession.editorKeyExpires).getDate() > Date.now())
-    throw new Error("Key expired");
-
-  await db
-    .selectFrom("page")
-    .where("id", "=", data.documentName)
-    .where("user_id", "=", multiplayerSession.userId)
-    .executeTakeFirstOrThrow();
-
-  await redisClient.del(`editor:${data.token}`);
-
-  lastCheckedTimestamps.set(data.token, Date.now());
+  if (!session) throw new Error("Invalid session");
 
   return {
-    userId: multiplayerSession.userId,
-    token: data.token,
+    userId: session.user.id,
   };
 };
