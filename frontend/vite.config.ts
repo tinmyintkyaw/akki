@@ -10,6 +10,9 @@ export default defineConfig({
   },
   server: {
     port: 3400,
+    // workaround for vite dev to work inside devcontainers
+    // https://github.com/vitejs/vite/issues/16522
+    host: "127.0.0.1",
     hmr: {
       port: 5500,
     },
