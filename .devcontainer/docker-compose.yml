@@ -23,17 +23,6 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_DB: postgres
 
-  redis:
-    container_name: redis-dev
-    image: redis:alpine
-    restart: unless-stopped
-    command: /bin/sh -c "redis-server --requirepass $$REDIS_PASSWORD"
-    environment:
-      REDIS_PASSWORD: "redis"
-    volumes:
-      - redis-dev-data:/data
-    network_mode: service:db
-
   meilisearch:
     container_name: meilisearch-dev
     image: getmeili/meilisearch:v1.5
@@ -47,4 +36,4 @@ services:
 volumes:
   postgres-dev-data:
   meilisearch-dev-data:
-  redis-dev-data:
+  # redis-dev-data:

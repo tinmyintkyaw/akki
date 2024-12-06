@@ -22,12 +22,7 @@ const useMultiplayerProvider = (pageId: string) => {
       name: pageId,
       url: MULTIPLAYER_URL,
       document: new Y.Doc(),
-      token: async () => {
-        const res = await fetch("/api/auth/editor/token");
-        if (!res.ok) return "";
-        const { editorToken } = await res.json();
-        return editorToken as string;
-      },
+      token: "token",
 
       onStatus({ status }) {
         setWSConnectionStatus(status);

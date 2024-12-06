@@ -9,7 +9,7 @@ export default defineConfig({
     outDir: "dist",
   },
   server: {
-    port: 3200,
+    port: 3400,
     hmr: {
       port: 5500,
     },
@@ -20,7 +20,7 @@ export default defineConfig({
       },
       "/api": {
         target: "http://localhost:3300",
-        rewrite: (path) => path.replace("/api", ""),
+        // rewrite: (path) => path.replace("/api", ""),
         ws: true,
       },
     },

@@ -1,5 +1,5 @@
-import { useSession } from "@/hooks/useSession";
-import { ReactNode } from "react";
+import { authClient } from "@/authClient";
+import { ReactNode, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 
 interface ProtectedProps {
@@ -7,17 +7,18 @@ interface ProtectedProps {
 }
 
 const Protected = (props: ProtectedProps) => {
-  const { status } = useSession();
+  const session = authClient.useSession();
 
-  switch (status) {
-    case "unauthenticated":
-      return <Navigate to={"/signin"} />;
+  useEffect(() => console.log(session), [session]);
 
-    case "authenticated":
+  if (session.isPending) {
+    return <></>;
+  } else {
+    if (session.data) {
       return props.children;
-
-    case "loading":
-      return <></>;
+    } else {
+      return <Navigate to={"/signin"} />;
+    }
   }
 };
 

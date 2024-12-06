@@ -17,7 +17,7 @@ const Sidebar = () => {
   const pageListQuery = usePageListQuery();
   const createPageMutation = useCreatePageMutation(queryClient);
 
-  const toggleSidebarOpen = useStore((state) => state.toggleStarredSectionOpen);
+  const toggleSidebarOpen = useStore((state) => state.toggleSidebarOpen);
   const isStarredSectionOpen = useStore((state) => state.isStarredSectionOpen);
   const toggleStarredSectionOpen = useStore(
     (state) => state.toggleStarredSectionOpen,

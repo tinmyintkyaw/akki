@@ -6,20 +6,20 @@ import path from "path";
 
 const requestHandler: RequestHandler = async (req, res) => {
   const fileId = path.parse(req.params.fileId).name;
-  const userId = res.locals.session.userId;
+  const userId = res.locals.session.user.id;
 
   try {
     const dbFile = await db
-      .selectFrom("file")
+      .selectFrom("File")
       .where("id", "=", fileId)
-      .where("user_id", "=", userId)
+      .where("userId", "=", userId)
       .selectAll()
       .executeTakeFirstOrThrow();
 
     const filePath = path.join(
       process.cwd(),
       "uploads",
-      dbFile.user_id,
+      dbFile.userId,
       dbFile.id,
     );
 

@@ -1,5 +1,6 @@
+import { authClient } from "@/authClient";
 import SettingsComponent from "@/components/Settings";
-import { useTheme } from "@/components/theme-provider";
+import { Theme, useTheme } from "@/components/theme-provider";
 import {
   Dialog,
   DialogContent,
@@ -39,7 +40,6 @@ import {
   Trash,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Theme } from "@/components/theme-provider";
 
 interface ToolbarDropdownProps {
   children: React.ReactNode;
@@ -160,8 +160,11 @@ const ToolbarDropdown: React.FC<ToolbarDropdownProps> = (props) => {
 
           <DropdownMenuItem
             onClick={async () => {
-              await fetch("/api/signout", { method: "POST" });
-              navigate("/signin");
+              await authClient.signOut({
+                fetchOptions: {
+                  onSuccess: () => navigate("/signin"),
+                },
+              });
             }}
           >
             <LogOut className="mr-2 h-4 w-4" />

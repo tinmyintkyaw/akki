@@ -9,19 +9,19 @@ export const storePageHandler = async (data: storePayload) => {
     const textContentArray = await ydocToTextContent(data.document);
 
     const dbPage = await db
-      .updateTable("page")
-      .where("user_id", "=", data.context.userId)
+      .updateTable("Page")
+      .where("userId", "=", data.context.userId)
       .where("id", "=", data.documentName)
       .set({ ydoc: data.state })
-      .returning(["id", "user_id", "modified_at"])
+      .returning(["id", "userId", "modifiedAt"])
       .executeTakeFirstOrThrow();
 
     // Update Meilisearch index
     const meilisearchPage: MeilisearchPage = {
       id: dbPage.id,
       textContent: textContentArray,
-      modifiedAt: dbPage.modified_at.getTime(),
-      userId: dbPage.user_id,
+      modifiedAt: dbPage.modifiedAt.getTime(),
+      userId: dbPage.userId,
     };
 
     await meilisearchClient.index("pages").updateDocuments([meilisearchPage]);

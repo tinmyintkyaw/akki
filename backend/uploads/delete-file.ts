@@ -7,12 +7,12 @@ import path from "path";
 const requestHandler: RequestHandler = async (req, res) => {
   const { name: fileId } = path.parse(req.params.fileName);
 
-  const userId = res.locals.session.userId;
+  const userId = res.locals.session.user.id;
 
   const file = await db
-    .deleteFrom("file")
+    .deleteFrom("File")
     .where("id", "=", fileId)
-    .where("user_id", "=", userId)
+    .where("userId", "=", userId)
     .returningAll()
     .executeTakeFirstOrThrow();
 

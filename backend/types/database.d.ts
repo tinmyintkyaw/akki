@@ -7,82 +7,104 @@ import {
 } from "kysely";
 
 export interface Database {
-  user: UserTable;
-  key: KeyTable;
-  page: PageTable;
-  file: FileTable;
-  setting: SettingTable;
-  global_variable: GlobalVariableTable;
+  User: {
+    id: string;
+    name: string;
+    email: string;
+    emailVerified: boolean;
+    image?: string;
+    searchKeyId: string;
+    searchKeyValue: string;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+
+  Session: {
+    id: string;
+    userId: string;
+    token: string;
+    searchToken: string;
+    expiresAt: Date;
+    ipAddress?: string;
+    userAgent?: string;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+
+  Account: {
+    id: string;
+    userId: string;
+    accountId: string;
+    providerId: string;
+    accessToken?: string;
+    refreshToken?: string;
+    accessTokenExpiresAt?: Date;
+    refreshTokenExpiresAt?: Date;
+    scope?: string;
+    password?: string;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+
+  Verification: {
+    id: string;
+    identifier: string;
+    value: string;
+    expiresAt: Date;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+
+  Page: {
+    id: string;
+    pageName: ColumnType<string, string | undefined, string | undefined>;
+    path: string;
+    ydoc: Buffer;
+    isStarred: ColumnType<boolean, boolean | undefined, boolean | undefined>;
+    createdAt: ColumnType<Date, never, never>;
+    modifiedAt: ColumnType<Date, never, Date>;
+    accessedAt: ColumnType<Date, never, Date>;
+    deletedAt: Date | null;
+    userId: string;
+  };
+
+  File: {
+    id: string;
+    extension: string;
+    fileName: string;
+    userId: string;
+    pageId: string;
+  };
+
+  Setting: {
+    id: string;
+    editorWidth: number;
+    userId: string;
+  };
+
+  GlobalVariable: {
+    id: Generated<number>;
+    searchKeyId: string;
+    searchKeyValue: string;
+  };
 }
 
-export interface UserTable {
-  id: string;
-  name: string;
-  username: string | null;
-  image: string | null;
-  email: string | null;
-  email_verified: boolean | null;
-}
+export type User = Selectable<Database["User"]>;
+export type NewUser = Insertable<Database["User"]>;
+export type UpdateUser = Updateable<Database["User"]>;
 
-export interface KeyTable {
-  id: string;
-  hashed_password: string | null;
-  user_id: string;
-}
+export type Page = Selectable<Database["Page"]>;
+export type NewPage = Insertable<Database["Page"]>;
+export type UpdatePage = Updateable<Database["Page"]>;
 
-export interface PageTable {
-  id: string;
-  page_name: ColumnType<string, string | undefined, string | undefined>;
-  path: string;
-  ydoc: Buffer;
-  is_starred: ColumnType<boolean, boolean | undefined, boolean | undefined>;
-  created_at: ColumnType<Date, never, never>;
-  modified_at: ColumnType<Date, never, Date>;
-  accessed_at: ColumnType<Date, never, Date>;
-  deleted_at: Date | null;
-  user_id: string;
-}
+export type File = Selectable<Database["File"]>;
+export type NewFile = Insertable<Database["File"]>;
+export type UpdateFile = Updateable<Database["File"]>;
 
-export interface FileTable {
-  id: string;
-  extension: string;
-  file_name: string;
-  user_id: string;
-  page_id: string;
-}
+export type Setting = Selectable<Database["Setting"]>;
+export type NewSetting = Insertable<Database["Setting"]>;
+export type UpdateSetting = Updateable<Database["Setting"]>;
 
-export interface SettingTable {
-  id: string;
-  editor_width: number;
-  user_id: string;
-}
-
-export interface GlobalVariableTable {
-  id: Generated<number>;
-  search_key_id: string;
-  search_key_value: string;
-}
-
-export type User = Selectable<UserTable>;
-export type NewUser = Insertable<UserTable>;
-export type UpdateUser = Updateable<UserTable>;
-
-export type Key = Selectable<KeyTable>;
-export type NewKey = Insertable<KeyTable>;
-export type UpdateKey = Updateable<KeyTable>;
-
-export type Page = Selectable<PageTable>;
-export type NewPage = Insertable<PageTable>;
-export type UpdatePage = Updateable<PageTable>;
-
-export type File = Selectable<FileTable>;
-export type NewFile = Insertable<FileTable>;
-export type UpdateFile = Updateable<FileTable>;
-
-export type Setting = Selectable<SettingTable>;
-export type NewSetting = Insertable<SettingTable>;
-export type UpdateSetting = Updateable<SettingTable>;
-
-export type GlobalVariable = Selectable<GlobalVariableTable>;
-export type NewGlobalVariable = Insertable<GlobalVariableTable>;
-export type UpdateGlobalVariable = Updateable<GlobalVariableTable>;
+export type GlobalVariable = Selectable<Database["GlobalVariable"]>;
+export type NewGlobalVariable = Insertable<Database["GlobalVariable"]>;
+export type UpdateGlobalVariable = Updateable<Database["GlobalVariable"]>;
