@@ -1,42 +1,37 @@
-FROM node:18-alpine AS base
-
-FROM base AS deps
-RUN apk add --no-cache libc6-compat
-
+FROM node:20-alpine AS base
+RUN npm install -g pnpm
 WORKDIR /app
-COPY package.json .
-COPY pnpm-lock.yaml .
-COPY prisma .
-RUN npm install -g pnpm && pnpm i
-RUN npm exec prisma generate
 
 
 FROM base AS builder
+# fetch packages to pnpm store from lockfile instead of package.json
+COPY pnpm-lock.yaml ./
+RUN pnpm fetch
 
-RUN apk add --no-cache libc6-compat
-WORKDIR /app
+COPY . ./
+RUN pnpm install -r --offline
 
-COPY . .
-COPY --from=deps /app/node_modules node_modules
-RUN ls
-RUN npm run build
+RUN pnpm run build
+
+RUN pnpm --filter backend --prod deploy backend/pruned
+RUN mv backend/pruned/dist/* backend/pruned
+RUN rm -r backend/pruned/dist
 
 
 # App
 FROM base AS api
+ENV NODE_ENV=production 
 
-WORKDIR /app
-ENV NODE_ENV=production
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nodejs -u 1001
-COPY --from=builder --chown=nodejs:nodejs /app/dist/server .
-USER nodejs
 
-ENTRYPOINT [ "./docker-entrypoint.sh" ]
-CMD node index.cjs
+COPY --from=builder --chown=nodejs:nodejs /app/backend/pruned/ .
+
+USER nodejs
+CMD ["node", "index.js"]
 
 
 # Caddy
-FROM caddy:2.7-alpine AS caddy
-COPY ./Caddyfile /etc/caddy/Caddyfile
-COPY --from=builder /app/dist/client /srv
+# FROM caddy:2.7-alpine AS app-proxy
+# COPY Caddyfile /etc/caddy/Caddyfile
+# COPY --from=builder /app/frontend/dist /srv

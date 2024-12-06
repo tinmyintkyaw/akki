@@ -5,4 +5,4 @@ npm-debug.log
 .coverage
 .coverage.*
 .env
-.env.development
+.env.*

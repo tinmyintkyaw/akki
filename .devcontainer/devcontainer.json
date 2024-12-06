@@ -1,0 +1,47 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/javascript-node-postgres
+{
+  "name": "Development Environment",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {}
+  },
+
+  "postCreateCommand": "pnpm -r install --frozen-lockfile",
+
+  "forwardPorts": [3200, 3300, 5432, 7700, 6379],
+
+  "portsAttributes": {
+    "3200": {
+      "label": "Frontend"
+    },
+    "3300": {
+      "label": "Backend"
+    },
+    "5432": {
+      "label": "Postgres"
+    },
+    "6379": {
+      "label": "Redis"
+    },
+    "7700": {
+      "label": "Meilisearch"
+    }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "matthewpi.caddyfile-support",
+        "dbaeumer.vscode-eslint",
+        "GitHub.vscode-pull-request-github",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        "redhat.vscode-yaml"
+      ]
+    }
+  }
+}

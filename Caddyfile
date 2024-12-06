@@ -6,9 +6,9 @@
 		try_files {path} /index.html
 	}
 
-	# proxy Typesense server
+	# proxy meilisearch
 	handle_path /api/search/* {
-		reverse_proxy localhost:8108
+		reverse_proxy localhost:7700
 	}
 
 	# proxy CRUD API

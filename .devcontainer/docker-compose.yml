@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ../..:/workspaces:cached
+    # Overrides default command so things don't shut down after the process ends.
+    command: sleep infinity
+    # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
+    network_mode: service:db
+
+  db:
+    container_name: postgres-dev
+    image: postgres:15
+    restart: unless-stopped
+    volumes:
+      - postgres-dev-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+
+  meilisearch:
+    container_name: meilisearch-dev
+    image: getmeili/meilisearch:v1.5
+    restart: unless-stopped
+    environment:
+      MEILI_MASTER_KEY: "meilisearch_master_key"
+    volumes:
+      - meilisearch-dev-data:/meili_data
+    network_mode: service:db
+
+volumes:
+  postgres-dev-data:
+  meilisearch-dev-data:
+  # redis-dev-data:
