@@ -21,7 +21,7 @@ export default function EditorLayout() {
 
   useEffect(() => {
     if (pageQuery.isLoading || pageQuery.isError || !pageQuery.data) return;
-    document.title = pageQuery.data.pageName;
+    document.title = `${pageQuery.data.pageName} | Okoume`;
   }, [pageQuery.data, pageQuery.isError, pageQuery.isLoading]);
 
   return (

@@ -28,7 +28,7 @@ const Sidebar = () => {
       <div className="flex h-12 select-none flex-row items-center justify-between gap-2 px-3">
         <header className="ml-2 flex flex-row justify-start">
           <SquareAsterisk className="mr-2 h-6 w-6" />
-          <h1>Project Potion</h1>
+          <h1>Okoume</h1>
         </header>
 
         <Button variant={"ghost"} size={"icon"} onClick={toggleSidebarOpen}>

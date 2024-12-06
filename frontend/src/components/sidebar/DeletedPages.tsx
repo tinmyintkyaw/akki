@@ -82,21 +82,10 @@ const DeletedPages: React.FC = () => {
                   variant={"ghost"}
                   size={"icon"}
                   onClick={async () => {
-                    permanentlyDeletePageMutation.mutate({ id: page.id });
-
-                    // if (page.id !== router.query.pageId)
-                    //   return setIsOpen(false);
-
-                    // await recentPagesQuery.refetch();
-                    // if (
-                    //   recentPagesQuery.isError ||
-                    //   !recentPagesQuery.data ||
-                    //   !recentPagesQuery.data[0]
-                    // )
-                    //   return router.push("/new");
-
-                    // router.push(`/${recentPagesQuery.data[0].id}`);
-                    // setIsOpen(false);
+                    permanentlyDeletePageMutation.mutate(
+                      { id: page.id },
+                      { onSuccess: () => navigate("/") },
+                    );
                   }}
                   className="hover:bg-neutral-300 dark:hover:bg-neutral-600"
                 >

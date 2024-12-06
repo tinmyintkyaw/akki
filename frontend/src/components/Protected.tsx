@@ -1,5 +1,5 @@
 import { authClient } from "@/authClient";
-import { ReactNode, useEffect } from "react";
+import { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 
 interface ProtectedProps {
@@ -8,8 +8,6 @@ interface ProtectedProps {
 
 const Protected = (props: ProtectedProps) => {
   const session = authClient.useSession();
-
-  useEffect(() => console.log(session), [session]);
 
   if (session.isPending) {
     return <></>;

@@ -1,6 +1,6 @@
 import AppLayout from "@/components/AppLayout";
 import EditorLayout from "@/components/EditorLayout";
-import IndecPage from "@/components/IndexPage";
+import IndexPage from "@/components/IndexPage";
 // import GlobalError from "@/components/error/GlobalError";
 import Protected from "@/components/Protected";
 import Signin from "@/components/Signin";
@@ -23,7 +23,7 @@ const router = createBrowserRouter(
           </Protected>
         }
       >
-        <Route index element={<IndecPage />} />
+        <Route index element={<IndexPage />} />
         <Route path="/:pageId" element={<EditorLayout />} />
       </Route>
     </Route>,
