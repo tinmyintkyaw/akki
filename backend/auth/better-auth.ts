@@ -76,8 +76,6 @@ export const auth = betterAuth({
             .where("User.id", "=", session.userId)
             .executeTakeFirstOrThrow();
 
-          console.log(dbUser);
-
           const tenantToken = meilisearchClient.generateTenantToken(
             dbUser.searchKeyId,
             {

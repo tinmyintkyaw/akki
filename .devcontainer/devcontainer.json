@@ -15,7 +15,7 @@
   "forwardPorts": [3200, 3300, 5432, 7700, 6379],
 
   "portsAttributes": {
-    "3200": {
+    "3400": {
       "label": "Frontend"
     },
     "3300": {
@@ -23,9 +23,6 @@
     },
     "5432": {
       "label": "Postgres"
-    },
-    "6379": {
-      "label": "Redis"
     },
     "7700": {
       "label": "Meilisearch"

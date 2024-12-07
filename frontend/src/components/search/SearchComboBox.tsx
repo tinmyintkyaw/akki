@@ -14,12 +14,7 @@ import { MeilisearchPage } from "@project/shared-types";
 import { Hit } from "instantsearch.js";
 import { ArrowDownUp, CornerDownLeft } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
-import {
-  Configure,
-  useHits,
-  useInstantSearch,
-  useSearchBox,
-} from "react-instantsearch";
+import { Configure, useHits, useSearchBox } from "react-instantsearch";
 
 type SearchComboBoxProps = {
   children: ReactNode;
@@ -52,10 +47,6 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
     const hit = transformedHits.find((hit) => hit.id === detailHit?.id);
     hit && setDetailHit(hit);
   }, [detailHit?.id, transformedHits]);
-
-  const instantSearch = useInstantSearch();
-
-  useEffect(() => console.log(instantSearch), [instantSearch]);
 
   return (
     <Dialog

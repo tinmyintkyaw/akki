@@ -58,7 +58,6 @@ const CustomImageBackend = Image.extend({
           },
 
           handlePaste(view, event) {
-            console.log("paste event");
             const items = Array.from(event.clipboardData?.items || []);
 
             for (const item of items) {
