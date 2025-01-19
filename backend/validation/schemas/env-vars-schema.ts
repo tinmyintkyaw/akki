@@ -54,8 +54,6 @@ const envVarsSchema = z
       .transform((val) => parseInt(val)),
     MEILI_MASTER_KEY: z.string().trim(),
 
-    REDIS_PASSWORD: z.string().trim(),
-
     DEMO_MODE: z.enum(["true", "false"]).optional().default("false"),
   })
   .and(githubOAuthEnvVarsSchema)

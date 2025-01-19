@@ -27,7 +27,7 @@ const requestHandler: EditPageControllerType = async (req, res) => {
       id: page.id,
       modifiedAt: page.modifiedAt.getTime(),
     }));
-    // await meilisearchClient.index("pages").updateDocuments(meilisearchPageList);
+    await meilisearchClient.index("pages").updateDocuments(meilisearchPageList);
   }
 
   if (deletedAt !== undefined) {
@@ -35,12 +35,12 @@ const requestHandler: EditPageControllerType = async (req, res) => {
       deletedAt: deletedAt,
     });
 
-    // const meilisearchPageList: MeilisearchPage[] = result.map((page) => ({
-    //   id: page.id,
-    //   deletedAt: page.deletedAt ? page.deletedAt.getTime() : false,
-    //   modifiedAt: page.modifiedAt.getTime(),
-    // }));
-    // await meilisearchClient.index("pages").updateDocuments(meilisearchPageList);
+    const meilisearchPageList: MeilisearchPage[] = result.map((page) => ({
+      id: page.id,
+      deletedAt: page.deletedAt ? page.deletedAt.getTime() : false,
+      modifiedAt: page.modifiedAt.getTime(),
+    }));
+    await meilisearchClient.index("pages").updateDocuments(meilisearchPageList);
   }
 
   // Only for updating page_name & is_starred

@@ -12,7 +12,7 @@
 
   "postCreateCommand": "pnpm -r install --frozen-lockfile",
 
-  "forwardPorts": [3200, 3300, 5432, 7700, 6379],
+  "forwardPorts": [3300, 3400, 5432, 7700],
 
   "portsAttributes": {
     "3400": {

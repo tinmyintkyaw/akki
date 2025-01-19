@@ -1,11 +1,16 @@
 import { parsedProcessEnv } from "@/validation/env-vars-validator.js";
 import { Meilisearch } from "meilisearch";
+import url from "url";
 
-const { MEILI_HOST, MEILI_PORT, MEILI_MASTER_KEY } = parsedProcessEnv;
+const meilisearchHostURL = url.format({
+  protocol: "http",
+  hostname: parsedProcessEnv.MEILI_HOST,
+  port: parsedProcessEnv.MEILI_PORT,
+});
 
 const meilisearchClient = new Meilisearch({
-  host: `http://${MEILI_HOST}:${MEILI_PORT}`,
-  apiKey: MEILI_MASTER_KEY,
+  host: meilisearchHostURL,
+  apiKey: parsedProcessEnv.MEILI_MASTER_KEY,
 });
 
 export { meilisearchClient };

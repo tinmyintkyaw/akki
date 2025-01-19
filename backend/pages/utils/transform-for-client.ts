@@ -9,14 +9,14 @@ type PageListFromDBQuery = Array<
 export const transformPageForClient = (page: PageFromDBQuery): PageResponse => {
   return {
     id: page.id,
-    pageName: page.page_name,
+    pageName: page.pageName,
     path: page.path,
-    isStarred: page.is_starred,
-    createdAt: page.created_at,
-    accessedAt: page.accessed_at,
-    modifiedAt: page.modified_at,
-    deletedAt: page.deleted_at,
-    userId: page.user_id,
+    isStarred: page.isStarred,
+    createdAt: page.createdAt,
+    accessedAt: page.accessedAt,
+    modifiedAt: page.modifiedAt,
+    deletedAt: page.deletedAt,
+    userId: page.userId,
   };
 };
 
@@ -27,13 +27,13 @@ export const transformPageListForClient = (
     ...page,
     children: page.children ? page.children : undefined,
     // id: page.id,
-    // pageName: page.page_name,
+    // pageName: page.pageName,
     // path: page.path,
-    // isStarred: page.is_starred,
-    // createdAt: page.created_at,
-    // accessedAt: page.accessed_at,
-    // modifiedAt: page.modified_at,
-    // deletedAt: page.deleted_at,
-    // userId: page.user_id,
+    // isStarred: page.isStarred,
+    // createdAt: page.createdAt,
+    // accessedAt: page.accessedAt,
+    // modifiedAt: page.modifiedAt,
+    // deletedAt: page.deletedAt,
+    // userId: page.userId,
   }));
 };

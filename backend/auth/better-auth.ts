@@ -1,4 +1,5 @@
 import { db } from "@/db/kysely.js";
+import { defaultSearchKey } from "@/search/default-key.js";
 import { meilisearchClient } from "@/search/meilisearch.js";
 import { parsedProcessEnv } from "@/validation/env-vars-validator.js";
 import { betterAuth } from "better-auth";
@@ -9,37 +10,24 @@ export const auth = betterAuth({
 
   socialProviders: {
     github: {
-      enabled: true,
+      enabled: parsedProcessEnv.GITHUB_OAUTH_ENABLED === "true",
       clientId: parsedProcessEnv.GITHUB_CLIENT_ID,
+      clientSecret: parsedProcessEnv.GITHUB_CLIENT_SECRET,
+    },
+    google: {
+      enabled: parsedProcessEnv.GOOGLE_OAUTH_ENABLED === "true",
+      clientId: parsedProcessEnv.GOOGLE_CLIENT_ID,
       clientSecret: parsedProcessEnv.GITHUB_CLIENT_SECRET,
     },
   },
 
   user: {
     additionalFields: {
-      searchKeyId: {
-        type: "string",
-        fieldName: "searchKeyId",
-        required: true,
-        returned: false,
-        input: false,
-      },
-      searchKeyValue: {
-        type: "string",
-        fieldName: "searchKeyValue",
-        required: true,
-        returned: false,
-        input: false,
-      },
-    },
-  },
-
-  session: {
-    additionalFields: {
       searchToken: {
         type: "string",
         fieldName: "searchToken",
         required: true,
+        returned: false,
         input: false,
       },
     },
@@ -49,71 +37,23 @@ export const auth = betterAuth({
     user: {
       create: {
         before: async (user) => {
-          const userKey = await meilisearchClient.createKey({
-            name: user.id,
-            actions: ["search"],
-            indexes: ["pages"],
-            expiresAt: null,
-          });
-
           return {
-            data: {
-              ...user,
-              searchKeyId: userKey.uid,
-              searchKeyValue: userKey.key,
-            },
+            data: { ...user, searchToken: "" },
           };
         },
-      },
-    },
 
-    session: {
-      create: {
-        before: async (session) => {
-          const dbUser = await db
-            .selectFrom("User")
-            .selectAll()
-            .where("User.id", "=", session.userId)
-            .executeTakeFirstOrThrow();
-
+        after: async (user) => {
           const tenantToken = meilisearchClient.generateTenantToken(
-            dbUser.searchKeyId,
-            {
-              pages: { filter: `userId = ${session.userId}` },
-            },
-            {
-              apiKey: dbUser.searchKeyValue,
-              expiresAt: session.expiresAt,
-            },
-          );
-          return {
-            data: { ...session, searchToken: tenantToken },
-          };
-        },
-      },
-
-      update: {
-        before: async (session) => {
-          const dbUser = await db
-            .selectFrom("User")
-            .selectAll()
-            .where("User.id", "=", session.userId)
-            .executeTakeFirstOrThrow();
-
-          const tenantToken = meilisearchClient.generateTenantToken(
-            dbUser.searchKeyId,
-            {
-              pages: { filter: `userId = ${session.userId}` },
-            },
-            {
-              apiKey: dbUser.searchKeyValue,
-              expiresAt: session.expiresAt,
-            },
+            defaultSearchKey.uid,
+            { pages: { filter: `userId = ${user.id}` } },
+            { apiKey: defaultSearchKey.key },
           );
 
-          return {
-            data: { ...session, searchToken: tenantToken },
-          };
+          await db
+            .updateTable("User")
+            .where("User.id", "=", user.id)
+            .set({ searchToken: tenantToken })
+            .executeTakeFirstOrThrow();
         },
       },
     },

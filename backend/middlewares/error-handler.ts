@@ -10,14 +10,6 @@ const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
     console.error(error);
   }
 
-  // if (
-  //   error instanceof LuciaError &&
-  //   (error.message === "AUTH_INVALID_KEY_ID" ||
-  //     error.message === "AUTH_INVALID_PASSWORD")
-  // ) {
-  //   return res.sendStatus(401);
-  // }
-
   if (error instanceof ZodError) {
     logger.debug("Validation Error");
     if (parsedProcessEnv.NODE_ENV === "development") {

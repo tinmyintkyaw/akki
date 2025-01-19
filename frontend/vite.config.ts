@@ -17,10 +17,6 @@ export default defineConfig({
       port: 5500,
     },
     proxy: {
-      "/api/search": {
-        target: "http://localhost:7700",
-        rewrite: (path) => path.replace("/api/search", ""),
-      },
       "/api": {
         target: "http://localhost:3300",
         // rewrite: (path) => path.replace("/api", ""),

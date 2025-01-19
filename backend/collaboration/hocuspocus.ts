@@ -8,11 +8,14 @@ import { WebsocketRequestHandler } from "express-ws";
 import requestIp from "request-ip";
 
 // eslint-disable-next-line prefer-const
-let lastCheckedTimestamps = new Map<string, number>();
+// let lastCheckedTimestamps = new Map<string, number>();
 
 const hocuspocusServer = Server.configure({
   async onAuthenticate(data) {
-    return websocketAuthHandler(data, lastCheckedTimestamps);
+    return websocketAuthHandler(
+      data,
+      // lastCheckedTimestamps
+    );
   },
 
   // async beforeHandleMessage(data) {

@@ -5,7 +5,7 @@ import { logger } from "@/logger/index.js";
 import { errorHandler } from "@/middlewares/error-handler.js";
 import { pageRouter } from "@/pages/page-router.js";
 import { globalRateLimiter, sessionRateLimiter } from "@/rate-limit/index.js";
-import { defaultSearchKey } from "@/search/default-key.js";
+import { meilisearchProxy } from "@/search/meilisearch-proxy.js";
 import { checkDBConnection } from "@/startup/check-db-connection.js";
 import { checkMellisearchDB } from "@/startup/check-meilisearch-db.js";
 import { migrateToLatest } from "@/startup/migrate-to-latest.js";
@@ -27,17 +27,15 @@ app.use(helmet());
 app.use(express.urlencoded({ extended: true }));
 app.use(globalRateLimiter);
 
-app.use((_req, res, next) => {
-  res.locals.defaultSearchKey = defaultSearchKey;
-  next();
-});
-
 app.all("/api/auth/*", toNodeHandler(auth));
+
 app.use(express.json());
 
-app.get("/health", (_req, res) => res.sendStatus(200));
+app.get("/api/health", (_req, res) => res.sendStatus(200));
 app.use("/api/pages", authenticatedUser, sessionRateLimiter, pageRouter);
-app.use("/files", authenticatedUser, sessionRateLimiter, fileRouter);
+app.use("/api/files", authenticatedUser, sessionRateLimiter, fileRouter);
+
+app.use("/api/search", authenticatedUser, meilisearchProxy);
 
 app.ws("/api/editor", hocuspocusHandler);
 

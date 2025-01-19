@@ -13,8 +13,7 @@ export interface Database {
     email: string;
     emailVerified: boolean;
     image?: string;
-    searchKeyId: string;
-    searchKeyValue: string;
+    searchToken: string;
     createdAt: Date;
     updatedAt: Date;
   };
@@ -23,7 +22,6 @@ export interface Database {
     id: string;
     userId: string;
     token: string;
-    searchToken: string;
     expiresAt: Date;
     ipAddress?: string;
     userAgent?: string;

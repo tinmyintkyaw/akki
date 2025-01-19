@@ -4,7 +4,7 @@ import { fromNodeHeaders } from "better-auth/node";
 
 export const websocketAuthHandler = async (
   data: onAuthenticatePayload,
-  lastCheckedTimestamps: Map<string, number>,
+  // lastCheckedTimestamps: Map<string, number>,
 ) => {
   const session = await auth.api.getSession({
     headers: fromNodeHeaders(data.requestHeaders),
