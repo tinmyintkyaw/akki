@@ -37,7 +37,7 @@ const useTitleEditor = () => {
         pageName: titleEditor?.getText(),
       });
       setIsEditing(false);
-    }, 500);
+    }, 200);
 
     return () => clearTimeout(timeout);
   }, [isEditing, params.pageId, titleEditor, updatePageMutation]);

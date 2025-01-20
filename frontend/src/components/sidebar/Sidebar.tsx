@@ -2,44 +2,41 @@ import DeletedPages from "@/components/sidebar/DeletedPages";
 import PageTree from "@/components/tree-views/PageTree";
 import StarredPageTree from "@/components/tree-views/StarredPageTree";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+} from "@/components/ui/sidebar";
 import {
   useCreatePageMutation,
   usePageListQuery,
 } from "@/hooks/pageQueryHooks";
 import useStore from "@/zustand/store";
 import { useQueryClient } from "@tanstack/react-query";
-import clsx from "clsx";
-import { PanelLeftClose, Plus, SquareAsterisk } from "lucide-react";
+import { Plus } from "lucide-react";
 
-const Sidebar = () => {
+const AppSidebar = () => {
   const queryClient = useQueryClient();
   const pageListQuery = usePageListQuery();
   const createPageMutation = useCreatePageMutation(queryClient);
 
-  const toggleSidebarOpen = useStore((state) => state.toggleSidebarOpen);
+  // const toggleSidebarOpen = useStore((state) => state.toggleSidebarOpen);
   const isStarredSectionOpen = useStore((state) => state.isStarredSectionOpen);
   const toggleStarredSectionOpen = useStore(
     (state) => state.toggleStarredSectionOpen,
   );
 
   return (
-    <aside className="border-r border-border bg-muted">
-      <div className="flex h-12 select-none flex-row items-center justify-between gap-2 px-3">
-        <header className="ml-2 flex flex-row justify-start">
-          <SquareAsterisk className="mr-2 h-6 w-6" />
-          <h1>Okoume</h1>
+    <Sidebar>
+      <SidebarHeader>
+        <header className="ml-2 flex h-10 flex-row items-center justify-start">
+          <img src="/logo.svg" className="mr-2 h-6 w-6" />
+          <h1>Akki</h1>
         </header>
+      </SidebarHeader>
 
-        <Button variant={"ghost"} size={"icon"} onClick={toggleSidebarOpen}>
-          <PanelLeftClose className="h-5 w-5" />
-        </Button>
-      </div>
-
-      <ScrollArea
-        type="hover"
-        className={clsx("flex h-[calc(100vh-9rem)] text-sm")}
-      >
+      <SidebarContent>
         <div className="px-3 pt-1">
           <Button
             variant={"ghost"}
@@ -70,9 +67,9 @@ const Sidebar = () => {
             </p>
           )}
         </div>
-      </ScrollArea>
+      </SidebarContent>
 
-      <div className="border-t-2 border-border px-3 py-3">
+      <SidebarFooter>
         <Button
           variant={"ghost"}
           className="w-full justify-start"
@@ -85,9 +82,9 @@ const Sidebar = () => {
         </Button>
 
         <DeletedPages />
-      </div>
-    </aside>
+      </SidebarFooter>
+    </Sidebar>
   );
 };
 
-export default Sidebar;
+export default AppSidebar;

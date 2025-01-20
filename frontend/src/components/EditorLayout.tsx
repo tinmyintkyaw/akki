@@ -1,5 +1,6 @@
 import DeletedPageBanner from "@/components/editor/DeletedPageBanner";
 import PageNotFound from "@/components/error/PageNotFound";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import useMultiplayerProvider from "@/hooks/editor/useMultiplayerProvider";
 import { usePageQuery } from "@/hooks/pageQueryHooks";
 import useStore from "@/zustand/store";
@@ -21,7 +22,7 @@ export default function EditorLayout() {
 
   useEffect(() => {
     if (pageQuery.isLoading || pageQuery.isError || !pageQuery.data) return;
-    document.title = `${pageQuery.data.pageName} | Okoume`;
+    document.title = `${pageQuery.data.pageName} | Akki`;
   }, [pageQuery.data, pageQuery.isError, pageQuery.isLoading]);
 
   return (
@@ -34,9 +35,9 @@ export default function EditorLayout() {
             <DeletedPageBanner pageId={pageQuery.data.id} />
           )}
 
-          <div
+          <ScrollArea
             className={clsx(
-              "h-[calc(100vh-3rem)] overflow-y-auto scrollbar-thin",
+              "h-[calc(100vh-3rem)]",
               pageQuery.data.deletedAt && "h-[calc(100vh-6rem)]",
             )}
           >
@@ -48,7 +49,7 @@ export default function EditorLayout() {
                   <EditorComponent provider={multiplayerProvider.provider} />
                 </Suspense>
               )}
-          </div>
+          </ScrollArea>
         </>
       )}
     </>

@@ -1,9 +1,9 @@
 import SearchComboBox from "@/components/search/SearchComboBox";
 import ToolbarDropdown from "@/components/toolbar/ToolbarDropdown";
 import { Button } from "@/components/ui/button";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { usePageQuery, useRecentPagesQuery } from "@/hooks/pageQueryHooks";
-import useStore from "@/zustand/store";
-import { MoreHorizontal, PanelLeftOpen, Search } from "lucide-react";
+import { MoreHorizontal, Search } from "lucide-react";
 import { useParams } from "react-router-dom";
 
 function Toolbar() {
@@ -11,15 +11,15 @@ function Toolbar() {
   const pageQuery = usePageQuery(params.pageId ?? "");
   const recentPageListQuery = useRecentPagesQuery();
 
-  const isSidebarOpen = useStore((state) => state.isSidebarOpen);
-  const toggleSidebarOpen = useStore((state) => state.toggleSidebarOpen);
+  // const isSidebarOpen = useStore((state) => state.isSidebarOpen);
+  // const toggleSidebarOpen = useStore((state) => state.toggleSidebarOpen);
 
   return (
     <div
       id="editor-toolbar"
       className="inline-flex h-12 w-full select-none items-center gap-2 border-b border-border bg-background px-2 text-foreground"
     >
-      {!isSidebarOpen && (
+      {/* {!isSidebarOpen && (
         <Button
           variant={"ghost"}
           size={"icon"}
@@ -28,17 +28,19 @@ function Toolbar() {
         >
           <PanelLeftOpen className="h-5 w-5" />
         </Button>
-      )}
+      )} */}
+
+      <SidebarTrigger />
 
       <Button variant={"ghost"} size={"default"} className="justify-start">
         <span className="line-clamp-1 text-start">
           {pageQuery.data
             ? pageQuery.data.pageName
             : pageQuery.error?.status === 404
-            ? "Page Not Found"
-            : recentPageListQuery.data?.length === 0
-            ? "No Pages"
-            : ""}
+              ? "Page Not Found"
+              : recentPageListQuery.data?.length === 0
+                ? "No Pages"
+                : ""}
         </span>
       </Button>
 
