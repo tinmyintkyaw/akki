@@ -15,6 +15,9 @@ import { toNodeHandler } from "better-auth/node";
 import express from "express";
 import expressWebsockets from "express-ws";
 import helmet from "helmet";
+import path from "path";
+
+const PORT = parsedProcessEnv.PORT;
 
 await checkDBConnection();
 await migrateToLatest();
@@ -26,6 +29,8 @@ const { app } = expressWebsockets(express());
 app.use(helmet());
 app.use(express.urlencoded({ extended: true }));
 app.use(globalRateLimiter);
+
+app.use("/", express.static(path.join(process.cwd(), "public")));
 
 app.all("/api/auth/*", toNodeHandler(auth));
 
@@ -39,9 +44,12 @@ app.use("/api/search", authenticatedUser, meilisearchProxy);
 
 app.ws("/api/editor", hocuspocusHandler);
 
+app.get("*", async (_req, res) => {
+  res.sendFile(path.join(process.cwd(), "public", "index.html"));
+});
+
 app.use("/*", (_req, res) => res.sendStatus(501));
 
 app.use(errorHandler);
 
-const port = parsedProcessEnv.PORT;
-app.listen(port, () => logger.info(`Listening on port ${port}`));
+app.listen(PORT, () => logger.info(`Listening on port ${PORT}`));

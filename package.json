@@ -9,7 +9,8 @@
     "frontend": "pnpm --filter frontend",
     "backend": "pnpm --filter backend",
     "dev": "pnpm -r --parellel dev",
-    "build": "pnpm -r --parellel build"
+    "build": "pnpm -r --parellel build && mkdir backend/dist/public && mv frontend/dist/* backend/dist/public",
+    "preview": "pnpm --filter backend preview"
   },
   "keywords": [],
   "author": "",

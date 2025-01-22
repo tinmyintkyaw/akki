@@ -1,23 +1,4 @@
-version: "3"
-
 services:
-  caddy:
-    container_name: caddy
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: caddy
-    restart: unless-stopped
-    ports:
-      - 80:80
-      - 443:443
-      - 443:443/udp
-    networks:
-      - app-network
-    volumes:
-      - caddy-data:/data
-      - caddy-config:/config
-
   api:
     container_name: api
     build:
@@ -27,8 +8,6 @@ services:
     restart: unless-stopped
     ports:
       - 3300:3300
-    networks:
-      - app-network
     volumes:
       - web-uploads:/app/uploads
     env_file:
@@ -40,21 +19,20 @@ services:
         condition: service_healthy
 
   postgres:
-    container_name: postgres-dev
+    container_name: postgres
     image: postgres:15
     restart: unless-stopped
-    ports:
-      - 5432:5432
+    # ports:
+    # - "5432:5432"
     env_file:
-      - .env.development
+      - .env
     environment:
-      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./postgres-config.conf:/etc/postgresql/postgresql.conf
-    networks:
-      - app-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -62,17 +40,15 @@ services:
       retries: 5
 
   meilisearch:
-    container_name: meilisearch-dev
+    container_name: meilisearch
     image: getmeili/meilisearch:v1.5
     restart: unless-stopped
-    ports:
-      - "7700:7700"
+    # ports:
+    # - "7700:7700"
     env_file:
-      - .env.development
+      - .env
     volumes:
       - meilisearch-data:/meili_data
-    networks:
-      - app-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:7700"]
       interval: 1m30s
@@ -82,11 +58,4 @@ services:
 volumes:
   postgres-data:
   meilisearch-data:
-  redis-data:
-  caddy-config:
-  caddy-data:
   web-uploads:
-
-networks:
-  app-network:
-    name: app-network
