@@ -11,7 +11,7 @@ const sessionRateLimiter = rateLimit({
   windowMs: 1 * 60 * 1000,
   delayAfter: 50,
   delayMs: (hits) => hits * 100,
-  keyGenerator: async (_req, res) => res.locals.session.id,
+  keyGenerator: async (_req, res) => res.locals.session.session.id,
   legacyHeaders: false,
 });
 

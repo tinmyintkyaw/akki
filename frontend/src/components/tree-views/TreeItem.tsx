@@ -35,7 +35,7 @@ interface ItemProps {
   canAddPage: boolean;
 }
 
-const TreeItem: React.FC<ItemProps> = (props) => {
+const TreeViewItem: React.FC<ItemProps> = (props) => {
   const {
     arrow,
     children,
@@ -182,4 +182,4 @@ const TreeItem: React.FC<ItemProps> = (props) => {
   );
 };
 
-export default TreeItem;
+export default TreeViewItem;

@@ -7,7 +7,7 @@ const multerStorage = multer.diskStorage({
   destination: (req, _file, callback) => {
     if (!req.res) throw new Error();
 
-    const userId = req.res?.locals.session.userId;
+    const userId = req.res?.locals.session.user.id;
     const uploadDir = path.join(process.cwd(), "uploads", userId);
 
     let stat: Stats | null = null;
