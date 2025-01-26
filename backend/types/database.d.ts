@@ -12,6 +12,7 @@ export interface Database {
     name: string;
     email: string;
     emailVerified: boolean;
+    isAnonymous?: boolean;
     image?: string;
     searchToken: string;
     createdAt: Date;

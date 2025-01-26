@@ -17,6 +17,10 @@ const googleSignin = async () => {
   });
 };
 
+const anonymousSignin = async () => {
+  await authClient.signIn.anonymous();
+};
+
 function Signin() {
   const session = authClient.useSession();
   const navigate = useNavigate();
@@ -36,6 +40,14 @@ function Signin() {
 
           <Button variant={"outline"} size={"default"} onClick={githubSignin}>
             <span className="w-56">{`Continue with GitHub`}</span>
+          </Button>
+
+          <Button
+            variant={"outline"}
+            size={"default"}
+            onClick={anonymousSignin}
+          >
+            <span className="w-56">{`Anonymous Signin`}</span>
           </Button>
         </>
       )}

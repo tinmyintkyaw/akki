@@ -4,11 +4,11 @@ import { CamelCasePlugin, Kysely, PostgresDialect } from "kysely";
 import postgres from "pg";
 
 const pool = new postgres.Pool({
-  database: parsedProcessEnv.POSTGRES_DB_NAME,
+  database: parsedProcessEnv.POSTGRES_DB,
   host: parsedProcessEnv.POSTGRES_HOST,
   user: parsedProcessEnv.POSTGRES_USER,
   port: parsedProcessEnv.POSTGRES_PORT,
-  password: parsedProcessEnv.POSTGRES_PASS,
+  password: parsedProcessEnv.POSTGRES_PASSWORD,
   max: 10,
 });
 

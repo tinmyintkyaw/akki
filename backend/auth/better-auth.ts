@@ -3,10 +3,17 @@ import { defaultSearchKey } from "@/search/default-key.js";
 import { meilisearchClient } from "@/search/meilisearch.js";
 import { parsedProcessEnv } from "@/validation/env-vars-validator.js";
 import { betterAuth } from "better-auth";
+import { anonymous } from "better-auth/plugins";
 
 export const auth = betterAuth({
   database: { db: db, type: "postgres" },
   // emailAndPassword: { enabled: true },
+
+  plugins: [
+    anonymous({
+      emailDomainName: "example.com",
+    }),
+  ],
 
   socialProviders: {
     github: {
