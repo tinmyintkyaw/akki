@@ -43,9 +43,9 @@ const envVarsSchema = z
       .string()
       .refine((val) => validator.isPort(val))
       .transform((val) => parseInt(val)),
-    POSTGRES_DB_NAME: z.string().trim(),
+    POSTGRES_DB: z.string().trim(),
     POSTGRES_USER: z.string().trim(),
-    POSTGRES_PASS: z.string().trim(),
+    POSTGRES_PASSWORD: z.string().trim(),
 
     MEILI_HOST: z.string().trim().optional(),
     MEILI_PORT: z
