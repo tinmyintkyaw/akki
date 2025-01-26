@@ -3,6 +3,7 @@ import { getPageHandler } from "@/collaboration/get-page.js";
 import { storePageHandler } from "@/collaboration/store-page.js";
 import { logger } from "@/logger/index.js";
 import { Database } from "@hocuspocus/extension-database";
+import { Throttle } from "@hocuspocus/extension-throttle";
 import { Server } from "@hocuspocus/server";
 import { WebsocketRequestHandler } from "express-ws";
 import requestIp from "request-ip";
@@ -23,6 +24,7 @@ const hocuspocusServer = Server.configure({
   // },
 
   extensions: [
+    new Throttle(),
     new Database({
       async fetch(data) {
         return new Promise<Buffer>((resolve, reject) => {
