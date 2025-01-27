@@ -7,10 +7,8 @@ import { InstantSearch } from "react-instantsearch";
 import { Outlet } from "react-router-dom";
 
 export default function Layout() {
-  // const instantSearchClient = useInstantSearchClient();
   const instantSearchClient = instantMeiliSearch(
-    `${window.location.host}/api/search`,
-    "",
+    `${window.location.protocol}//${window.location.host}/api/search`,
   );
 
   // const isSidebarOpen = useStore((state) => state.isSidebarOpen);
