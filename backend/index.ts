@@ -12,6 +12,7 @@ import { migrateToLatest } from "@/startup/migrate-to-latest.js";
 import fileRouter from "@/uploads/file-router.js";
 import { parsedProcessEnv } from "@/validation/env-vars-validator.js";
 import { toNodeHandler } from "better-auth/node";
+import compression from "compression";
 import express from "express";
 import expressWebsockets from "express-ws";
 import helmet from "helmet";
@@ -27,10 +28,14 @@ await checkMellisearchDB();
 const { app } = expressWebsockets(express());
 
 app.use(helmet());
+app.use(compression());
 app.use(express.urlencoded({ extended: true }));
 app.use(globalRateLimiter);
 
-app.use("/", express.static(path.join(process.cwd(), "public")));
+app.use(
+  "/",
+  express.static(path.join(process.cwd(), "public"), { maxAge: "7d" }),
+);
 
 app.all("/api/auth/*", toNodeHandler(auth));
 
