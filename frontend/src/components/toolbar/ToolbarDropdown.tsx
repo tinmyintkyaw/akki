@@ -28,6 +28,7 @@ import {
   useUpdatePageMutation,
 } from "@/hooks/pageQueryHooks";
 import { ToastAction } from "@radix-ui/react-toast";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   LogOut,
@@ -58,6 +59,9 @@ const ToolbarDropdown: React.FC<ToolbarDropdownProps> = (props) => {
 
   return (
     <Dialog>
+      <VisuallyHidden>
+        <DialogTitle>Options</DialogTitle>
+      </VisuallyHidden>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>{props.children}</DropdownMenuTrigger>
 

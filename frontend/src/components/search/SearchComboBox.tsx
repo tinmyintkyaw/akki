@@ -11,6 +11,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import useTransformHits from "@/hooks/useTransformHits";
 import useStore from "@/zustand/store";
 import { MeilisearchPage } from "@project/shared-types";
+import { DialogTitle } from "@radix-ui/react-dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Hit } from "instantsearch.js";
 import { ArrowDownUp, CornerDownLeft } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
@@ -64,6 +66,10 @@ export default function SearchComboBox(props: SearchComboBoxProps) {
         filters={searchFilters}
       />
       <DialogTrigger asChild>{props.children}</DialogTrigger>
+
+      <VisuallyHidden>
+        <DialogTitle>Search Box</DialogTitle>
+      </VisuallyHidden>
 
       <DialogContent
         onCloseAutoFocus={(e) => {

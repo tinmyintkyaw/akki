@@ -12,6 +12,7 @@ import {
   usePermanentlyDeletePageMutation,
   useUndoDeletePageMutation,
 } from "@/hooks/pageQueryHooks";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useQueryClient } from "@tanstack/react-query";
 import { Trash2, Undo } from "lucide-react";
 import { useState } from "react";
@@ -35,6 +36,10 @@ const DeletedPages: React.FC = () => {
           <span className="align-middle leading-4">Trash</span>
         </Button>
       </DialogTrigger>
+
+      <VisuallyHidden>
+        <DialogTitle>Deleted Pages</DialogTitle>
+      </VisuallyHidden>
 
       <DialogContent className="flex h-screen w-screen flex-col bg-popover md:h-[60vh] md:max-w-xl">
         <DialogHeader className="w-full">
