@@ -46,14 +46,9 @@ const useContentEditor = (provider: HocuspocusProvider) => {
       }),
       Placeholder.configure({
         includeChildren: true,
-        placeholder({ node }) {
-          if (node.type.name === "codeBlock") return "";
-          if (node.type.name === "heading") {
-            if (node.attrs.level === 1) return "Heading 1";
-            if (node.attrs.level === 2) return "Heading 2";
-            if (node.attrs.level === 3) return "Heading 3";
-          }
-          return "Start writing...";
+        placeholder({ editor, node }) {
+          if (editor.state.doc.firstChild === node) return "Start writing...";
+          return "";
         },
       }),
       Collaboration.configure({
