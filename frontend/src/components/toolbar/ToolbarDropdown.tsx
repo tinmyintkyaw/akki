@@ -84,7 +84,7 @@ const ToolbarDropdown: React.FC<ToolbarDropdownProps> = (props) => {
                 ) : (
                   <>
                     <Star className="mr-2 h-4 w-4" />
-                    <span>Add to favourites</span>
+                    <span>Add To Starred</span>
                   </>
                 )}
               </DropdownMenuItem>
