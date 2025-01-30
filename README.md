@@ -14,8 +14,12 @@
   <a href="#installation">Installation</a> •
   <a href="#roadmap">Roadmap</a> •
   <a href="#development">Development</a> •
-  <a href="#acknowledgements">Acknowledgements</a> •
+  <a href="#acknowledgements">Acknowledgements</a>
 </p>
+
+
+![akki-demo](https://github.com/user-attachments/assets/8a2ca353-4ec9-43b4-a312-6b96f7e75de6)
+
 
 ## Key Features
 
