@@ -1,4 +1,5 @@
 import { db } from "@/db/kysely.js";
+import { seedNewUserData } from "@/pages/seed-new-user-data.js";
 import { defaultSearchKey } from "@/search/default-key.js";
 import { meilisearchClient } from "@/search/meilisearch.js";
 import { parsedProcessEnv } from "@/validation/env-vars-validator.js";
@@ -61,6 +62,8 @@ export const auth = betterAuth({
             .where("User.id", "=", user.id)
             .set({ searchToken: tenantToken })
             .executeTakeFirstOrThrow();
+
+          await seedNewUserData(user.id);
         },
       },
     },
