@@ -1,27 +1,88 @@
-# React + TypeScript + Vite
+<h1 align="center">
+  <br>
+  <img src="./frontend/public/logo.svg" alt="Akki" width="100">
+  <br>
+  Akki
+  <br>
+</h1>
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<h4 align="center">Minimal note-taking app with markdown support</h4>
 
-Currently, two official plugins are available:
+<p align="center">
+  <a href="#key-features">Key Features</a> •
+  <a href="#see-it-in-action">Demo</a> •
+  <a href="#installation">Installation</a> •
+  <a href="#roadmap">Roadmap</a> •
+  <a href="#development">Development</a> •
+  <a href="#acknowledgements">Acknowledgements</a> •
+</p>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Key Features
 
-## Expanding the ESLint configuration
+- WYSIWYG editor with markdown shortcuts
+- Syntax highlighting
+- Dark/Light mode
+- Synchronization backend
+- Powerful full-text search
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## See It In Action
 
-- Configure the top-level `parserOptions` property like this:
+A demo instance is available here - [Akki Demo](https://akki-demo.tinmyintkyaw.com)
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
+## Installation
+
+Docker is the recommended way to install Akki. An example `docker-compose.yml` is provided.
+
+## Roadmap
+
+- Import/export in multiple formats
+- File attatchments
+- Offline editing
+- Multi-user collaborative Editing
+
+## Development
+
+### Prerequisites
+
+- Node.js
+- Docker & Docker Compose
+- pnpm
+
+From your command line:
+
+```bash
+# Clone this repository
+$ git clone https://github.com/tinmyintkyaw/akki
+
+# Go into the repository
+$ cd akki
+
+# Install dependencies
+$ pnpm -r install --frozen-lockfile
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Create an .env file with the required values in `./backend`. See `.env.example` for all the options
+
+```bash
+$ cp backend/.env.example backend/.env.development
+```
+
+Although optional, `devcontainers` are highly recommended for bootstrapping required services. If not using `devcontainers`, you must set up the services manually, please refer to the `.devcontainer/docker-compose.yml` for reference.
+
+```bash
+# Run the app
+$ pnpm run dev
+```
+
+## Acknowledgements
+
+This project would not be possible without the following awesome open source projects:
+
+- [PostgreSQL](https://www.postgresql.org/)
+- [Vite](https://vite.dev)
+- [React](https://react.dev)
+- [Express.js](https://github.com/expressjs/express)
+- [Meilisearch](https://www.meilisearch.com/)
+- [Tiptap](https://tiptap.dev/)
+- [better-auth](https://github.com/better-auth/better-auth)
+- [Y.js](https://github.com/yjs/yjs)
