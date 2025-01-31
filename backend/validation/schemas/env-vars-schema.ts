@@ -7,13 +7,11 @@ const googleOAuthEnvVarsSchema = z.discriminatedUnion("GOOGLE_OAUTH_ENABLED", [
     GOOGLE_OAUTH_ENABLED: z.enum(["true"]),
     GOOGLE_CLIENT_ID: z.string().trim(),
     GOOGLE_CLIENT_SECRET: z.string().trim(),
-    GOOGLE_REDIRECT_URI: z.string().trim(),
   }),
   z.object({
     GOOGLE_OAUTH_ENABLED: z.enum(["false"]),
     GOOGLE_CLIENT_ID: z.string().default(""),
     GOOGLE_CLIENT_SECRET: z.string().default(""),
-    GOOGLE_REDIRECT_URI: z.string().default(""),
   }),
 ]);
 

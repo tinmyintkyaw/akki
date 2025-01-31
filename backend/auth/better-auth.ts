@@ -25,7 +25,7 @@ export const auth = betterAuth({
     google: {
       enabled: parsedProcessEnv.GOOGLE_OAUTH_ENABLED === "true",
       clientId: parsedProcessEnv.GOOGLE_CLIENT_ID,
-      clientSecret: parsedProcessEnv.GITHUB_CLIENT_SECRET,
+      clientSecret: parsedProcessEnv.GOOGLE_CLIENT_SECRET,
     },
   },
 
@@ -45,12 +45,14 @@ export const auth = betterAuth({
     user: {
       create: {
         before: async (user) => {
+          console.log(user);
           return {
             data: { ...user, searchToken: "" },
           };
         },
 
         after: async (user) => {
+          console.log(user);
           const tenantToken = meilisearchClient.generateTenantToken(
             defaultSearchKey.uid,
             { pages: { filter: `userId = ${user.id}` } },

@@ -1,5 +1,6 @@
 import { migrator } from "@/db/migrator.js";
 import { logger } from "@/logger/index.js";
+// import { NO_MIGRATIONS } from "kysely";
 
 async function migrateToLatest() {
   logger.info("Running migrations, if any");

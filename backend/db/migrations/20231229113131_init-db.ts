@@ -40,6 +40,7 @@ export async function up(db: Kysely<unknown>): Promise<void> {
     .addColumn("access_token_expires_at", "timestamptz")
     .addColumn("refresh_token_expires_at", "timestamptz")
     .addColumn("scope", "text")
+    .addColumn("id_token", "text")
     .addColumn("password", "text")
     .addColumn("created_at", "timestamptz", (col) => col.notNull())
     .addColumn("updated_at", "timestamptz", (col) => col.notNull())

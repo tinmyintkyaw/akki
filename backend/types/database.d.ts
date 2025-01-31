@@ -40,6 +40,7 @@ export interface Database {
     accessTokenExpiresAt?: Date;
     refreshTokenExpiresAt?: Date;
     scope?: string;
+    idToken?: string;
     password?: string;
     createdAt: Date;
     updatedAt: Date;
