@@ -4,7 +4,7 @@ import { hocuspocusHandler } from "@/collaboration/hocuspocus.js";
 import { logger } from "@/logger/index.js";
 import { errorHandler } from "@/middlewares/error-handler.js";
 import { pageRouter } from "@/pages/page-router.js";
-import { globalRateLimiter, sessionRateLimiter } from "@/rate-limit/index.js";
+import { sessionRateLimiter } from "@/rate-limit/index.js";
 import { meilisearchProxy } from "@/search/meilisearch-proxy.js";
 import { checkDBConnection } from "@/startup/check-db-connection.js";
 import { checkMellisearchDB } from "@/startup/check-meilisearch-db.js";
@@ -30,7 +30,7 @@ const { app } = expressWebsockets(express());
 app.use(helmet());
 app.use(compression());
 app.use(express.urlencoded({ extended: true }));
-app.use(globalRateLimiter);
+// app.use(globalRateLimiter);
 
 app.use(
   "/",
