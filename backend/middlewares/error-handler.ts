@@ -13,9 +13,9 @@ const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
   if (error instanceof ZodError) {
     logger.debug("Validation Error");
     if (parsedProcessEnv.NODE_ENV === "development") {
-      return res.status(400).json({ error });
+      return res.status(404).json({ error });
     } else {
-      return res.status(400);
+      return res.status(404);
     }
   }
 

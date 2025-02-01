@@ -45,14 +45,12 @@ export const auth = betterAuth({
     user: {
       create: {
         before: async (user) => {
-          console.log(user);
           return {
             data: { ...user, searchToken: "" },
           };
         },
 
         after: async (user) => {
-          console.log(user);
           const tenantToken = meilisearchClient.generateTenantToken(
             defaultSearchKey.uid,
             { pages: { filter: `userId = ${user.id}` } },

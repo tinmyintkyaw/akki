@@ -177,7 +177,10 @@ const ToolbarDropdown: React.FC<ToolbarDropdownProps> = (props) => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <DialogContent className="h-screen w-screen max-w-[100vw] bg-popover md:h-2/3 md:max-w-2xl">
+      <DialogContent
+        className="h-full w-full md:h-2/3 md:max-w-2xl"
+        // className="h-dvh w-screen max-w-[100vw] bg-popover md:h-2/3 md:max-w-2xl"
+      >
         <DialogHeader>
           <DialogTitle>Settings</DialogTitle>
           <SettingsComponent />
