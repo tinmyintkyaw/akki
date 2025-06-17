@@ -17,7 +17,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "AGPL-3.0-or-later",
   "dependencies": {
     "@hocuspocus/extension-database": "^2.15.0",
     "@hocuspocus/extension-throttle": "^2.15.0",
