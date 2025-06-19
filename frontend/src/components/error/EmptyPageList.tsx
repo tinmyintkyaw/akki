@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useCreatePageMutation } from "@/hooks/pageQueryHooks";
 import { useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@tanstack/react-router";
 
 export default function EmptyPageList() {
   const queryClient = useQueryClient();
@@ -22,7 +22,7 @@ export default function EmptyPageList() {
             },
             {
               onSuccess(data) {
-                navigate(data.id);
+                navigate({ to: `/page/${data.id}` });
               },
             },
           )

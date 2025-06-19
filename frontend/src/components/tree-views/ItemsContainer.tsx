@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { HTMLProps } from "react";
+import React, { Ref } from "react";
 
 interface ItemsContainerProps {
   children: React.ReactNode;
-  containerProps: HTMLProps<any>;
+  containerProps: Ref<HTMLUListElement>;
   depth: number;
 }
 

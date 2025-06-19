@@ -22,8 +22,8 @@ services:
     container_name: postgres
     image: postgres:15
     restart: unless-stopped
-    # ports:
-    #   - "6001:5432"
+    ports:
+      - "5432:5432"
     env_file:
       - .env
     volumes:
@@ -39,8 +39,8 @@ services:
     container_name: meilisearch
     image: getmeili/meilisearch:v1.5
     restart: unless-stopped
-    # ports:
-    #   - "6002:7700"
+    ports:
+      - "7700:7700"
     env_file:
       - .env
     volumes:

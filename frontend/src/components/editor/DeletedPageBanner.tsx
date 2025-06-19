@@ -4,8 +4,8 @@ import {
   useUndoDeletePageMutation,
 } from "@/hooks/pageQueryHooks";
 import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import React, { useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 
 const DeletedPageBanner: React.FC<{ pageId: string }> = (props) => {
   const navigate = useNavigate();
@@ -23,9 +23,14 @@ const DeletedPageBanner: React.FC<{ pageId: string }> = (props) => {
     () =>
       permanentlyDeletePageMutation.mutate(
         { id: props.pageId },
-        { onSuccess: () => navigate("/") },
+        { onSuccess: () => navigate({ to: "/" }) },
       ),
-    [navigate, permanentlyDeletePageMutation, props.pageId],
+    [
+      ,
+      // navigate
+      permanentlyDeletePageMutation,
+      props.pageId,
+    ],
   );
 
   return (

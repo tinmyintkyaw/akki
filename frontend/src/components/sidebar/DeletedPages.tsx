@@ -14,9 +14,9 @@ import {
 } from "@/hooks/pageQueryHooks";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { Trash2, Undo } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 const DeletedPages: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -54,7 +54,7 @@ const DeletedPages: React.FC = () => {
                 size={"default"}
                 key={page.id}
                 onClick={() => {
-                  navigate(`/${page.id}`);
+                  navigate({ to: `/${page.id}` });
                   setIsOpen(false);
                 }}
                 className="h-full w-full py-2"
@@ -89,7 +89,7 @@ const DeletedPages: React.FC = () => {
                   onClick={async () => {
                     permanentlyDeletePageMutation.mutate(
                       { id: page.id },
-                      { onSuccess: () => navigate("/") },
+                      { onSuccess: () => navigate({ to: "/" }) },
                     );
                   }}
                   className="hover:bg-neutral-300 dark:hover:bg-neutral-600"

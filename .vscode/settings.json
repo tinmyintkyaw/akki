@@ -3,6 +3,13 @@
     "*.css": "tailwindcss" // Removes Unknown at rule @tailwindcss(unknownAtRules) eslint warning
   },
   "search.exclude": {
-    "dist/**/*.js": true
-  }
+    "dist/**/*.js": true,
+    "**/routeTree.gen.ts": true
+  },
+  "files.readonlyInclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "files.watcherExclude": {
+    "**/routeTree.gen.ts": true
+  },
 }

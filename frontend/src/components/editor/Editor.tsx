@@ -7,18 +7,20 @@ import { HocuspocusProvider } from "@hocuspocus/provider";
 import { EditorContent } from "@tiptap/react";
 import clsx from "clsx";
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
 
 import "@/styles/atom-one-dark.css";
 import "@/styles/atom-one-light.css";
+import { getRouteApi } from "@tanstack/react-router";
 
 interface EditorProps {
   // ydoc: Y.Doc;
   provider: HocuspocusProvider;
 }
 
+const pageRoute = getRouteApi("/_auth/page/$pageId");
+
 const Editor = (props: EditorProps) => {
-  const params = useParams();
+  const params = pageRoute.useParams();
   const pageQuery = usePageQuery(params.pageId ?? "");
 
   const titleEditor = useTitleEditor();
@@ -70,7 +72,7 @@ const Editor = (props: EditorProps) => {
         <EditorContent
           editor={titleEditor}
           className={clsx(
-            "prose bg-background text-foreground dark:prose-invert mx-auto px-8 pt-12",
+            "prose mx-auto bg-background px-8 pt-12 text-foreground dark:prose-invert",
             "max-w-3xl",
           )}
         />
@@ -79,7 +81,7 @@ const Editor = (props: EditorProps) => {
       {contentEditor && (
         <EditorContent
           className={clsx(
-            "prose bg-background text-foreground dark:prose-invert mx-auto px-8 pb-8",
+            "prose mx-auto bg-background px-8 pb-8 text-foreground dark:prose-invert",
             "max-w-3xl",
           )}
           editor={contentEditor}

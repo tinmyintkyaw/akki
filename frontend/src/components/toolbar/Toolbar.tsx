@@ -3,11 +3,13 @@ import ToolbarDropdown from "@/components/toolbar/ToolbarDropdown";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { usePageQuery, useRecentPagesQuery } from "@/hooks/pageQueryHooks";
+import { getRouteApi } from "@tanstack/react-router";
 import { MoreHorizontal, Search } from "lucide-react";
-import { useParams } from "react-router-dom";
+
+const pageRoute = getRouteApi("/_auth/page/$pageId");
 
 function Toolbar() {
-  const params = useParams();
+  const params = pageRoute.useParams();
   const pageQuery = usePageQuery(params.pageId ?? "");
   const recentPageListQuery = useRecentPagesQuery();
 

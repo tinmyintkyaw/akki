@@ -1,11 +1,11 @@
 import { CommandItem } from "@/components/ui/command";
 import useStore from "@/zustand/store";
 import { MeilisearchPage } from "@project/shared-types";
+import { useNavigate } from "@tanstack/react-router";
 import { Hit } from "instantsearch.js";
 import { getHighlightedParts } from "instantsearch.js/es/lib/utils";
 import { ChevronRight, CornerDownLeft, FileText } from "lucide-react";
 import { Highlight } from "react-instantsearch";
-import { useNavigate } from "react-router-dom";
 
 interface DefaultCommandItemProps {
   hit: Hit<MeilisearchPage>;
@@ -31,7 +31,7 @@ function DefaultCommandItem(props: DefaultCommandItemProps) {
         if (textContent.length > 1) {
           setDetailHit(hit);
         } else {
-          navigate(`/${value}`);
+          navigate({ to: `/page/${value}` });
           setIsCmdPaletteOpen(false);
         }
       }}

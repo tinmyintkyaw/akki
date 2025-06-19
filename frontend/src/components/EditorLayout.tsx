@@ -5,14 +5,16 @@ import useMultiplayerProvider from "@/hooks/editor/useMultiplayerProvider";
 import { usePageQuery } from "@/hooks/pageQueryHooks";
 import useStore from "@/zustand/store";
 import { WebSocketStatus } from "@hocuspocus/provider";
+import { getRouteApi } from "@tanstack/react-router";
 import clsx from "clsx";
 import { Suspense, lazy, useEffect } from "react";
-import { useParams } from "react-router-dom";
 
 const EditorComponent = lazy(() => import("@/components/editor/Editor"));
 
+const pageRoute = getRouteApi("/_auth/page/$pageId");
+
 export default function EditorLayout() {
-  const params = useParams();
+  const params = pageRoute.useParams();
   const pageQuery = usePageQuery(params.pageId ?? "");
   const multiplayerProvider = useMultiplayerProvider(params.pageId ?? "");
 

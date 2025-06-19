@@ -1,9 +1,8 @@
-import React, { HTMLProps } from "react";
+import React from "react";
 
 interface TreeContainerProps {
   children: React.ReactNode;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  containerProps: HTMLProps<any>;
+  containerProps: React.Ref<HTMLDivElement>;
 }
 const TreeContainer: React.FC<TreeContainerProps> = (props) => {
   const { children, containerProps } = props;

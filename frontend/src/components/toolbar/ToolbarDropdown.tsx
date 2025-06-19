@@ -30,6 +30,7 @@ import {
 import { ToastAction } from "@radix-ui/react-toast";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useQueryClient } from "@tanstack/react-query";
+import { useMatchRoute, useNavigate } from "@tanstack/react-router";
 import {
   LogOut,
   Moon,
@@ -40,7 +41,6 @@ import {
   SunMoon,
   Trash,
 } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
 
 interface ToolbarDropdownProps {
   children: React.ReactNode;
@@ -50,9 +50,10 @@ const ToolbarDropdown: React.FC<ToolbarDropdownProps> = (props) => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { theme, setTheme } = useTheme();
-  const params = useParams();
+  const matchRoute = useMatchRoute();
+  const params = matchRoute({ to: "/page/$pageId" });
   const navigate = useNavigate();
-  const pageQuery = usePageQuery(params.pageId ?? "");
+  const pageQuery = usePageQuery(!!params ? params.pageId : "");
   const toggleStarredMutation = useUpdatePageMutation(queryClient);
   const deletePageMutation = useDeletePageMutation(queryClient);
   const undoDeletePageMutation = useUndoDeletePageMutation(queryClient);
@@ -66,7 +67,7 @@ const ToolbarDropdown: React.FC<ToolbarDropdownProps> = (props) => {
         <DropdownMenuTrigger asChild>{props.children}</DropdownMenuTrigger>
 
         <DropdownMenuContent className="w-56">
-          {pageQuery.data && (
+          {!!params && pageQuery.data && (
             <>
               <DropdownMenuItem
                 onClick={() =>
@@ -166,7 +167,7 @@ const ToolbarDropdown: React.FC<ToolbarDropdownProps> = (props) => {
             onClick={async () => {
               await authClient.signOut({
                 fetchOptions: {
-                  onSuccess: () => navigate("/signin"),
+                  onSuccess: () => navigate({ to: "/signin" }),
                 },
               });
             }}

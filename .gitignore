@@ -31,3 +31,5 @@ uploads/*
 .env
 .env.development
 .env.test
+
+.tanstack

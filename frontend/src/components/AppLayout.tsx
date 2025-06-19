@@ -2,9 +2,9 @@ import AppSidebar from "@/components/sidebar/Sidebar";
 import Toolbar from "@/components/toolbar/Toolbar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { instantMeiliSearch } from "@meilisearch/instant-meilisearch";
+import { Outlet } from "@tanstack/react-router";
 import "allotment/dist/style.css";
 import { InstantSearch } from "react-instantsearch";
-import { Outlet } from "react-router-dom";
 
 export default function Layout() {
   const instantSearchClient = instantMeiliSearch(

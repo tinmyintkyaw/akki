@@ -1,15 +1,17 @@
 import { usePageQuery, useUpdatePageMutation } from "@/hooks/pageQueryHooks";
 import { useQueryClient } from "@tanstack/react-query";
+import { getRouteApi } from "@tanstack/react-router";
 import Document from "@tiptap/extension-document";
 import Heading from "@tiptap/extension-heading";
 import Text from "@tiptap/extension-text";
 import { useEditor } from "@tiptap/react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+
+const pageRoute = getRouteApi("/_auth/page/$pageId");
 
 const useTitleEditor = () => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const params = useParams();
+  const params = pageRoute.useParams();
   const queryClient = useQueryClient();
   const pageQuery = usePageQuery(params.pageId ?? "");
   const updatePageMutation = useUpdatePageMutation(queryClient);

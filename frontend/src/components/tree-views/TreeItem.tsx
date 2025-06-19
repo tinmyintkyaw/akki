@@ -12,6 +12,7 @@ import {
   useUpdatePageMutation,
 } from "@/hooks/pageQueryHooks";
 import { useQueryClient } from "@tanstack/react-query";
+import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import clsx from "clsx";
 import { FileEdit, Plus, Star, StarOff, Trash2 } from "lucide-react";
 import {
@@ -19,7 +20,6 @@ import {
   TreeItemIndex,
   TreeItemRenderContext,
 } from "react-complex-tree";
-import { useNavigate, useParams } from "react-router-dom";
 
 interface ItemProps {
   item: TreeItem;
@@ -35,6 +35,8 @@ interface ItemProps {
   canAddPage: boolean;
 }
 
+const pageRoute = getRouteApi("/_auth/page/$pageId");
+
 const TreeViewItem: React.FC<ItemProps> = (props) => {
   const {
     arrow,
@@ -48,7 +50,7 @@ const TreeViewItem: React.FC<ItemProps> = (props) => {
     setPageToRename,
   } = props;
 
-  const params = useParams();
+  const params = pageRoute.useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const createPageMutation = useCreatePageMutation(queryClient);
@@ -165,9 +167,9 @@ const TreeViewItem: React.FC<ItemProps> = (props) => {
                 onSuccess: async () => {
                   const result = await recentPagesQuery.refetch();
                   if (result.data) {
-                    navigate(`/${result.data[0].id}`);
+                    navigate({ to: "/page/$pageId" });
                   } else {
-                    navigate("/");
+                    navigate({ to: "/" });
                   }
                 },
               },

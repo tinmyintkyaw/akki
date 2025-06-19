@@ -1,11 +1,11 @@
 import { CommandItem, CommandShortcut } from "@/components/ui/command";
 import useStore from "@/zustand/store";
 import { MeilisearchPage } from "@project/shared-types";
+import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import { Hit, HitAttributeSnippetResult } from "instantsearch.js";
 import { getHighlightedParts } from "instantsearch.js/es/lib/utils";
 import { ChevronLeft, CornerDownLeft, Text } from "lucide-react";
 import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 
 interface DefaultCommandItemProps {
   hit: Hit<MeilisearchPage>;
@@ -13,10 +13,12 @@ interface DefaultCommandItemProps {
   setDetailHit: (detailHit: Hit<MeilisearchPage> | null) => void;
 }
 
+const pageRoute = getRouteApi("/_auth/page/$pageId");
+
 function NestedCommandItem(props: DefaultCommandItemProps) {
   const { hit, setDetailHit } = props;
   const navigate = useNavigate();
-  const params = useParams();
+  const params = pageRoute.useParams();
 
   const setIsCmdPaletteOpen = useStore((store) => store.setIsCmdPaletteOpen);
   const setEditorCursor = useStore((store) => store.setEditorSelection);
@@ -46,7 +48,7 @@ function NestedCommandItem(props: DefaultCommandItemProps) {
           value={index.toString()}
           className="flex w-full items-center gap-2 rounded-none px-4 py-3"
           onSelect={() => {
-            navigate(`/${hit.id}`);
+            navigate({ to: `/page/${hit.id}` });
             setEditorCursor({
               // @ts-expect-error TODO: typings for snippetResult
               start: item.posStart.value,
@@ -84,7 +86,7 @@ function NestedCommandItem(props: DefaultCommandItemProps) {
             </p>
           </div>
 
-          <CornerDownLeft className="text-muted-foreground h-3 w-3" />
+          <CornerDownLeft className="h-3 w-3 text-muted-foreground" />
         </CommandItem>
       ))}
     </>

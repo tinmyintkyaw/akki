@@ -4,7 +4,7 @@ import {
   useRecentPagesQuery,
 } from "@/hooks/pageQueryHooks";
 import { useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@tanstack/react-router";
 
 export default function PageNotFound() {
   const navigate = useNavigate();
@@ -29,7 +29,8 @@ export default function PageNotFound() {
       <Button
         variant={"outline"}
         onClick={() =>
-          recentPageList.data && navigate(`/${recentPageList.data[0].id}`)
+          recentPageList.data &&
+          navigate({ to: `/page/${recentPageList.data[0].id}` })
         }
         className="w-40"
       >

@@ -8,6 +8,7 @@ import TreeItem from "@/components/tree-views/TreeItem";
 import { useUpdatePageMutation } from "@/hooks/pageQueryHooks";
 import useStarredTreeData from "@/hooks/tree-view/useStarredData";
 import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
   ControlledTreeEnvironment,
@@ -15,7 +16,6 @@ import {
   TreeItemIndex,
   TreeRef,
 } from "react-complex-tree";
-import { useNavigate } from "react-router-dom";
 
 import "react-complex-tree/lib/style-modern.css";
 
@@ -79,7 +79,7 @@ const StarredPageTree: React.FC = () => {
             setIsRenaming(false);
           }}
           onAbortRenamingItem={() => setIsRenaming(false)}
-          onPrimaryAction={(item) => navigate(`/${item.index}`)}
+          onPrimaryAction={(item) => navigate({ to: `/page/${item.index}` })}
           renderDepthOffset={32}
           renderItemTitle={(props) => <ItemTitle {...props} />}
           renderItemArrow={(props) => <ItemArrow {...props} />}

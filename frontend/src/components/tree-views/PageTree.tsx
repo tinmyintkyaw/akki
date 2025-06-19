@@ -15,14 +15,16 @@ import {
   TreeItemIndex,
   TreeRef,
 } from "react-complex-tree";
-import { useNavigate, useParams } from "react-router-dom";
 
 import useStore from "@/zustand/store";
+import { getRouteApi, useNavigate } from "@tanstack/react-router";
 import "react-complex-tree/lib/style-modern.css";
+
+const pageRoute = getRouteApi("/_auth/page/$pageId");
 
 const PageTree: React.FC = () => {
   const navigate = useNavigate();
-  const params = useParams();
+  const params = pageRoute.useParams();
   const queryClient = useQueryClient();
   const pageQuery = usePageQuery(params.pageId ?? "");
 
@@ -92,7 +94,7 @@ const PageTree: React.FC = () => {
             setIsRenaming(false);
           }}
           onAbortRenamingItem={() => setIsRenaming(false)}
-          onPrimaryAction={(item) => navigate(`/${item.index}`)}
+          onPrimaryAction={(item) => navigate({ to: `/page/${item.index}` })}
           onDrop={(items, target) => {
             items.forEach((item) => {
               if (target.targetType === "item") {
