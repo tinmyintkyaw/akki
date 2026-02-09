@@ -1,15 +1,9 @@
-version: "3.8"
-
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+  devcontainer:
+    image: mcr.microsoft.com/devcontainers/base:ubuntu
     volumes:
       - ../..:/workspaces:cached
-    # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
-    # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
     network_mode: service:db
 
   db:
@@ -17,7 +11,7 @@ services:
     image: postgres:15
     restart: unless-stopped
     volumes:
-      - postgres-dev-data:/var/lib/postgresql/data
+      - postgres-dev-data:/var/lib/postgresql
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres

@@ -1,20 +1,20 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/javascript-node-postgres
+// README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
 {
-  "name": "Development Environment",
+  "name": "Akki Dev Environment",
   "dockerComposeFile": "docker-compose.yml",
-  "service": "app",
+  "service": "devcontainer",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-
   "features": {
-    "ghcr.io/devcontainers/features/node:1": {},
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+    "ghcr.io/devcontainers/features/node:1": {}
   },
-
   "postCreateCommand": "pnpm -r install --frozen-lockfile",
-
-  "forwardPorts": [3300, 3400, 5432, 7700],
-
+  "forwardPorts": [
+    3300,
+    3400,
+    5432,
+    7700
+  ],
   "portsAttributes": {
     "3400": {
       "label": "Frontend"
@@ -29,7 +29,6 @@
       "label": "Meilisearch"
     }
   },
-
   "customizations": {
     "vscode": {
       "extensions": [
