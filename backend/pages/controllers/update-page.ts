@@ -48,12 +48,7 @@ const requestHandler: EditPageControllerType = async (req, res) => {
     .updateTable("Page")
     .where("userId", "=", user.id)
     .where("id", "=", pageId)
-    .set({
-      pageName: pageName,
-      isStarred: isStarred,
-      accessedAt: new Date(Date.now()),
-      modifiedAt: new Date(Date.now()),
-    })
+    .set({ pageName: pageName, isStarred: isStarred })
     .returning(selectArray)
     .executeTakeFirstOrThrow();
 

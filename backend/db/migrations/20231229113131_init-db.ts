@@ -72,9 +72,6 @@ export async function up(db: Kysely<unknown>): Promise<void> {
     .addColumn("modified_at", "timestamptz", (col) =>
       col.notNull().defaultTo(sql`now()`),
     )
-    .addColumn("accessed_at", "timestamptz", (col) =>
-      col.notNull().defaultTo(sql`now()`),
-    )
     .addColumn("deleted_at", "timestamptz", (col) => col.defaultTo(null))
     .addColumn("user_id", "text", (col) =>
       col.notNull().references("user.id").onDelete("cascade"),
@@ -117,6 +114,35 @@ export async function up(db: Kysely<unknown>): Promise<void> {
     .using("gist")
     .column("path")
     .execute();
+
+  // use db triggers for timestamps on pages table
+  const addTimestampTriggerQuery = sql`
+  CREATE OR REPLACE FUNCTION update_created_at_timestamp()
+  RETURNS TRIGGER AS $$
+  BEGIN
+    RETURN NEW.created_at = NOW();
+  END;
+  $$ LANGUAGE plpgsql;
+
+  CREATE TRIGGER created_timestamp_trigger
+  BEFORE INSERT ON page
+  FOR EACH ROW
+  EXECUTE FUNCTION update_created_at_timestamp();
+
+  CREATE OR REPLACE FUNCTION update_modified_at_timestamp()
+  RETURNS TRIGGER AS $$
+  BEGIN
+    RETURN NEW.created_at = NOW();
+  END;
+  $$ LANGUAGE plpgsql;
+
+  CREATE TRIGGER modified_timestamp_trigger
+  BEFORE INSERT ON page
+  FOR EACH ROW
+  EXECUTE FUNCTION update_modified_at_timestamp();
+  `;
+
+  await db.executeQuery(addTimestampTriggerQuery.compile(db));
 }
 
 export async function down(db: Kysely<unknown>): Promise<void> {
@@ -128,4 +154,13 @@ export async function down(db: Kysely<unknown>): Promise<void> {
   await db.schema.dropTable("file").cascade().execute();
   await db.schema.dropTable("setting").cascade().execute();
   await db.schema.dropTable("global_variable").cascade().execute();
+
+  const dropTimestampTriggerQuery = sql`
+  DROP FUNCTION IF EXISTS update_created_at_timestamp();
+  DROP TRIGGER IF EXISTS created_timestamp_trigger ON page;
+  DROP FUNCTION IF EXISTS update_modified_at_timestamp();
+  DROP TRIGGER IF EXISTS modified_timestamp_trigger ON page;
+  `;
+
+  await db.executeQuery(dropTimestampTriggerQuery.compile(db));
 }

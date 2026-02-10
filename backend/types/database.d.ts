@@ -62,8 +62,7 @@ export interface Database {
     ydoc: Buffer;
     isStarred: ColumnType<boolean, boolean | undefined, boolean | undefined>;
     createdAt: ColumnType<Date, never, never>;
-    modifiedAt: ColumnType<Date, never, Date>;
-    accessedAt: ColumnType<Date, never, Date>;
+    modifiedAt: ColumnType<Date, never, never>;
     deletedAt: Date | null;
     userId: string;
   };

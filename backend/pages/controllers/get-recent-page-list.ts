@@ -11,7 +11,7 @@ const requestHandler: RequestHandler = async (req, res) => {
     .select(selectArray)
     .where("userId", "=", user.id)
     .where("deletedAt", "is", null)
-    .orderBy("accessedAt desc")
+    .orderBy("modifiedAt desc")
     .limit(10)
     .execute();
 
