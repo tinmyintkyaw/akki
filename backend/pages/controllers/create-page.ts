@@ -12,7 +12,6 @@ import { generateJSON } from "@tiptap/html";
 import StarterKit from "@tiptap/starter-kit";
 import asyncHandler from "express-async-handler";
 import { sql } from "kysely";
-import { ulid } from "ulidx";
 import * as Y from "yjs";
 
 type CreatePageControllerType = TypedRequestHandler<
@@ -26,29 +25,44 @@ const requestHandler: CreatePageControllerType = async (req, res) => {
   const { user } = res.locals.session;
   const body = req.body;
 
-  // const newPage = await createPage(body.parentId, body.pageName, userId);
-  const newPageId = ulid().toLowerCase();
   const newYDoc = TiptapTransformer.toYdoc(
     generateJSON("<p></p>", defaultTiptapExtensions),
     "default",
     defaultTiptapExtensions,
   );
 
-  const newPage = await db
-    .insertInto("Page")
-    .values(({ selectFrom }) => ({
-      id: newPageId,
-      userId: user.id,
-      pageName: body.pageName,
-      ydoc: Buffer.from(Y.encodeStateAsUpdate(newYDoc)),
-      path: body.parentId
-        ? selectFrom("Page as parent")
-            .select(sql<string>`parent.path || ${newPageId}`.as("path"))
-            .where("id", "=", body.parentId)
-        : newPageId,
-    }))
-    .returningAll()
-    .executeTakeFirstOrThrow();
+  const newPage = await db.transaction().execute(async (trx) => {
+    const parentPage = body.parentId
+      ? await trx
+          .selectFrom("Page")
+          .select(["id", "path"])
+          .where("userId", "=", user.id)
+          .where("id", "=", body.parentId)
+          .executeTakeFirstOrThrow()
+      : null;
+
+    const newPageWithoutPath = await trx
+      .insertInto("Page")
+      .values({
+        userId: user.id,
+        pageName: body.pageName,
+        ydoc: Buffer.from(Y.encodeStateAsUpdate(newYDoc)),
+        path: "",
+      })
+      .returning("id")
+      .executeTakeFirstOrThrow();
+
+    return await trx
+      .updateTable("Page")
+      .where("id", "=", newPageWithoutPath.id)
+      .set({
+        path: parentPage
+          ? sql`${parentPage.path} || ${newPageWithoutPath.id}::ltree`
+          : newPageWithoutPath.id,
+      })
+      .returningAll()
+      .executeTakeFirstOrThrow();
+  });
 
   const meilisearchPage: MeilisearchPage = {
     id: newPage.id,

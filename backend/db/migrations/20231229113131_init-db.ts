@@ -5,7 +5,12 @@ export async function up(db: Kysely<unknown>): Promise<void> {
 
   await db.schema
     .createTable("user")
-    .addColumn("id", "text", (col) => col.notNull().primaryKey())
+    .addColumn("id", "uuid", (col) =>
+      col
+        .notNull()
+        .primaryKey()
+        .defaultTo(sql`uuidv7()`),
+    )
     .addColumn("name", "text", (col) => col.notNull())
     .addColumn("email", "text", (col) => col.notNull())
     .addColumn("email_verified", "boolean", (col) => col.notNull())
@@ -18,21 +23,31 @@ export async function up(db: Kysely<unknown>): Promise<void> {
 
   await db.schema
     .createTable("session")
-    .addColumn("id", "text", (col) => col.notNull().primaryKey())
+    .addColumn("id", "uuid", (col) =>
+      col
+        .notNull()
+        .primaryKey()
+        .defaultTo(sql`uuidv7()`),
+    )
     .addColumn("token", "text", (col) => col.notNull())
     .addColumn("expires_at", "timestamptz", (col) => col.notNull())
     .addColumn("ip_address", "text")
     .addColumn("user_agent", "text")
     .addColumn("created_at", "timestamptz", (col) => col.notNull())
     .addColumn("updated_at", "timestamptz", (col) => col.notNull())
-    .addColumn("user_id", "text", (col) =>
+    .addColumn("user_id", "uuid", (col) =>
       col.notNull().references("user.id").onDelete("cascade"),
     )
     .execute();
 
   await db.schema
     .createTable("account")
-    .addColumn("id", "text", (col) => col.notNull().primaryKey())
+    .addColumn("id", "uuid", (col) =>
+      col
+        .notNull()
+        .primaryKey()
+        .defaultTo(sql`uuidv7()`),
+    )
     .addColumn("account_id", "text", (col) => col.notNull())
     .addColumn("provider_id", "text", (col) => col.notNull())
     .addColumn("access_token", "text")
@@ -44,14 +59,19 @@ export async function up(db: Kysely<unknown>): Promise<void> {
     .addColumn("password", "text")
     .addColumn("created_at", "timestamptz", (col) => col.notNull())
     .addColumn("updated_at", "timestamptz", (col) => col.notNull())
-    .addColumn("user_id", "text", (col) =>
+    .addColumn("user_id", "uuid", (col) =>
       col.notNull().references("user.id").onDelete("cascade"),
     )
     .execute();
 
   await db.schema
     .createTable("verification")
-    .addColumn("id", "text", (col) => col.notNull().primaryKey())
+    .addColumn("id", "uuid", (col) =>
+      col
+        .notNull()
+        .primaryKey()
+        .defaultTo(sql`uuidv7()`),
+    )
     .addColumn("identifier", "text", (col) => col.notNull())
     .addColumn("value", "text", (col) => col.notNull())
     .addColumn("expires_at", "timestamptz", (col) => col.notNull())
@@ -61,7 +81,12 @@ export async function up(db: Kysely<unknown>): Promise<void> {
 
   await db.schema
     .createTable("page")
-    .addColumn("id", "text", (col) => col.notNull().primaryKey())
+    .addColumn("id", "uuid", (col) =>
+      col
+        .notNull()
+        .primaryKey()
+        .defaultTo(sql`uuidv7()`),
+    )
     .addColumn("page_name", "text", (col) => col.notNull())
     .addColumn("path", sql`ltree`, (col) => col.notNull())
     .addColumn("ydoc", "bytea", (col) => col.notNull())
@@ -73,29 +98,39 @@ export async function up(db: Kysely<unknown>): Promise<void> {
       col.notNull().defaultTo(sql`now()`),
     )
     .addColumn("deleted_at", "timestamptz", (col) => col.defaultTo(null))
-    .addColumn("user_id", "text", (col) =>
+    .addColumn("user_id", "uuid", (col) =>
       col.notNull().references("user.id").onDelete("cascade"),
     )
     .execute();
 
   await db.schema
     .createTable("file")
-    .addColumn("id", "text", (col) => col.notNull().primaryKey())
+    .addColumn("id", "uuid", (col) =>
+      col
+        .notNull()
+        .primaryKey()
+        .defaultTo(sql`uuidv7()`),
+    )
     .addColumn("file_name", "text", (col) => col.notNull())
     .addColumn("extension", "text", (col) => col.notNull())
-    .addColumn("user_id", "text", (col) =>
+    .addColumn("user_id", "uuid", (col) =>
       col.notNull().references("user.id").onDelete("cascade"),
     )
-    .addColumn("page_id", "text", (col) =>
+    .addColumn("page_id", "uuid", (col) =>
       col.notNull().references("page.id").onDelete("cascade"),
     )
     .execute();
 
   await db.schema
     .createTable("setting")
-    .addColumn("id", "text", (col) => col.notNull().primaryKey())
+    .addColumn("id", "uuid", (col) =>
+      col
+        .notNull()
+        .primaryKey()
+        .defaultTo(sql`uuidv7()`),
+    )
     .addColumn("editor_width", "integer", (col) => col.notNull())
-    .addColumn("user_id", "text", (col) =>
+    .addColumn("user_id", "uuid", (col) =>
       col.notNull().references("user.id").onDelete("cascade"),
     )
     .execute();
@@ -120,7 +155,8 @@ export async function up(db: Kysely<unknown>): Promise<void> {
   CREATE OR REPLACE FUNCTION update_created_at_timestamp()
   RETURNS TRIGGER AS $$
   BEGIN
-    RETURN NEW.created_at = NOW();
+    NEW.created_at := NOW();
+    RETURN NEW;
   END;
   $$ LANGUAGE plpgsql;
 
@@ -132,7 +168,8 @@ export async function up(db: Kysely<unknown>): Promise<void> {
   CREATE OR REPLACE FUNCTION update_modified_at_timestamp()
   RETURNS TRIGGER AS $$
   BEGIN
-    RETURN NEW.created_at = NOW();
+    NEW.created_at := NOW();
+    RETURN  NEW;
   END;
   $$ LANGUAGE plpgsql;
 

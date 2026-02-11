@@ -56,7 +56,7 @@ export interface Database {
   };
 
   Page: {
-    id: string;
+    id: ColumnType<string, never, never>;
     pageName: ColumnType<string, string | undefined, string | undefined>;
     path: string;
     ydoc: Buffer;

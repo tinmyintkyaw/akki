@@ -7,7 +7,6 @@ export const selectArray: PageSelect = [
   "pageName",
   "isStarred",
   "path",
-  "accessedAt",
   "createdAt",
   "deletedAt",
   "modifiedAt",

@@ -9,7 +9,6 @@ import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
 import { generateJSON } from "@tiptap/html";
 import StarterKit from "@tiptap/starter-kit";
-import { ulid } from "ulidx";
 import * as Y from "yjs";
 
 const htmlString = `
@@ -137,7 +136,7 @@ const htmlString = `
 const defaultTiptapExtensions = [StarterKit, Link, TaskList, TaskItem, Image];
 
 export async function seedNewUserData(userId: string) {
-  const newPageId = ulid().toLowerCase();
+  const newPageId = crypto.randomUUID();
   const newYDoc = TiptapTransformer.toYdoc(
     generateJSON(htmlString, defaultTiptapExtensions),
     "default",

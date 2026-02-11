@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const pageIdAsParamsSchema = z.object({
-  pageId: z.string().toUpperCase().ulid().toLowerCase(),
+  pageId: z.string().toUpperCase().uuid().toLowerCase(),
 });
 
 export type PageIdAsParamsSchema = typeof pageIdAsParamsSchema;
@@ -9,7 +9,7 @@ export type PageIdAsParamsSchema = typeof pageIdAsParamsSchema;
 export const updatePagePayloadSchema = z
   .object({
     pageName: z.string().trim().min(1),
-    parentId: z.string().toUpperCase().ulid().toLowerCase().nullable(),
+    parentId: z.string().toUpperCase().uuid().toLowerCase().nullable(),
     isStarred: z.boolean(),
     deletedAt: z
       .string()
@@ -23,7 +23,7 @@ export type UpdatePagePayloadSchema = typeof updatePagePayloadSchema;
 
 export const createPagePayload = z.object({
   pageName: z.string().trim().min(1),
-  parentId: z.string().toUpperCase().ulid().toLowerCase().nullable(),
+  parentId: z.string().toUpperCase().uuid().toLowerCase().nullable(),
 });
 
 export type CreatePagePayloadSchema = typeof createPagePayload;
