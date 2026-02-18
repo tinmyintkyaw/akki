@@ -1,5 +1,6 @@
 import { parsedProcessEnv } from "@/validation/env-vars-validator.js";
 import proxy from "express-http-proxy";
+import { OutgoingHttpHeaders } from "http";
 import url from "url";
 
 const meilisearchHostURL = url.format({
@@ -16,7 +17,9 @@ export const meilisearchProxy = proxy(`${meilisearchHostURL}`, {
     if (!proxyReqOpts.headers) return proxyReqOpts;
 
     // modify headers with bearer token
-    proxyReqOpts.headers.authorization = `Bearer ${srcReq.res?.locals.searchToken}`;
+    const headers = proxyReqOpts.headers as OutgoingHttpHeaders;
+    headers["authorization"] = `Bearer ${srcReq.res?.locals.searchToken}`;
+
     return proxyReqOpts;
   },
 });
