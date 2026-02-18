@@ -56,14 +56,13 @@ export interface Database {
   };
 
   Page: {
-    id: string;
+    id: ColumnType<string, never, never>;
     pageName: ColumnType<string, string | undefined, string | undefined>;
     path: string;
     ydoc: Buffer;
     isStarred: ColumnType<boolean, boolean | undefined, boolean | undefined>;
     createdAt: ColumnType<Date, never, never>;
-    modifiedAt: ColumnType<Date, never, Date>;
-    accessedAt: ColumnType<Date, never, Date>;
+    modifiedAt: ColumnType<Date, never, never>;
     deletedAt: Date | null;
     userId: string;
   };

@@ -29,7 +29,7 @@ const requestHandler: RequestHandler = async (req, res) => {
    *     "user_id" = $ 1
    *     AND "deleted_at" IS null
    * ORDER BY
-   *     "accessed_at" asc
+   *     "modified_at" asc
    */
 
   const pageList = await db

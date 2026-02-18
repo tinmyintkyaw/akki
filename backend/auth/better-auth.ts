@@ -10,11 +10,10 @@ export const auth = betterAuth({
   database: { db: db, type: "postgres" },
   // emailAndPassword: { enabled: true },
 
-  plugins: [
-    anonymous({
-      emailDomainName: "example.com",
-    }),
-  ],
+  // postgres will handle the id generation
+  advanced: { database: { generateId: false } },
+
+  plugins: parsedProcessEnv.NODE_ENV === "development" ? [anonymous()] : [],
 
   socialProviders: {
     github: {

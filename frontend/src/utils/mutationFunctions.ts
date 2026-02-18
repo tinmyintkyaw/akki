@@ -33,9 +33,8 @@ export const updatePage = async (variables: {
   pageName?: string;
   parentId?: string | null;
   isStarred?: boolean;
-  accessedAt?: string;
 }) => {
-  const { id, pageName, parentId, isStarred, accessedAt } = variables;
+  const { id, pageName, parentId, isStarred } = variables;
 
   const response = await fetch(`/api/pages/${id}`, {
     method: "PATCH",
@@ -46,7 +45,6 @@ export const updatePage = async (variables: {
       pageName,
       parentId,
       isStarred,
-      accessedAt,
     }),
   });
   if (!response.ok)

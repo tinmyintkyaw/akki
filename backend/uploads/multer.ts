@@ -1,7 +1,6 @@
 import fs, { Stats } from "fs";
 import multer from "multer";
 import path from "path";
-import { ulid } from "ulidx";
 
 const multerStorage = multer.diskStorage({
   destination: (req, _file, callback) => {
@@ -25,7 +24,10 @@ const multerStorage = multer.diskStorage({
   },
 
   filename: (_req, file, callback) => {
-    callback(null, `${ulid().toLowerCase()}${path.extname(file.originalname)}`);
+    callback(
+      null,
+      `${crypto.randomUUID().toLowerCase()}${path.extname(file.originalname)}`,
+    );
   },
 });
 

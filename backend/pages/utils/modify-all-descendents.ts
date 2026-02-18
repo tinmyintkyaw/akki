@@ -35,7 +35,6 @@ export const modifyAllDescendents = async (
       page.is_starred,
       page.created_at,
       page.modified_at,
-      page.accessed_at,
       page.deleted_at,
       page.user_id
   `.compile(db),

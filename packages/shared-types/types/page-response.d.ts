@@ -6,7 +6,6 @@ export type PageResponse = {
   isStarred: boolean;
   createdAt: Date;
   modifiedAt: Date;
-  accessedAt: Date;
   deletedAt: Date | null;
 };
 
