@@ -4,14 +4,14 @@ import { storePageHandler } from "@/collaboration/store-page.js";
 import { logger } from "@/logger/index.js";
 import { Database } from "@hocuspocus/extension-database";
 import { Throttle } from "@hocuspocus/extension-throttle";
-import { Server } from "@hocuspocus/server";
+import { Hocuspocus } from "@hocuspocus/server";
 import { WebsocketRequestHandler } from "express-ws";
 import requestIp from "request-ip";
 
 // eslint-disable-next-line prefer-const
 // let lastCheckedTimestamps = new Map<string, number>();
 
-const hocuspocusServer = Server.configure({
+const hocuspocusServer = new Hocuspocus({
   async onAuthenticate(data) {
     return websocketAuthHandler(
       data,
