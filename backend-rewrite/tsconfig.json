@@ -1,6 +1,8 @@
 {
   "extends": "fastify-tsconfig",
   "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "outDir": "dist",
     "sourceMap": true,
     "rootDir": ".",
