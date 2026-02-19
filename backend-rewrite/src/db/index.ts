@@ -1,6 +1,14 @@
 import { FastifyInstance } from "fastify";
 import fastifyPlugin from "fastify-plugin";
-import { CamelCasePlugin, Kysely, PostgresDialect, sql } from "kysely";
+import { promises as fs } from "fs";
+import {
+  CamelCasePlugin,
+  FileMigrationProvider,
+  Kysely,
+  Migrator,
+  PostgresDialect,
+} from "kysely";
+import * as path from "path";
 import pg from "pg";
 
 declare module "fastify" {
@@ -33,11 +41,34 @@ export default fastifyPlugin(async (fastify) => {
 
   fastify.addHook("onReady", async () => {
     try {
-      fastify.log.info("Checking database connection");
-      await sql`SELECT 1`.execute(db);
-      fastify.log.info("Database is ready");
+      const migrator = new Migrator({
+        db,
+        provider: new FileMigrationProvider({
+          fs,
+          path,
+          migrationFolder: path.join(process.cwd(), "src", "db", "migrations"),
+        }),
+      });
+
+      const { error, results } = await migrator.migrateToLatest();
+
+      results?.forEach((it) => {
+        if (it.status === "Success") {
+          fastify.log.info(
+            `migration "${it.migrationName}" was executed successfully`,
+          );
+        } else if (it.status === "Error") {
+          fastify.log.error(
+            `failed to execute migration "${it.migrationName}"`,
+          );
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
     } catch (error) {
-      fastify.log.error("Failed to connect to database");
+      fastify.log.error(error, "Failed to migrate");
       throw error;
     }
   });

@@ -1,6 +1,6 @@
+import db from "@/db";
 import auth from "@/plugins/auth";
 import config from "@/plugins/config";
-import db from "@/plugins/db";
 import Fastify from "fastify";
 import {
   serializerCompiler,
