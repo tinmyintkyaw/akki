@@ -1,0 +1,24 @@
+{
+  "name": "backend-rewrite",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.29.2",
+  "dependencies": {
+    "better-auth": "^1.4.18",
+    "fastify": "^5.7.4",
+    "kysely": "^0.28.11",
+    "pg": "^8.16.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.1",
+    "fastify-tsconfig": "^3.0.0",
+    "typescript": "^5.8.3"
+  }
+}
