@@ -9,14 +9,15 @@ const envSchema = z
       .default("production"),
 
     PORT: z.coerce.number().default(3000),
+    BASE_URL: z.string(),
 
     POSTGRES_USER: z.string().min(1),
     POSTGRES_PASSWORD: z.string().min(1),
     POSTGRES_HOST: z.string().default("localhost"),
-    POSTGRES_PORT: z.coerce.number().int().positive().default(5432),
+    POSTGRES_PORT: z.number().default(5432),
     POSTGRES_DB: z.string().min(1),
   })
-  .required({ PORT: true });
+  .required({ BASE_URL: true });
 
 export type AppConfig = z.infer<typeof envSchema>;
 

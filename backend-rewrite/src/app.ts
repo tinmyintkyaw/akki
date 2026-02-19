@@ -1,3 +1,4 @@
+import auth from "@/plugins/auth";
 import config from "@/plugins/config";
 import db from "@/plugins/db";
 import Fastify from "fastify";
@@ -14,5 +15,6 @@ app.setSerializerCompiler(serializerCompiler);
 
 await app.register(config);
 await app.register(db);
+await app.register(auth);
 
 app.listen({ port: app.config.PORT });
