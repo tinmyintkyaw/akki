@@ -1,7 +1,6 @@
 import { betterAuth } from "better-auth";
 import { fromNodeHeaders } from "better-auth/node";
-import { anonymous } from "better-auth/plugins";
-import { FastifyInstance } from "fastify";
+import { FastifyInstance, FastifyPluginAsync } from "fastify";
 import fastifyPlugin from "fastify-plugin";
 
 declare module "fastify" {
@@ -14,13 +13,16 @@ const createAuthInstance = (fastify: FastifyInstance) =>
   betterAuth({
     database: { db: fastify.db },
     advanced: { database: { generateId: false } },
-    plugins: fastify.config.NODE_ENV === "development" ? [anonymous()] : [],
     baseURL: fastify.config.BASE_URL,
+    emailAndPassword: {
+      enabled: fastify.config.ENABLE_EMAIL_SIGNIN,
+      disableSignUp: fastify.config.DISABLE_SIGNUPS,
+    },
   });
 
 export type AuthInstance = ReturnType<typeof createAuthInstance>;
 
-export default fastifyPlugin((fastify) => {
+const auth: FastifyPluginAsync = async (fastify) => {
   const auth = createAuthInstance(fastify);
 
   fastify.decorate("auth", auth);
@@ -57,4 +59,9 @@ export default fastifyPlugin((fastify) => {
       }
     },
   });
+};
+
+export default fastifyPlugin(auth, {
+  name: "auth",
+  dependencies: ["db", "config"],
 });

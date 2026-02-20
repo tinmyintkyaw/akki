@@ -17,6 +17,9 @@ const envSchema = z
     POSTGRES_HOST: z.string().default("localhost"),
     POSTGRES_PORT: z.number().default(5432),
     POSTGRES_DB: z.string().min(1),
+
+    ENABLE_EMAIL_SIGNIN: z.boolean().default(true),
+    DISABLE_SIGNUPS: z.boolean().default(false),
   })
   .required({ BASE_URL: true });
 
