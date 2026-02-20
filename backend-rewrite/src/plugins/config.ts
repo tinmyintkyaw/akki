@@ -1,4 +1,5 @@
 import fastifyEnv from "@fastify/env";
+import { FastifyPluginAsync } from "fastify";
 import fastifyPlugin from "fastify-plugin";
 import z from "zod";
 
@@ -27,9 +28,11 @@ declare module "fastify" {
   }
 }
 
-export default fastifyPlugin(async (fastify) => {
+const config: FastifyPluginAsync = async (fastify) => {
   fastify.register(fastifyEnv, {
     schema: z.toJSONSchema(envSchema, { target: "draft-07" }), // fastify defaults to draft-07
     dotenv: true,
   });
-});
+};
+
+export default fastifyPlugin(config, { name: "config" });

@@ -1,4 +1,4 @@
-import { FastifyInstance } from "fastify";
+import { FastifyInstance, FastifyPluginAsync } from "fastify";
 import fastifyPlugin from "fastify-plugin";
 import { promises as fs } from "fs";
 import {
@@ -34,7 +34,7 @@ const createDBInstance = (fastify: FastifyInstance) => {
 
 export type DBInstance = ReturnType<typeof createDBInstance>;
 
-export default fastifyPlugin(async (fastify) => {
+const db: FastifyPluginAsync = async (fastify) => {
   const db = createDBInstance(fastify);
 
   fastify.decorate("db", db);
@@ -80,4 +80,6 @@ export default fastifyPlugin(async (fastify) => {
       if (error instanceof Error) fastify.log.error(error);
     }
   });
-});
+};
+
+export default fastifyPlugin(db, { name: "db", dependencies: ["config"] });
