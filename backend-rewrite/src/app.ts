@@ -16,11 +16,10 @@ app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);
 
 await app.register(config);
+
+app.log.level = app.config.NODE_ENV !== "production" ? "debug" : "info";
+
 await app.register(db);
 await app.register(auth);
-
-app.addHook("onRegister", async () => {
-  app.log.level = app.config.NODE_ENV !== "production" ? "debug" : "info";
-});
 
 app.listen({ port: app.config.PORT });
