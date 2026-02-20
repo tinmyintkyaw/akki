@@ -1,3 +1,4 @@
+import { Database } from "@/db/db-types";
 import { FastifyInstance, FastifyPluginAsync } from "fastify";
 import fastifyPlugin from "fastify-plugin";
 import { promises as fs } from "fs";
@@ -26,7 +27,7 @@ const createDBInstance = (fastify: FastifyInstance) => {
     password: fastify.config.POSTGRES_PASSWORD,
   });
 
-  return new Kysely({
+  return new Kysely<Database>({
     dialect: new PostgresDialect({ pool }),
     plugins: [new CamelCasePlugin()],
   });
