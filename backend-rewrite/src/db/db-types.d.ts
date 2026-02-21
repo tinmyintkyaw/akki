@@ -5,12 +5,14 @@ import {
   Selectable,
   Updateable,
 } from "kysely";
+import { KeySchema } from "typesense";
 
 export interface Database {
   user: UserTable;
   session: SessionTable;
   account: AccountTable;
   verification: VerificationTable;
+  systemSettings: SystemSettingsTable;
 }
 
 export interface UserTable {
@@ -74,3 +76,12 @@ export interface VerificationTable {
 export type Verification = Selectable<VerificationTable>;
 export type NewVerification = Insertable<VerificationTable>;
 export type VerificationUpdate = Updateable<VerificationTable>;
+
+export interface SystemSettingsTable {
+  id: number;
+  typesenseSearchKey: KeySchema | null;
+}
+
+export type SystemSettings = Selectable<SystemSettingsTable>;
+export type NewSystemSettings = Insertable<SystemSettingsTable>;
+export type SystemSettingsUpdate = Updateable<SystemSettingsTable>;

@@ -20,6 +20,8 @@
     "fastify-type-provider-zod": "^6.1.0",
     "kysely": "^0.28.11",
     "pg": "^8.16.0",
+    "typesense": "^3.0.1",
+    "typesense-ts": "^0.2.6",
     "zod": "^4.3.6"
   },
   "devDependencies": {

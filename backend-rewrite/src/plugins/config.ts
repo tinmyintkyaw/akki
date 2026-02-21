@@ -20,6 +20,10 @@ const envSchema = z
 
     ENABLE_EMAIL_SIGNIN: z.boolean().default(true),
     DISABLE_SIGNUPS: z.boolean().default(false),
+
+    TYPESENSE_API_HOST: z.string().default("localhost"),
+    TYPESENSE_API_PORT: z.number().default(8108),
+    TYPESENSE_API_KEY: z.string().min(8),
   })
   .required({ BASE_URL: true });
 

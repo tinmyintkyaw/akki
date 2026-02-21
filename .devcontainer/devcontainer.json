@@ -13,7 +13,8 @@
     3300,
     3400,
     5432,
-    7700
+    7700,
+    8108
   ],
   "portsAttributes": {
     "3400": {
@@ -27,6 +28,9 @@
     },
     "7700": {
       "label": "Meilisearch"
+    },
+    "8108": {
+      "label": "Typesense"
     }
   },
   "customizations": {
