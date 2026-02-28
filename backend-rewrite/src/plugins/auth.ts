@@ -1,11 +1,16 @@
-import { betterAuth } from "better-auth";
+import { betterAuth, Session } from "better-auth";
 import { fromNodeHeaders } from "better-auth/node";
-import { FastifyInstance, FastifyPluginAsync } from "fastify";
+import {
+  FastifyInstance,
+  FastifyPluginAsync,
+  preHandlerAsyncHookHandler,
+} from "fastify";
 import fastifyPlugin from "fastify-plugin";
 
 declare module "fastify" {
   interface FastifyInstance {
     auth: AuthInstance;
+    verifySession: preHandlerAsyncHookHandler;
   }
 }
 
@@ -20,12 +25,23 @@ const createAuthInstance = (fastify: FastifyInstance) =>
     },
   });
 
-export type AuthInstance = ReturnType<typeof createAuthInstance>;
+const verifySession: preHandlerAsyncHookHandler = async (request, reply) => {
+  const session = await request.server.auth.api.getSession({
+    headers: fromNodeHeaders(request.headers),
+  });
+
+  if (!session) return reply.code(401).send();
+  request.setDecorator<Session>("session", session.session);
+};
+
+type AuthInstance = ReturnType<typeof createAuthInstance>;
 
 const auth: FastifyPluginAsync = async (fastify) => {
   const auth = createAuthInstance(fastify);
 
   fastify.decorate("auth", auth);
+  fastify.decorate("verifySession", verifySession);
+  fastify.decorate("session", null);
 
   fastify.route({
     method: ["GET", "POST"],
