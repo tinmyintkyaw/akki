@@ -1,5 +1,5 @@
+import auth from "@/auth";
 import db from "@/db";
-import auth from "@/plugins/auth";
 import config from "@/plugins/config";
 import typesense from "@/search/typesense";
 import Fastify from "fastify";
