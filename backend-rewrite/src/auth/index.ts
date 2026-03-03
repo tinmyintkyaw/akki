@@ -16,7 +16,6 @@ const auth: FastifyPluginAsync = async (fastify) => {
 
   fastify.decorate("auth", auth);
   fastify.decorate("verifySession", authGuardHandler);
-  fastify.decorate("session", null);
 
   fastify.route({
     method: ["GET", "POST"],
