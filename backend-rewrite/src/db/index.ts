@@ -1,39 +1,15 @@
-import { Database } from "@/db/db-types";
-import { FastifyInstance, FastifyPluginAsync } from "fastify";
+import { createDBInstance, DBInstance } from "@/db/create-db-instance";
+import { FastifyPluginAsync } from "fastify";
 import fastifyPlugin from "fastify-plugin";
 import { promises as fs } from "fs";
-import {
-  CamelCasePlugin,
-  FileMigrationProvider,
-  Kysely,
-  Migrator,
-  PostgresDialect,
-} from "kysely";
+import { FileMigrationProvider, Migrator } from "kysely";
 import * as path from "path";
-import pg from "pg";
 
 declare module "fastify" {
   interface FastifyInstance {
     db: DBInstance;
   }
 }
-
-const createDBInstance = (fastify: FastifyInstance) => {
-  const pool = new pg.Pool({
-    host: fastify.config.POSTGRES_HOST,
-    port: fastify.config.POSTGRES_PORT,
-    database: fastify.config.POSTGRES_DB,
-    user: fastify.config.POSTGRES_USER,
-    password: fastify.config.POSTGRES_PASSWORD,
-  });
-
-  return new Kysely<Database>({
-    dialect: new PostgresDialect({ pool }),
-    plugins: [new CamelCasePlugin()],
-  });
-};
-
-export type DBInstance = ReturnType<typeof createDBInstance>;
 
 const db: FastifyPluginAsync = async (fastify) => {
   const db = createDBInstance(fastify);

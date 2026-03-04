@@ -1,10 +1,4 @@
-import {
-  ColumnType,
-  Generated,
-  Insertable,
-  Selectable,
-  Updateable,
-} from "kysely";
+import { ColumnType, Generated } from "kysely";
 import { KeySchema } from "typesense";
 
 export interface Database {
@@ -13,6 +7,13 @@ export interface Database {
   account: AccountTable;
   verification: VerificationTable;
   systemSettings: SystemSettingsTable;
+  space: SpaceTable;
+  spaceMembers: SpaceMembersTable;
+  page: PageTable;
+  tag: TagTable;
+  pageTag: PageTagTable;
+  pinnedPage: PinnedPageTable;
+  pinnedTag: PinnedTagTable;
 }
 
 export interface UserTable {
@@ -25,10 +26,6 @@ export interface UserTable {
   updatedAt: ColumnType<Date, never, never>;
 }
 
-export type User = Selectable<UserTable>;
-export type NewUser = Insertable<UserTable>;
-export type UserUpdate = Updateable<UserTable>;
-
 export interface SessionTable {
   id: Generated<string>;
   token: string;
@@ -39,10 +36,6 @@ export interface SessionTable {
   updatedAt: ColumnType<Date, never, never>;
   userId: string;
 }
-
-export type Session = Selectable<SessionTable>;
-export type NewSession = Insertable<SessionTable>;
-export type SessionUpdate = Updateable<SessionTable>;
 
 export interface AccountTable {
   id: Generated<string>;
@@ -60,10 +53,6 @@ export interface AccountTable {
   userId: string;
 }
 
-export type Account = Selectable<AccountTable>;
-export type NewAccount = Insertable<AccountTable>;
-export type AccountUpdate = Updateable<AccountTable>;
-
 export interface VerificationTable {
   id: Generated<string>;
   identifier: string;
@@ -73,15 +62,61 @@ export interface VerificationTable {
   updatedAt: ColumnType<Date, never, never>;
 }
 
-export type Verification = Selectable<VerificationTable>;
-export type NewVerification = Insertable<VerificationTable>;
-export type VerificationUpdate = Updateable<VerificationTable>;
-
 export interface SystemSettingsTable {
   id: number;
   typesenseSearchKey: KeySchema | null;
 }
 
-export type SystemSettings = Selectable<SystemSettingsTable>;
-export type NewSystemSettings = Insertable<SystemSettingsTable>;
-export type SystemSettingsUpdate = Updateable<SystemSettingsTable>;
+export interface SpaceTable {
+  id: Generated<string>;
+  name: string;
+  createdAt: ColumnType<Date, never, never>;
+  updatedAt: ColumnType<Date, never, never>;
+  createdBy: string;
+}
+
+export interface SpaceMembersTable {
+  spaceId: string;
+  userId: string;
+  createdAt: ColumnType<Date, never, never>;
+}
+
+export interface PageTable {
+  id: Generated<string>;
+  name: string;
+  ydoc: Buffer;
+  createdAt: ColumnType<Date, never, never>;
+  updatedAt: ColumnType<Date, never, never>;
+  deletedAt: Date | null;
+  createdBy: string;
+  spaceId: string;
+}
+
+export interface TagTable {
+  id: Generated<string>;
+  name: string;
+  path: string;
+  createdAt: ColumnType<Date, never, never>;
+  updatedAt: ColumnType<Date, never, never>;
+  createdBy: string;
+  spaceId: string;
+}
+
+export interface PageTagTable {
+  pageId: string;
+  tagId: string;
+  createdBy: string;
+  createdAt: ColumnType<Date, never, never>;
+}
+
+export interface PinnedPageTable {
+  pageId: string;
+  userId: string;
+  createdAt: ColumnType<Date, never, never>;
+}
+
+export interface PinnedTagTable {
+  tagId: string;
+  userId: string;
+  createdAt: ColumnType<Date, never, never>;
+}
