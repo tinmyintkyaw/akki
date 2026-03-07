@@ -7,4 +7,5 @@ export const tagSelect = [
   "tag.createdAt",
   "tag.createdBy",
   "tag.updatedAt",
+  "tag.spaceId",
 ] as const satisfies ReadonlyArray<SelectExpression<Database, "tag">>;
