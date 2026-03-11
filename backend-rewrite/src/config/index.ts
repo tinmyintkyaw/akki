@@ -12,6 +12,12 @@ const envSchema = z
     PORT: z.coerce.number().default(3000),
     BASE_URL: z.string(),
 
+    UPLOAD_SIZE_LIMIT: z
+      .number()
+      .min(1000)
+      .default(5 * 1024 * 1024) // 5MB
+      .optional(),
+
     POSTGRES_USER: z.string().min(1),
     POSTGRES_PASSWORD: z.string().min(1),
     POSTGRES_HOST: z.string().default("localhost"),

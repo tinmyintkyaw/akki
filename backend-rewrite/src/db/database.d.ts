@@ -14,6 +14,7 @@ export interface Database {
   pageTag: PageTagTable;
   pinnedPage: PinnedPageTable;
   pinnedTag: PinnedTagTable;
+  file: FileTable;
 }
 
 export interface UserTable {
@@ -119,4 +120,13 @@ export interface PinnedTagTable {
   tagId: string;
   userId: string;
   createdAt: ColumnType<Date, never, never>;
+}
+
+export interface FileTable {
+  id: Generated<string>;
+  filename: string;
+  extension: string | undefined;
+  createdAt: ColumnType<Date, never, never>;
+  createdBy: string;
+  spaceId: string;
 }
