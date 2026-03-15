@@ -19,7 +19,7 @@ export const getPagesRoute: FastifyPluginAsyncZod = async (fastify) => {
       const { db } = fastify;
       const { userId } = req.getDecorator<Session>("session");
       const { spaceId } = req.params;
-      const { tag: tagId, deleted } = req.query;
+      const { tag: tagId, deleted, untagged } = req.query;
 
       const pages = await db.transaction().execute(async (trx) => {
         await getAccessibleSpaces(trx, {
@@ -30,7 +30,8 @@ export const getPagesRoute: FastifyPluginAsyncZod = async (fastify) => {
         let query = trx
           .selectFrom("page")
           .where("spaceId", "=", spaceId)
-          .select(pageSelect);
+          .select(pageSelect)
+          .orderBy("id", "desc");
 
         if (tagId) {
           query = query
@@ -42,6 +43,18 @@ export const getPagesRoute: FastifyPluginAsyncZod = async (fastify) => {
           query = query.where("page.deletedAt", "is not", null);
         } else {
           query = query.where("page.deletedAt", "is", null);
+        }
+
+        if (untagged) {
+          query = query.where(({ not, exists, selectFrom }) =>
+            not(
+              exists(
+                selectFrom("pageTag")
+                  .select("pageTag.pageId")
+                  .whereRef("pageTag.pageId", "=", "page.id"),
+              ),
+            ),
+          );
         }
 
         return query.execute();
