@@ -3,6 +3,7 @@ import config from "@/config";
 import { core } from "@/core";
 import db from "@/db";
 import typesense from "@/search/typesense";
+import fastifyWebsocket from "@fastify/websocket";
 import Fastify from "fastify";
 import {
   serializerCompiler,
@@ -24,6 +25,8 @@ app.log.level = app.config.NODE_ENV !== "production" ? "debug" : "info";
 await app.register(db);
 await app.register(typesense);
 await app.register(auth);
+
+app.register(fastifyWebsocket); // needs to be registered before other routes
 
 await app.register(core, { prefix: "/api" });
 

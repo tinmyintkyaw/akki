@@ -1,4 +1,5 @@
 import { authGuardHandler } from "@/auth/auth-guard-handler";
+import { collaboration } from "@/collaboration";
 import pages from "@/core/pages";
 import spaces from "@/core/spaces";
 import tags from "@/core/tags";
@@ -13,4 +14,6 @@ export const core: FastifyPluginAsyncZod = async (fastify) => {
   fastify.register(tags, { prefix: "/spaces/:spaceId/tags" });
   fastify.register(pages, { prefix: "/spaces/:spaceId/pages" });
   fastify.register(files, { prefix: "/spaces/:spaceId/files" });
+
+  fastify.register(collaboration, { prefix: "/sync/spaces/:spaceId/pages" });
 };
