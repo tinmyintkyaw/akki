@@ -3,9 +3,10 @@ import { Kysely, sql } from "kysely";
 export const up = async (db: Kysely<any>): Promise<void> => {
   await db.schema
     .createTable("user")
+    .ifNotExists()
     .addColumn("id", "uuid", (col) => col.primaryKey().defaultTo(sql`uuidv7()`))
     .addColumn("name", "text", (col) => col.notNull())
-    .addColumn("email", "text", (col) => col.notNull())
+    .addColumn("email", "text", (col) => col.notNull().unique())
     .addColumn("email_verified", "boolean", (col) => col.notNull())
     .addColumn("image", "text")
     .addColumn("created_at", "timestamptz", (col) =>
@@ -24,8 +25,9 @@ export const up = async (db: Kysely<any>): Promise<void> => {
 
   await db.schema
     .createTable("session")
+    .ifNotExists()
     .addColumn("id", "uuid", (col) => col.primaryKey().defaultTo(sql`uuidv7()`))
-    .addColumn("token", "text", (col) => col.notNull())
+    .addColumn("token", "text", (col) => col.notNull().unique())
     .addColumn("expires_at", "timestamptz", (col) => col.notNull())
     .addColumn("ip_address", "text")
     .addColumn("user_agent", "text")
@@ -47,13 +49,8 @@ export const up = async (db: Kysely<any>): Promise<void> => {
     .execute();
 
   await db.schema
-    .createIndex("session_token_idx")
-    .on("session")
-    .column("token")
-    .execute();
-
-  await db.schema
     .createTable("account")
+    .ifNotExists()
     .addColumn("id", "uuid", (col) => col.primaryKey().defaultTo(sql`uuidv7()`))
     .addColumn("account_id", "text", (col) => col.notNull())
     .addColumn("provider_id", "text", (col) => col.notNull())
@@ -83,6 +80,7 @@ export const up = async (db: Kysely<any>): Promise<void> => {
 
   await db.schema
     .createTable("verification")
+    .ifNotExists()
     .addColumn("id", "uuid", (col) => col.primaryKey().defaultTo(sql`uuidv7()`))
     .addColumn("identifier", "text", (col) => col.notNull())
     .addColumn("value", "text", (col) => col.notNull())
