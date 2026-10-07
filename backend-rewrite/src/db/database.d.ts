@@ -1,4 +1,4 @@
-import { ColumnType, Generated } from "kysely";
+import { Generated } from "kysely";
 import { KeySchema } from "typesense";
 
 export interface Database {
@@ -23,8 +23,8 @@ export interface UserTable {
   email: string;
   emailVerified: boolean;
   image: string | null;
-  createdAt: ColumnType<Date, never, never>;
-  updatedAt: ColumnType<Date, never, never>;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface SessionTable {
@@ -33,8 +33,8 @@ export interface SessionTable {
   expiresAt: Date;
   ipAddress: string | null;
   userAgent: string | null;
-  createdAt: ColumnType<Date, never, never>;
-  updatedAt: ColumnType<Date, never, never>;
+  createdAt: Date;
+  updatedAt: Date;
   userId: string;
 }
 
@@ -49,8 +49,8 @@ export interface AccountTable {
   scope: string | null;
   idToken: string | null;
   password: string | null;
-  createdAt: ColumnType<Date, never, never>;
-  updatedAt: ColumnType<Date, never, never>;
+  createdAt: Date;
+  updatedAt: Date;
   userId: string;
 }
 
@@ -59,8 +59,8 @@ export interface VerificationTable {
   identifier: string;
   value: string;
   expiresAt: Date;
-  createdAt: ColumnType<Date, never, never>;
-  updatedAt: ColumnType<Date, never, never>;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface SystemSettingsTable {
@@ -71,62 +71,59 @@ export interface SystemSettingsTable {
 export interface SpaceTable {
   id: Generated<string>;
   name: string;
-  createdAt: ColumnType<Date, never, never>;
-  updatedAt: ColumnType<Date, never, never>;
-  createdBy: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface SpaceMembersTable {
   spaceId: string;
   userId: string;
-  createdAt: ColumnType<Date, never, never>;
+  role: "admin" | "member";
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface PageTable {
   id: Generated<string>;
   name: string;
   ydoc: Buffer;
-  createdAt: ColumnType<Date, never, never>;
-  updatedAt: ColumnType<Date, never, never>;
+  createdAt: Date;
+  updatedAt: Date;
   deletedAt: Date | null;
   createdBy: string;
+  isPinned: boolean;
   spaceId: string;
 }
 
 export interface TagTable {
   id: Generated<string>;
   name: string;
-  path: string;
-  createdAt: ColumnType<Date, never, never>;
-  updatedAt: ColumnType<Date, never, never>;
-  createdBy: string;
   spaceId: string;
 }
 
 export interface PageTagTable {
   pageId: string;
   tagId: string;
-  createdBy: string;
-  createdAt: ColumnType<Date, never, never>;
+  createdAt: Date;
 }
 
 export interface PinnedPageTable {
   pageId: string;
   userId: string;
-  createdAt: ColumnType<Date, never, never>;
+  createdAt: Date;
 }
 
 export interface PinnedTagTable {
   tagId: string;
   userId: string;
-  createdAt: ColumnType<Date, never, never>;
+  createdAt: Date;
 }
 
 export interface FileTable {
   id: Generated<string>;
   filename: string;
   extension: string | undefined;
-  createdAt: ColumnType<Date, never, never>;
+  createdAt: Date;
   createdBy: string;
   spaceId: string;
 }
