@@ -1,5 +1,4 @@
-import { Generated } from "kysely";
-import { KeySchema } from "typesense";
+import { Generated, JSONColumnType } from "kysely";
 
 export interface Database {
   user: UserTable;
@@ -63,9 +62,9 @@ export interface VerificationTable {
   updatedAt: Date;
 }
 
-export interface SystemSettingsTable {
-  id: number;
-  typesenseSearchKey: KeySchema | null;
+export interface UserSettingsTable {
+  id: Generated<string>;
+  settings: JSONColumnType<{}>;
 }
 
 export interface SpaceTable {
@@ -104,18 +103,6 @@ export interface TagTable {
 export interface PageTagTable {
   pageId: string;
   tagId: string;
-  createdAt: Date;
-}
-
-export interface PinnedPageTable {
-  pageId: string;
-  userId: string;
-  createdAt: Date;
-}
-
-export interface PinnedTagTable {
-  tagId: string;
-  userId: string;
   createdAt: Date;
 }
 

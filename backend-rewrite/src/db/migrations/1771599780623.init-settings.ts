@@ -1,17 +1,15 @@
-import { Kysely, sql } from "kysely";
+import { Kysely } from "kysely";
 
 export const up = async (db: Kysely<any>) => {
   await db.schema
-    .createTable("system_settings")
-    .addColumn("id", "integer", (col) =>
-      col
-        .primaryKey()
-        .defaultTo(1)
-        .check(sql`id = 1`),
+    .createTable("user_settings")
+    .addColumn("user_id", "uuid", (col) =>
+      col.primaryKey().references("user.id").onDelete("cascade"),
     )
+    .addColumn("settings", "jsonb", (col) => col.notNull().defaultTo("{}"))
     .execute();
 };
 
 export const down = async (db: Kysely<any>) => {
-  await db.schema.dropTable("system_settings").execute();
+  await db.schema.dropTable("user_settings").execute();
 };
