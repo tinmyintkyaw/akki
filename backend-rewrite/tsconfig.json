@@ -2,11 +2,11 @@
   "extends": "fastify-tsconfig",
   "compilerOptions": {
     "module": "esnext",
+    "esModuleInterop": true,
     "moduleResolution": "bundler",
     "outDir": "dist",
     "sourceMap": true,
     "rootDir": ".",
-    "baseUrl": ".",
     "paths": {
       "@/*": [
         "./src/*"

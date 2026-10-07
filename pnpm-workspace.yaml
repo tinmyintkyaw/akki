@@ -1,4 +1,8 @@
 packages:
   - "backend"
+  - "backend-rewrite"
   - "frontend"
   - "packages/*"
+allowBuilds:
+  "@swc/core": set this to true or false
+  esbuild: set this to true or false
