@@ -1,6 +1,7 @@
-import { pagesReqParams } from "@/core/pages/pages.schema";
+import { pageIdSchema } from "@/core/pages/pages.schema";
 import { pageSelect } from "@/core/pages/queries/page-select";
-import { getAccessibleSpaces } from "@/core/spaces/spaces.queries";
+import { getSpaceRole } from "@/core/spaces/spaces.queries";
+import { spaceIdSchema } from "@/core/spaces/spaces.schemas";
 import { Session } from "better-auth";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
@@ -9,7 +10,7 @@ export const getPageByIdRoute: FastifyPluginAsyncZod = async (fastify) => {
     "/:pageId",
     {
       schema: {
-        params: pagesReqParams,
+        params: spaceIdSchema.extend(pageIdSchema.shape),
       },
     },
     async (req, res) => {
@@ -18,10 +19,9 @@ export const getPageByIdRoute: FastifyPluginAsyncZod = async (fastify) => {
       const { spaceId, pageId } = req.params;
 
       const pages = await db.transaction().execute(async (trx) => {
-        await getAccessibleSpaces(trx, {
-          userId,
-          spaceId,
-        }).executeTakeFirstOrThrow();
+        const role = await getSpaceRole(trx, spaceId, userId, "member");
+
+        if (!role) throw fastify.httpErrors.forbidden();
 
         return trx
           .selectFrom("page")
@@ -31,7 +31,7 @@ export const getPageByIdRoute: FastifyPluginAsyncZod = async (fastify) => {
           .executeTakeFirst();
       });
 
-      if (!pages) return res.code(400).send();
+      if (!pages) throw fastify.httpErrors.notFound();
       return res.send(pages);
     },
   );

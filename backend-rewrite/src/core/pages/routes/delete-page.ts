@@ -1,6 +1,7 @@
-import { pagesReqParams } from "@/core/pages/pages.schema";
+import { pageIdSchema } from "@/core/pages/pages.schema";
 import { pageSelect } from "@/core/pages/queries/page-select";
-import { getAccessibleSpaces } from "@/core/spaces/spaces.queries";
+import { getSpaceRole } from "@/core/spaces/spaces.queries";
+import { spaceIdSchema } from "@/core/spaces/spaces.schemas";
 import { Session } from "better-auth";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
@@ -9,7 +10,7 @@ export const deletePageRoute: FastifyPluginAsyncZod = async (fastify) => {
     "/:pageId",
     {
       schema: {
-        params: pagesReqParams,
+        params: spaceIdSchema.extend(pageIdSchema.shape),
       },
     },
     async (req, res) => {
@@ -17,11 +18,10 @@ export const deletePageRoute: FastifyPluginAsyncZod = async (fastify) => {
       const { userId } = req.getDecorator<Session>("session");
       const { spaceId, pageId } = req.params;
 
-      const pages = await db.transaction().execute(async (trx) => {
-        await getAccessibleSpaces(trx, {
-          userId,
-          spaceId,
-        }).executeTakeFirstOrThrow();
+      const result = await db.transaction().execute(async (trx) => {
+        const role = await getSpaceRole(trx, spaceId, userId, "admin");
+
+        if (role !== "admin") throw fastify.httpErrors.forbidden();
 
         return trx
           .deleteFrom("page")
@@ -31,7 +31,8 @@ export const deletePageRoute: FastifyPluginAsyncZod = async (fastify) => {
           .executeTakeFirst();
       });
 
-      if (!pages) return res.code(400).send();
+      if (!result) throw fastify.httpErrors.notFound();
+
       return res.code(204).send();
     },
   );

@@ -1,15 +1,16 @@
-import { pagesReqParams, pageUpdatePayload } from "@/core/pages/pages.schema";
+import { pageIdSchema, pageUpdatePayload } from "@/core/pages/pages.schema";
 import { pageSelect } from "@/core/pages/queries/page-select";
-import { getAccessibleSpaces } from "@/core/spaces/spaces.queries";
+import { getSpaceRole } from "@/core/spaces/spaces.queries";
+import { spaceIdSchema } from "@/core/spaces/spaces.schemas";
 import { Session } from "better-auth";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
 export const updatePageRoute: FastifyPluginAsyncZod = async (fastify) => {
   fastify.put(
-    "/",
+    "/:pageId",
     {
       schema: {
-        params: pagesReqParams,
+        params: spaceIdSchema.extend(pageIdSchema.shape),
         body: pageUpdatePayload,
       },
     },
@@ -17,13 +18,12 @@ export const updatePageRoute: FastifyPluginAsyncZod = async (fastify) => {
       const { db } = fastify;
       const { userId } = req.getDecorator<Session>("session");
       const { spaceId, pageId } = req.params;
-      const { name, deletedAt: deletedAtPayload } = req.body;
+      const { name, isPinned, isDeleted } = req.body;
 
       const newPage = await db.transaction().execute(async (trx) => {
-        await getAccessibleSpaces(trx, {
-          userId,
-          spaceId,
-        }).executeTakeFirstOrThrow();
+        const role = await getSpaceRole(trx, spaceId, userId, "member");
+
+        if (!role) throw fastify.httpErrors.forbidden();
 
         return trx
           .updateTable("page")
@@ -31,16 +31,14 @@ export const updatePageRoute: FastifyPluginAsyncZod = async (fastify) => {
           .where("spaceId", "=", spaceId)
           .set({
             name,
-            deletedAt:
-              typeof deletedAtPayload === "string"
-                ? new Date(deletedAtPayload)
-                : deletedAtPayload,
+            deletedAt: isDeleted ? new Date() : null,
+            isPinned,
           })
           .returning(pageSelect)
           .executeTakeFirst();
       });
 
-      if (!newPage) return res.code(400).send();
+      if (!newPage) throw fastify.httpErrors.notFound();
       return res.code(201).send(newPage);
     },
   );
