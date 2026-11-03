@@ -1,4 +1,4 @@
-import { getAccessibleSpaces } from "@/core/spaces/spaces.queries";
+import { spaceSelect } from "@/core/spaces/spaces.queries";
 import { Session } from "better-auth";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
@@ -8,7 +8,13 @@ export const getSpacesRoute: FastifyPluginAsyncZod = async (fastify) => {
 
     const { userId } = req.getDecorator<Session>("session");
 
-    const result = await getAccessibleSpaces(db, { userId }).execute();
+    const result = await db
+      .selectFrom("space")
+      .innerJoin("spaceMembers", "spaceMembers.spaceId", "space.id")
+      .select(spaceSelect)
+      .where("spaceMembers.userId", "=", userId)
+      .orderBy("space.createdAt", "asc")
+      .execute();
 
     return res.send(result);
   });

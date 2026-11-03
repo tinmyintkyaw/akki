@@ -1,25 +1,33 @@
-import { spacesReqParams } from "@/core/spaces/spaces.schemas";
+import { getSpaceRole } from "@/core/spaces/spaces.queries";
+import { spaceIdSchema } from "@/core/spaces/spaces.schemas";
 import { Session } from "better-auth";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
 export const deleteSpaceRoute: FastifyPluginAsyncZod = async (fastify) => {
   fastify.delete(
     "/:spaceId",
-    { schema: { params: spacesReqParams } },
+    { schema: { params: spaceIdSchema, response: { 204: {} } } },
     async (req, res) => {
       const { db } = fastify;
       const { userId } = req.getDecorator<Session>("session");
       const { spaceId } = req.params;
 
-      const result = await db
-        .deleteFrom("space")
-        .where("createdBy", "=", userId)
-        .where("id", "=", spaceId)
-        .returning("id")
-        .executeTakeFirst();
+      await db.transaction().execute(async (trx) => {
+        const role = await getSpaceRole(trx, spaceId, userId, "admin");
 
-      if (!result) return res.code(400).send();
-      return res.code(204).send();
+        if (role !== "admin") throw fastify.httpErrors.forbidden();
+
+        const result = await trx
+          .deleteFrom("space")
+          .where("id", "=", spaceId)
+          .executeTakeFirst();
+
+        if (Number(result.numDeletedRows) === 0) {
+          throw fastify.httpErrors.notFound();
+        }
+
+        return res.code(204).send();
+      });
     },
   );
 };

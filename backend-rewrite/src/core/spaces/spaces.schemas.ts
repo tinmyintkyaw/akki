@@ -1,11 +1,15 @@
 import z from "zod";
 
-export const spacesReqParams = z.object({
+export const spaceIdSchema = z.object({
   spaceId: z.uuid(),
 });
 
-export const spacesCreateUpdatePayload = z.object({ name: z.string().min(1) });
+export const memberIdSchema = z.object({
+  memberId: z.uuid(),
+});
 
-export const spaceAddMembersPayload = z.object({ members: z.array(z.uuid()) });
+export const memberRoleSchema = z.object({
+  role: z.enum(["admin", "member"]),
+});
 
-export const spaceRemoveMemberPayload = z.object({ member: z.uuid() });
+export const spaceNameSchema = z.object({ name: z.string().min(1) });

@@ -1,8 +1,5 @@
-import { spaceSelect } from "@/core/spaces/spaces.queries";
-import {
-  spacesCreateUpdatePayload,
-  spacesReqParams,
-} from "@/core/spaces/spaces.schemas";
+import { getSpaceRole, spaceSelect } from "@/core/spaces/spaces.queries";
+import { spaceIdSchema, spaceNameSchema } from "@/core/spaces/spaces.schemas";
 import { Session } from "better-auth";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
@@ -11,8 +8,8 @@ export const updateSpaceRoute: FastifyPluginAsyncZod = async (fastify) => {
     "/:spaceId",
     {
       schema: {
-        params: spacesReqParams,
-        body: spacesCreateUpdatePayload,
+        params: spaceIdSchema,
+        body: spaceNameSchema,
       },
     },
     async (req, res) => {
@@ -21,15 +18,21 @@ export const updateSpaceRoute: FastifyPluginAsyncZod = async (fastify) => {
       const { spaceId } = req.params;
       const { name } = req.body;
 
-      const result = await db
-        .updateTable("space")
-        .where("createdBy", "=", userId)
-        .where("id", "=", spaceId)
-        .set({ name })
-        .returning(spaceSelect)
-        .executeTakeFirst();
+      const result = await db.transaction().execute(async (trx) => {
+        const role = await getSpaceRole(trx, spaceId, userId, "admin");
 
-      if (!result) return res.code(400).send();
+        if (role !== "admin") throw fastify.httpErrors.forbidden();
+
+        return await trx
+          .updateTable("space")
+          .set({ name, updatedAt: new Date() })
+          .where("space.id", "=", spaceId)
+          .returning(spaceSelect)
+          .executeTakeFirst();
+      });
+
+      if (!result) throw fastify.httpErrors.notFound();
+
       return res.send(result);
     },
   );
