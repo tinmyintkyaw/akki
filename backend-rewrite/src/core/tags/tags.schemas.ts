@@ -1,13 +1,7 @@
-import { spacesReqParams } from "@/core/spaces/spaces.schemas";
 import z from "zod";
 
-export const tagsReqParams = spacesReqParams.extend({ tagId: z.uuid() });
+export const tagIdSchema = z.object({ tagId: z.uuid() });
 
-export const tagCreatePayload = z.object({
-  name: z.string().min(1),
-  parentId: z.uuid().nullable(),
-});
+export const tagNameSchema = z.object({ name: z.string().min(1) });
 
-export const tagUpdatePayload = tagCreatePayload
-  .partial()
-  .refine((obj) => Object.keys(obj).length > 0);
+export const tagIdListSchema = z.object({ tags: z.array(z.uuid()).min(1) });
