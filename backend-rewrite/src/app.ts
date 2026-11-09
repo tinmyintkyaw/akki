@@ -2,6 +2,7 @@ import auth from "@/auth";
 import config from "@/config";
 import { core } from "@/core";
 import db from "@/db";
+import sensible from "@fastify/sensible";
 import Fastify from "fastify";
 import {
   serializerCompiler,
@@ -16,6 +17,7 @@ const app = Fastify({
 app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);
 
+await app.register(sensible);
 await app.register(config);
 
 app.log.level = app.config.NODE_ENV !== "production" ? "debug" : "info";
