@@ -1,11 +1,11 @@
-import { createSpaceRoute } from "@/core/spaces/routes/create-space";
-import { deleteSpaceRoute } from "@/core/spaces/routes/delete-space";
-import { getSpacesRoute } from "@/core/spaces/routes/get-spaces";
-import { addSpaceMemberRoute } from "@/core/spaces/routes/members/add-member";
-import { getSpaceMembersRoute } from "@/core/spaces/routes/members/get-members";
-import { removeSpaceMemberRoute } from "@/core/spaces/routes/members/remove-member";
-import { updateSpaceMemberRoute } from "@/core/spaces/routes/members/update-member";
-import { updateSpaceRoute } from "@/core/spaces/routes/update-space";
+import { createSpaceRoute } from "#/core/spaces/routes/create-space.js";
+import { deleteSpaceRoute } from "#/core/spaces/routes/delete-space.js";
+import { getSpacesRoute } from "#/core/spaces/routes/get-spaces.js";
+import { addSpaceMemberRoute } from "#/core/spaces/routes/members/add-member.js";
+import { getSpaceMembersRoute } from "#/core/spaces/routes/members/get-members.js";
+import { removeSpaceMemberRoute } from "#/core/spaces/routes/members/remove-member.js";
+import { updateSpaceMemberRoute } from "#/core/spaces/routes/members/update-member.js";
+import { updateSpaceRoute } from "#/core/spaces/routes/update-space.js";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
 const spaces: FastifyPluginAsyncZod = async (fastify) => {

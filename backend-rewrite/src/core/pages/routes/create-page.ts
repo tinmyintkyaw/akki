@@ -1,9 +1,9 @@
-import { pageSelect } from "@/core/pages/queries/page-select";
-import { getSpaceRole } from "@/core/spaces/spaces.queries";
-import { spaceIdSchema } from "@/core/spaces/spaces.schemas";
+import { pageNameSchema } from "#/core/pages/pages.schema.js";
+import { pageSelect } from "#/core/pages/queries/page-select.js";
+import { getSpaceRole } from "#/core/spaces/spaces.queries.js";
+import { spaceIdSchema } from "#/core/spaces/spaces.schemas.js";
 import { Session } from "better-auth";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
-import { pageNameSchema } from "../pages.schema";
 
 export const createPageRoute: FastifyPluginAsyncZod = async (fastify) => {
   fastify.post(

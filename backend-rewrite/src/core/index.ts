@@ -1,9 +1,7 @@
-import { authGuardHandler } from "@/auth/auth-guard-handler";
-import { collaboration } from "@/collaboration";
-import pages from "@/core/pages";
-import spaces from "@/core/spaces";
-import tags from "@/core/tags";
-import { files } from "@/files";
+import { authGuardHandler } from "#/auth/auth-guard-handler.js";
+import pages from "#/core/pages/index.js";
+import spaces from "#/core/spaces/index.js";
+import tags from "#/core/tags/index.js";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
 export const core: FastifyPluginAsyncZod = async (fastify) => {
@@ -13,7 +11,5 @@ export const core: FastifyPluginAsyncZod = async (fastify) => {
   fastify.register(spaces, { prefix: "/spaces" });
   fastify.register(tags, { prefix: "/spaces/:spaceId/tags" });
   fastify.register(pages, { prefix: "/spaces/:spaceId/pages" });
-  fastify.register(files, { prefix: "/spaces/:spaceId/files" });
-
-  fastify.register(collaboration, { prefix: "/sync/spaces/:spaceId/pages" });
+  // fastify.register(files, { prefix: "/spaces/:spaceId/files" });
 };

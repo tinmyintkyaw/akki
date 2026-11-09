@@ -5,7 +5,7 @@ export interface Database {
   session: SessionTable;
   account: AccountTable;
   verification: VerificationTable;
-  systemSettings: SystemSettingsTable;
+  userSettings: UserSettingsTable;
   space: SpaceTable;
   spaceMembers: SpaceMembersTable;
   page: PageTable;
@@ -22,18 +22,18 @@ export interface UserTable {
   email: string;
   emailVerified: boolean;
   image: string | null;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Generated<Date>;
+  updatedAt: Generated<Date>;
 }
 
 export interface SessionTable {
   id: Generated<string>;
   token: string;
-  expiresAt: Date;
+  expiresAt: Generated<Date>;
   ipAddress: string | null;
   userAgent: string | null;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Generated<Date>;
+  updatedAt: Generated<Date>;
   userId: string;
 }
 
@@ -48,8 +48,8 @@ export interface AccountTable {
   scope: string | null;
   idToken: string | null;
   password: string | null;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Generated<Date>;
+  updatedAt: Generated<Date>;
   userId: string;
 }
 
@@ -57,9 +57,9 @@ export interface VerificationTable {
   id: Generated<string>;
   identifier: string;
   value: string;
-  expiresAt: Date;
-  createdAt: Date;
-  updatedAt: Date;
+  expiresAt: Generated<Date>;
+  createdAt: Generated<Date>;
+  updatedAt: Generated<Date>;
 }
 
 export interface UserSettingsTable {
@@ -70,27 +70,27 @@ export interface UserSettingsTable {
 export interface SpaceTable {
   id: Generated<string>;
   name: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Generated<Date>;
+  updatedAt: Generated<Date>;
 }
 
 export interface SpaceMembersTable {
   spaceId: string;
   userId: string;
+  createdAt: Generated<Date>;
+  updatedAt: Generated<Date>;
   role: "admin" | "member";
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export interface PageTable {
   id: Generated<string>;
   name: string;
   ydoc: Buffer;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Generated<Date>;
+  updatedAt: Generated<Date>;
   deletedAt: Date | null;
   createdBy: string;
-  isPinned: boolean;
+  isPinned: Generated<boolean>;
   spaceId: string;
 }
 
@@ -103,14 +103,14 @@ export interface TagTable {
 export interface PageTagTable {
   pageId: string;
   tagId: string;
-  createdAt: Date;
+  createdAt: Generated<Date>;
 }
 
 export interface FileTable {
   id: Generated<string>;
   filename: string;
   extension: string | undefined;
-  createdAt: Date;
+  createdAt: Generated<Date>;
   createdBy: string;
   spaceId: string;
 }

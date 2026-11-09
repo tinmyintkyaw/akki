@@ -1,4 +1,4 @@
-import { spaceSelect } from "@/core/spaces/spaces.queries";
+import { spaceSelect } from "#/core/spaces/spaces.queries.js";
 import { Session } from "better-auth";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 

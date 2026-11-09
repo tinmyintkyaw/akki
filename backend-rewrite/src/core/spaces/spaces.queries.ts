@@ -1,4 +1,4 @@
-import { Database } from "@/db/database";
+import { Database } from "#/db/database.js";
 import { Kysely, SelectExpression, Transaction } from "kysely";
 
 export const spaceSelect = [

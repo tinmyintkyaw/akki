@@ -1,4 +1,4 @@
-import { Database } from "@/db/database";
+import { Database } from "#/db/database.js";
 import { SelectExpression } from "kysely";
 
 export const pageSelect = [

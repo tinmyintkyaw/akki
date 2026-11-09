@@ -1,5 +1,8 @@
-import { authGuardHandler } from "@/auth/auth-guard-handler";
-import { AuthInstance, createAuthInstance } from "@/auth/create-auth-instance";
+import { authGuardHandler } from "#/auth/auth-guard-handler.js";
+import {
+  AuthInstance,
+  createAuthInstance,
+} from "#/auth/create-auth-instance.js";
 import { fromNodeHeaders } from "better-auth/node";
 import { FastifyPluginAsync, preHandlerAsyncHookHandler } from "fastify";
 import fastifyPlugin from "fastify-plugin";

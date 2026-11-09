@@ -1,5 +1,8 @@
-import { getSpaceRole, spaceSelect } from "@/core/spaces/spaces.queries";
-import { spaceIdSchema, spaceNameSchema } from "@/core/spaces/spaces.schemas";
+import { getSpaceRole, spaceSelect } from "#/core/spaces/spaces.queries.js";
+import {
+  spaceIdSchema,
+  spaceNameSchema,
+} from "#/core/spaces/spaces.schemas.js";
 import { Session } from "better-auth";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 

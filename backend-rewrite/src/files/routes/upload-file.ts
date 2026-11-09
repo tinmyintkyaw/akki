@@ -1,5 +1,5 @@
-import { getAccessibleSpaces } from "@/core/spaces/spaces.queries";
-import { spacesReqParams } from "@/core/spaces/spaces.schemas";
+import { getAccessibleSpaces } from "#/core/spaces/spaces.queries.js";
+import { spacesReqParams } from "#/core/spaces/spaces.schemas.js";
 import { Session } from "better-auth";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import fs from "node:fs";

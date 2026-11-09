@@ -1,5 +1,5 @@
-import { spaceSelect } from "@/core/spaces/spaces.queries";
-import { spaceNameSchema } from "@/core/spaces/spaces.schemas";
+import { spaceSelect } from "#/core/spaces/spaces.queries.js";
+import { spaceNameSchema } from "#/core/spaces/spaces.schemas.js";
 import { Session } from "better-auth";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 

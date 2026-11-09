@@ -1,7 +1,7 @@
-import { deleteFileRoute } from "@/files/routes/delete-file";
-import { downloadFileRoute } from "@/files/routes/download-file";
-import { getFilesRoute } from "@/files/routes/get-files";
-import { uploadFileRoute } from "@/files/routes/upload-file";
+import { deleteFileRoute } from "#/files/routes/delete-file.js";
+import { downloadFileRoute } from "#/files/routes/download-file.js";
+import { getFilesRoute } from "#/files/routes/get-files.js";
+import { uploadFileRoute } from "#/files/routes/upload-file.js";
 import multipart from "@fastify/multipart";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 

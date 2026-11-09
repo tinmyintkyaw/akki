@@ -1,4 +1,4 @@
-import { spaceIdSchema } from "@/core/spaces/spaces.schemas";
+import { spaceIdSchema } from "#/core/spaces/spaces.schemas.js";
 import { Session } from "better-auth";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 

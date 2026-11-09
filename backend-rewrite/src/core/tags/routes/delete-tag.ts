@@ -1,6 +1,6 @@
-import { getSpaceRole } from "@/core/spaces/spaces.queries";
-import { spaceIdSchema } from "@/core/spaces/spaces.schemas";
-import { tagIdSchema } from "@/core/tags/tags.schemas";
+import { getSpaceRole } from "#/core/spaces/spaces.queries.js";
+import { spaceIdSchema } from "#/core/spaces/spaces.schemas.js";
+import { tagIdSchema } from "#/core/tags/tags.schemas.js";
 import { Session } from "better-auth";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 

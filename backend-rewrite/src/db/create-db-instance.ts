@@ -1,4 +1,4 @@
-import { Database } from "@/db/database";
+import { Database } from "#/db/database.js";
 import { FastifyInstance } from "fastify";
 import { CamelCasePlugin, Kysely, PostgresDialect } from "kysely";
 import pg from "pg";

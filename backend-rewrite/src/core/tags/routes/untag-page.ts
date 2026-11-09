@@ -1,7 +1,7 @@
-import { pageIdSchema } from "@/core/pages/pages.schema";
-import { getSpaceRole } from "@/core/spaces/spaces.queries";
-import { spaceIdSchema } from "@/core/spaces/spaces.schemas";
-import { tagIdListSchema } from "@/core/tags/tags.schemas";
+import { pageIdSchema } from "#/core/pages/pages.schema.js";
+import { getSpaceRole } from "#/core/spaces/spaces.queries.js";
+import { spaceIdSchema } from "#/core/spaces/spaces.schemas.js";
+import { tagIdListSchema } from "#/core/tags/tags.schemas.js";
 import { Session } from "better-auth";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 

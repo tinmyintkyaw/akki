@@ -1,4 +1,4 @@
-import { createDBInstance, DBInstance } from "@/db/create-db-instance";
+import { createDBInstance, DBInstance } from "#/db/create-db-instance.js";
 import { FastifyPluginAsync } from "fastify";
 import fastifyPlugin from "fastify-plugin";
 import { promises as fs } from "fs";

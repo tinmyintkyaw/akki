@@ -1,7 +1,7 @@
-import auth from "@/auth";
-import config from "@/config";
-import { core } from "@/core";
-import db from "@/db";
+import auth from "#/auth/index.js";
+import config from "#/config/index.js";
+import { core } from "#/core/index.js";
+import db from "#/db/index.js";
 import sensible from "@fastify/sensible";
 import Fastify from "fastify";
 import {
