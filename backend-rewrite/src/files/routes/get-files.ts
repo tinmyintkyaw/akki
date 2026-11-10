@@ -1,6 +1,4 @@
-import { getAccessibleSpaces } from "#/core/spaces/spaces.queries.js";
-import { spacesReqParams } from "#/core/spaces/spaces.schemas.js";
-import { Session } from "better-auth";
+import { spaceIdSchema } from "#/files/files.schema.js";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
 export const getFilesRoute: FastifyPluginAsyncZod = async (fastify) => {
@@ -8,29 +6,25 @@ export const getFilesRoute: FastifyPluginAsyncZod = async (fastify) => {
     "/",
     {
       schema: {
-        params: spacesReqParams,
+        params: spaceIdSchema,
       },
     },
     async (req, res) => {
       const { db } = fastify;
-      const { userId } = req.getDecorator<Session>("session");
       const { spaceId } = req.params;
 
-      const files = await db.transaction().execute(async (trx) => {
-        await getAccessibleSpaces(trx, {
-          userId,
-          spaceId,
-        }).executeTakeFirstOrThrow();
-
-        return trx
-          .selectFrom("file")
-          .selectAll()
-          .where("spaceId", "=", spaceId)
-          .execute();
+      await fastify.auth.api.getActiveMemberRole({
+        headers: req.headers,
+        query: { organizationId: spaceId },
       });
 
-      if (!files) return res.code(400).send();
+      const files = await db
+        .selectFrom("file")
+        .selectAll()
+        .where("organizationId", "=", spaceId)
+        .execute();
 
+      if (!files) throw fastify.httpErrors.notFound();
       return res.send(files);
     },
   );

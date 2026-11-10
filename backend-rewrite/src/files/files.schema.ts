@@ -1,4 +1,5 @@
-import { spacesReqParams } from "#/core/spaces/spaces.schemas";
 import z from "zod";
 
-export const fileReqParams = spacesReqParams.extend({ fileId: z.uuid() });
+export const spaceIdSchema = z.object({ spaceId: z.uuid() });
+
+export const spaceFileIdSchema = spaceIdSchema.extend({ fileId: z.uuid() });

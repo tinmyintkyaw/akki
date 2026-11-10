@@ -1,6 +1,4 @@
-import { getAccessibleSpaces } from "#/core/spaces/spaces.queries.js";
-import { fileReqParams } from "#/files/files.schema.js";
-import { Session } from "better-auth";
+import { spaceFileIdSchema } from "#/files/files.schema.js";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import fs from "node:fs";
 import path from "node:path";
@@ -10,24 +8,23 @@ export const downloadFileRoute: FastifyPluginAsyncZod = async (fastify) => {
     "/:fileId",
     {
       schema: {
-        params: fileReqParams,
+        params: spaceFileIdSchema,
       },
     },
     async (req, res) => {
       const { db } = fastify;
-      const { userId } = req.getDecorator<Session>("session");
       const { spaceId, fileId } = req.params;
 
-      const dbFile = await db.transaction().execute(async (trx) => {
-        await getAccessibleSpaces(trx, {
-          userId,
-          spaceId,
-        }).executeTakeFirstOrThrow();
+      await fastify.auth.api.getActiveMemberRole({
+        headers: req.headers,
+        query: { organizationId: spaceId },
+      });
 
+      const dbFile = await db.transaction().execute(async (trx) => {
         return trx
           .selectFrom("file")
           .selectAll()
-          .where("spaceId", "=", spaceId)
+          .where("organizationId", "=", spaceId)
           .where("id", "=", fileId)
           .executeTakeFirst();
       });

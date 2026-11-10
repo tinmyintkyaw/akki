@@ -1,5 +1,4 @@
-import { getAccessibleSpaces } from "#/core/spaces/spaces.queries.js";
-import { spacesReqParams } from "#/core/spaces/spaces.schemas.js";
+import { spaceIdSchema } from "#/files/files.schema.js";
 import { Session } from "better-auth";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import fs from "node:fs";
@@ -12,7 +11,7 @@ export const uploadFileRoute: FastifyPluginAsyncZod = async (fastify) => {
     "/",
     {
       schema: {
-        params: spacesReqParams,
+        params: spaceIdSchema,
       },
     },
     async (req, res) => {
@@ -22,16 +21,16 @@ export const uploadFileRoute: FastifyPluginAsyncZod = async (fastify) => {
 
       const data = await req.file();
 
-      if (!data) return res.code(400).send();
+      if (!data) throw fastify.httpErrors.badRequest();
 
       const extension = path.extname(data.filename);
 
-      const newFile = await db.transaction().execute(async (trx) => {
-        await getAccessibleSpaces(trx, {
-          userId,
-          spaceId,
-        }).executeTakeFirstOrThrow();
+      await fastify.auth.api.getActiveMemberRole({
+        headers: req.headers,
+        query: { organizationId: spaceId },
+      });
 
+      const newFile = await db.transaction().execute(async (trx) => {
         const fileId = uuidv7();
 
         const savePath = path.resolve(
@@ -51,23 +50,20 @@ export const uploadFileRoute: FastifyPluginAsyncZod = async (fastify) => {
           throw new fastify.multipartErrors.FilesLimitError();
         }
 
-        const dbFile = await trx
+        return await trx
           .insertInto("file")
           .values({
             id: fileId,
             extension,
-            spaceId,
+            organizationId: spaceId,
             createdBy: userId,
             filename: path.basename(data.filename, path.extname(data.filename)), // second argument required to extract filename without extension
           })
           .returningAll()
           .executeTakeFirstOrThrow();
-
-        return dbFile;
       });
 
-      if (!newFile) return res.code(400).send();
-
+      if (!newFile) throw fastify.httpErrors.badRequest();
       return res.code(201).send(newFile);
     },
   );
