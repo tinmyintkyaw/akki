@@ -2,6 +2,7 @@ import auth from "#/auth/index.js";
 import config from "#/config/index.js";
 import { core } from "#/core/index.js";
 import db from "#/db/index.js";
+import meilisearch from "#/search/meilisearch.js";
 import sensible from "@fastify/sensible";
 import Fastify from "fastify";
 import {
@@ -24,6 +25,7 @@ app.log.level = app.config.NODE_ENV !== "production" ? "debug" : "info";
 
 await app.register(db);
 await app.register(auth);
+await app.register(meilisearch);
 
 // app.register(fastifyWebsocket); // needs to be registered before other routes
 

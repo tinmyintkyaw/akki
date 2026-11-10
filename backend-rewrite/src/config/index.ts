@@ -24,6 +24,10 @@ const envSchema = z
     POSTGRES_PORT: z.number().default(5432),
     POSTGRES_DB: z.string().min(1),
 
+    MEILISEARCH_HOST: z.string().default("localhost"),
+    MEILISEARCH_PORT: z.number().default(7700),
+    MEILISEARCH_KEY: z.string().min(16),
+
     ENABLE_EMAIL_SIGNIN: z.boolean().default(true),
     DISABLE_SIGNUPS: z.boolean().default(false),
   })
