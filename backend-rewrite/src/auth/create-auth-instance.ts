@@ -1,4 +1,5 @@
 import { betterAuth } from "better-auth";
+import { organization } from "better-auth/plugins";
 import { FastifyInstance } from "fastify";
 
 const createAuthInstance = (fastify: FastifyInstance) =>
@@ -10,6 +11,7 @@ const createAuthInstance = (fastify: FastifyInstance) =>
       enabled: fastify.config.ENABLE_EMAIL_SIGNIN,
       disableSignUp: fastify.config.DISABLE_SIGNUPS,
     },
+    plugins: [organization()],
   });
 
 export type AuthInstance = ReturnType<typeof createAuthInstance>;

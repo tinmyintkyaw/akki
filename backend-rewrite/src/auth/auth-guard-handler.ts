@@ -7,7 +7,7 @@ const authGuardHandler: preHandlerAsyncHookHandler = async (request, reply) => {
     headers: fromNodeHeaders(request.headers),
   });
 
-  if (!session) return reply.code(401).send();
+  if (!session) return reply.unauthorized();
   request.setDecorator<Session>("session", session.session);
 };
 

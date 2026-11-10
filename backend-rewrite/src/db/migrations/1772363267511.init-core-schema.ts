@@ -2,45 +2,6 @@ import { Kysely, sql } from "kysely";
 
 export const up = async (db: Kysely<any>) => {
   await db.schema
-    .createTable("space")
-    .addColumn("id", "uuid", (col) => col.primaryKey().defaultTo(sql`uuidv7()`))
-    .addColumn("name", "text", (col) => col.notNull().defaultTo("New Space"))
-    .addColumn("created_at", "timestamptz", (col) =>
-      col.notNull().defaultTo(sql`now()`),
-    )
-    .addColumn("updated_at", "timestamptz", (col) =>
-      col.notNull().defaultTo(sql`now()`),
-    )
-    .execute();
-
-  await db.schema
-    .createTable("space_members")
-    .addColumn("space_id", "uuid", (col) =>
-      col.notNull().references("space.id").onDelete("cascade"),
-    )
-    .addColumn("user_id", "uuid", (col) =>
-      col.notNull().references("user.id").onDelete("cascade"),
-    )
-
-    .addColumn("role", "text", (col) =>
-      col.check(sql`role IN ('admin', 'member')`),
-    )
-
-    .addColumn("created_at", "timestamptz", (col) =>
-      col.notNull().defaultTo(sql`now()`),
-    )
-    .addColumn("updated_at", "timestamptz")
-
-    .addPrimaryKeyConstraint("space_members_pk", ["space_id", "user_id"])
-    .execute();
-
-  await db.schema
-    .createIndex("idx_space_members_user_id")
-    .on("space_members")
-    .column("user_id")
-    .execute();
-
-  await db.schema
     .createTable("page")
     .addColumn("id", "uuid", (col) => col.primaryKey().defaultTo(sql`uuidv7()`))
 
@@ -59,32 +20,25 @@ export const up = async (db: Kysely<any>) => {
 
     .addColumn("is_pinned", "boolean", (col) => col.notNull().defaultTo(false))
 
-    .addColumn("created_by", "uuid", (col) =>
+    .addColumn("author_id", "uuid", (col) =>
       col.notNull().references("user.id").onDelete("cascade"),
     )
 
-    .addColumn("space_id", "uuid", (col) =>
-      col.notNull().references("space.id").onDelete("cascade"),
+    .addColumn("organization_id", "uuid", (col) =>
+      col.notNull().references("organization.id").onDelete("cascade"),
     )
-    .execute();
-
-  await db.schema
-    .createIndex("idx_page_active")
-    .on("page")
-    .columns(["space_id", "updated_at"])
-    .where(sql.ref("deleted_at"), "is", null)
     .execute();
 
   await db.schema
     .createTable("tag")
     .addColumn("id", "uuid", (col) => col.primaryKey().defaultTo(sql`uuidv7()`))
-    .addColumn("space_id", "uuid", (col) =>
-      col.notNull().references("space.id").onDelete("cascade"),
+    .addColumn("organization_id", "uuid", (col) =>
+      col.notNull().references("organization.id").onDelete("cascade"),
     )
 
     .addColumn("name", "text", (col) => col.notNull())
 
-    .addUniqueConstraint("unique_space_tag", ["space_id", "name"])
+    .addUniqueConstraint("unique_space_tag", ["organization_id", "name"])
     .execute();
 
   await db.schema
@@ -100,6 +54,27 @@ export const up = async (db: Kysely<any>) => {
     .execute();
 
   await db.schema
+    .createIndex("idx_page_active")
+    .on("page")
+    .columns(["organization_id", "updated_at desc"])
+    .where(sql.ref("deleted_at"), "is", null)
+    .execute();
+
+  await db.schema
+    .createIndex("idx_page_trashbin")
+    .on("page")
+    .columns(["organization_id", "deleted_at desc"])
+    .where(sql.ref("deleted_at"), "is not", null)
+    .execute();
+
+  await db.schema
+    .createIndex("idx_tags_org")
+    .ifNotExists()
+    .on("tag")
+    .columns(["organization_id"])
+    .execute();
+
+  await db.schema
     .createIndex("idx_page_tag_tag_id")
     .on("page_tag")
     .column("tag_id")
@@ -107,9 +82,11 @@ export const up = async (db: Kysely<any>) => {
 };
 
 export const down = async (db: Kysely<any>) => {
-  await db.schema.dropTable("space").cascade().execute();
-  await db.schema.dropTable("space_members").cascade().execute();
-  await db.schema.dropTable("page").cascade().execute();
-  await db.schema.dropTable("tag").cascade().execute();
-  await db.schema.dropTable("page_tag").cascade().execute();
+  await db.schema.dropTable("page").ifExists().cascade().execute();
+  await db.schema.dropTable("tag").ifExists().cascade().execute();
+  await db.schema.dropTable("page_tag").ifExists().cascade().execute();
+  await db.schema.dropIndex("idx_page_active").ifExists().execute();
+  await db.schema.dropIndex("idx_page_trashbin").ifExists().execute();
+  await db.schema.dropIndex("idx_tags_org").ifExists().execute();
+  await db.schema.dropIndex("idx_page_tag_tag_id").ifExists().execute();
 };

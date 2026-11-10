@@ -12,24 +12,12 @@ export const up = async (db: Kysely<any>) => {
     .addColumn("created_by", "uuid", (col) =>
       col.notNull().references("user.id"),
     )
-    .addColumn("space_id", "uuid", (col) =>
-      col.notNull().references("space.id"),
+    .addColumn("organization_id", "uuid", (col) =>
+      col.notNull().references("organization.id"),
     )
-    .execute();
-
-  await db.schema
-    .createIndex("file_space_id_idx")
-    .on("file")
-    .column("space_id")
-    .execute();
-
-  await db.schema
-    .createIndex("file_created_by_idx")
-    .on("file")
-    .column("created_by")
     .execute();
 };
 
 export const down = async (db: Kysely<any>) => {
-  await db.schema.dropTable("file").cascade().execute();
+  await db.schema.dropTable("file").ifExists().cascade().execute();
 };

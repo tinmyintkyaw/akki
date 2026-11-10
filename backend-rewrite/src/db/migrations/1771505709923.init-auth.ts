@@ -97,8 +97,8 @@ export const up = async (db: Kysely<any>): Promise<void> => {
 };
 
 export const down = async (db: Kysely<any>) => {
-  await db.schema.dropTable("user").cascade().execute();
-  await db.schema.dropTable("session").cascade().execute();
-  await db.schema.dropTable("account").cascade().execute();
-  await db.schema.dropTable("verification").cascade().execute();
+  await db.schema.dropTable("user").ifExists().cascade().execute();
+  await db.schema.dropTable("session").ifExists().cascade().execute();
+  await db.schema.dropTable("account").ifExists().cascade().execute();
+  await db.schema.dropTable("verification").ifExists().cascade().execute();
 };

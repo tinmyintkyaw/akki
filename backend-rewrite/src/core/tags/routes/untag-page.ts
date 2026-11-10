@@ -1,35 +1,33 @@
-import { pageIdSchema } from "#/core/pages/pages.schema.js";
-import { getSpaceRole } from "#/core/spaces/spaces.queries.js";
-import { spaceIdSchema } from "#/core/spaces/spaces.schemas.js";
-import { tagIdListSchema } from "#/core/tags/tags.schemas.js";
-import { Session } from "better-auth";
+import {
+  spaceTagPageIdSchema,
+  tagIdListSchema,
+} from "#/core/tags/tags.schemas.js";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
-export const tagPageRoute: FastifyPluginAsyncZod = async (fastify) => {
+export const untagPageRoute: FastifyPluginAsyncZod = async (fastify) => {
   fastify.delete(
-    "/:pageId/tags",
+    "/pages/:pageId/tags",
     {
       schema: {
-        params: spaceIdSchema.extend(pageIdSchema.shape),
+        params: spaceTagPageIdSchema,
         body: tagIdListSchema,
       },
     },
     async (req, res) => {
       const { db } = fastify;
-      const { userId } = req.getDecorator<Session>("session");
       const { spaceId, pageId } = req.params;
       const { tags } = req.body;
 
-      await db.transaction().execute(async (trx) => {
-        const role = await getSpaceRole(trx, spaceId, userId, "member");
-        if (!role) throw fastify.httpErrors.forbidden();
-
-        await trx
-          .deleteFrom("pageTag")
-          .where("pageId", "=", pageId)
-          .where("tagId", "in", tags)
-          .execute();
+      await fastify.auth.api.getActiveMemberRole({
+        headers: req.headers,
+        query: { organizationId: spaceId },
       });
+
+      await db
+        .deleteFrom("pageTag")
+        .where("pageId", "=", pageId)
+        .where("tagId", "in", tags)
+        .execute();
 
       return res.code(200).send();
     },

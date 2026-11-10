@@ -1,7 +1,5 @@
-import { pageNameSchema } from "#/core/pages/pages.schema.js";
+import { pageNameSchema, spaceIdSchema } from "#/core/pages/pages.schema.js";
 import { pageSelect } from "#/core/pages/queries/page-select.js";
-import { getSpaceRole } from "#/core/spaces/spaces.queries.js";
-import { spaceIdSchema } from "#/core/spaces/spaces.schemas.js";
 import { Session } from "better-auth";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
@@ -20,27 +18,24 @@ export const createPageRoute: FastifyPluginAsyncZod = async (fastify) => {
       const { spaceId } = req.params;
       const { name } = req.body;
 
-      try {
-        const newPage = await db.transaction().execute(async (trx) => {
-          const role = await getSpaceRole(trx, spaceId, userId);
-          if (!role) throw fastify.httpErrors.unauthorized();
+      await fastify.auth.api.getActiveMemberRole({
+        headers: req.headers,
+        query: { organizationId: spaceId },
+      });
 
-          return await trx
-            .insertInto("page")
-            .values({
-              name,
-              spaceId,
-              createdBy: userId,
-              ydoc: Buffer.from(""), // TODO: properly initialize ydoc
-            })
-            .returning(pageSelect)
-            .executeTakeFirstOrThrow();
-        });
+      const newPage = await db
+        .insertInto("page")
+        .values({
+          name,
+          organizationId: spaceId,
+          authorId: userId,
+          ydoc: Buffer.from(""), // TODO: properly initialize ydoc
+        })
+        .returning(pageSelect)
+        .executeTakeFirst();
 
-        return res.code(201).send(newPage);
-      } catch (error) {
-        throw error;
-      }
+      if (!newPage) throw fastify.httpErrors.notFound();
+      return res.code(201).send(newPage);
     },
   );
 };

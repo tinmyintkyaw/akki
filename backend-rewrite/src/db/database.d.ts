@@ -5,14 +5,13 @@ export interface Database {
   session: SessionTable;
   account: AccountTable;
   verification: VerificationTable;
+  organization: OrganizationTable;
+  member: MemberTable;
+  invitation: InvitationTable;
   userSettings: UserSettingsTable;
-  space: SpaceTable;
-  spaceMembers: SpaceMembersTable;
   page: PageTable;
   tag: TagTable;
   pageTag: PageTagTable;
-  pinnedPage: PinnedPageTable;
-  pinnedTag: PinnedTagTable;
   file: FileTable;
 }
 
@@ -35,6 +34,8 @@ export interface SessionTable {
   createdAt: Generated<Date>;
   updatedAt: Generated<Date>;
   userId: string;
+  activeOrganizationId: string | null;
+  activeTeamId: string | null;
 }
 
 export interface AccountTable {
@@ -62,24 +63,37 @@ export interface VerificationTable {
   updatedAt: Generated<Date>;
 }
 
+export interface OrganizationTable {
+  id: Generated<string>;
+  name: string;
+  slug: string;
+  logo: string | null;
+  metadata: string | null;
+  createdAt: Generated<Date>;
+}
+
+export interface MemberTable {
+  id: Generated<string>;
+  userId: string;
+  organizationId: string;
+  role: string;
+  createdAt: Generated<Date>;
+}
+
+export interface InvitationTable {
+  id: Generated<string>;
+  email: string;
+  inviterId: string;
+  organizationId: string;
+  role: string | null;
+  status: string;
+  createdAt: Generated<Date>;
+  expiresAt: Generated<Date>;
+}
+
 export interface UserSettingsTable {
   id: Generated<string>;
   settings: JSONColumnType<{}>;
-}
-
-export interface SpaceTable {
-  id: Generated<string>;
-  name: string;
-  createdAt: Generated<Date>;
-  updatedAt: Generated<Date>;
-}
-
-export interface SpaceMembersTable {
-  spaceId: string;
-  userId: string;
-  createdAt: Generated<Date>;
-  updatedAt: Generated<Date>;
-  role: "admin" | "member";
 }
 
 export interface PageTable {
@@ -89,15 +103,15 @@ export interface PageTable {
   createdAt: Generated<Date>;
   updatedAt: Generated<Date>;
   deletedAt: Date | null;
-  createdBy: string;
+  authorId: string;
   isPinned: Generated<boolean>;
-  spaceId: string;
+  organizationId: string;
 }
 
 export interface TagTable {
   id: Generated<string>;
   name: string;
-  spaceId: string;
+  organizationId: string;
 }
 
 export interface PageTagTable {
@@ -112,5 +126,5 @@ export interface FileTable {
   extension: string | undefined;
   createdAt: Generated<Date>;
   createdBy: string;
-  spaceId: string;
+  organizationId: string;
 }

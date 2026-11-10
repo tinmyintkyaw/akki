@@ -1,4 +1,4 @@
-import { spaceIdSchema } from "#/core/spaces/spaces.schemas.js";
+import { spaceIdSchema } from "#/core/tags/tags.schemas.js";
 import { Session } from "better-auth";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
@@ -11,13 +11,13 @@ export const getTagsRoute: FastifyPluginAsyncZod = async (fastify) => {
     const result = await db
       .selectFrom("tag")
       .selectAll()
-      .where("spaceId", "=", spaceId)
+      .where("organizationId", "=", spaceId)
       .where((eb) =>
         eb.exists(
           eb
-            .selectFrom("spaceMembers")
+            .selectFrom("member")
             .select(eb.lit(1).as("exists"))
-            .where("spaceId", "=", spaceId)
+            .where("organizationId", "=", spaceId)
             .where("userId", "=", userId),
         ),
       )

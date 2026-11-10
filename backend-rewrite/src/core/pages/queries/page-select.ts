@@ -4,9 +4,9 @@ import { SelectExpression } from "kysely";
 export const pageSelect = [
   "page.id",
   "page.name",
-  "page.createdBy",
+  "page.authorId",
   "page.createdAt",
   "page.updatedAt",
   "page.deletedAt",
-  "page.spaceId",
+  "page.organizationId",
 ] as const satisfies ReadonlyArray<SelectExpression<Database, "page">>;

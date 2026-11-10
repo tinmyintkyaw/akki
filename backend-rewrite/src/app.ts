@@ -25,7 +25,7 @@ app.log.level = app.config.NODE_ENV !== "production" ? "debug" : "info";
 await app.register(db);
 await app.register(auth);
 
-app.register(fastifyWebsocket); // needs to be registered before other routes
+// app.register(fastifyWebsocket); // needs to be registered before other routes
 
 await app.register(core, { prefix: "/api" });
 

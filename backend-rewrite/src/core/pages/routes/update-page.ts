@@ -1,8 +1,8 @@
-import { pageIdSchema, pageUpdatePayload } from "#/core/pages/pages.schema.js";
+import {
+  pageUpdatePayload,
+  spacePageIdSchema,
+} from "#/core/pages/pages.schema.js";
 import { pageSelect } from "#/core/pages/queries/page-select.js";
-import { getSpaceRole } from "#/core/spaces/spaces.queries.js";
-import { spaceIdSchema } from "#/core/spaces/spaces.schemas.js";
-import { Session } from "better-auth";
 import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
 export const updatePageRoute: FastifyPluginAsyncZod = async (fastify) => {
@@ -10,33 +10,31 @@ export const updatePageRoute: FastifyPluginAsyncZod = async (fastify) => {
     "/:pageId",
     {
       schema: {
-        params: spaceIdSchema.extend(pageIdSchema.shape),
+        params: spacePageIdSchema,
         body: pageUpdatePayload,
       },
     },
     async (req, res) => {
       const { db } = fastify;
-      const { userId } = req.getDecorator<Session>("session");
       const { spaceId, pageId } = req.params;
       const { name, isPinned, isDeleted } = req.body;
 
-      const newPage = await db.transaction().execute(async (trx) => {
-        const role = await getSpaceRole(trx, spaceId, userId, "member");
-
-        if (!role) throw fastify.httpErrors.forbidden();
-
-        return trx
-          .updateTable("page")
-          .where("id", "=", pageId)
-          .where("spaceId", "=", spaceId)
-          .set({
-            name,
-            deletedAt: isDeleted ? new Date() : null,
-            isPinned,
-          })
-          .returning(pageSelect)
-          .executeTakeFirst();
+      await fastify.auth.api.getActiveMemberRole({
+        headers: req.headers,
+        query: { organizationId: spaceId },
       });
+
+      const newPage = await db
+        .updateTable("page")
+        .where("id", "=", pageId)
+        .where("organizationId", "=", spaceId)
+        .set({
+          name,
+          deletedAt: isDeleted ? new Date() : null,
+          isPinned,
+        })
+        .returning(pageSelect)
+        .executeTakeFirst();
 
       if (!newPage) throw fastify.httpErrors.notFound();
       return res.code(201).send(newPage);
