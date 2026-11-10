@@ -32,7 +32,13 @@ const meilisearch: FastifyPluginAsync = async (fastify) => {
     fastify.decorate("defaultSearchKey", defaultSearchKey);
     fastify.log.debug("Found default search key");
 
-    // TODO: look for existing collections and create them if not exist
+    // Look for existing collections and create them if not exist
+    try {
+      await fastify.meilisearch.getIndex("pages");
+    } catch (error) {
+      fastify.log.info("index not found, creating...");
+      await fastify.meilisearch.createIndex("pages", { primaryKey: "pageId" });
+    }
   });
 
   //   Front-end search token endpoint
