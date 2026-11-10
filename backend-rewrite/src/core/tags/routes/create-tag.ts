@@ -3,22 +3,18 @@ import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
 export const createTagRoute: FastifyPluginAsyncZod = async (fastify) => {
   fastify.post(
-    "/",
+    "/spaces/:spaceId/tags",
     {
       schema: {
         params: spaceIdSchema,
         body: tagNameSchema,
       },
+      preHandler: fastify.authGuard.requireContentPermission("write"),
     },
     async (req, res) => {
       const { db } = fastify;
       const { spaceId } = req.params;
       const { name } = req.body;
-
-      await fastify.auth.api.getActiveMemberRole({
-        headers: req.headers,
-        query: { organizationId: spaceId },
-      });
 
       const newTag = await db
         .insertInto("tag")

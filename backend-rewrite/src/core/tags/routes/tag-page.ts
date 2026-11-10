@@ -6,22 +6,18 @@ import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
 export const tagPageRoute: FastifyPluginAsyncZod = async (fastify) => {
   fastify.put(
-    "/pages/:pageId/tags",
+    "/spaces/:spaceId/pages/:pageId/tags",
     {
       schema: {
         params: spaceTagPageIdSchema,
         body: tagIdListSchema,
       },
+      preHandler: fastify.authGuard.requireContentPermission("write"),
     },
     async (req, res) => {
       const { db } = fastify;
-      const { spaceId, pageId } = req.params;
+      const { pageId } = req.params;
       const { tags } = req.body;
-
-      await fastify.auth.api.getActiveMemberRole({
-        headers: req.headers,
-        query: { organizationId: spaceId },
-      });
 
       await db
         .insertInto("pageTag")

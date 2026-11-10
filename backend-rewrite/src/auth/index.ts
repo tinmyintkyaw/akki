@@ -1,16 +1,24 @@
-import { authGuardHandler } from "#/auth/auth-guard-handler.js";
 import {
   AuthInstance,
   createAuthInstance,
 } from "#/auth/create-auth-instance.js";
+import { requireContentPermission } from "#/auth/require-content-permission.js";
+import { requireSession } from "#/auth/require-session.js";
 import { fromNodeHeaders } from "better-auth/node";
-import { FastifyPluginAsync, preHandlerAsyncHookHandler } from "fastify";
+import { FastifyPluginAsync } from "fastify";
 import fastifyPlugin from "fastify-plugin";
 
 declare module "fastify" {
   interface FastifyInstance {
     auth: AuthInstance;
-    verifySession: preHandlerAsyncHookHandler;
+    authGuard: {
+      requireSession: typeof requireSession;
+      requireContentPermission: typeof requireContentPermission;
+    };
+  }
+
+  interface FastifyRequest {
+    session: ReturnType<typeof createAuthInstance>["$Infer"]["Session"] | null;
   }
 }
 
@@ -18,7 +26,15 @@ const auth: FastifyPluginAsync = async (fastify) => {
   const auth = createAuthInstance(fastify);
 
   fastify.decorate("auth", auth);
-  fastify.decorate("verifySession", authGuardHandler);
+
+  const authGuardDecorator = {
+    requireSession,
+    requireContentPermission,
+  };
+
+  fastify.decorate("authGuard", authGuardDecorator);
+
+  fastify.decorateRequest("session", null);
 
   fastify.route({
     method: ["GET", "POST"],

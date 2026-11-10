@@ -8,22 +8,18 @@ import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 // TODO: implement cursor pagination
 export const getPagesRoute: FastifyPluginAsyncZod = async (fastify) => {
   fastify.get(
-    "/",
+    "/spaces/:spaceId/pages",
     {
       schema: {
         params: spaceIdSchema,
         querystring: pageQueryStringSchema,
       },
+      preHandler: fastify.authGuard.requireContentPermission("read"),
     },
     async (req, res) => {
       const { db } = fastify;
       const { spaceId } = req.params;
       const { deleted, pinned } = req.query;
-
-      await fastify.auth.api.getActiveMemberRole({
-        headers: req.headers,
-        query: { organizationId: spaceId },
-      });
 
       let query = db
         .selectFrom("page")

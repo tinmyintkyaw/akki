@@ -5,20 +5,16 @@ import path from "node:path";
 
 export const deleteFileRoute: FastifyPluginAsyncZod = async (fastify) => {
   fastify.delete(
-    "/:fileId",
+    "/spaces/:spaceId/files/:fileId",
     {
       schema: {
         params: spaceFileIdSchema,
       },
+      preHandler: fastify.authGuard.requireContentPermission("write"),
     },
     async (req, res) => {
       const { db } = fastify;
       const { spaceId, fileId } = req.params;
-
-      await fastify.auth.api.getActiveMemberRole({
-        headers: req.headers,
-        query: { organizationId: spaceId },
-      });
 
       await db.transaction().execute(async (trx) => {
         const fileToDel = await trx

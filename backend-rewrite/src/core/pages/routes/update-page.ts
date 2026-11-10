@@ -7,22 +7,18 @@ import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
 export const updatePageRoute: FastifyPluginAsyncZod = async (fastify) => {
   fastify.put(
-    "/:pageId",
+    "/spaces/:spaceId/pages/:pageId",
     {
       schema: {
         params: spacePageIdSchema,
         body: pageUpdatePayload,
       },
+      preHandler: fastify.authGuard.requireContentPermission("write"),
     },
     async (req, res) => {
       const { db } = fastify;
       const { spaceId, pageId } = req.params;
       const { name, isPinned, isDeleted } = req.body;
-
-      await fastify.auth.api.getActiveMemberRole({
-        headers: req.headers,
-        query: { organizationId: spaceId },
-      });
 
       const newPage = await db
         .updateTable("page")

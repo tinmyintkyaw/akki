@@ -3,16 +3,14 @@ import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
 export const deleteTagRoute: FastifyPluginAsyncZod = async (fastify) => {
   fastify.delete(
-    "/:tagId",
-    { schema: { params: spaceTagIdSchema } },
+    "/spaces/:spaceId/tags/:tagId",
+    {
+      schema: { params: spaceTagIdSchema },
+      preHandler: fastify.authGuard.requireContentPermission("write"),
+    },
     async (req, res) => {
       const { db } = fastify;
-      const { tagId, spaceId } = req.params;
-
-      await fastify.auth.api.getActiveMemberRole({
-        headers: req.headers,
-        query: { organizationId: spaceId },
-      });
+      const { tagId } = req.params;
 
       const result = await db
         .deleteFrom("tag")

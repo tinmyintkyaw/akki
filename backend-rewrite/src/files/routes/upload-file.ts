@@ -8,11 +8,12 @@ import { v7 as uuidv7 } from "uuid";
 
 export const uploadFileRoute: FastifyPluginAsyncZod = async (fastify) => {
   fastify.post(
-    "/",
+    "/spaces/:spaceId/files",
     {
       schema: {
         params: spaceIdSchema,
       },
+      preHandler: fastify.authGuard.requireContentPermission("write"),
     },
     async (req, res) => {
       const { db } = fastify;
@@ -24,11 +25,6 @@ export const uploadFileRoute: FastifyPluginAsyncZod = async (fastify) => {
       if (!data) throw fastify.httpErrors.badRequest();
 
       const extension = path.extname(data.filename);
-
-      await fastify.auth.api.getActiveMemberRole({
-        headers: req.headers,
-        query: { organizationId: spaceId },
-      });
 
       const newFile = await db.transaction().execute(async (trx) => {
         const fileId = uuidv7();

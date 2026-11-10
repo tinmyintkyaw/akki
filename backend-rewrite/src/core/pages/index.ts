@@ -7,13 +7,9 @@ import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
 const pages: FastifyPluginAsyncZod = async (fastify) => {
   fastify.register(getPagesRoute);
-
   fastify.register(getPageByIdRoute);
-
   fastify.register(createPageRoute);
-
   fastify.register(updatePageRoute);
-
   fastify.register(deletePageRoute);
 };
 

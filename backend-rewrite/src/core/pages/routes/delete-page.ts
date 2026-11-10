@@ -4,20 +4,16 @@ import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 
 export const deletePageRoute: FastifyPluginAsyncZod = async (fastify) => {
   fastify.delete(
-    "/:pageId",
+    "/spaces/:spaceId/pages/:pageId",
     {
       schema: {
         params: spacePageIdSchema,
       },
+      preHandler: fastify.authGuard.requireContentPermission("write"),
     },
     async (req, res) => {
       const { db } = fastify;
       const { spaceId, pageId } = req.params;
-
-      await fastify.auth.api.getActiveMemberRole({
-        headers: req.headers,
-        query: { organizationId: spaceId },
-      });
 
       const result = await db
         .deleteFrom("page")
