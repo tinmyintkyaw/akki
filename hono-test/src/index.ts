@@ -1,10 +1,12 @@
+import { hocuspocus } from "#/collab/hocuspocus.js";
+import collab from "#/collab/index.js";
 import { migrate } from "#/db/migrate.js";
 import { env } from "#/env.js";
-import { hocuspocus } from "#/hocuspocus.js";
-import { serve, upgradeWebSocket } from "@hono/node-server"; // 👈 upgradeWebSocket comes from node-server directly
+import getPages from "#/get-page.js";
+import { serve } from "@hono/node-server"; // 👈 upgradeWebSocket comes from node-server directly
 import { Hono } from "hono";
 import { logger } from "hono/logger";
-import { WebSocket, WebSocketServer } from "ws"; // 👈 Required by the new built-in engine
+import { WebSocketServer } from "ws"; // 👈 Required by the new built-in engine
 import { auth } from "./auth/auth.js";
 
 const app = new Hono();
@@ -13,27 +15,9 @@ app.use(logger());
 
 app.all("/api/auth/*", (c) => auth.handler(c.req.raw));
 
-app.get(
-  "/api/collab",
-  upgradeWebSocket((c) => {
-    let clientConnection: any;
-    return {
-      onOpen(_evt, ws) {
-        const nodeWs = ws.raw as WebSocket;
-        nodeWs.binaryType = "arraybuffer";
-        clientConnection = hocuspocus.handleConnection(nodeWs, c.req.raw, {});
-      },
-      onMessage(evt) {
-        clientConnection?.handleMessage(
-          new Uint8Array(evt.data as ArrayBuffer),
-        );
-      },
-      onClose() {
-        clientConnection?.handleClose();
-      },
-    };
-  }),
-);
+app.route("/api/pages", getPages);
+
+app.route("/api", collab);
 
 const wss = new WebSocketServer({ noServer: true });
 
