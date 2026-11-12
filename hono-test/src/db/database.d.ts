@@ -123,7 +123,7 @@ export interface PageTagTable {
 export interface FileTable {
   id: Generated<string>;
   filename: string;
-  extension: string | undefined;
+  originalFilename: string;
   createdAt: Generated<Date>;
   createdBy: string;
   organizationId: string;

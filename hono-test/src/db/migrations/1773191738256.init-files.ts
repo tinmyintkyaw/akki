@@ -5,7 +5,7 @@ export const up = async (db: Kysely<any>) => {
     .createTable("file")
     .addColumn("id", "uuid", (col) => col.primaryKey().defaultTo(sql`uuidv7()`))
     .addColumn("filename", "text", (col) => col.notNull())
-    .addColumn("extension", "text")
+    .addColumn("original_filename", "text", (col) => col.notNull())
     .addColumn("created_at", "timestamptz", (col) =>
       col.notNull().defaultTo(sql`now()`),
     )
