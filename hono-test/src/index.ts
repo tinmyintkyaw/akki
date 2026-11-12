@@ -4,6 +4,7 @@ import collab from "#/collab/index.js";
 import { migrate } from "#/db/migrate.js";
 import { env } from "#/env.js";
 import pages from "#/pages/index.js";
+import tags from "#/tags/index.js";
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { logger } from "hono/logger";
@@ -16,6 +17,8 @@ app.use(logger());
 app.all("/api/auth/*", (c) => auth.handler(c.req.raw));
 
 app.route("/api", pages);
+
+app.route("/api", tags);
 
 app.route("/api", collab);
 
