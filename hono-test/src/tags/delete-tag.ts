@@ -1,6 +1,7 @@
 import { hasContentPermissions } from "#/auth/has-content-permission.js";
 import { sessionMiddleware } from "#/auth/session-middleware.js";
 import { db } from "#/db/db.js";
+import { syncPagesOfOrg } from "#/search/sync-pages-of-org.js";
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
@@ -23,6 +24,12 @@ app.delete(
 
     if (!canWrite) throw new HTTPException(401);
 
+    const pagesAffected = await db
+      .selectFrom("pageTag")
+      .selectAll()
+      .where("tagId", "=", tagId)
+      .execute();
+
     const result = await db
       .deleteFrom("tag")
       .where("id", "=", tagId)
@@ -30,6 +37,10 @@ app.delete(
       .executeTakeFirst();
 
     if (!result) throw new HTTPException(400);
+
+    if (pagesAffected.length > 0) {
+      await syncPagesOfOrg(spaceId);
+    }
 
     return c.body(null, 204);
   },

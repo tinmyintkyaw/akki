@@ -8,7 +8,7 @@ import { HTTPException } from "hono/http-exception";
 
 const app = new Hono();
 
-app.post(
+app.get(
   "/spaces/:spaceId/tags",
   zValidator("param", spaceIdSchema),
   sessionMiddleware,

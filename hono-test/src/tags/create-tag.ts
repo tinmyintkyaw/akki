@@ -10,7 +10,7 @@ import { tagNameSchema } from "./schema.js";
 const app = new Hono();
 
 app.post(
-  "/spaces/:spaceId/tags/",
+  "/spaces/:spaceId/tags",
   zValidator("param", spaceIdSchema),
   zValidator("json", tagNameSchema),
   sessionMiddleware,

@@ -1,6 +1,10 @@
 import { auth } from "#/auth/auth.js";
 import { hasContentPermissions } from "#/auth/has-content-permission.js";
 import { db } from "#/db/db.js";
+import {
+  syncPageContent,
+  syncPageMetadata,
+} from "#/search/sync-to-meilisearch.js";
 import { Database } from "@hocuspocus/extension-database";
 import { Hocuspocus } from "@hocuspocus/server";
 import { sql } from "kysely";
@@ -108,6 +112,8 @@ export const hocuspocus = new Hocuspocus<HocuspocusContext>({
   extensions: [
     new Database({
       async fetch(data) {
+        console.debug("fetching page", data.documentName);
+
         const page = await db
           .selectFrom("page")
           .where("id", "=", data.documentName)
@@ -118,6 +124,8 @@ export const hocuspocus = new Hocuspocus<HocuspocusContext>({
       },
 
       async store(data) {
+        console.debug("storing page", data.documentName);
+
         await db
           .updateTable("page")
           .where("page.id", "=", data.documentName)
@@ -126,6 +134,9 @@ export const hocuspocus = new Hocuspocus<HocuspocusContext>({
             updatedAt: sql`now()`,
           })
           .executeTakeFirstOrThrow();
+
+        await syncPageMetadata([data.documentName], "upsert");
+        await syncPageContent(data.documentName, data.document);
       },
     }),
   ],

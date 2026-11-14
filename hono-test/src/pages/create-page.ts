@@ -3,6 +3,7 @@ import { sessionMiddleware } from "#/auth/session-middleware.js";
 import { db } from "#/db/db.js";
 import { pageSelect } from "#/pages/page-queries.js";
 import { pageNameSchema, spaceIdSchema } from "#/pages/schemas.js";
+import { syncPageMetadata } from "#/search/sync-to-meilisearch.js";
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
@@ -39,6 +40,9 @@ app.post(
       .executeTakeFirst();
 
     if (!newPage) throw new HTTPException(400);
+
+    await syncPageMetadata([newPage.id], "upsert");
+
     return c.json(newPage, 201);
   },
 );

@@ -4,6 +4,8 @@ import collab from "#/collab/index.js";
 import { migrate } from "#/db/migrate.js";
 import { env } from "#/env.js";
 import pages from "#/pages/index.js";
+import search from "#/search/index.js";
+import { initSearch } from "#/search/init-search.js";
 import tags from "#/tags/index.js";
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
@@ -15,6 +17,8 @@ const app = new Hono();
 app.use(logger());
 
 app.all("/api/auth/*", (c) => auth.handler(c.req.raw));
+
+app.route("/api", search);
 
 app.route("/api", pages);
 
@@ -36,6 +40,8 @@ serve(
     console.log(`Server is running on http://localhost:${info.port}`);
 
     await migrate();
+
+    await initSearch();
 
     hocuspocus.hooks("onListen", {
       instance: hocuspocus,

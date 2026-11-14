@@ -4,6 +4,7 @@ import type { SelectExpression } from "kysely";
 export const pageSelect = [
   "page.id",
   "page.name",
+  "page.isPinned",
   "page.authorId",
   "page.createdAt",
   "page.updatedAt",

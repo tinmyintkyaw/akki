@@ -3,6 +3,7 @@ import { sessionMiddleware } from "#/auth/session-middleware.js";
 import { db } from "#/db/db.js";
 import { pageSelect } from "#/pages/page-queries.js";
 import { pageUpdatePayload, spacePageIdSchema } from "#/pages/schemas.js";
+import { syncPageMetadata } from "#/search/sync-to-meilisearch.js";
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
@@ -39,6 +40,13 @@ app.patch(
       .executeTakeFirst();
 
     if (!updatedPage) throw new HTTPException(400);
+
+    if (isDeleted === true) {
+      await syncPageMetadata([updatedPage.id], "delete");
+    } else {
+      await syncPageMetadata([updatedPage.id], "upsert");
+    }
+
     return c.json(updatedPage);
   },
 );

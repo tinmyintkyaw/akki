@@ -3,6 +3,7 @@ import { sessionMiddleware } from "#/auth/session-middleware.js";
 import { db } from "#/db/db.js";
 import { pageSelect } from "#/pages/page-queries.js";
 import { spacePageIdSchema } from "#/pages/schemas.js";
+import { syncPageMetadata } from "#/search/sync-to-meilisearch.js";
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
@@ -24,14 +25,17 @@ app.delete(
 
     if (!canWrite) throw new HTTPException(401);
 
-    const result = await db
+    const deletedPage = await db
       .deleteFrom("page")
       .where("organizationId", "=", spaceId)
       .where("id", "=", pageId)
       .returning(pageSelect)
       .executeTakeFirst();
 
-    if (!result) throw new HTTPException(400);
+    if (!deletedPage) throw new HTTPException(400);
+
+    await syncPageMetadata([deletedPage.id], "delete");
+
     return c.body(null, 204);
   },
 );
