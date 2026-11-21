@@ -4,5 +4,10 @@
   },
   "search.exclude": {
     "dist/**/*.js": true
+  },
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "editor.formatOnSave": true,
+  "[typescript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
   }
 }

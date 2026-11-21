@@ -8,22 +8,17 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "client": "pnpm --filter client",
     "server": "pnpm --filter server",
-    "dev": "pnpm -r --parellel dev",
-    "build": "pnpm -r --parellel build && mkdir server/dist/public && mv client/dist/* server/dist/public",
+    "dev": "pnpm -r --parallel dev",
+    "lint": "pnpm -r --parallel lint",
+    "build": "pnpm -r --parallel build && mkdir server/dist/public && mv client/dist/* server/dist/public",
     "preview": "pnpm --filter client preview"
   },
   "keywords": [],
   "author": "",
   "license": "AGPL-3.0-or-later",
   "devDependencies": {
-    "@eslint-react/eslint-plugin": "^5.30.5",
-    "@eslint/js": "^10.0.1",
-    "@typescript-eslint/eslint-plugin": "^8.34.1",
-    "@typescript-eslint/parser": "^8.34.1",
-    "eslint": "^9.39.5",
-    "eslint-config-prettier": "^10.1.5",
-    "globals": "^17.14.0",
-    "prettier": "3.4.2",
-    "typescript-eslint": "^8.73.0"
+    "oxfmt": "^0.79.0",
+    "oxlint": "^1.94.0",
+    "prettier": "3.4.2"
   }
 }
