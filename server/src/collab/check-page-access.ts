@@ -11,8 +11,8 @@ const checkPageAccess = async (headers: Headers, pageId: string) => {
   if (!page) return { read: false, write: false };
 
   const [canRead, canWrite] = await Promise.all([
-    await hasContentPermissions(headers, page.organizationId, "read"),
-    await hasContentPermissions(headers, page.organizationId, "write"),
+    hasContentPermissions(headers, page.organizationId, "read"),
+    hasContentPermissions(headers, page.organizationId, "write"),
   ]);
 
   return {
