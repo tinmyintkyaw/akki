@@ -2,8 +2,15 @@
   "files.associations": {
     "*.css": "tailwindcss" // Removes Unknown at rule @tailwindcss(unknownAtRules) eslint warning
   },
+  "files.readonlyInclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "files.watcherExclude": {
+    "**/routeTree.gen.ts": true
+  },
   "search.exclude": {
-    "dist/**/*.js": true
+    "dist/**/*.js": true,
+    "**/routeTree.gen.ts": true
   },
   "editor.defaultFormatter": "oxc.oxc-vscode",
   "editor.formatOnSave": true,

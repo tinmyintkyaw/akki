@@ -23,5 +23,8 @@
         "react/only-export-components": "off"
       }
     }
+  ],
+  "ignorePatterns": [
+    "**/routeTree.gen.ts"
   ]
 }
