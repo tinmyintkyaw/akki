@@ -10,4 +10,4 @@ export const routes = new Hono()
   .route("/", tags)
   .route("/", collab);
 
-export type AppType = typeof routes;
+export type ServerRoutes = typeof routes;

@@ -12,7 +12,8 @@
     "#/*": "./src/*"
   },
   "exports": {
-    ".": "./src/routes.ts"
+    "./api": "./src/routes.ts",
+    "./auth": "./src/auth/auth.ts"
   },
   "dependencies": {
     "@hocuspocus/extension-database": "^4.8.0",
