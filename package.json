@@ -6,11 +6,11 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "frontend": "pnpm --filter frontend",
+    "client": "pnpm --filter client",
     "server": "pnpm --filter server",
     "dev": "pnpm -r --parellel dev",
-    "build": "pnpm -r --parellel build && mkdir backend/dist/public && mv frontend/dist/* backend/dist/public",
-    "preview": "pnpm --filter backend preview"
+    "build": "pnpm -r --parellel build && mkdir server/dist/public && mv client/dist/* server/dist/public",
+    "preview": "pnpm --filter client preview"
   },
   "keywords": [],
   "author": "",
@@ -24,7 +24,6 @@
     "eslint-config-prettier": "^10.1.5",
     "globals": "^17.14.0",
     "prettier": "3.4.2",
-    "prettier-plugin-organize-imports": "^4.1.0",
     "typescript-eslint": "^8.73.0"
   }
 }
