@@ -1,5 +1,5 @@
 {
-  "name": "client",
+  "name": "@repo/client",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -21,6 +21,7 @@
     "@tailwindcss/vite": "^4.3.5",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.5.2",
+    "hono": "^4.13.19",
     "lucide-react": "^1.76.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
@@ -38,6 +39,7 @@
     "@vitejs/plugin-react": "^6.1.2",
     "babel-plugin-react-compiler": "^1.0.0",
     "oxlint": "^1.90.0",
+    "@repo/server": "workspace:*",
     "typescript": "~7.0.2",
     "vite": "^8.3.6"
   }

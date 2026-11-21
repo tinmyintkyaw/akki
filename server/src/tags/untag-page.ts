@@ -8,9 +8,7 @@ import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { tagIdListSchema } from "./schema.js";
 
-const app = new Hono();
-
-app.delete(
+export const untagPage = new Hono().delete(
   "/spaces/:spaceId/pages/:pageId/tags",
   zValidator("param", spacePageIdSchema),
   zValidator("json", tagIdListSchema),
@@ -19,11 +17,7 @@ app.delete(
     const { spaceId, pageId } = c.req.valid("param");
     const { tags } = c.req.valid("json");
 
-    const canWrite = await hasContentPermissions(
-      c.req.raw.headers,
-      spaceId,
-      "write",
-    );
+    const canWrite = await hasContentPermissions(c.req.raw.headers, spaceId, "write");
 
     if (!canWrite) throw new HTTPException(401);
 
@@ -41,5 +35,3 @@ app.delete(
     return c.body(null, 204);
   },
 );
-
-export default app;

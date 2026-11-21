@@ -7,9 +7,7 @@ import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { tagNameSchema } from "./schema.js";
 
-const app = new Hono();
-
-app.post(
+export const createTag = new Hono().post(
   "/spaces/:spaceId/tags",
   zValidator("param", spaceIdSchema),
   zValidator("json", tagNameSchema),
@@ -18,11 +16,7 @@ app.post(
     const { spaceId } = c.req.valid("param");
     const { name } = c.req.valid("json");
 
-    const canWrite = await hasContentPermissions(
-      c.req.raw.headers,
-      spaceId,
-      "write",
-    );
+    const canWrite = await hasContentPermissions(c.req.raw.headers, spaceId, "write");
 
     if (!canWrite) throw new HTTPException(401);
 
@@ -37,5 +31,3 @@ app.post(
     return c.json(newTag, 201);
   },
 );
-
-export default app;

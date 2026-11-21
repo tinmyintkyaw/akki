@@ -1,5 +1,5 @@
 {
-  "name": "server",
+  "name": "@repo/server",
   "type": "module",
   "scripts": {
     "dev": "tsx watch --env-file=.env.development src/index.ts",
@@ -10,6 +10,9 @@
   },
   "imports": {
     "#/*": "./src/*"
+  },
+  "exports": {
+    ".": "./src/routes.ts"
   },
   "dependencies": {
     "@hocuspocus/extension-database": "^4.8.0",

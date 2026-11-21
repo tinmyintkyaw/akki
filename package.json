@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "client": "pnpm --filter client",
-    "server": "pnpm --filter server",
+    "client": "pnpm --filter @repo/client",
+    "server": "pnpm --filter @repo/server",
     "dev": "pnpm -r --parallel dev",
     "lint": "pnpm -r --parallel lint",
     "build": "pnpm -r --parallel build && mkdir server/dist/public && mv client/dist/* server/dist/public",

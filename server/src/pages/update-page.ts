@@ -8,9 +8,7 @@ import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 
-const app = new Hono();
-
-app.patch(
+export const updatePage = new Hono().patch(
   "/spaces/:spaceId/pages/:pageId",
   zValidator("param", spacePageIdSchema),
   zValidator("json", pageUpdatePayload),
@@ -19,11 +17,7 @@ app.patch(
     const { spaceId, pageId } = c.req.valid("param");
     const { name, isPinned, isDeleted } = c.req.valid("json");
 
-    const canWrite = await hasContentPermissions(
-      c.req.raw.headers,
-      spaceId,
-      "write",
-    );
+    const canWrite = await hasContentPermissions(c.req.raw.headers, spaceId, "write");
 
     if (!canWrite) throw new HTTPException(401);
 
@@ -50,5 +44,3 @@ app.patch(
     return c.json(updatedPage);
   },
 );
-
-export default app;

@@ -1,16 +1,13 @@
 import { auth } from "#/auth/auth.js";
 import { hocuspocus } from "#/collab/hocuspocus.js";
-import collab from "#/collab/index.js";
 import { migrate } from "#/db/migrate.js";
 import { env } from "#/env.js";
-import pages from "#/pages/index.js";
-import search from "#/search/index.js";
 import { initSearch } from "#/search/init-search.js";
-import tags from "#/tags/index.js";
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { logger } from "hono/logger";
 import { WebSocketServer } from "ws";
+import { routes } from "#/routes.js";
 
 const app = new Hono();
 
@@ -18,13 +15,7 @@ app.use(logger());
 
 app.all("/api/auth/*", (c) => auth.handler(c.req.raw));
 
-app.route("/api", search);
-
-app.route("/api", pages);
-
-app.route("/api", tags);
-
-app.route("/api", collab);
+app.route("/api", routes);
 
 const wss = new WebSocketServer({ noServer: true });
 

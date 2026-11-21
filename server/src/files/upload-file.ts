@@ -11,11 +11,9 @@ import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import { pipeline } from "node:stream/promises";
 
-const app = new Hono();
-
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
-app.post(
+export const uploadFile = new Hono().post(
   "/spaces/:spaceId/files",
   zValidator("param", spaceIdSchema),
   bodyLimit({ maxSize: MAX_FILE_SIZE, onError: (c) => c.body(null, 413) }),
@@ -24,11 +22,7 @@ app.post(
     const { spaceId } = c.req.valid("param");
     const { session } = c.get("session");
 
-    const canWrite = await hasContentPermissions(
-      c.req.raw.headers,
-      spaceId,
-      "write",
-    );
+    const canWrite = await hasContentPermissions(c.req.raw.headers, spaceId, "write");
 
     if (!canWrite) throw new HTTPException(401);
 
@@ -71,5 +65,3 @@ app.post(
     return c.json(newFile, 201);
   },
 );
-
-export default app;

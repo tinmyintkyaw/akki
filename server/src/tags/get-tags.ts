@@ -6,9 +6,7 @@ import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 
-const app = new Hono();
-
-app.get(
+export const getTags = new Hono().get(
   "/spaces/:spaceId/tags",
   zValidator("param", spaceIdSchema),
   sessionMiddleware,
@@ -16,11 +14,7 @@ app.get(
     const { spaceId } = c.req.valid("param");
     const { session } = c.get("session");
 
-    const canRead = await hasContentPermissions(
-      c.req.raw.headers,
-      spaceId,
-      "read",
-    );
+    const canRead = await hasContentPermissions(c.req.raw.headers, spaceId, "read");
 
     if (!canRead) throw new HTTPException(401);
 
@@ -44,5 +38,3 @@ app.get(
     return c.json(tags);
   },
 );
-
-export default app;

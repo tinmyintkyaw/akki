@@ -8,20 +8,14 @@ import fs from "node:fs";
 import path from "node:path";
 import { spaceFileIdSchema } from "./schema.js";
 
-const app = new Hono();
-
-app.delete(
+export const deleteFile = new Hono().delete(
   "/spaces/:spaceId/files/:fileId",
   zValidator("param", spaceFileIdSchema),
   sessionMiddleware,
   async (c) => {
     const { spaceId, fileId } = c.req.valid("param");
 
-    const canWrite = await hasContentPermissions(
-      c.req.raw.headers,
-      spaceId,
-      "write",
-    );
+    const canWrite = await hasContentPermissions(c.req.raw.headers, spaceId, "write");
 
     if (!canWrite) throw new HTTPException(401);
 
@@ -55,5 +49,3 @@ app.delete(
     return c.body(null, 204);
   },
 );
-
-export default app;

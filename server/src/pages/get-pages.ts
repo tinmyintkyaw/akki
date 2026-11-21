@@ -7,9 +7,7 @@ import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 
-const app = new Hono();
-
-app.get(
+export const getPages = new Hono().get(
   "/spaces/:spaceId/pages",
   zValidator("param", spaceIdSchema),
   zValidator("query", pageQueryStringSchema),
@@ -18,11 +16,7 @@ app.get(
     const { spaceId } = c.req.valid("param");
     const { deleted, pinned } = c.req.valid("query");
 
-    const canRead = await hasContentPermissions(
-      c.req.raw.headers,
-      spaceId,
-      "read",
-    );
+    const canRead = await hasContentPermissions(c.req.raw.headers, spaceId, "read");
 
     if (!canRead) throw new HTTPException(401);
 
@@ -47,5 +41,3 @@ app.get(
     return c.json(pages);
   },
 );
-
-export default app;

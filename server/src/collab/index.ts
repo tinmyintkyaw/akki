@@ -3,9 +3,7 @@ import { upgradeWebSocket } from "@hono/node-server";
 import { Hono } from "hono";
 import { WebSocket } from "ws";
 
-const app = new Hono();
-
-app.get(
+export const collab = new Hono().get(
   "/collab",
   upgradeWebSocket((c) => {
     // type ValidatedContext = Parameters<typeof validator>[0];
@@ -21,9 +19,7 @@ app.get(
         clientConnection = hocuspocus.handleConnection(nodeWs, c.req.raw);
       },
       onMessage(evt) {
-        clientConnection?.handleMessage(
-          new Uint8Array(evt.data as ArrayBuffer),
-        );
+        clientConnection?.handleMessage(new Uint8Array(evt.data as ArrayBuffer));
       },
       onClose() {
         clientConnection?.handleClose();
@@ -31,5 +27,3 @@ app.get(
     };
   }),
 );
-
-export default app;

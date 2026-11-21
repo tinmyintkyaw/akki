@@ -4,11 +4,9 @@ import { HTTPException } from "hono/http-exception";
 import { generateTenantToken } from "meilisearch/token";
 import { getDefaultSearchKey } from "./get-default-search-key.js";
 
-const app = new Hono();
-
 const defaultSearchKey = await getDefaultSearchKey();
 
-app.get("/search/key", sessionMiddleware, async (c) => {
+export const search = new Hono().get("/search/key", sessionMiddleware, async (c) => {
   const { session } = c.get("session");
 
   try {
@@ -28,5 +26,3 @@ app.get("/search/key", sessionMiddleware, async (c) => {
     throw new HTTPException(400);
   }
 });
-
-export default app;

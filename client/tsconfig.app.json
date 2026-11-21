@@ -26,6 +26,7 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
+    "strict": true // as required by hono RPC
   },
   "include": [
     "src"

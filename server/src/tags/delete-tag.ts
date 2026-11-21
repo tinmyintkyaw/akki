@@ -7,20 +7,14 @@ import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { spaceTagIdSchema } from "./schema.js";
 
-const app = new Hono();
-
-app.delete(
+export const deleteTag = new Hono().delete(
   "/spaces/:spaceId/tags/:tagId",
   zValidator("param", spaceTagIdSchema),
   sessionMiddleware,
   async (c) => {
     const { spaceId, tagId } = c.req.valid("param");
 
-    const canWrite = await hasContentPermissions(
-      c.req.raw.headers,
-      spaceId,
-      "write",
-    );
+    const canWrite = await hasContentPermissions(c.req.raw.headers, spaceId, "write");
 
     if (!canWrite) throw new HTTPException(401);
 
@@ -45,5 +39,3 @@ app.delete(
     return c.body(null, 204);
   },
 );
-
-export default app;

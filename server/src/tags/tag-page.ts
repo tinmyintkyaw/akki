@@ -8,9 +8,7 @@ import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { tagIdListSchema } from "./schema.js";
 
-const app = new Hono();
-
-app.put(
+export const tagPage = new Hono().put(
   "/spaces/:spaceId/pages/:pageId/tags",
   zValidator("param", spacePageIdSchema),
   zValidator("json", tagIdListSchema),
@@ -19,11 +17,7 @@ app.put(
     const { spaceId, pageId } = c.req.valid("param");
     const { tags } = c.req.valid("json");
 
-    const canWrite = await hasContentPermissions(
-      c.req.raw.headers,
-      spaceId,
-      "write",
-    );
+    const canWrite = await hasContentPermissions(c.req.raw.headers, spaceId, "write");
 
     if (!canWrite) throw new HTTPException(401);
 
@@ -38,5 +32,3 @@ app.put(
     return c.body(null, 201);
   },
 );
-
-export default app;

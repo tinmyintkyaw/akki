@@ -9,9 +9,7 @@ import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import * as Y from "yjs";
 
-const app = new Hono();
-
-app.post(
+export const createPage = new Hono().post(
   "/spaces/:spaceId/pages",
   zValidator("param", spaceIdSchema),
   zValidator("json", pageNameSchema),
@@ -21,11 +19,7 @@ app.post(
     const { spaceId } = c.req.valid("param");
     const { name } = c.req.valid("json");
 
-    const canWrite = await hasContentPermissions(
-      c.req.raw.headers,
-      spaceId,
-      "write",
-    );
+    const canWrite = await hasContentPermissions(c.req.raw.headers, spaceId, "write");
     if (!canWrite) throw new HTTPException(401);
 
     const newPage = await db
@@ -46,5 +40,3 @@ app.post(
     return c.json(newPage, 201);
   },
 );
-
-export default app;

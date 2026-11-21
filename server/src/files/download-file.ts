@@ -9,20 +9,14 @@ import path from "node:path";
 import { Readable } from "node:stream";
 import { spaceFileIdSchema } from "./schema.js";
 
-const app = new Hono();
-
-app.get(
+export const downloadFile = new Hono().get(
   "/spaces/:spaceId/files/:fileId",
   zValidator("param", spaceFileIdSchema),
   sessionMiddleware,
   async (c) => {
     const { spaceId, fileId } = c.req.valid("param");
 
-    const canRead = await hasContentPermissions(
-      c.req.raw.headers,
-      spaceId,
-      "read",
-    );
+    const canRead = await hasContentPermissions(c.req.raw.headers, spaceId, "read");
 
     if (!canRead) throw new HTTPException(401);
 
@@ -47,13 +41,8 @@ app.get(
     const nodeStream = fs.createReadStream(filePath);
     const webStream = Readable.toWeb(nodeStream) as ReadableStream;
 
-    c.header(
-      "Content-Disposition",
-      `attachment; filename="${dbFile.originalFilename}"`,
-    );
+    c.header("Content-Disposition", `attachment; filename="${dbFile.originalFilename}"`);
 
     return c.body(webStream);
   },
 );
-
-export default app;
