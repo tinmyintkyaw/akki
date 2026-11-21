@@ -93,7 +93,7 @@ export interface InvitationTable {
 
 export interface UserSettingsTable {
   id: Generated<string>;
-  settings: JSONColumnType<{}>;
+  settings: JSONColumnType<undefined>;
 }
 
 export interface PageTable {

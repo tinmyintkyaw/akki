@@ -11,6 +11,7 @@ app.get(
     // type ValidatedContext = Parameters<typeof validator>[0];
     // const validParams = (c as ValidatedContext).req.valid("param");
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let clientConnection: any;
     return {
       onOpen(_evt, ws) {

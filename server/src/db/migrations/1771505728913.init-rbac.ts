@@ -1,6 +1,6 @@
 import { Kysely, sql } from "kysely";
 
-export const up = async (db: Kysely<any>): Promise<void> => {
+export const up = async (db: Kysely<unknown>): Promise<void> => {
   await db.schema
     .createTable("organization")
     .ifNotExists()
@@ -58,7 +58,7 @@ export const up = async (db: Kysely<any>): Promise<void> => {
     .execute();
 };
 
-export const down = async (db: Kysely<any>) => {
+export const down = async (db: Kysely<unknown>) => {
   await db.schema.dropTable("organization").ifExists().cascade().execute();
   await db.schema.dropTable("member").ifExists().cascade().execute();
   await db.schema.dropTable("invitation").ifExists().cascade().execute();

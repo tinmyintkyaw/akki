@@ -1,6 +1,6 @@
 import { Kysely, sql } from "kysely";
 
-export const up = async (db: Kysely<any>) => {
+export const up = async (db: Kysely<unknown>) => {
   await db.schema
     .createTable("page")
     .addColumn("id", "uuid", (col) => col.primaryKey().defaultTo(sql`uuidv7()`))
@@ -81,7 +81,7 @@ export const up = async (db: Kysely<any>) => {
     .execute();
 };
 
-export const down = async (db: Kysely<any>) => {
+export const down = async (db: Kysely<unknown>) => {
   await db.schema.dropTable("page").ifExists().cascade().execute();
   await db.schema.dropTable("tag").ifExists().cascade().execute();
   await db.schema.dropTable("page_tag").ifExists().cascade().execute();

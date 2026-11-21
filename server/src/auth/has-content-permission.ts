@@ -15,7 +15,7 @@ export const hasContentPermissions = async (
     });
 
     return result.success;
-  } catch (error) {
+  } catch {
     return false;
   }
 };

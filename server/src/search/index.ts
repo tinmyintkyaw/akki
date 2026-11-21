@@ -24,7 +24,7 @@ app.get("/search/key", sessionMiddleware, async (c) => {
     });
 
     return c.json({ key: searchToken });
-  } catch (error) {
+  } catch {
     throw new HTTPException(400);
   }
 });

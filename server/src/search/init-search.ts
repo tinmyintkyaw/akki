@@ -23,7 +23,7 @@ export const initSearch = async () => {
     console.log("Looking for existing search index");
 
     await meilisearch.getIndex("pages");
-  } catch (error) {
+  } catch {
     console.log("Search index not found, creating");
 
     const createIdxTask = await meilisearch

@@ -1,6 +1,6 @@
 import { Kysely } from "kysely";
 
-export const up = async (db: Kysely<any>) => {
+export const up = async (db: Kysely<unknown>) => {
   await db.schema
     .createTable("user_settings")
     .addColumn("user_id", "uuid", (col) =>
@@ -10,6 +10,6 @@ export const up = async (db: Kysely<any>) => {
     .execute();
 };
 
-export const down = async (db: Kysely<any>) => {
+export const down = async (db: Kysely<unknown>) => {
   await db.schema.dropTable("user_settings").ifExists().execute();
 };
