@@ -9,50 +9,212 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
+import { Route as SignInRouteImport } from './routes/sign-in'
+import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
+import { Route as AuthenticatedSpacesSpaceIdPinnedRouteImport } from './routes/_authenticated/spaces.$spaceId.pinned'
+import { Route as AuthenticatedSpacesSpaceIdTrashRouteImport } from './routes/_authenticated/spaces.$spaceId.trash'
+import { Route as AuthenticatedSpacesSpaceIdPagesIndexRouteImport } from './routes/_authenticated/spaces.$spaceId.pages.index'
+import { Route as AuthenticatedSpacesSpaceIdPagesChar123PageIdChar125RouteImport } from './routes/_authenticated/spaces.$spaceId.pages.{-$pageId}'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SignInRoute = SignInRouteImport.update({
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedSpacesSpaceIdPinnedRoute =
+  AuthenticatedSpacesSpaceIdPinnedRouteImport.update({
+    id: '/spaces/$spaceId/pinned',
+    path: '/spaces/$spaceId/pinned',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedSpacesSpaceIdTrashRoute =
+  AuthenticatedSpacesSpaceIdTrashRouteImport.update({
+    id: '/spaces/$spaceId/trash',
+    path: '/spaces/$spaceId/trash',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedSpacesSpaceIdPagesIndexRoute =
+  AuthenticatedSpacesSpaceIdPagesIndexRouteImport.update({
+    id: '/spaces/$spaceId/pages/',
+    path: '/spaces/$spaceId/pages/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedSpacesSpaceIdPagesChar123PageIdChar125Route =
+  AuthenticatedSpacesSpaceIdPagesChar123PageIdChar125RouteImport.update({
+    id: '/spaces/$spaceId/pages/{-$pageId}',
+    path: '/spaces/$spaceId/pages/{-$pageId}',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof AuthenticatedIndexRoute
+  '/sign-in': typeof SignInRoute
+  '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/spaces/$spaceId/pinned': typeof AuthenticatedSpacesSpaceIdPinnedRoute
+  '/spaces/$spaceId/trash': typeof AuthenticatedSpacesSpaceIdTrashRoute
+  '/spaces/$spaceId/pages/{-$pageId}': typeof AuthenticatedSpacesSpaceIdPagesChar123PageIdChar125Route
+  '/spaces/$spaceId/pages/': typeof AuthenticatedSpacesSpaceIdPagesIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/sign-in': typeof SignInRoute
+  '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/': typeof AuthenticatedIndexRoute
+  '/spaces/$spaceId/pinned': typeof AuthenticatedSpacesSpaceIdPinnedRoute
+  '/spaces/$spaceId/trash': typeof AuthenticatedSpacesSpaceIdTrashRoute
+  '/spaces/$spaceId/pages/{-$pageId}': typeof AuthenticatedSpacesSpaceIdPagesChar123PageIdChar125Route
+  '/spaces/$spaceId/pages': typeof AuthenticatedSpacesSpaceIdPagesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/sign-in': typeof SignInRoute
+  '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
+  '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/spaces/$spaceId/pinned': typeof AuthenticatedSpacesSpaceIdPinnedRoute
+  '/_authenticated/spaces/$spaceId/trash': typeof AuthenticatedSpacesSpaceIdTrashRoute
+  '/_authenticated/spaces/$spaceId/pages/{-$pageId}': typeof AuthenticatedSpacesSpaceIdPagesChar123PageIdChar125Route
+  '/_authenticated/spaces/$spaceId/pages/': typeof AuthenticatedSpacesSpaceIdPagesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/sign-in'
+    | '/onboarding'
+    | '/spaces/$spaceId/pinned'
+    | '/spaces/$spaceId/trash'
+    | '/spaces/$spaceId/pages/{-$pageId}'
+    | '/spaces/$spaceId/pages/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/sign-in'
+    | '/onboarding'
+    | '/'
+    | '/spaces/$spaceId/pinned'
+    | '/spaces/$spaceId/trash'
+    | '/spaces/$spaceId/pages/{-$pageId}'
+    | '/spaces/$spaceId/pages'
+  id:
+    | '__root__'
+    | '/_authenticated'
+    | '/sign-in'
+    | '/_authenticated/onboarding'
+    | '/_authenticated/'
+    | '/_authenticated/spaces/$spaceId/pinned'
+    | '/_authenticated/spaces/$spaceId/trash'
+    | '/_authenticated/spaces/$spaceId/pages/{-$pageId}'
+    | '/_authenticated/spaces/$spaceId/pages/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  SignInRoute: typeof SignInRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sign-in': {
+      id: '/sign-in'
+      path: '/sign-in'
+      fullPath: '/sign-in'
+      preLoaderRoute: typeof SignInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/': {
+      id: '/_authenticated/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/onboarding': {
+      id: '/_authenticated/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/spaces/$spaceId/pinned': {
+      id: '/_authenticated/spaces/$spaceId/pinned'
+      path: '/spaces/$spaceId/pinned'
+      fullPath: '/spaces/$spaceId/pinned'
+      preLoaderRoute: typeof AuthenticatedSpacesSpaceIdPinnedRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/spaces/$spaceId/trash': {
+      id: '/_authenticated/spaces/$spaceId/trash'
+      path: '/spaces/$spaceId/trash'
+      fullPath: '/spaces/$spaceId/trash'
+      preLoaderRoute: typeof AuthenticatedSpacesSpaceIdTrashRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/spaces/$spaceId/pages/': {
+      id: '/_authenticated/spaces/$spaceId/pages/'
+      path: '/spaces/$spaceId/pages'
+      fullPath: '/spaces/$spaceId/pages/'
+      preLoaderRoute: typeof AuthenticatedSpacesSpaceIdPagesIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/spaces/$spaceId/pages/{-$pageId}': {
+      id: '/_authenticated/spaces/$spaceId/pages/{-$pageId}'
+      path: '/spaces/$spaceId/pages/{-$pageId}'
+      fullPath: '/spaces/$spaceId/pages/{-$pageId}'
+      preLoaderRoute: typeof AuthenticatedSpacesSpaceIdPagesChar123PageIdChar125RouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
   }
 }
 
+interface AuthenticatedRouteChildren {
+  AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
+  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedSpacesSpaceIdPinnedRoute: typeof AuthenticatedSpacesSpaceIdPinnedRoute
+  AuthenticatedSpacesSpaceIdTrashRoute: typeof AuthenticatedSpacesSpaceIdTrashRoute
+  AuthenticatedSpacesSpaceIdPagesChar123PageIdChar125Route: typeof AuthenticatedSpacesSpaceIdPagesChar123PageIdChar125Route
+  AuthenticatedSpacesSpaceIdPagesIndexRoute: typeof AuthenticatedSpacesSpaceIdPagesIndexRoute
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
+  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedSpacesSpaceIdPinnedRoute: AuthenticatedSpacesSpaceIdPinnedRoute,
+  AuthenticatedSpacesSpaceIdTrashRoute: AuthenticatedSpacesSpaceIdTrashRoute,
+  AuthenticatedSpacesSpaceIdPagesChar123PageIdChar125Route:
+    AuthenticatedSpacesSpaceIdPagesChar123PageIdChar125Route,
+  AuthenticatedSpacesSpaceIdPagesIndexRoute:
+    AuthenticatedSpacesSpaceIdPagesIndexRoute,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  SignInRoute: SignInRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
