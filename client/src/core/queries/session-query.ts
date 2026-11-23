@@ -6,7 +6,8 @@ export const sessionQueryOptions = () =>
   queryOptions({
     queryKey: ["session"] as const,
     queryFn: async () => {
-      const { data: session } = await authClient.getSession();
+      const { data: session, error } = await authClient.getSession();
+      if (error) throw error;
       return session;
     },
 

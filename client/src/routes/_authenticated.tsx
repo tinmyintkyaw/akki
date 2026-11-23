@@ -27,7 +27,7 @@ export const Route = createFileRoute("/_authenticated")({
 
     if (latestSpace && isOnboarding) {
       throw redirect({
-        to: "/spaces/$spaceId/pages/{-$pageId}",
+        to: "/s/$spaceId/p/{-$pageId}",
         params: { spaceId: latestSpace.id },
         replace: true,
       });
