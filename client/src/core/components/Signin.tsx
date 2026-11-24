@@ -6,32 +6,47 @@ import { authClient } from "#src/lib/auth.ts";
 import { queryClient } from "#src/lib/query.ts";
 import { router } from "#src/lib/router.ts";
 import { Link } from "@tanstack/react-router";
-
-const handleSignin: React.SubmitEventHandler<HTMLFormElement> = async (e) => {
-  e.preventDefault();
-
-  const formData = new FormData(e.currentTarget);
-  const email = String(formData.get("email") ?? "").trim();
-  const password = String(formData.get("password") ?? "");
-
-  const { data: session } = await authClient.signIn.email({ email, password });
-
-  if (session) {
-    await queryClient.invalidateQueries({
-      queryKey: sessionQueryOptions().queryKey,
-    });
-    router.navigate({ to: "/", replace: true });
-  }
-};
+import { useState } from "react";
+import { Alert, AlertTitle } from "#src/components/ui/alert.tsx";
+import { AlertCircleIcon } from "lucide-react";
 
 export function Signin() {
+  const [isError, setIsError] = useState(false);
+
+  const handleChange = () => {
+    setIsError(false);
+  };
+
+  const handleSignin: React.SubmitEventHandler<HTMLFormElement> = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+    const email = String(formData.get("email") ?? "").trim();
+    const password = String(formData.get("password") ?? "");
+
+    const { data: session } = await authClient.signIn.email({
+      email,
+      password,
+    });
+
+    if (session) {
+      setIsError(false);
+      await queryClient.invalidateQueries({
+        queryKey: sessionQueryOptions().queryKey,
+      });
+      router.navigate({ to: "/", replace: true });
+    } else {
+      setIsError(true);
+    }
+  };
+
   return (
     <main className="w-dvw h-dvh flex flex-row items-center">
       <div className="w-full sm:max-w-sm mx-auto">
-        <h1 className="text-3xl font-bold text-center mb-8">Sign In To Akki</h1>
+        <h1 className="text-3xl font-bold text-center py-4">Sign In To Akki</h1>
 
-        <form onSubmit={handleSignin} className="mb-6">
-          <div className="flex flex-col gap-6">
+        <form onSubmit={handleSignin}>
+          <div className="flex flex-col gap-6 py-4">
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -40,6 +55,7 @@ export function Signin() {
                 type="email"
                 placeholder="name@example.com"
                 required
+                onChange={handleChange}
               />
             </div>
 
@@ -53,16 +69,17 @@ export function Signin() {
                 maxLength={128}
                 placeholder="••••••••••"
                 required
+                onChange={handleChange}
               />
             </div>
 
-            <Button type="submit" size={"lg"} className={"h-12"}>
+            <Button type="submit" size={"lg"} className={"h-10"}>
               Sign In
             </Button>
           </div>
         </form>
 
-        <div className="flex justify-center gap-2 items-center text-muted-foreground">
+        <div className="flex justify-center gap-2 items-center text-muted-foreground text-sm">
           <p>New around here?</p>
 
           <Link
@@ -72,6 +89,13 @@ export function Signin() {
             Sign Up
           </Link>
         </div>
+
+        {isError && (
+          <Alert variant="destructive" className="my-4">
+            <AlertCircleIcon />
+            <AlertTitle>Unable to sign in</AlertTitle>
+          </Alert>
+        )}
       </div>
     </main>
   );
