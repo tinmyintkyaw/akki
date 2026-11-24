@@ -32,6 +32,8 @@ import { authClient } from "#src/lib/auth.ts";
 import { useTheme, type Theme } from "#src/components/theme-provider.tsx";
 import { useState } from "react";
 import { Settings } from "#src/core/components/Settings.tsx";
+import { useMutation } from "@tanstack/react-query";
+import { createSpaceMutationOptions } from "#src/core/queries/create-space-mutation.ts";
 
 export function SidebarHeader() {
   const {
@@ -73,6 +75,20 @@ export function SidebarHeader() {
   ];
 
   const [settingsOpen, setSettingsOpen] = useState(false);
+
+  const mutation = useMutation(createSpaceMutationOptions());
+
+  const handleCreateSpace = async () => {
+    try {
+      const newSpace = await mutation.mutateAsync(
+        `${session.user.name}'s Space`,
+      );
+      await navigate({ to: "/s/$spaceId", params: { spaceId: newSpace.id } });
+    } catch (error) {
+      // TODO: notify user on failure
+      console.error(error);
+    }
+  };
 
   return (
     <>
@@ -123,8 +139,7 @@ export function SidebarHeader() {
               </DropdownMenuItem>
             ))}
 
-            {/* TODO: Create new space dialog */}
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleCreateSpace}>
               <Plus className="size-6 p-1" />
               <span>New Space</span>
             </DropdownMenuItem>

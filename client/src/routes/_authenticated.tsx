@@ -18,21 +18,6 @@ export const Route = createFileRoute("/_authenticated")({
 
     const spaces = await queryClient.query(spacesQueryOptions());
 
-    const latestSpace = spaces.at(-1);
-    const isOnboarding = location.pathname === "/onboarding";
-
-    if (!latestSpace && !isOnboarding) {
-      throw redirect({ to: "/onboarding", replace: true });
-    }
-
-    if (latestSpace && isOnboarding) {
-      throw redirect({
-        to: "/s/$spaceId/p/{-$pageId}",
-        params: { spaceId: latestSpace.id },
-        replace: true,
-      });
-    }
-
     return { session, spaces };
   },
 });

@@ -13,7 +13,6 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
-import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedSSpaceIdRouteImport } from './routes/_authenticated/s.$spaceId'
 import { Route as AuthenticatedSSpaceIdPChar123PageIdChar125RouteImport } from './routes/_authenticated/s.$spaceId.p.{-$pageId}'
 
@@ -36,11 +35,6 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
-  id: '/onboarding',
-  path: '/onboarding',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
 const AuthenticatedSSpaceIdRoute = AuthenticatedSSpaceIdRouteImport.update({
   id: '/s/$spaceId',
   path: '/s/$spaceId',
@@ -57,14 +51,12 @@ export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
-  '/onboarding': typeof AuthenticatedOnboardingRoute
   '/s/$spaceId': typeof AuthenticatedSSpaceIdRouteWithChildren
   '/s/$spaceId/p/{-$pageId}': typeof AuthenticatedSSpaceIdPChar123PageIdChar125Route
 }
 export interface FileRoutesByTo {
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
-  '/onboarding': typeof AuthenticatedOnboardingRoute
   '/': typeof AuthenticatedIndexRoute
   '/s/$spaceId': typeof AuthenticatedSSpaceIdRouteWithChildren
   '/s/$spaceId/p/{-$pageId}': typeof AuthenticatedSSpaceIdPChar123PageIdChar125Route
@@ -74,7 +66,6 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
-  '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/s/$spaceId': typeof AuthenticatedSSpaceIdRouteWithChildren
   '/_authenticated/s/$spaceId/p/{-$pageId}': typeof AuthenticatedSSpaceIdPChar123PageIdChar125Route
@@ -82,26 +73,14 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
-    | '/sign-in'
-    | '/sign-up'
-    | '/onboarding'
-    | '/s/$spaceId'
-    | '/s/$spaceId/p/{-$pageId}'
+    '/' | '/sign-in' | '/sign-up' | '/s/$spaceId' | '/s/$spaceId/p/{-$pageId}'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/sign-in'
-    | '/sign-up'
-    | '/onboarding'
-    | '/'
-    | '/s/$spaceId'
-    | '/s/$spaceId/p/{-$pageId}'
+  to: '/sign-in' | '/sign-up' | '/' | '/s/$spaceId' | '/s/$spaceId/p/{-$pageId}'
   id:
     | '__root__'
     | '/_authenticated'
     | '/sign-in'
     | '/sign-up'
-    | '/_authenticated/onboarding'
     | '/_authenticated/'
     | '/_authenticated/s/$spaceId'
     | '/_authenticated/s/$spaceId/p/{-$pageId}'
@@ -143,13 +122,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/onboarding': {
-      id: '/_authenticated/onboarding'
-      path: '/onboarding'
-      fullPath: '/onboarding'
-      preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/s/$spaceId': {
       id: '/_authenticated/s/$spaceId'
       path: '/s/$spaceId'
@@ -182,13 +154,11 @@ const AuthenticatedSSpaceIdRouteWithChildren =
   )
 
 interface AuthenticatedRouteChildren {
-  AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedSSpaceIdRoute: typeof AuthenticatedSSpaceIdRouteWithChildren
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
-  AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedSSpaceIdRoute: AuthenticatedSSpaceIdRouteWithChildren,
 }
