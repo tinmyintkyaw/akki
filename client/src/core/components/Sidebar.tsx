@@ -8,22 +8,29 @@ import {
   useRouteContext,
   type LinkOptions,
 } from "@tanstack/react-router";
-import { FileText, Hash, type LucideIcon } from "lucide-react";
+import { FileText, Hash, Pin, Trash, type LucideIcon } from "lucide-react";
 
 type NavLink = {
   label: string;
   icon: LucideIcon;
-  options: LinkOptions;
+  search: LinkOptions["search"];
 };
 
 const navLinks: NavLink[] = [
   {
-    options: {
-      to: "/s/$spaceId",
-      activeOptions: { exact: true },
-    },
+    search: { p: "all" },
     label: "Pages",
     icon: FileText,
+  },
+  {
+    search: { p: "pinned" },
+    label: "Pinned",
+    icon: Pin,
+  },
+  {
+    search: { p: "trash" },
+    label: "Trash",
+    icon: Trash,
   },
 ];
 
@@ -48,8 +55,8 @@ export function Sidebar() {
             nativeButton={false}
             render={
               <Link
-                {...link.options}
-                params={{ pageId: space.id }}
+                search={link.search}
+                activeOptions={{ includeSearch: true }}
                 activeProps={{
                   className: buttonVariants({ variant: "default" }),
                 }}
@@ -71,6 +78,13 @@ export function Sidebar() {
             variant={"ghost"}
             size={"lg"}
             className={"justify-start w-full"}
+            render={
+              <Link
+                to="/s/$spaceId/p/{-$pageId}"
+                params={(prev) => ({ ...prev, spaceId: space.id })}
+                search={(prev) => ({ ...prev, t: tag.id, p: undefined })}
+              />
+            }
           >
             <Hash />
             {tag.name}

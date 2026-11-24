@@ -107,6 +107,7 @@ export function SidebarHeader() {
                   navigate({
                     to: "/s/$spaceId",
                     params: { spaceId: space.id },
+                    search: { p: "all" },
                   })
                 }
               >
