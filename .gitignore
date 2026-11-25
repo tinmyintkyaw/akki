@@ -28,6 +28,4 @@ dist-ssr
 uploads
 
 # Environment
-.env
-.env.development
-.env.test
+.env*

@@ -6,15 +6,15 @@ import { z } from "zod";
 
 const PAGE_FILTER_OPTIONS = ["all", "trash", "pinned"] as const;
 
-const searchScheme = z.xor([
-  z.object({
-    p: z.enum(PAGE_FILTER_OPTIONS).default("all"),
+const searchSchema = z.union([
+  z.strictObject({
+    p: z.enum(PAGE_FILTER_OPTIONS).default("all").optional(),
   }),
-  z.object({ t: z.uuid() }),
+  z.strictObject({ t: z.uuid().optional() }),
 ]);
 
 export const Route = createFileRoute("/_authenticated/s/$spaceId")({
-  validateSearch: searchScheme,
+  validateSearch: searchSchema,
   // search: { middlewares: [stripSearchParams({ p: "all" })] },
 
   beforeLoad: async ({ params }) => {

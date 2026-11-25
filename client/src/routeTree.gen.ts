@@ -14,7 +14,7 @@ import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedSSpaceIdRouteImport } from './routes/_authenticated/s.$spaceId'
-import { Route as AuthenticatedSSpaceIdPChar123PageIdChar125RouteImport } from './routes/_authenticated/s.$spaceId.p.{-$pageId}'
+import { Route as AuthenticatedSSpaceIdPPageIdRouteImport } from './routes/_authenticated/s.$spaceId.p.$pageId'
 
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
   id: '/_authenticated',
@@ -40,10 +40,10 @@ const AuthenticatedSSpaceIdRoute = AuthenticatedSSpaceIdRouteImport.update({
   path: '/s/$spaceId',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedSSpaceIdPChar123PageIdChar125Route =
-  AuthenticatedSSpaceIdPChar123PageIdChar125RouteImport.update({
-    id: '/p/{-$pageId}',
-    path: '/p/{-$pageId}',
+const AuthenticatedSSpaceIdPPageIdRoute =
+  AuthenticatedSSpaceIdPPageIdRouteImport.update({
+    id: '/p/$pageId',
+    path: '/p/$pageId',
     getParentRoute: () => AuthenticatedSSpaceIdRoute,
   } as any)
 
@@ -52,14 +52,14 @@ export interface FileRoutesByFullPath {
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/s/$spaceId': typeof AuthenticatedSSpaceIdRouteWithChildren
-  '/s/$spaceId/p/{-$pageId}': typeof AuthenticatedSSpaceIdPChar123PageIdChar125Route
+  '/s/$spaceId/p/$pageId': typeof AuthenticatedSSpaceIdPPageIdRoute
 }
 export interface FileRoutesByTo {
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/': typeof AuthenticatedIndexRoute
   '/s/$spaceId': typeof AuthenticatedSSpaceIdRouteWithChildren
-  '/s/$spaceId/p/{-$pageId}': typeof AuthenticatedSSpaceIdPChar123PageIdChar125Route
+  '/s/$spaceId/p/$pageId': typeof AuthenticatedSSpaceIdPPageIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -68,14 +68,14 @@ export interface FileRoutesById {
   '/sign-up': typeof SignUpRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/s/$spaceId': typeof AuthenticatedSSpaceIdRouteWithChildren
-  '/_authenticated/s/$spaceId/p/{-$pageId}': typeof AuthenticatedSSpaceIdPChar123PageIdChar125Route
+  '/_authenticated/s/$spaceId/p/$pageId': typeof AuthenticatedSSpaceIdPPageIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/sign-in' | '/sign-up' | '/s/$spaceId' | '/s/$spaceId/p/{-$pageId}'
+    '/' | '/sign-in' | '/sign-up' | '/s/$spaceId' | '/s/$spaceId/p/$pageId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/sign-in' | '/sign-up' | '/' | '/s/$spaceId' | '/s/$spaceId/p/{-$pageId}'
+  to: '/sign-in' | '/sign-up' | '/' | '/s/$spaceId' | '/s/$spaceId/p/$pageId'
   id:
     | '__root__'
     | '/_authenticated'
@@ -83,7 +83,7 @@ export interface FileRouteTypes {
     | '/sign-up'
     | '/_authenticated/'
     | '/_authenticated/s/$spaceId'
-    | '/_authenticated/s/$spaceId/p/{-$pageId}'
+    | '/_authenticated/s/$spaceId/p/$pageId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -129,23 +129,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSSpaceIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/s/$spaceId/p/{-$pageId}': {
-      id: '/_authenticated/s/$spaceId/p/{-$pageId}'
-      path: '/p/{-$pageId}'
-      fullPath: '/s/$spaceId/p/{-$pageId}'
-      preLoaderRoute: typeof AuthenticatedSSpaceIdPChar123PageIdChar125RouteImport
+    '/_authenticated/s/$spaceId/p/$pageId': {
+      id: '/_authenticated/s/$spaceId/p/$pageId'
+      path: '/p/$pageId'
+      fullPath: '/s/$spaceId/p/$pageId'
+      preLoaderRoute: typeof AuthenticatedSSpaceIdPPageIdRouteImport
       parentRoute: typeof AuthenticatedSSpaceIdRoute
     }
   }
 }
 
 interface AuthenticatedSSpaceIdRouteChildren {
-  AuthenticatedSSpaceIdPChar123PageIdChar125Route: typeof AuthenticatedSSpaceIdPChar123PageIdChar125Route
+  AuthenticatedSSpaceIdPPageIdRoute: typeof AuthenticatedSSpaceIdPPageIdRoute
 }
 
 const AuthenticatedSSpaceIdRouteChildren: AuthenticatedSSpaceIdRouteChildren = {
-  AuthenticatedSSpaceIdPChar123PageIdChar125Route:
-    AuthenticatedSSpaceIdPChar123PageIdChar125Route,
+  AuthenticatedSSpaceIdPPageIdRoute: AuthenticatedSSpaceIdPPageIdRoute,
 }
 
 const AuthenticatedSSpaceIdRouteWithChildren =

@@ -1,38 +1,11 @@
 import { Button, buttonVariants } from "#src/components/ui/button.tsx";
 import { ScrollArea } from "#src/components/ui/scroll-area.tsx";
+import { navLinks } from "#src/core/components/nav-links.ts";
 import { SidebarHeader } from "#src/core/components/SidebarHeader.tsx";
 import { tagsQueryOptions } from "#src/core/queries/tags-query.ts";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import {
-  Link,
-  useRouteContext,
-  type LinkOptions,
-} from "@tanstack/react-router";
-import { FileText, Hash, Pin, Trash, type LucideIcon } from "lucide-react";
-
-type NavLink = {
-  label: string;
-  icon: LucideIcon;
-  search: LinkOptions["search"];
-};
-
-const navLinks: NavLink[] = [
-  {
-    search: { p: "all" },
-    label: "Pages",
-    icon: FileText,
-  },
-  {
-    search: { p: "pinned" },
-    label: "Pinned",
-    icon: Pin,
-  },
-  {
-    search: { p: "trash" },
-    label: "Trash",
-    icon: Trash,
-  },
-];
+import { Link, useRouteContext } from "@tanstack/react-router";
+import { Hash } from "lucide-react";
 
 export function Sidebar() {
   const { space } = useRouteContext({
@@ -57,15 +30,13 @@ export function Sidebar() {
               <Link
                 search={link.search}
                 activeOptions={{ includeSearch: true }}
-                activeProps={{
-                  className: buttonVariants({ variant: "default" }),
-                }}
-              >
-                {<link.icon />}
-                <span>{link.label}</span>
-              </Link>
+                activeProps={{ className: "bg-muted" }}
+              />
             }
-          />
+          >
+            {<link.icon />}
+            <span>{link.label}</span>
+          </Button>
         ))}
       </nav>
 
@@ -78,11 +49,20 @@ export function Sidebar() {
             variant={"ghost"}
             size={"lg"}
             className={"justify-start w-full"}
+            nativeButton={false}
             render={
               <Link
-                to="/s/$spaceId/p/{-$pageId}"
-                params={(prev) => ({ ...prev, spaceId: space.id })}
-                search={(prev) => ({ ...prev, t: tag.id, p: undefined })}
+                from="/s/$spaceId/p/$pageId"
+                params={(prev) => prev}
+                search={(prev) => {
+                  if ("p" in prev) {
+                    const { p: _, ...rest } = prev;
+                    return { ...rest, t: tag.id };
+                  }
+
+                  return { ...prev, t: tag.id };
+                }}
+                activeProps={{ className: "bg-muted" }}
               />
             }
           >

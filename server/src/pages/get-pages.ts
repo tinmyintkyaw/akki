@@ -1,11 +1,12 @@
+import { zValidator } from "@hono/zod-validator";
+import { Hono } from "hono";
+import { HTTPException } from "hono/http-exception";
+
 import { hasContentPermissions } from "#/auth/has-content-permission.js";
 import { sessionMiddleware } from "#/auth/session-middleware.js";
 import { db } from "#/db/db.js";
 import { pageSelect } from "#/pages/page-queries.js";
 import { pageQueryStringSchema, spaceIdSchema } from "#/pages/schemas.js";
-import { zValidator } from "@hono/zod-validator";
-import { Hono } from "hono";
-import { HTTPException } from "hono/http-exception";
 
 export const getPages = new Hono().get(
   "/spaces/:spaceId/pages",
@@ -14,7 +15,7 @@ export const getPages = new Hono().get(
   sessionMiddleware,
   async (c) => {
     const { spaceId } = c.req.valid("param");
-    const { deleted, pinned } = c.req.valid("query");
+    const { deleted, pinned, tags } = c.req.valid("query");
 
     const canRead = await hasContentPermissions(c.req.raw.headers, spaceId, "read");
 
@@ -34,6 +35,18 @@ export const getPages = new Hono().get(
 
     if (pinned !== undefined) {
       query = query.where("page.isPinned", "=", pinned);
+    }
+
+    if (tags) {
+      query = query.where((eb) =>
+        eb.exists(
+          eb
+            .selectFrom("pageTag")
+            .select(eb.lit(1).as("one"))
+            .whereRef("pageTag.pageId", "=", "page.id")
+            .where("pageTag.tagId", "in", tags),
+        ),
+      );
     }
 
     const pages = await query.execute();

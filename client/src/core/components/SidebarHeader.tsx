@@ -97,7 +97,8 @@ export function SidebarHeader() {
           render={
             <Button
               variant="ghost"
-              className="h-10 justify-start w-full mb-4"
+              size="lg"
+              className="justify-start w-full mb-4"
             />
           }
         >

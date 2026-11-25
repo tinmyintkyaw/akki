@@ -7,11 +7,9 @@ import { ScrollArea } from "#src/components/ui/scroll-area.tsx";
 import { PageList } from "#src/core/components/PageList.tsx";
 import { Sidebar } from "#src/core/components/Sidebar.tsx";
 import { CollabEditor } from "#src/editor/components/CollabEditor.tsx";
-import { useParams } from "@tanstack/react-router";
+import { EditorHeader } from "#src/editor/components/EditorHeader.tsx";
 
 export function App() {
-  const { pageId } = useParams({ strict: false });
-
   return (
     <div className="w-full h-dvh">
       <ResizablePanelGroup orientation="horizontal">
@@ -28,13 +26,10 @@ export function App() {
         <ResizableHandle />
 
         <ResizablePanel className="flex flex-col">
-          <div className="h-12 shrink-0">Hello</div>
+          <EditorHeader />
           <ScrollArea className="flex-1 min-h-0 w-full">
-            {pageId ? (
-              <CollabEditor pageId={pageId} />
-            ) : (
-              <div>No Pages Open</div>
-            )}
+            <CollabEditor />
+            {/* {pageId ? <CollabEditor /> : <div>No Pages Open</div>} */}
           </ScrollArea>
         </ResizablePanel>
       </ResizablePanelGroup>
