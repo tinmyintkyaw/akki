@@ -3,11 +3,9 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "#src/components/ui/resizable.tsx";
-import { ScrollArea } from "#src/components/ui/scroll-area.tsx";
 import { PageList } from "#src/core/components/PageList.tsx";
 import { Sidebar } from "#src/core/components/Sidebar.tsx";
 import { CollabEditor } from "#src/editor/components/CollabEditor.tsx";
-import { EditorHeader } from "#src/editor/components/EditorHeader.tsx";
 
 export function App() {
   return (
@@ -26,11 +24,7 @@ export function App() {
         <ResizableHandle />
 
         <ResizablePanel className="flex flex-col">
-          <EditorHeader />
-          <ScrollArea className="flex-1 min-h-0 w-full">
-            <CollabEditor />
-            {/* {pageId ? <CollabEditor /> : <div>No Pages Open</div>} */}
-          </ScrollArea>
+          <CollabEditor />
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>

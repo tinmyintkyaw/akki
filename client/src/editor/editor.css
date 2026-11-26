@@ -1,0 +1,5 @@
+@reference "../index.css";
+
+.tiptap {
+  @apply prose dark:prose-invert mx-auto h-full w-full max-w-2xl outline-none;
+}
