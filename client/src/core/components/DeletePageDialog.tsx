@@ -10,7 +10,9 @@ import {
 } from "#src/components/ui/alert-dialog.tsx";
 import { deletePageMutationOptions } from "#src/core/queries/delete-page-mutation.ts";
 import type { Page } from "#src/lib/api.ts";
+import { router } from "#src/lib/router.ts";
 import { useMutation } from "@tanstack/react-query";
+import { useParams } from "@tanstack/react-router";
 
 interface DeletePageDialogProps {
   page: Page;
@@ -21,12 +23,19 @@ interface DeletePageDialogProps {
 export function DeletePageDialog(props: DeletePageDialogProps) {
   const { page, open, onOpenChange } = props;
 
+  const params = useParams({ strict: false });
+
   const deletePageMutation = useMutation(
     deletePageMutationOptions(page.organizationId, page.id),
   );
 
   const deletePageHandler = async () => {
     await deletePageMutation.mutateAsync();
+    if (params.pageId)
+      await router.navigate({
+        to: "/s/$spaceId",
+        params: { spaceId: page.organizationId },
+      });
     onOpenChange(false);
   };
 
