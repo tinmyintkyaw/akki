@@ -18,13 +18,13 @@ export const Route = createFileRoute("/_authenticated/")({
       const newSpace = await observer.mutate(spaceName);
 
       throw redirect({
-        to: "/s/$spaceId/p/{-$pageId}",
+        to: "/s/$spaceId",
         params: { spaceId: newSpace.id },
         replace: true,
       });
     } else {
       throw redirect({
-        to: "/s/$spaceId/p/{-$pageId}",
+        to: "/s/$spaceId",
         params: { spaceId: latestSpace.id },
         replace: true,
       });
