@@ -4,10 +4,21 @@ import { apiClient } from "#src/lib/api.ts";
 
 type View = "all" | "pinned" | "trash" | "tags";
 
-const queryKeyFactory = (spaceId: string, view: View = "all", tags?: string[]) => {
+const queryKeyFactory = (spaceId: string, view?: View, tags?: string[]) => {
   const normalizedTags = tags?.length ? [...tags].sort() : undefined;
 
-  return ["pages", spaceId, { view, tags: normalizedTags }] as const;
+  return [
+    "pages",
+    spaceId,
+    ...(view
+      ? [
+          {
+            view,
+            tags: normalizedTags,
+          },
+        ]
+      : []),
+  ];
 };
 
 export const pagesQueryOptions = (spaceId: string, view?: View, tags?: string[]) =>
