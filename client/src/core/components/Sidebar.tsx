@@ -1,4 +1,4 @@
-import { Button, buttonVariants } from "#src/components/ui/button.tsx";
+import { Button } from "#src/components/ui/button.tsx";
 import { ScrollArea } from "#src/components/ui/scroll-area.tsx";
 import { navLinks } from "#src/core/components/nav-links.ts";
 import { SidebarHeader } from "#src/core/components/SidebarHeader.tsx";
@@ -29,6 +29,7 @@ export function Sidebar() {
             render={
               <Link
                 search={link.search}
+                preload={false}
                 activeOptions={{ includeSearch: true }}
                 activeProps={{ className: "bg-muted" }}
               />
@@ -42,7 +43,7 @@ export function Sidebar() {
 
       <div className="text-xs shrink-0 px-4 pt-2">Tags</div>
 
-      <ScrollArea className="flex-1 min-h-0 w-full flex flex-col p-2">
+      <ScrollArea className="flex-1 min-h-0 w-full flex flex-col">
         {tags.map((tag) => (
           <Button
             key={tag.id}
@@ -53,6 +54,7 @@ export function Sidebar() {
             render={
               <Link
                 from="/s/$spaceId/p/$pageId"
+                preload={false}
                 params={(prev) => prev}
                 search={(prev) => {
                   if ("p" in prev) {

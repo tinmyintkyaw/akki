@@ -2,22 +2,29 @@ import { queryOptions } from "@tanstack/react-query";
 
 import { apiClient } from "#src/lib/api.ts";
 
-export const pagesQueryOptions = (
-  spaceId: string,
-  pinned?: boolean,
-  deleted?: boolean,
-  tags?: string[],
-) =>
+type View = "all" | "pinned" | "trash" | "tags";
+
+const queryKeyFactory = (spaceId: string, view: View = "all", tags?: string[]) => {
+  const normalizedTags = tags?.length ? [...tags].sort() : undefined;
+
+  return ["pages", spaceId, { view, tags: normalizedTags }] as const;
+};
+
+export const pagesQueryOptions = (spaceId: string, view?: View, tags?: string[]) =>
   queryOptions({
-    queryKey: ["pages", { pinned: pinned ?? false, trash: deleted ?? false, tags }] as const,
+    queryKey: queryKeyFactory(spaceId, view, tags),
+
     queryFn: async () => {
       const res = await apiClient.spaces[":spaceId"].pages.$get({
         param: { spaceId },
-        query: {
-          pinned,
-          deleted,
-          tags,
-        },
+        query:
+          !view || view === "all"
+            ? {}
+            : {
+                pinned: view === "pinned" ? true : undefined,
+                deleted: view === "trash" ? true : undefined,
+                tags: view === "tags" && tags ? tags : undefined,
+              },
       });
 
       if (!res.ok) throw new Error();
